@@ -1,7 +1,7 @@
 //importo il db
-const db = require('../db');
+const db = require('../../db');
 
-const nomeTabella = 'ordini';
+const nomeTabella = 'pagamenti';
 
 function createIfDoesntExists() 
 {
@@ -9,15 +9,9 @@ function createIfDoesntExists()
     db.serialize(() => {
 
         db.run(`CREATE TABLE IF NOT EXISTS ${nomeTabella} (
-            id_ordine INTEGER PRIMARY KEY AUTOINCREMENT,            
-            data_ora_ordinazione TEXT NOT NULL,
-            username_ordinante TEXT NOT NULL,
-            ref_pagamento INTEGER NULLABLE,
-            ref_cliente INTEGER NULLABLE,
-            ref_prenotazione INTEGER NOT NULL,
-            FOREIGN KEY (ref_pagamento) REFERENCES pagamenti (id_pagamento),
-            FOREIGN KEY (ref_cliente) REFERENCES clienti (numero_carta),
-            FOREIGN KEY (ref_prenotazione) REFERENCES prenotazioni (id_prenotazione)
+            id_pagamento INTEGER PRIMARY KEY AUTOINCREMENT,
+            importo DOUBLE NOT NULL,
+            data_ora TEXT NOT NULL          
         )`, (err) => {
             if (err) {
                 console.error(`❌ Errore durante la creazione della tabella ${nomeTabella}:`, err.message);
