@@ -4,12 +4,11 @@ const db = require('../db/database');
 //importo il modulo bcryptjs per la gestione delle password
 const bcrypt = require('bcryptjs');
 
-
 //Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 class Cliente {
   
     // definisco il metodo per creare un nuovo utente
-    static async create({ id_cliente, numero_carta, nome, cognome, email, password, punti }) 
+    static async create({ numero_carta, nome, cognome, data_nascita, email, password, punti }) 
     {
         // genSalt genera un seed casuale per l'hashing della password
         const salt = await bcrypt.genSalt(10);
@@ -17,11 +16,11 @@ class Cliente {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO clienti (username, email, password) VALUES (?, ?, ?)',
-                [numero_carta, nome, cognome, email, hashedPassword, punti],
+                'INSERT INTO clienti (numero_carta, nome, cognome, email, data_nascita, hashedPassword, punti) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [numero_carta, nome, cognome, email, data_nascita, hashedPassword, punti],
                 function(err) {
                     if (err) reject(err);
-                    resolve({ id: this.lastID, nome, cognome, email });
+                    resolve({ id: this.numero_carta, nome, cognome, email });
                 }
             );
         });
