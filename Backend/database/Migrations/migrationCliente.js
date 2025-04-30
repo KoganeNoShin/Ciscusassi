@@ -15,7 +15,7 @@ function createIfDoesntExists() {
             email TEXT UNIQUE NOT NULL,
             data_nascita TEXT,
             password TEXT NOT NULL,
-            punti INTEGER NOT NULL DEFAULT 0
+            punti INTEGER NOT NULL
         )`, (err) => 
         {
             if (err) console.error(`❌ Errore durante la creazione della tabella ${nomeTabella}:`, err.message);

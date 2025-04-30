@@ -1,14 +1,18 @@
-const migrationCliente = require('./database/Migrations/migrationCliente');
-const migrationFiliale = require('./database/Migrations/migrationFiliale');
-const migrationImpiegato = require('./database/Migrations/migrationImpiegato');
-const migrationPagamento = require('./database/Migrations/migrationPagamento');
-const migrationTorretta = require('./database/Migrations/migrationTorretta');
-const migrationProdotto = require('./database/Migrations/migrationProdotto');
-const migrationPrenotazione = require('./database/Migrations/migrationPrenotazione');
-const migrationOrdine = require('./database/Migrations/migrationOrdine');
-const migrationOrdProdotto = require('./database/Migrations/migrationOrdProd');
-const migrationAsporto = require('./database/Migrations/migrationAsporto');
-const migrationAspProd = require('./database/Migrations/migrationAspProd');
+const migrationCliente = require('./Database/Migrations/migrationCliente');
+const migrationFiliale = require('./Database/Migrations/migrationFiliale');
+const migrationImpiegato = require('./Database/Migrations/migrationImpiegato');
+const migrationPagamento = require('./Database/Migrations/migrationPagamento');
+const migrationTorretta = require('./Database/Migrations/migrationTorretta');
+const migrationProdotto = require('./Database/Migrations/migrationProdotto');
+const migrationPrenotazione = require('./Database/Migrations/migrationPrenotazione');
+const migrationOrdine = require('./Database/Migrations/migrationOrdine');
+const migrationOrdProdotto = require('./Database/Migrations/migrationOrdProd');
+const migrationAsporto = require('./Database/Migrations/migrationAsporto');
+const migrationAspProd = require('./Database/Migrations/migrationAspProd');
+
+const seederCliente = require('./Database/Seeders/seederCliente');
+
+const args = process.argv.slice(2);
 
 function dropAll() {
     migrationCliente.dropTable();
@@ -38,7 +42,9 @@ function createTables() {
     migrationAspProd.createIfDoesntExists();
 }
 
-const args = process.argv.slice(2);
+function seedDB(){
+    seederCliente.generateCliente(5);
+}
 
 if (args.includes('--help')) 
 {
@@ -55,6 +61,6 @@ createTables();
 
 if(args.includes('--seed'))
 {
-    console.log("🌱 Il seed è ancora da implementare!");
+    seedDB();
 }
 

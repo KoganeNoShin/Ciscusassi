@@ -1,10 +1,10 @@
-//importo il db
-const db = require('../db/database');
+// importo il db
+const db = require('../db');
 
-//importo il modulo bcryptjs per la gestione delle password
+// importo il modulo bcryptjs per la gestione delle password
 const bcrypt = require('bcryptjs');
 
-//Interagisce direttamente con il database per le operazioni CRUD sugli utenti
+// Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 class Cliente {
   
     // definisco il metodo per creare un nuovo utente
@@ -16,11 +16,11 @@ class Cliente {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO clienti (numero_carta, nome, cognome, email, data_nascita, hashedPassword, punti) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                [numero_carta, nome, cognome, email, data_nascita, hashedPassword, punti],
+                'INSERT INTO clienti (numero_carta, nome, cognome, data_nascita, email, password, punti) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [numero_carta, nome, cognome, data_nascita, email, hashedPassword, punti],
                 function(err) {
                     if (err) reject(err);
-                    resolve({ id: this.numero_carta, nome, cognome, email });
+                    resolve({ id: numero_carta, nome: nome, cognome: cognome, data_nascita:data_nascita, email: email, password: hashedPassword, punti: punti});
                 }
             );
         });
