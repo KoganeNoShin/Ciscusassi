@@ -1,6 +1,8 @@
 const express = require('express');
 const db = require('./db');
 
+const { faker } = require('@faker-js/faker');
+
 const app = express();
 // const authRoutes = require('./src/auth/routes/authRoutes');
 
@@ -11,6 +13,7 @@ app.use(express.json());
 //app.use('/api/auth', authRoutes);
 
 const cors = require('cors'); // Importiamo il modulo cors per gestire le richieste cross-origin
+const Filiale = require('./Models/filiale');
 app.use(cors());
 
 // Or configure specific origins
@@ -27,8 +30,26 @@ app.use((err, req, res, next) => {
 });
 
 // Avvio server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
-    console.log(`Server in ascolto sulla porta ${PORT}`);
+    console.log(`📡 Server in ascolto sulla porta ${PORT}`);
+});
+
+// Query
+
+app.get('/', (req, res) =>{
+    res.send("👋🏽  Il server funziona!");
+});
+
+app.get('/filiali', (req, res) =>{
+    Filiale.findAll().then((data)=>{
+        res.json(data);
+    }).catch((err) => {
+        return next(err);
+    });
+});
+
+app.get('/otp', (req, res) => {
+    res.json(faker.number.int(({ min: 10000, max: 99999 })));
 });
