@@ -60,6 +60,7 @@ Il progetto è stato sviluppato da:
 		</td>
 		<td>
 			<a href="https://www.instagram.com/luca._gaetani/">Instagram 📸</a><br>
+			<a href="https://www.linkedin.com/in/luca-gaetani-10362b364/">LinkedIn 👔</a><br>
 			<a href="mailto:luca.gae03@gmail.com">Email 📨</a>
 		</td>
 		<td>
