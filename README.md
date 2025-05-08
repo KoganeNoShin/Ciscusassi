@@ -19,7 +19,8 @@ La repo è organizzata per facilitare la navigazione tra le varie sezioni. Ecco 
 ```
 ┌── Codice/                	# ⚙️ I codici delle parti applicative del progetto
 │   ├── Backend/		# 🖥️ L'implementazione del server Express e relative API
-│   └── Ciscusassi/		# 🦞 L'implementazione Ionic dell'applicazione
+│   ├── Ciscusassi/		# 🦞 L'implementazione Ionic dell'applicazione
+│   └── Torretta/		# 🏰 L'implementazione arduino della torretta OTP
 ├── Documenti/         		# 📄 I documenti che sono stati prodotti
 │   └── Ciscusassi.docx
 ├── Risorse/               	# 📦 Risorse utilizzate nel readme
