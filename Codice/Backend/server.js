@@ -14,11 +14,11 @@ app.use(express.json());
 
 const cors = require('cors'); // Importiamo il modulo cors per gestire le richieste cross-origin
 const Filiale = require('./Models/filiale');
-app.use(cors());
+const Prodotto = require('./Models/prodotto');
 
 // Or configure specific origins
 app.use(cors({
-    origin: 'http://localhost:4200', // Your Angular app URL
+    origin: 'http://localhost:8100', // Your Angular app URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -40,6 +40,14 @@ app.listen(PORT, () => {
 
 app.get('/', (req, res) =>{
     res.send("👋🏽  Il server funziona!");
+});
+
+app.get('/PiattoDelGiorno', (req, res) =>{
+    Prodotto.getPiattoDelGiorno().then((data)=>{
+        res.json(data);
+    }).catch((err)=>{
+        return next(err);
+    });
 });
 
 app.get('/filiali', (req, res) =>{

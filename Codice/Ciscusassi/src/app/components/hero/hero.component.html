@@ -1,8 +1,9 @@
 <div id="blur"></div>
 
-<div id="background" [style.background-image]="'url(' + backgroundURL + ')'"></div>
+<div id="background" [style.background-image]="'url(/assets/backgrounds/' + backgroundURL + ')'"></div>
 
 <div id="hero" >
   <h1> {{title}} </h1>
   <p> {{description}} </p>
+  <ion-icon id="chevron" slot="icon-only" name="chevron-down" color="secondary" size="large"></ion-icon>
 </div>

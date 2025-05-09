@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
+
+import { PiattoDelGiornoComponent } from 'src/app/components/piatto-del-giorno/piatto-del-giorno.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, HeroComponent],
+  imports: [IonContent, HeroComponent, PiattoDelGiornoComponent],
 })
 export class HomePage {
   constructor() { }

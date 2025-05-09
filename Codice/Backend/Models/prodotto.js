@@ -30,6 +30,15 @@ class Prodotto {
         });
     }
 
+    static async getPiattoDelGiorno(){
+        return new Promise((resolve, reject) => {
+            db.get('SELECT * FROM prodotti WHERE is_piatto_giorno = 1', (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            }); 
+        });
+    }
+    
     // ricerca per id
     static async findById(id) {
         return new Promise((resolve, reject) => {

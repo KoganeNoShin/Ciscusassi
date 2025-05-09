@@ -49,6 +49,7 @@
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Isocpeur-Regular';
     src: url('/assets/fonts/Isocpeur-Regular.ttf') format('truetype');
@@ -59,9 +60,9 @@
 
 h1 {
     font-family: 'JacquesFrancoisShadow', sans-serif;
+    font-size: 3rem;
 }
 
-p{
+h2, h3, h4, h5, h6, p{
     font-family: 'LucidaCalligraphy', sans-serif;
 }
-  

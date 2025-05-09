@@ -10,7 +10,7 @@ import { personCircle } from 'ionicons/icons';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
   standalone: true,
-  imports: [IonHeader, IonFooter, IonIcon, IonToolbar, IonButtons, IonButton],
+  imports: [IonFooter, IonToolbar],
 })
 export class FooterComponent implements OnInit {
 

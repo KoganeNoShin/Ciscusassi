@@ -1,0 +1,50 @@
+#content{
+    text-align: center;  
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;   
+    gap: 2rem; 
+    z-index: 10;
+}
+
+#background{
+    background-color: var(--ion-color-tertiary);
+    z-index: -10;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+}
+
+#smoke{
+    background-image: url('/assets/smoke.png');
+    opacity: .08;
+    z-index: -5;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+}
+
+h1{
+    margin-top: 0;
+}
+
+h2{
+    font-size: 2rem;
+}
+
+h3{
+    font-size: 1.2rem;
+}
+
+p{
+    font-size: .8rem;
+}
+
+img{
+    border-radius: 100%;
+}

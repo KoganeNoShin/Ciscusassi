@@ -1,0 +1,21 @@
+<div id="background"></div>
+
+<div id="smoke"></div>
+
+<div id="content" backgr>
+
+
+	@if (loading)
+	{
+		<ion-spinner name="bubbles"></ion-spinner>
+	}
+	@else 
+	{
+		<h1> PIATTO DEL GIORNO </h1>
+		<h2> "{{ piatto.nome }}" </h2>
+		<img [src]="piatto.immagine" alt="Immagine del piatto">
+		<h3> {{piatto.descrizione}} </h3>
+		<p> * Acquistando il piatto del giorno hai diritto a 10 pt fedeltà bonus. </p>
+	}
+
+</div>
