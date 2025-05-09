@@ -35,3 +35,33 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+@font-face {
+    font-family: 'JacquesFrancoisShadow';
+    src: url('/assets/fonts/JacquesFrancoisShadow-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+  
+@font-face {
+    font-family: 'LucidaCalligraphy';
+    src: url('/assets/fonts/LucidaUnicodeCalligraphy.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Isocpeur-Regular';
+    src: url('/assets/fonts/Isocpeur-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+h1 {
+    font-family: 'JacquesFrancoisShadow', sans-serif;
+}
+
+p{
+    font-family: 'LucidaCalligraphy', sans-serif;
+}
+  
