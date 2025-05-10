@@ -8,8 +8,10 @@
     "@faker-js/faker": "^9.7.0",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
+    "cheerio": "^1.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "puppeteer": "^24.8.2",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
