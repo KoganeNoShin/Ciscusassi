@@ -11,8 +11,10 @@ function createIfDoesntExists() {
             db.run(`CREATE TABLE IF NOT EXISTS ${nomeTabella} (
                 id_filiale INTEGER PRIMARY KEY AUTOINCREMENT,
                 comune TEXT NOT NULL,
-                indirizzo TEXT UNIQUE NOT NULL,
                 num_tavoli INTEGER NOT NULL,
+                indirizzo TEXT UNIQUE NOT NULL,
+                longitudine REAL NOT NULL,
+                latitudine REAL NOT NULL,
                 immagine BLOB            
             )`, (err) => {
                 if (err) {

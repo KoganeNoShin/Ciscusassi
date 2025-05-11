@@ -5,16 +5,16 @@ const db = require('../db');
 class Filiale {
   
     // definisco il metodo per creare un nuovo utente
-    static async create({ id_filiale, comune, indirizzo, num_tavoli, immagine }) 
+    static async create({ id_filiale, comune, indirizzo, num_tavoli, longitudine, latitudine, immagine }) 
     {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO filiali (id_filiale, comune, indirizzo, num_tavoli, immagine) VALUES (?, ?, ?, ?, ?)',
-                [id_filiale, comune, indirizzo, num_tavoli, immagine],
+                'INSERT INTO filiali (id_filiale, comune, indirizzo, num_tavoli, longitudine, latitudine, immagine) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [id_filiale, comune, indirizzo, num_tavoli, longitudine, latitudine, immagine],
                 function(err) {
                     if (err) reject(err);
-                    resolve({ id: id_filiale, comune: comune, indirizzo: indirizzo, num_tavoli: num_tavoli, immagine: immagine});
+                    resolve({ id: id_filiale, comune: comune, indirizzo: indirizzo, num_tavoli: num_tavoli, longitudine: longitudine, latitudine: latitudine, immagine: immagine});
                 }
             );
         });

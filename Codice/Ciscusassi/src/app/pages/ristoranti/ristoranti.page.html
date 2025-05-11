@@ -1,5 +1,24 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <ion-content [fullscreen]="true">
 
 	<app-hero title="I NOSTRI RISTORANTI" description="Locali accoglienti, cibo delizioso. Cosa vuoi di più?!" [backgroundURL]="'RistorantiBackground.jpg'"></app-hero>
+
+	<div class="map-div">
+		<h1> TROVACI SULLA MAPPA! </h1>
+		<p> Trova il ristorante più adatto a te! </p>
+
+		<div class="content">
+			<img src="/assets/illustrations/TizioMappa.png" alt="">
+
+			<ion-card class="map-card"> 
+				<ion-card-content>
+					<app-leaflet-map></app-leaflet-map>
+				</ion-card-content>
+			</ion-card>
+		</div>
+
+
+	</div>
 
 </ion-content>

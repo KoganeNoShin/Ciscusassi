@@ -18,7 +18,7 @@ const Prodotto = require('./Models/prodotto');
 
 // Or configure specific origins
 app.use(cors({
-    origin: 'http://localhost:8100', // Your Angular app URL
+    origin: '*', // Your Angular app URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -30,7 +30,7 @@ app.use((err, req, res, next) => {
 });
 
 // Avvio server
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 4200;
 
 app.listen(PORT, () => {
     console.log(`📡 Server in ascolto sulla porta ${PORT}`);
@@ -58,7 +58,7 @@ app.get('/PiattoDelGiorno', (req, res) =>{
     });
 });
 
-app.get('/filiali', (req, res) =>{
+app.get('/Filiali', (req, res) =>{
     Filiale.findAll().then((data)=>{
         res.json(data);
     }).catch((err) => {

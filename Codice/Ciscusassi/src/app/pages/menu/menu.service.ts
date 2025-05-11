@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 export class MenuService {
 
-    private port = 8000;
+    private port = 4200;
     private baseUrl = `http://localhost:${this.port}`;
 
     constructor(private http: HttpClient) { }

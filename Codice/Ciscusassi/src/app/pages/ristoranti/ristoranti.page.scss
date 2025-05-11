@@ -1,27 +1,73 @@
 #container {
-    text-align: center;
-  
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  #container strong {
-    font-size: 20px;
-    line-height: 26px;
-  }
-  
-  #container p {
-    font-size: 16px;
-    line-height: 22px;
-  
-    color: #8c8c8c;
-  
-    margin: 0;
-  }
-  
-  #container a {
-    text-decoration: none;
-  }
+	text-align: center;
+
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+#container strong {
+	font-size: 20px;
+	line-height: 26px;
+}
+
+#container p {
+	font-size: 16px;
+	line-height: 22px;
+
+	color: #8c8c8c;
+
+	margin: 0;
+}
+
+#container a {
+  	text-decoration: none;
+}
+
+.content{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 75%;
+	height: 75%;
+}
+
+.map-div{
+	height: 100vh;
+	width: 100vw;
+	background-color: #C29637;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.map-card{
+	height: 75%; // o 50vh, o 100% se necessario
+	width: 50%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 2.5%;
+	background-color: white;
+}
+
+img{
+	width: 40%;
+}
+
+ion-card-content {
+	height: 100%;
+	padding: 0;
+}
+
+h1{
+    font-family: 'LucidaCalligraphy', sans-serif;
+}
+
+p{
+	font-size: 1.5rem;
+}
