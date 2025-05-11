@@ -42,6 +42,14 @@ app.get('/', (req, res) =>{
     res.send("👋🏽  Il server funziona!");
 });
 
+app.get('/prodotti', (req, res) =>{
+    Prodotto.findAll().then((data)=>{
+        res.json(data);
+    }).catch((err)=>{
+        return next(err);
+    })
+});
+
 app.get('/PiattoDelGiorno', (req, res) =>{
     Prodotto.getPiattoDelGiorno().then((data)=>{
         res.json(data);

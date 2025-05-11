@@ -3,4 +3,69 @@
 	<app-hero title="MENU" description="Lasciati guidare in un viaggio
 	dove la cucina diventa arte!" [backgroundURL]="'MenuBackground.jpg'"></app-hero>
 
+	<app-piatto-del-giorno></app-piatto-del-giorno>
+
+	<div id="content">
+		@if(loading)
+		{
+			<ion-spinner name="bubbles"></ion-spinner>
+		}
+		@else 
+		{
+
+			<app-menu-divider title="ANTIPASTI" [backgroundURL]="'Antipasti.jpg'"></app-menu-divider>
+
+			@for (a of antipasti; track a.id_prodotto)
+			{
+				<div class="plate">
+					<img [src]="a.immagine" alt="Immagine del piatto" class="immagine-rotante">
+					<div class="plateInfo">
+						<h2> {{ a.nome }} - {{ a.costo }} € </h2>
+						<h3> {{ a.descrizione }} </h3>
+					</div>
+				</div>
+			}
+
+			<app-menu-divider title="PRIMI" [backgroundURL]="'Primi.jpg'"></app-menu-divider>
+
+			@for (p of primi; track p.id_prodotto)
+			{
+				<div class="plate">
+					<img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante">
+					<div class="plateInfo">
+						<h2> {{ p.nome }} - {{ p.costo }} € </h2>
+						<h3> {{ p.descrizione }} </h3>
+					</div>
+				</div>
+			}
+
+			<app-menu-divider title="DOLCI" [backgroundURL]="'Dolci.jpg'"></app-menu-divider>
+
+			@for (d of dolci; track d.id_prodotto)
+			{
+				<div class="plate">
+					<img [src]="d.immagine" alt="Immagine del piatto" class="immagine-rotante">
+					<div class="plateInfo">
+						<h2> {{ d.nome }} - {{ d.costo }} € </h2>
+						<h3> {{ d.descrizione }} </h3>
+					</div>
+				</div>
+			}
+
+			<app-menu-divider title="BEVANDE" [backgroundURL]="'Bevande.jpg'"></app-menu-divider>
+
+			@for (b of bevande; track b.id_prodotto)
+			{
+				<div class="plate">
+					<img [src]="b.immagine" alt="Immagine del piatto" class="immagine-rotante">
+					<div class="plateInfo">
+						<h2> {{ b.nome }} - {{ b.costo }} € </h2>
+						<h3> {{ b.descrizione }} </h3>
+					</div>
+				</div>
+			}
+
+		}
+	</div>
+
 </ion-content>

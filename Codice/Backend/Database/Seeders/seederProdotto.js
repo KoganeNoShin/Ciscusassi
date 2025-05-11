@@ -46,28 +46,7 @@ async function generateProdotto()
             });  
 
             prodottiPromises.push(prodottoPromise);
-        }
-
-        /*const categorie = ['CONTORNO', 'DOLCI', 'BEVANDE'];
-
-        for (let i = 0; i < count; i++) {
-
-            let nome = faker.food.dish();
-            let descrizione = faker.food.description();
-            let costo = faker.number.float({min: 8, max: 16, fractionDigits: 2});
-            let immagine = await getBase64(faker.image.urlPicsumPhotos({width:256, height:256}));
-            let categoria =  faker.helpers.arrayElement(categorie);
-            let is_piatto_giorno = 0;
-
-            let prodottoPromise = prodotto.create({nome: nome, descrizione: descrizione, costo: costo, immagine: immagine, categoria: categoria, is_piatto_giorno: is_piatto_giorno}).then( () => {
-                console.log(`🍝 Piatto ${nome} di categoria ${categoria} al prezzo di ${costo}€ è stato aggiunto! ${is_piatto_giorno ? "È il piatto del giorno!" : ""}`);
-            }).catch( (err) => {
-                console.log(`♻️ Piatto ${nome} è andato a male! Causa di andata a male: ${err}`);
-                throw err;
-            }); 
-
-            prodottoPromises.push(prodottoPromise);
-        }*/
+        }        
 
         await Promise.all(prodottiPromises)
         .then(() => {
@@ -77,9 +56,6 @@ async function generateProdotto()
             reject(err);
         });
     })       
-
-    
-
 
 }
 

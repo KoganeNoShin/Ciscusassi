@@ -23,7 +23,7 @@ class Prodotto {
     // definiamo il metodo per ritornare tutti i prodotti
     static async findAll(){
         return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM prodotti', (err, row) => {
+            db.all('SELECT * FROM prodotti p ORDER BY p.categoria DESC', (err, row) => {
                 if (err) reject(err);
                 resolve(row);
             });
