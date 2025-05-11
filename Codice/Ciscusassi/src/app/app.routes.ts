@@ -29,7 +29,15 @@ export const routes: Routes = [
   },
   {
     path: 'amministrazione',
-    loadComponent: () => import('./pages/amministrazione/amministrazione.page').then(m => m.AmministrazionePage)
+    loadComponent: () => import('./pages/admin/amministrazione/amministrazione.page').then(m => m.AmministrazionePage)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./pages/account/login/login.page').then(m => m.LoginPage)
+  },
+  {
+    path: 'signin',
+    loadComponent: () => import('./pages/account/signin/signin.page').then(m => m.SigninPage)
   },
 
 ];
