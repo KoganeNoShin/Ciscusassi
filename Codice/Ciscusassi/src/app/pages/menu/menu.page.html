@@ -30,14 +30,27 @@
 
 			@for (p of primi; track p.id_prodotto)
 			{
-				<div class="plate">
-					<img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante">
-					<div class="plateInfo">
-						<h2> {{ p.nome }} - {{ p.costo }} € </h2>
-						<h3> {{ p.descrizione }} </h3>
+				@if(p.is_piatto_giorno)
+				{
+					<div class="plate_giorno">
+						<img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante">
+						<div class="plateInfo">
+							<h2> {{ p.nome }} - {{ p.costo }} € </h2>
+							<h3> {{ p.descrizione }} </h3>
+						</div>
 					</div>
-				</div>
+				}
 			}
+			@for (p of primi; track p.id_prodotto)
+				{
+					<div class="plate">
+						<img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante">
+						<div class="plateInfo">
+							<h2> {{ p.nome }} - {{ p.costo }} € </h2>
+							<h3> {{ p.descrizione }} </h3>
+						</div>
+					</div>
+				}
 
 			<app-menu-divider title="DOLCI" [backgroundURL]="'Dolci.jpg'"></app-menu-divider>
 
