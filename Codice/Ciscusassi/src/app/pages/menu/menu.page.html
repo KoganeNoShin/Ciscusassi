@@ -42,6 +42,8 @@
 				}
 			}
 			@for (p of primi; track p.id_prodotto)
+			{
+				@if(!p.is_piatto_giorno)
 				{
 					<div class="plate">
 						<img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante">
@@ -51,6 +53,7 @@
 						</div>
 					</div>
 				}
+			}
 
 			<app-menu-divider title="DOLCI" [backgroundURL]="'Dolci.jpg'"></app-menu-divider>
 
