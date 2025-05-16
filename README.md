@@ -79,3 +79,7 @@ Questo **progetto** è **coperto da tutti i diritti riservati**.
 **L'utilizzo, la copia, la modifica o la distribuzione del codice sono vietati senza autorizzazione scritta.**  
 
 Per **richieste**, **inviare un'email** a uno dei membri del team **mettendo in CC tutti** gli altri (gli indirizzi sono elencati sopra).
+
+---
+
+Si ringraziano [Storyset](https://storyset.com) ed [Unsplash](https://unsplash.com) per le illustrazioni.
