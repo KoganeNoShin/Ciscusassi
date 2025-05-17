@@ -1,12 +1,32 @@
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">AMMINISTRAZIONE</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>AMMINISTRAZIONE</strong>
-    <p>In questa pagina, i vari amministratori, chef e camerieri potranno accedere al proprio terminale</p>
-  </div>
+<ion-content [fullscreen]="true" color="light">
+	<ion-grid fixed>
+		<ion-row class="ion-align-items-center ion-justify-content-center">
+			<ion-col size="12" size-md="4" size-lg="6" class="ion-text-center">
+				<ion-img [src]="'/assets/illustrations/Amministrazione.png'"></ion-img> 
+			</ion-col>
+			<ion-col size="12" size-md="4" size-lg="6" class="ion-text-center">
+				<ion-card>
+					<ion-text color="light">
+						<h1> Benvenuto Pippo! </h1>
+					</ion-text>
+					<ion-button size="default" fill="solid" shape="round" color="primary">
+						<ion-text color="light">
+							<p> Gestisci piatti </p>
+						</ion-text>
+					</ion-button>
+					<ion-button size="default" fill="solid" shape="round" color="primary">
+						<ion-text color="light">
+							<p> Gestisci filiali </p>
+						</ion-text>
+					</ion-button>
+				
+					<ion-button size="default" fill="solid" shape="round" color="primary">
+						<ion-text color="light">
+							<p> Gestisci utili </p>
+						</ion-text>
+					</ion-button>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 </ion-content>

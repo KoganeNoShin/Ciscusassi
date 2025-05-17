@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonCard, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonRow, IonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-amministrazione',
   templateUrl: './amministrazione.page.html',
   styleUrls: ['./amministrazione.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonContent, IonGrid, IonRow, IonCol,IonImg, IonCard, IonText, IonButton, CommonModule, FormsModule]
 })
 export class AmministrazionePage implements OnInit {
 
