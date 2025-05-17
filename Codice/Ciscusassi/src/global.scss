@@ -61,10 +61,12 @@
 h1 {
     font-family: 'JacquesFrancoisShadow', sans-serif;
     font-size: 3rem;
+    color: var(--ion-color-primary-contrast);
 }
 
 h2, h3, h4, h5, h6, p{
     font-family: 'LucidaCalligraphy', sans-serif;
+    color: var(--ion-color-primary-contrast);
 }
 
 ion-button > ion-text > p{

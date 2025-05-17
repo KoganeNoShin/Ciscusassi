@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonButton, IonImg, IonRow, IonCol } from '@ionic/angular/standalone';
 
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 
@@ -10,7 +10,7 @@ import { HeroComponent } from 'src/app/components/hero/hero.component';
   templateUrl: './ordina-ora.page.html',
   styleUrls: ['./ordina-ora.page.scss'],
   standalone: true,
-  imports: [IonContent, HeroComponent, CommonModule, FormsModule]
+  imports: [IonCol, IonRow, IonImg, IonButton, IonContent, CommonModule, FormsModule]
 })
 export class OrdinaOraPage implements OnInit {
 
