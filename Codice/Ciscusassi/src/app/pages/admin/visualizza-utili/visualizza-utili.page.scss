@@ -19,13 +19,16 @@ ion-content {
   width: 100px;
   font-style: italic;
   font-size: 1.5em;
-  border: 2.5px solid #bbb;
+  border: 7px solid #A83736;
   --padding-start: 12px;
-  --background: black;
+  --background: white;
   transition: border-color 0.3s ease;
+  color: black;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  
 }
 .custom-select:hover, .custom-select:focus {
-  border-color: #888;
+  border-color: black;
 }
 
 /* Bottone scarica Excel */
