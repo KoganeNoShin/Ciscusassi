@@ -58,6 +58,10 @@ export const routes: Routes = [
     path: 'gestisci-filiali',
     loadComponent: () => import('./pages/admin/gestisci-filiali/gestisci-filiali.page').then( m => m.GestisciFilialiPage)
   },
+  {
+    path: 'aggiungi-piatti',
+    loadComponent: () => import('./pages/admin/aggiungi-piatti/aggiungi-piatti.page').then( m => m.AggiungiPiattiPage)
+  },
 
 
 ];

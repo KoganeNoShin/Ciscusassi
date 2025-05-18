@@ -9,9 +9,11 @@
 
 
 <ion-content [fullscreen]="true" class="ion-padding">
+ <div class="page-title">Gestisci piatti</div>
+
   <div class="grid-container">
    <div class="center-container">
-  <ion-button class="circle-button">+<ion-icon name="add" ></ion-icon>
+  <ion-button [routerLink]="['/aggiungi-piatti']" class="circle-button">+<ion-icon name="add" ></ion-icon>
   </ion-button>
   </div>
     @for (p of piatti; track p.id_prodotto ){

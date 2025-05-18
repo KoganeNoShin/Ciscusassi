@@ -6,13 +6,14 @@ import { ServicePiattiService } from './service-piatti.service';
 import { Prodotto } from 'src/app/interfaces/Prodotto';
 import {starOutline} from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-gestisci-piatti',
   templateUrl: './gestisci-piatti.page.html',
   styleUrls: ['./gestisci-piatti.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
+  imports: [IonContent, RouterModule, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
 })
 export class GestisciPiattiPage implements OnInit {
   piatti: Prodotto[] = []; 
