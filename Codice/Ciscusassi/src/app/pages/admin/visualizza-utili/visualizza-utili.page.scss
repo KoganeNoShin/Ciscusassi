@@ -1,0 +1,118 @@
+ion-content {
+  --background: #ffffff;
+}
+
+/* Titolo */
+
+
+/* Sezione select + bottone */
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+/* Menù a tendina */
+.custom-select {
+  width: 100px;
+  font-style: italic;
+  font-size: 1.5em;
+  border: 2.5px solid #bbb;
+  --padding-start: 12px;
+  --background: black;
+  transition: border-color 0.3s ease;
+}
+.custom-select:hover, .custom-select:focus {
+  border-color: #888;
+}
+
+/* Bottone scarica Excel */
+.excel-button {
+  font-style: italic;
+  font-weight: 700;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Contenitore scrollabile della tabella */
+.table-wrapper {
+  overflow-x: auto;
+  width: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  margin: 0 auto 40px auto;
+}
+
+/* Griglia base come tabella */
+.custom-grid {
+  display: table;
+  width: 50%;
+  table-layout: auto;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.95em;
+}
+
+/* Riga come table-row */
+ion-row {
+  display: table-row;
+}
+
+/* Header della tabella */
+.table-header {
+  background-color: #e8f0fe;
+  font-weight: 700;
+  color: #2a3f5f;
+  border-bottom: 2px solid #aac7ff;
+}
+
+/* Celle come table-cell */
+ion-col {
+  display: table-cell;
+  padding: 12px 15px;
+  font-size: 1em;
+  color: #555;
+  border-right: 1px solid #eee;
+  white-space: nowrap;
+  min-width: 120px;
+  vertical-align: middle;
+}
+
+/* Ultima colonna senza bordo destro */
+ion-col:last-child {
+  border-right: none;
+}
+
+/* Righe alternate per leggibilità */
+ion-row.even {
+  background-color: #ffffff;
+}
+
+ion-row.odd {
+  background-color: #f7f9fc;
+}
+
+/* Hover sulle righe */
+ion-row:hover {
+  background-color: #dbe9ff;
+  transition: background-color 0.25s ease;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-family: 'LucidaCalligraphy';
+  font-size: 2.5em;
+  font-style: bold;
+  color: black;
+  margin: 20px 0 10px 0;
+  letter-spacing: 0.5px;
+}
