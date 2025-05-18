@@ -46,6 +46,18 @@ export const routes: Routes = [
     path: 'ordina-asporto',
     loadComponent: () => import('./pages/ordina-ora/ordina-asporto/ordina-asporto.page').then( m => m.OrdinaAsportoPage)
   },
+  {
+    path: 'visualizza-utili',
+    loadComponent: () => import('./pages/admin/visualizza-utili/visualizza-utili.page').then( m => m.VisualizzaUtiliPage)
+  },
+  {
+    path: 'gestisci-piatti',
+    loadComponent: () => import('./pages/admin/gestisci-piatti/gestisci-piatti.page').then( m => m.GestisciPiattiPage)
+  },
+  {
+    path: 'gestisci-filiali',
+    loadComponent: () => import('./pages/admin/gestisci-filiali/gestisci-filiali.page').then( m => m.GestisciFilialiPage)
+  },
 
 
 ];
