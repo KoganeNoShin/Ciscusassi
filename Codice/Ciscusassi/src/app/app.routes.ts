@@ -38,7 +38,15 @@ export const routes: Routes = [
   {
     path: 'signin',
     loadComponent: () => import('./pages/account/signin/signin.page').then(m => m.SigninPage)
+  },  {
+    path: 'ordina-al-tavolo',
+    loadComponent: () => import('./pages/ordina-ora/ordina-al-tavolo/ordina-al-tavolo.page').then( m => m.OrdinaAlTavoloPage)
   },
+  {
+    path: 'ordina-asporto',
+    loadComponent: () => import('./pages/ordina-ora/ordina-asporto/ordina-asporto.page').then( m => m.OrdinaAsportoPage)
+  },
+
 
 ];
 
