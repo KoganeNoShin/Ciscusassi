@@ -8,7 +8,7 @@ import { IonButton, IonCard, IonCol, IonContent, IonGrid, IonHeader, IonImg, Ion
   templateUrl: './ordina-al-tavolo.page.html',
   styleUrls: ['./ordina-al-tavolo.page.scss'],
   standalone: true,
-  imports: [IonInput, IonContent, CommonModule, FormsModule, IonGrid, IonRow, IonCol, IonImg, IonCard, IonText, IonButton ],
+  imports: [IonInput, IonContent, CommonModule, FormsModule, IonGrid, IonRow, IonCol, IonImg, IonCard, IonText, IonButton],
 })
 export class OrdinaAlTavoloPage implements OnInit {
 
