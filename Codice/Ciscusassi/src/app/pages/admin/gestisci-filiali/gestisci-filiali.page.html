@@ -1,13 +1,53 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>gestisciFiliali</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Titolo della Pagina
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">gestisciFiliali</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+ <div class="page-title">Gestisci Filiali 
+<ion-chip color="primary">Filali Principali</ion-chip>
+
+ </div>
+ <div class="input-row">
+  <div class="input-wrapper">
+    <ion-input placeholder="Cerca una filiale..."></ion-input>
+  </div>
+  <!-- Puoi aggiungere altri elementi qui, se vuoi -->
+</div>
+  <div class="grid-container">
+   <div class="center-container">
+  <ion-button [routerLink]="['/aggiungi-filiali']"class="circle-button">+<ion-icon name="add" ></ion-icon>
+  </ion-button>
+  </div>
+    @for (f of filiali; track f.id_filiale) {
+      <ion-card>
+        <ion-img [src]="f.immagine" alt="Immagine della filiale" class="immagine-rotante"></ion-img>
+
+        <ion-card-header>
+          
+          <ion-card-title>{{ f.indirizzo }} <br>
+          Località: {{ f.comune}} </ion-card-title>
+      
+          Numero di tavoli totali: {{ f.num_tavoli }}<br>
+          Id filiale: {{f.id_filiale}}<br>  
+          latitudine: {{f.latitudine}}<br>
+          longitudine: {{f.longitudine}}<br>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="button-vertical">
+            <ion-button [routerLink]="['/modifica-filiali']" expand="block" color="secondary">Modifica filiale</ion-button>
+            <ion-button expand="block" color="primary">Rimuovi filiale</ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
 </ion-content>
+
+
+

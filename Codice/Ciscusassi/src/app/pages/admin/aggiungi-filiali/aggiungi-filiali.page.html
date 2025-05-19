@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>aggiungiPiatti</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+<ion-content class="ion-padding">
+  <div class="page-title">AGGIUNGI FILIALE</div>
+  <ion-card class="custom-card">
+    <div class="card-content">
+      
+      <!-- Box immagine cliccabile -->
+      <div class="image-upload" (click)="fileInput.click()">
+        <input #fileInput type="file" hidden />
+     <h1>Inserisci un'immagine  per la filiale</h1>
+        <ion-icon name="image-outline" size="large"></ion-icon>
+      </div>
+
+      <!-- Campi form -->
+      <div class="form-fields">
+        <ion-input placeholder="Inserisci l'indirizzo"></ion-input>
+        <ion-input placeholder="Inserisci il comune"></ion-input>
+        <ion-input type="number" placeholder="Inserisci il numero di tavoli"></ion-input>
+        <ion-button expand="block" color="success">CREA FILIALE</ion-button>
+      </div>
+
+    </div>
+  </ion-card>
+</ion-content>
+
+</ion-content>

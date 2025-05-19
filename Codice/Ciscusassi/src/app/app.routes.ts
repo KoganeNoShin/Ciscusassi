@@ -68,6 +68,14 @@ export const routes: Routes = [
     path: 'modifica-piatti',
     loadComponent: () => import('./pages/admin/modifica-piatti/modifica-piatti.page').then( m => m.ModificaPiattiPage)
   },
+  {
+    path: 'aggiungi-filiali',
+    loadComponent: () => import('./pages/admin/aggiungi-filiali/aggiungi-filiali.page').then( m => m.AggiungiFilialiPage)
+  },
+  {
+    path: 'modifica-filiali',
+    loadComponent: () => import('./pages/admin/modifica-filiali/modifica-filiali.page').then( m => m.ModificaFilialiPage)
+  },
 
 
 
