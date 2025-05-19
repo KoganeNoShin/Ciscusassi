@@ -1,4 +1,7 @@
 **/node_modules/
 **/arduino_secrets.h
 **/database.sqlite
+
+# Environment files
 Codice/Ciscusassi/src/environments/environment.prod.ts
+Codice/Ciscusassi/src/environments/environment.ts
