@@ -64,7 +64,11 @@ export const routes: Routes = [
   {
     path: 'aggiungi-piatti',
     loadComponent: () => import('./pages/admin/aggiungi-piatti/aggiungi-piatti.page').then( m => m.AggiungiPiattiPage)
+  },  {
+    path: 'modifica-piatti',
+    loadComponent: () => import('./pages/admin/modifica-piatti/modifica-piatti.page').then( m => m.ModificaPiattiPage)
   },
+
 
 
 ];

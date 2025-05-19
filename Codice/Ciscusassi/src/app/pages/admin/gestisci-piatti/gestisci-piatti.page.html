@@ -32,7 +32,7 @@
         <ion-card-content>
           <p>{{ p.descrizione }}</p>
           <div class="button-vertical">
-            <ion-button expand="block" color="secondary">Modifica piatto</ion-button>
+            <ion-button expand="block" [routerLink]="['/modifica-piatti']" color="secondary">Modifica piatto</ion-button>
             <ion-button expand="block" color="primary">Cancella piatto</ion-button>
           </div>
         </ion-card-content>

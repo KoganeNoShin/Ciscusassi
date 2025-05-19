@@ -1,0 +1,33 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>modificaPiatti</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+<ion-content class="ion-padding">
+  <div class="page-title">MODIFICA PIATTO</div>
+  <ion-card class="custom-card">
+    <div class="card-content">
+      
+      <!-- Box immagine cliccabile -->
+      <div class="image-upload" (click)="fileInput.click()">
+        <input #fileInput type="file" hidden />
+     <h1>Modifica l'immagine per il piatto</h1>
+        <ion-icon name="image-outline" size="large"></ion-icon>
+      </div>
+
+      <!-- Campi form -->
+      <div class="form-fields">
+        <ion-input placeholder="Modifica il nome"></ion-input>
+        <ion-textarea placeholder="Modifica la descrizione"></ion-textarea>
+        <ion-input type="number" placeholder="Modifica il costo"></ion-input>
+        <ion-input placeholder="Modifica la categoria"></ion-input>
+        <ion-button expand="block" color="success">MODIFICA PIATTO</ion-button>
+      </div>
+
+    </div>
+  </ion-card>
+</ion-content>
+
+</ion-content>
