@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent } from '@ionic/angular/standalone';
+import { IonContent, IonList, IonItem } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 
 import { MenuService } from './menu.service';
@@ -14,7 +14,7 @@ import { MenuDividerComponent } from "../../components/menu-divider/menu-divider
   templateUrl: './menu.page.html',
   styleUrls: ['./menu.page.scss'],
   standalone: true,
-  imports: [IonContent, CommonModule, HeroComponent, IonSpinner, PiattoDelGiornoComponent, MenuDividerComponent]
+  imports: [IonItem, IonList, IonContent, CommonModule, HeroComponent, IonSpinner, PiattoDelGiornoComponent, MenuDividerComponent]
 })
 export class MenuPage implements OnInit {
 
@@ -25,6 +25,13 @@ export class MenuPage implements OnInit {
   bevande: Prodotto[] = [];
 
   loading: boolean = true;
+  menuAperto: string | null = null;
+  /*
+  listaAntipastiAperta = false;
+  listaPrimiAperta = false;
+  listaDolciAperta = false;
+  listaBevandeAperta = false;
+  */
 
   constructor(private menuService: MenuService) { }
 
@@ -50,6 +57,16 @@ export class MenuPage implements OnInit {
         this.loading = false;
       }
     })
+  }
+
+  AperturaLista(categoria: string) {
+    /*
+    this.listaAntipastiAperta = !this.listaAntipastiAperta;
+    this.listaPrimiAperta = !this.listaPrimiAperta;
+    this.listaDolciAperta = !this.listaDolciAperta;
+    this.listaBevandeAperta = !this.listaBevandeAperta;
+    */
+    this.menuAperto = this.menuAperto === categoria ? null : categoria;
   }
 
 }
