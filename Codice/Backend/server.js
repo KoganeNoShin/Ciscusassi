@@ -15,6 +15,7 @@ app.use(express.json());
 const cors = require('cors'); // Importiamo il modulo cors per gestire le richieste cross-origin
 const Filiale = require('./Models/filiale');
 const Prodotto = require('./Models/prodotto');
+const Cliente = require('./Models/cliente');
 
 // Or configure specific origins
 app.use(cors({
@@ -40,6 +41,14 @@ app.listen(PORT, '0.0.0.0', () => {
 
 app.get('/', (req, res) =>{
     res.send("👋🏽  Il server funziona!");
+});
+
+app.post('/login', (req, res) =>{
+    Cliente.login("Darrick.Prosacco@yahoo.com", "asd").then((data)=>{
+        res.json(data);
+    }).catch((err)=>{
+        return err;
+    });
 });
 
 app.get('/prodotti', (req, res) =>{

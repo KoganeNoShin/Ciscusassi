@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonAlert, IonInput, IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { FilialiServiceService } from './filiali-service.service';
-import { Filiale } from 'src/app/interfaces/Filiale';
+import { Filiale } from 'src/app/core/interfaces/Filiale';
 import { RouterModule } from '@angular/router';
 import { IonChip } from '@ionic/angular/standalone';
 
@@ -16,14 +16,14 @@ import { IonChip } from '@ionic/angular/standalone';
 })
 export class GestisciFilialiPage implements OnInit {
 
-  filiali: Filiale[] = []; 
+  filiali: Filiale[] = [];
   loading: boolean = true;
 
 
 
   constructor(private filialiServiceService: FilialiServiceService) { }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.filialiServiceService.GetFiliali().subscribe({
       next: (response) => {
         console.log(response);
@@ -39,7 +39,7 @@ export class GestisciFilialiPage implements OnInit {
 
   isAlertOpen = false;
   selectedFiliale: Filiale | null = null;
-  
+
   showAlert(filiale: Filiale) {
     this.selectedFiliale = filiale;
     this.isAlertOpen = true;
@@ -62,16 +62,16 @@ export class GestisciFilialiPage implements OnInit {
     this.selectedFiliale = null;
   }
   alertButtons = [
-  {
-    text: 'Annulla',
-    role: 'cancel',
-    handler: () => this.onCancel()
-  },
-  {
-    text: 'OK',
-    role: 'confirm',
-    handler: () => this.onConfirm()
-  }
-];
+    {
+      text: 'Annulla',
+      role: 'cancel',
+      handler: () => this.onCancel()
+    },
+    {
+      text: 'OK',
+      role: 'confirm',
+      handler: () => this.onConfirm()
+    }
+  ];
 
 }

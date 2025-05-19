@@ -61,6 +61,16 @@ class Cliente {
     static async comparePassword(candidatePassword, hash) {
         return bcrypt.compare(candidatePassword, hash);
     }
+
+    static async login(email, password){
+        return new Promise ((resolve, reject) => {
+            this.findByEmail(email).then((res) => {
+            resolve(res);
+        }).catch((err) => {
+            reject(err);
+        });
+    });}
+
 }
 
 module.exports = Cliente;

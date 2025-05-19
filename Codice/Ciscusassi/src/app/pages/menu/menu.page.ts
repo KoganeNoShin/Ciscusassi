@@ -5,7 +5,7 @@ import { HeroComponent } from 'src/app/components/hero/hero.component';
 
 import { MenuService } from './menu.service';
 import { IonSpinner } from '@ionic/angular/standalone';
-import { Prodotto } from 'src/app/interfaces/Prodotto';
+import { Prodotto } from 'src/app/core/interfaces/Prodotto';
 import { PiattoDelGiornoComponent } from "../../components/piatto-del-giorno/piatto-del-giorno.component";
 import { MenuDividerComponent } from "../../components/menu-divider/menu-divider.component";
 

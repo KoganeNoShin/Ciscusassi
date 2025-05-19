@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonAlert, IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { ServicePiattiService } from './service-piatti.service';
-import { Prodotto } from 'src/app/interfaces/Prodotto';
-import {starOutline} from 'ionicons/icons';
+import { Prodotto } from 'src/app/core/interfaces/Prodotto';
+import { starOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { RouterModule } from '@angular/router';
 import { IonChip } from '@ionic/angular/standalone';
@@ -18,12 +18,12 @@ import { IonInput } from '@ionic/angular/standalone';
   imports: [IonContent, RouterModule, IonInput, IonHeader, IonTitle, IonAlert, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonChip, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
 })
 export class GestisciPiattiPage implements OnInit {
-  piatti: Prodotto[] = []; 
+  piatti: Prodotto[] = [];
   loading: boolean = true;
 
-  constructor(private servicePiattiService: ServicePiattiService) {addIcons({starOutline}); } //la prima è variabile, la seconda è una classe
+  constructor(private servicePiattiService: ServicePiattiService) { addIcons({ starOutline }); } //la prima è variabile, la seconda è una classe
 
-  ngOnInit() { 
+  ngOnInit() {
     this.servicePiattiService.GetPiatti().subscribe({
       next: (response) => {
         console.log(response);
@@ -35,12 +35,12 @@ export class GestisciPiattiPage implements OnInit {
         this.piatti = [];
       }
     })
- 
- }
 
-   isAlertOpen = false;
+  }
+
+  isAlertOpen = false;
   selectedProdotto: Prodotto | null = null;
-  
+
   showAlert(prodotto: Prodotto) {
     this.selectedProdotto = prodotto;
     this.isAlertOpen = true;
@@ -63,18 +63,18 @@ export class GestisciPiattiPage implements OnInit {
     this.selectedProdotto = null;
   }
   alertButtons = [
-  {
-    text: 'Annulla',
-    role: 'cancel',
-    handler: () => this.onCancel()
-  },
-  {
-    text: 'OK',
-    role: 'confirm',
-    handler: () => this.onConfirm()
-  }
-];
- 
+    {
+      text: 'Annulla',
+      role: 'cancel',
+      handler: () => this.onCancel()
+    },
+    {
+      text: 'OK',
+      role: 'confirm',
+      handler: () => this.onConfirm()
+    }
+  ];
+
 }
 
 
@@ -82,4 +82,3 @@ export class GestisciPiattiPage implements OnInit {
 
 
 
- 

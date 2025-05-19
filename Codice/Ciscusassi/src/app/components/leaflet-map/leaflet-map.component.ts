@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { map, tileLayer, icon, marker, Map, Marker, Icon, divIcon } from 'leaflet';
 import { IonSpinner } from '@ionic/angular/standalone';
-import { Filiale } from 'src/app/interfaces/Filiale';
+import { Filiale } from 'src/app/core/interfaces/Filiale';
 import { LeafletMapService } from './leaflet-map.service';
 
 @Component({
