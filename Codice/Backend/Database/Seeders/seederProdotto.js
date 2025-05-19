@@ -59,6 +59,4 @@ async function generateProdotto()
 
 }
 
-generateProdotto(5)
-
 module.exports = { generateProdotto }

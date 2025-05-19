@@ -72,11 +72,10 @@ async function run()
     {
         console.log("ℹ️  Usa --reset per droppare le tabelle e ricostruire il DB da capo.");
         console.log("ℹ️  Usa --seed per popolare le tabelle con dati randomici ma consistenti.");
-        return;
     } 
     else if(args.includes('--reset'))
     {
-        await dropAll();
+        //await dropAll();
     }
     
     await createTables();

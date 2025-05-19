@@ -46,7 +46,7 @@ app.get('/prodotti', (req, res) =>{
     Prodotto.findAll().then((data)=>{
         res.json(data);
     }).catch((err)=>{
-        return next(err);
+        return err;
     })
 });
 
@@ -54,7 +54,7 @@ app.get('/PiattoDelGiorno', (req, res) =>{
     Prodotto.getPiattoDelGiorno().then((data)=>{
         res.json(data);
     }).catch((err)=>{
-        return next(err);
+        return err;
     });
 });
 
@@ -62,7 +62,7 @@ app.get('/Filiali', (req, res) =>{
     Filiale.findAll().then((data)=>{
         res.json(data);
     }).catch((err) => {
-        return next(err);
+        return err;
     });
 });
 

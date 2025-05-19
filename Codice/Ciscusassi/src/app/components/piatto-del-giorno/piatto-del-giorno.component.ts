@@ -25,7 +25,7 @@ export class PiattoDelGiornoComponent implements OnInit {
 				this.loading = false;
 			},
 			error: (err) => {
-				this.piatto = err.message;
+				console.log(err);
 				this.loading = false;
 			}
 		})
