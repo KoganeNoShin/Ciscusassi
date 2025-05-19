@@ -7,13 +7,15 @@ import { Prodotto } from 'src/app/interfaces/Prodotto';
 import {starOutline} from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { RouterModule } from '@angular/router';
+import { IonChip } from '@ionic/angular/standalone';
+import { IonInput } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-gestisci-piatti',
   templateUrl: './gestisci-piatti.page.html',
   styleUrls: ['./gestisci-piatti.page.scss'],
   standalone: true,
-  imports: [IonContent, RouterModule, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
+  imports: [IonContent, RouterModule, IonInput, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonChip, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
 })
 export class GestisciPiattiPage implements OnInit {
   piatti: Prodotto[] = []; 

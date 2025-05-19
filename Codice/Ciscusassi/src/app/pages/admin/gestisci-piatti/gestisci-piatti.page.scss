@@ -6,7 +6,8 @@
   font-style: normal;
   font-weight: lighter;
   color:black;
-  padding:0.5rem;
+  padding:1rem;
+  display: row;
 }
 
 ion-content {
@@ -131,4 +132,18 @@ ion-button {
   align-items: center;
   height: 100vh; /* oppure altezza del contenitore */
   
+}
+
+.input-row {
+  display: flex;
+  align-items: center;   /* allinea verticalmente */
+  justify-content: flex-start; /* tutto a sinistra */
+  gap: 1rem;             /* spazio tra gli elementi della riga */
+}
+
+.input-wrapper {
+  flex: 0 0 auto;        /* larghezza minima per l'input */
+  width: 500px;          /* dimensione fissa o cambia a piacere */
+  color:black;
+  background-color: rgba(255, 255, 255, 0.7);;
 }

@@ -9,8 +9,18 @@
 
 
 <ion-content [fullscreen]="true" class="ion-padding">
- <div class="page-title">Gestisci piatti</div>
-
+ <div class="page-title">Gestisci piatti  <ion-chip>Default</ion-chip>
+<ion-chip color="primary">Antipasti</ion-chip>
+<ion-chip color="secondary">Primi</ion-chip>
+<ion-chip color="success">Bevande</ion-chip>
+<ion-chip color="warning">Dolci</ion-chip>
+ </div>
+ <div class="input-row">
+  <div class="input-wrapper">
+    <ion-input placeholder="Cerca un piatto..."></ion-input>
+  </div>
+  <!-- Puoi aggiungere altri elementi qui, se vuoi -->
+</div>
   <div class="grid-container">
    <div class="center-container">
   <ion-button [routerLink]="['/aggiungi-piatti']" class="circle-button">+<ion-icon name="add" ></ion-icon>
