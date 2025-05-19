@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonAlert, IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { ServicePiattiService } from './service-piatti.service';
 import { Prodotto } from 'src/app/interfaces/Prodotto';
 import {starOutline} from 'ionicons/icons';
@@ -15,7 +15,7 @@ import { IonInput } from '@ionic/angular/standalone';
   templateUrl: './gestisci-piatti.page.html',
   styleUrls: ['./gestisci-piatti.page.scss'],
   standalone: true,
-  imports: [IonContent, RouterModule, IonInput, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonChip, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
+  imports: [IonContent, RouterModule, IonInput, IonHeader, IonTitle, IonAlert, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonChip, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
 })
 export class GestisciPiattiPage implements OnInit {
   piatti: Prodotto[] = []; 
@@ -37,6 +37,43 @@ export class GestisciPiattiPage implements OnInit {
     })
  
  }
+
+   isAlertOpen = false;
+  selectedProdotto: Prodotto | null = null;
+  
+  showAlert(prodotto: Prodotto) {
+    this.selectedProdotto = prodotto;
+    this.isAlertOpen = true;
+  }
+
+  onConfirm() {
+    if (this.selectedProdotto) {
+      console.log('Confermata rimozione filiale:', this.selectedProdotto);
+      // Qui puoi chiamare il servizio per rimuovere la filiale, per esempio:
+      // this.filialiServiceService.rimuoviFiliale(this.selectedFiliale.id_filiale).subscribe(...);
+      // Poi aggiorna la lista, rimuovendo la filiale localmente o rifacendo la fetch
+    }
+    this.isAlertOpen = false;
+    this.selectedProdotto = null;
+  }
+
+  onCancel() {
+    console.log('Rimozione annullata');
+    this.isAlertOpen = false;
+    this.selectedProdotto = null;
+  }
+  alertButtons = [
+  {
+    text: 'Annulla',
+    role: 'cancel',
+    handler: () => this.onCancel()
+  },
+  {
+    text: 'OK',
+    role: 'confirm',
+    handler: () => this.onConfirm()
+  }
+];
  
 }
 

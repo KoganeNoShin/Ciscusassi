@@ -14,6 +14,7 @@
 <ion-chip color="secondary">Primi</ion-chip>
 <ion-chip color="success">Bevande</ion-chip>
 <ion-chip color="warning">Dolci</ion-chip>
+<ion-chip color="danger">Tutti</ion-chip>
  </div>
  <div class="input-row">
   <div class="input-wrapper">
@@ -43,12 +44,21 @@
           <p>{{ p.descrizione }}</p>
           <div class="button-vertical">
             <ion-button expand="block" [routerLink]="['/modifica-piatti']" color="secondary">Modifica piatto</ion-button>
-            <ion-button expand="block" color="primary">Cancella piatto</ion-button>
+            <ion-button (click)="showAlert(p)" expand="block" color="primary">Cancella piatto</ion-button>
           </div>
         </ion-card-content>
       </ion-card>
     }
   </div>
+
+   <!-- Alert fuori dal ciclo -->
+ <ion-alert
+  [isOpen]="isAlertOpen"
+  header="Conferma"
+  [message]="'Vuoi rimuovere il piatto: ' + (selectedProdotto?.nome || '') + '?'"
+  [buttons]="alertButtons"
+  (didDismiss)="isAlertOpen = false">
+</ion-alert>
 </ion-content>
 
 

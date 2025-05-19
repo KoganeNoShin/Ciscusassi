@@ -6,32 +6,29 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content [fullscreen]="true" class="ion-padding">
- <div class="page-title">Gestisci Filiali 
-<ion-chip color="primary">Filali Principali</ion-chip>
-
- </div>
- <div class="input-row">
-  <div class="input-wrapper">
-    <ion-input placeholder="Cerca una filiale..."></ion-input>
+  <div class="page-title">Gestisci Filiali 
+    <ion-chip color="primary">Filali Principali</ion-chip>
+    <ion-chip color="secondary">Tutte</ion-chip>
   </div>
-  <!-- Puoi aggiungere altri elementi qui, se vuoi -->
-</div>
+  <div class="input-row">
+    <div class="input-wrapper">
+      <ion-input placeholder="Cerca una filiale..."></ion-input>
+    </div>
+    <!-- Puoi aggiungere altri elementi qui, se vuoi -->
+  </div>
   <div class="grid-container">
-   <div class="center-container">
-  <ion-button [routerLink]="['/aggiungi-filiali']"class="circle-button">+<ion-icon name="add" ></ion-icon>
-  </ion-button>
-  </div>
+    <div class="center-container">
+      <ion-button [routerLink]="['/aggiungi-filiali']" class="circle-button">+<ion-icon name="add"></ion-icon>
+      </ion-button>
+    </div>
     @for (f of filiali; track f.id_filiale) {
       <ion-card>
         <ion-img [src]="f.immagine" alt="Immagine della filiale" class="immagine-rotante"></ion-img>
 
         <ion-card-header>
-          
           <ion-card-title>{{ f.indirizzo }} <br>
-          Località: {{ f.comune}} </ion-card-title>
-      
+            Località: {{ f.comune}} </ion-card-title>
           Numero di tavoli totali: {{ f.num_tavoli }}<br>
           Id filiale: {{f.id_filiale}}<br>  
           latitudine: {{f.latitudine}}<br>
@@ -41,13 +38,20 @@
         <ion-card-content>
           <div class="button-vertical">
             <ion-button [routerLink]="['/modifica-filiali']" expand="block" color="secondary">Modifica filiale</ion-button>
-            <ion-button expand="block" color="primary">Rimuovi filiale</ion-button>
+            <ion-button (click)="showAlert(f)" expand="block" color="primary">Rimuovi filiale</ion-button>
           </div>
         </ion-card-content>
       </ion-card>
     }
   </div>
+
+  <!-- Alert fuori dal ciclo -->
+ <ion-alert
+  [isOpen]="isAlertOpen"
+  header="Conferma"
+  [message]="'Vuoi rimuovere la filiale: ' + (selectedFiliale?.indirizzo || '') + '?'"
+  [buttons]="alertButtons"
+  (didDismiss)="isAlertOpen = false">
+</ion-alert>
+
 </ion-content>
-
-
-
