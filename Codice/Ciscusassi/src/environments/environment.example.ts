@@ -5,7 +5,8 @@
 // src/environments/environment.ts
 export const environment = {
   production: false,
-  tomtomApiKey: 'LA_TUA_API_KEY_TOMTOM'
+  tomtomApiKey: 'LA_TUA_API_KEY_TOMTOM',
+  apiURL: 'URL_DELL_API'
 };
 
 /*

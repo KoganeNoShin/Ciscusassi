@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { provideRouter } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -29,7 +30,8 @@ export const routes: Routes = [
   },
   {
     path: 'amministrazione',
-    loadComponent: () => import('./pages/admin/amministrazione/amministrazione.page').then(m => m.AmministrazionePage)
+    loadComponent: () => import('./pages/admin/amministrazione/amministrazione.page').then(m => m.AmministrazionePage),
+    canActivate: [authGuard]
   },
   {
     path: 'login',
@@ -38,7 +40,8 @@ export const routes: Routes = [
   {
     path: 'signin',
     loadComponent: () => import('./pages/account/signin/signin.page').then(m => m.SigninPage)
-  },  {
+  },
+  {
     path: 'ordina-al-tavolo',
     loadComponent: () => import('./pages/ordina-ora/ordina-al-tavolo/ordina-al-tavolo.page').then( m => m.OrdinaAlTavoloPage)
   },

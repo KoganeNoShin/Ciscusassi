@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.example';
 
 @Injectable({
     providedIn: 'root'
@@ -8,13 +9,12 @@ import { Observable } from 'rxjs';
 
 export class LeafletMapService {
 
-    private port = 4200;
-    private baseUrl = `http://localhost:${this.port}`;
+    private apiURL = environment.apiURL;
 
     constructor(private http: HttpClient) { }
 
     GetFiliali(): Observable<any> {
-        return this.http.get(`${this.baseUrl}/Filiali`);
+        return this.http.get(`${this.apiURL}/Filiali`);
     }
 
 }
