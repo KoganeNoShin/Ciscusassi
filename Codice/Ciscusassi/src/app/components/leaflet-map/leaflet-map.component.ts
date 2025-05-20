@@ -38,7 +38,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 	}
 
 	private initMap(): void {
-		this.map = map('map').setView([38.105987, 13.350567], 10);
+		this.map = map('map').setView([38.105987, 13.350567], 13);
 
 		tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 19,
