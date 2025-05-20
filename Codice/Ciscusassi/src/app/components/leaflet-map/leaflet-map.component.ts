@@ -53,7 +53,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 				draggable: false,
 				icon: divIcon({
 					className: "pin-mappa",
-					html: `<div class="marker-img" style="width: 40px; height: 40px; background-size: cover; background-position: center; border-radius: 50%; border: 2px solid black; box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); background-image: url('data:image/png;base64,${f.immagine}')"></div>`,
+					html: `<div class="marker-img" style="width: 40px; height: 40px; background-size: cover; background-position: center; border-radius: 50%; border: 2px solid black; box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); background-image: url('${f.immagine}')"></div>`,
 					iconSize: [40, 40],
 					iconAnchor: [20, 40], // optional: aligns bottom of the pin
 				}) as Icon

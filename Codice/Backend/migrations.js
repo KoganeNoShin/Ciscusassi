@@ -75,7 +75,7 @@ async function run()
     } 
     else if(args.includes('--reset'))
     {
-        //await dropAll();
+        await dropAll();
     }
     
     await createTables();
