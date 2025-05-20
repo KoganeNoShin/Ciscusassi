@@ -1,4 +1,4 @@
-<ion-button expand="full" class="sfondo">
-  <div (click)=ApriMenu() class="immagine" [style.background-image]="'url(/assets/menu-dividers/' + backgroundURL + ')'"></div>
+<ion-button (click)=ApriMenu() expand="full" class="sfondo">
+  <div class="immagine" [style.background-image]="'url(/assets/menu-dividers/' + backgroundURL + ')'"></div>
   <h1>{{ title }}</h1>
 </ion-button>
