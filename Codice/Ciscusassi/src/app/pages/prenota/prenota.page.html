@@ -17,11 +17,11 @@ un esperienza culinaria senza tempo!" [backgroundURL]="'PrenotazioneBackground.j
 				<ion-row>
 					<ion-col size="6" class = "filiali-col">
 						<ion-item>
-    						<ion-input placeholder="Indirizzo Filiale"></ion-input>
+    						<ion-input placeholder="Indirizzo Filiale" [(ngModel)] = "searchFiliale" (ionInput) = "filtroFiliali()"></ion-input>
   						</ion-item>
 
 						<ion-list class ="filiali-list">
-							@for(f of filiali; track f.id_filiale) {
+							@for(f of filialiFiltrate; track f.id_filiale) {
 								<ion-item>
 									<ion-avatar slot="start">
 										<img [src]="f.immagine" alt="Immagine della Filiale" class="immagine-filiale">

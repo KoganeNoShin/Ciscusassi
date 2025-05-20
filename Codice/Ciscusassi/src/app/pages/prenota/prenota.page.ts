@@ -22,6 +22,9 @@ export class PrenotaPage implements OnInit {
   filiali: Filiale[] = [];
   loading: boolean = true;
 
+  searchFiliale: string = '';
+  filialiFiltrate: any[] = [];
+
   constructor(private prenotaService: PrenotaService) { }
 
   ngOnInit() {
@@ -30,11 +33,19 @@ export class PrenotaPage implements OnInit {
         console.log(response);
         this.filiali = response;
         this.loading = false;
+        this.filialiFiltrate = this.filiali
       },
       error: (err) => {
         this.filiali = [];
         this.loading = false;
+        this.filialiFiltrate = [];
       }
     })
+  }
+
+  filtroFiliali(){
+    const term = this.searchFiliale.toLowerCase();
+
+    this.filialiFiltrate = this.filiali.filter((filiale) => filiale.indirizzo.toLowerCase().includes(term))
   }
 }
