@@ -9,38 +9,42 @@ un esperienza culinaria senza tempo!" [backgroundURL]="'PrenotazioneBackground.j
   <div class="map-div">
 		<h1> PRENOTA UN TAVOLO </h1>
 		<p> Trova il ristorante più adatto a te! </p>
+		@if(loading) {
+			<ion-spinner name="bubbles"></ion-spinner>
+		}
+		@else {
+			<ion-grid>
+				<ion-row>
+					<ion-col size="6" class = "filiali-col">
+						<ion-item>
+    						<ion-input placeholder="Indirizzo Filiale"></ion-input>
+  						</ion-item>
 
-		<div class="content">
-
-			<div id = "filiali">
-				@if(loading) {
-					<ion-spinner name="bubbles"></ion-spinner>
-				}
-				@else {
-					@for(f of filiali; track f.id_filiale) {
-						<ion-card>
-						<div class="filiale-row">
-							<img [src]="f.immagine" alt="Immagine della Filiale" class="immagine-filiale">
-							<div class="testo-filiale">
-							<p>{{ f.indirizzo }}</p>
-							<p>{{ f.comune }}</p>
-							<p>12:00 - 15:00</p>
-							<p>19:00 - 22:00</p>
-							</div>
-						</div>
-						</ion-card>
-					}
-				}
-			</div>
-
-			<ion-card class="map-card"> 
-				<ion-card-content>
-					<app-leaflet-map></app-leaflet-map>
-				</ion-card-content>
-			</ion-card>
-		</div>
-
-
+						<ion-list class ="filiali-list">
+							@for(f of filiali; track f.id_filiale) {
+								<ion-item>
+									<ion-avatar slot="start">
+										<img [src]="f.immagine" alt="Immagine della Filiale" class="immagine-filiale">
+									</ion-avatar>
+									<ion-label>
+										<h2>{{ f.indirizzo }}</h2>
+										<p>{{ f.comune }}</p>
+										<p>12:00 - 15:00</p>
+										<p>19:00 - 22:00</p>
+									</ion-label>
+								</ion-item>
+							}
+						</ion-list>
+					</ion-col>
+					<ion-col size="6">
+						<ion-item class="map-card">
+								<ion-card-content>
+									<app-leaflet-map></app-leaflet-map>
+								</ion-card-content>
+						</ion-item>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		}
 	</div>
-
 </ion-content>
