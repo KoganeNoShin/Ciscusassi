@@ -12,7 +12,7 @@ export class AuthenticationService {
 	constructor() { }
 
 	isAuthenticated() {
-		return false;
+		return true;
 	}
 
 }
