@@ -12,29 +12,25 @@ un esperienza culinaria senza tempo!" [backgroundURL]="'PrenotazioneBackground.j
 
 		<div class="content">
 
-			<div class="content">
-				<div id = "sedi">
-					<div>
-						<ion-card class="card">
-							<ion-card-header>
-								<ion-card-title> Sede 1 </ion-card-title>
-							</ion-card-header>
-							<ion-card-content>
-								<p> Indirizzo: Via Roma, 123 </p>
-								<p> Comune: Palermo </p>
-							</ion-card-content>
+			<div id = "filiali">
+				@if(loading) {
+					<ion-spinner name="bubbles"></ion-spinner>
+				}
+				@else {
+					@for(f of filiali; track f.id_filiale) {
+						<ion-card>
+						<div class="filiale-row">
+							<img [src]="f.immagine" alt="Immagine della Filiale" class="immagine-filiale">
+							<div class="testo-filiale">
+							<p>{{ f.indirizzo }}</p>
+							<p>{{ f.comune }}</p>
+							<p>12:00 - 15:00</p>
+							<p>19:00 - 22:00</p>
+							</div>
+						</div>
 						</ion-card>
-						<ion-card class="card">
-							<ion-card-header>
-								<ion-card-title> Sede 2 </ion-card-title>
-							</ion-card-header>
-							<ion-card-content>
-								<p> Indirizzo: Via Paruta, 123 </p>
-								<p> Comune: Palermo </p>
-							</ion-card-content>
-						</ion-card>
-					</div>
-				</div>
+					}
+				}
 			</div>
 
 			<ion-card class="map-card"> 
