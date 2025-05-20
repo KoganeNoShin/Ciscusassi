@@ -1,5 +1,5 @@
 // import del modulo sqlite3
-const sqlite3 = require('sqlite3').verbose();
+import sqlite3 from 'sqlite3';
 
 // creazione del database e della tabella clienti
 const db = new sqlite3.Database('./database.sqlite', (err) => {
@@ -12,4 +12,4 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
         
 });
 
-module.exports = db;
+export default db;

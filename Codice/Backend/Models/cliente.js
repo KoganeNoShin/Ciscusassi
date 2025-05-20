@@ -65,10 +65,19 @@ class Cliente {
     static async login(email, password){
         return new Promise ((resolve, reject) => {
             this.findByEmail(email).then((res) => {
-            resolve(res);
+
+                let hash = res.body['password'];
+                this.comparePassword(password, hash).then((res) => {
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
         }).catch((err) => {
             reject(err);
         });
+
+
+
     });}
 
 }
