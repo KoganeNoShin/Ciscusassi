@@ -1,36 +1,108 @@
-#container {
-	text-align: center;
-
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
+.map-div {
+  background-color: #C29637;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#container strong {
-	font-size: 20px;
-	line-height: 26px;
+.map-div h1 {
+  font-family: 'LucidaCalligraphy', cursive;
+  font-size: 2.5rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
-#container p {
-	font-size: 16px;
-	line-height: 22px;
-
-	color: #8c8c8c;
-
-	margin: 0;
+.map-div p {
+  font-size: 1.2rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-#container a {
-  	text-decoration: none;
+/* Griglia centrale */
+ion-grid {
+  width: 100%;
+  max-width: 1200px;
 }
 
-.content{
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	width: 75%;
-	height: 75%;
+/* Colonna lista filiali */
+.filiali-list {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filiale {
+min-width: 10vh;
+--background: #388E3C;
+  border-radius: 12px;
+  padding: 10px;
+  color: white;
+  --color: white;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+ion-label {
+  display: flex;
+  flex-direction: column;
+}
+
+ion-label h2 {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  font-family: 'LucidaCalligraphy', cursive;
+}
+
+ion-label p {
+  font-size: 0.9rem;
+  margin: 2px 0;
+  color: #fff;
+}
+
+ion-input {
+  --background: white;
+  border-radius: 20px;
+  padding-left: 1rem;
+  font-size: 1rem;
+  height: 44px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+ion-item.search-input {
+  --background: transparent;
+  padding: 0;
+  margin-bottom: 12px;
+  box-shadow: none;
+}
+
+.map-card {
+  height: 70vh;
+  width: 100%;
+  border-radius: 16px;
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+
+ion-card-content {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+}
+
+.map-card-content {
+  height: 100vh;
+}
+
+
+.barra-ricerca {
+	color: #000
 }

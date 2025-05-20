@@ -16,13 +16,13 @@ un esperienza culinaria senza tempo!" [backgroundURL]="'PrenotazioneBackground.j
 			<ion-grid>
 				<ion-row>
 					<ion-col size="6" class = "filiali-col">
-						<ion-item>
+						<ion-item class="barra-ricerca">
     						<ion-input placeholder="Indirizzo Filiale" [(ngModel)] = "searchFiliale" (ionInput) = "filtroFiliali()"></ion-input>
   						</ion-item>
 
 						<ion-list class ="filiali-list">
 							@for(f of filialiFiltrate; track f.id_filiale) {
-								<ion-item>
+								<ion-item class = "filiale">
 									<ion-avatar slot="start">
 										<img [src]="f.immagine" alt="Immagine della Filiale" class="immagine-filiale">
 									</ion-avatar>
@@ -38,7 +38,7 @@ un esperienza culinaria senza tempo!" [backgroundURL]="'PrenotazioneBackground.j
 					</ion-col>
 					<ion-col size="6">
 						<ion-item class="map-card">
-								<ion-card-content>
+								<ion-card-content class="map-card-content">
 									<app-leaflet-map></app-leaflet-map>
 								</ion-card-content>
 						</ion-item>
