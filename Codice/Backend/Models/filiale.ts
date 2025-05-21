@@ -1,28 +1,45 @@
 // importo il db
-const db = require('../db');
+import db from '../db';
+import { RunResult } from 'sqlite3';
+
+// Definiamo il modello della filiale
+export interface FilialeInput{
+    comune: string,
+    indirizzo: string,
+    num_tavoli: number,
+    longitudine: number,
+    latitudine: number,
+    immagine: string
+}
+
+export interface FilialeRecord extends FilialeInput {
+    id_filiale: number,
+}
 
 // Interagisce direttamente con il database per le operazioni CRUD sugli utenti
-class Filiale {
+export class Filiale {
   
     // definisco il metodo per creare un nuovo utente
-    static async create({ id_filiale, comune, indirizzo, num_tavoli, longitudine, latitudine, immagine }) 
+    static async create(data: FilialeInput): Promise<number>
     {
+
+        const { comune, indirizzo, num_tavoli, longitudine, latitudine, immagine } = data;
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO filiali (id_filiale, comune, indirizzo, num_tavoli, longitudine, latitudine, immagine) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                [id_filiale, comune, indirizzo, num_tavoli, longitudine, latitudine, immagine],
-                function(err) {
+                'INSERT INTO filiali (comune, indirizzo, num_tavoli, longitudine, latitudine, immagine) VALUES (?, ?, ?, ?, ?, ?)',
+                [comune, indirizzo, num_tavoli, longitudine, latitudine, immagine],
+                function(this: RunResult, err: Error | null) {
                     if (err) reject(err);
-                    resolve({ id: id_filiale, comune: comune, indirizzo: indirizzo, num_tavoli: num_tavoli, longitudine: longitudine, latitudine: latitudine, immagine: immagine});
+                    resolve(this.lastID);
                 }
             );
         });
     }
 
-    static async findAll() {
+    static async findAll() : Promise<FilialeRecord[]> {
         return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM filiali', (err, rows) => {
+            db.all('SELECT * FROM filiali', (err: Error | null, rows: FilialeRecord[]) => {
                 if (err) reject(err);
                 resolve(rows);
             });
@@ -30,9 +47,9 @@ class Filiale {
     }
 
     // ricerca per id
-    static async findById(id) {
+    static async findById(id: number) : Promise<FilialeRecord> {
         return new Promise((resolve, reject) => {
-            db.get('SELECT * FROM filiali WHERE id_filiale = ?', [id], (err, row) => {
+            db.get('SELECT * FROM filiali WHERE id_filiale = ?', [id], (err: Error | null, row: FilialeRecord) => {
                 if (err) reject(err);
                 resolve(row);
             });
@@ -40,5 +57,3 @@ class Filiale {
     }
 
 }
-
-module.exports = Filiale;
