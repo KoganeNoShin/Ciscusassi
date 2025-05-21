@@ -10,7 +10,7 @@ export interface OrdineInput {
     ref_cliente: number;
     ref_pagamento: number;
 }
-export interface OrdineOutput extends OrdineInput {
+export interface OrdineRecord extends OrdineInput {
     id_ordine: number; 
 }
 
@@ -35,9 +35,9 @@ export class Ordine {
     }
 
     // definiamo il metodo per ritornare tutti gli ordini
-    static async findAll(): Promise<OrdineOutput[]> {
+    static async findAll(): Promise<OrdineRecord[]> {
         return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM ordini', (err: Error | null, row: OrdineOutput[]) => {
+            db.all('SELECT * FROM ordini', (err: Error | null, row: OrdineRecord[]) => {
                 if (err) reject(err);
                 resolve(row);
             });
@@ -45,9 +45,9 @@ export class Ordine {
     }
 
     // ricerca per id
-    static async findById(id: number) : Promise<OrdineOutput> {
+    static async findById(id: number) : Promise<OrdineRecord> {
         return new Promise((resolve, reject) => {
-            db.get('SELECT * FROM pagamenti WHERE id_pagamento = ?', [id], (err: Error | null, row: OrdineOutput) => {
+            db.get('SELECT * FROM pagamenti WHERE id_pagamento = ?', [id], (err: Error | null, row: OrdineRecord) => {
                 if (err) reject(err);
                 resolve(row);
             });
