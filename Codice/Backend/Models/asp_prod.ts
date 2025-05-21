@@ -22,11 +22,11 @@ export class AspProd {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO asp_prod (id_asp_prod, ref_asporto, ref_prodotto) VALUES (?, ?, ?)',
+                'INSERT INTO asp_prod (ref_asporto, ref_prodotto) VALUES (?, ?)',
                 [ref_asporto, ref_prodotto],
                 function(this: RunResult, err: Error | null) {
                     if (err) reject(err);
-                    resolve(this.lastID);
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -37,7 +37,7 @@ export class AspProd {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM asp_prod WHERE id_asp_prod = ?', [id], (err: Error | null, row: AspProdRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }

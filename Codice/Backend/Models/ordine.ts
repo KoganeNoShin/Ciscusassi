@@ -24,11 +24,11 @@ export class Ordine {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO ordini (id_ordine, username_ordinante, data_ora_ordinazione, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?, ?)',
+                'INSERT INTO ordini (username_ordinante, data_ora_ordinazione, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?)',
                 [username_ordinante, data_ora_ordinazione, ref_prenotazione, ref_cliente, ref_pagamento],
                 function(err) {
                     if (err) reject(err);
-                    resolve(this.lastID);
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -37,9 +37,9 @@ export class Ordine {
     // definiamo il metodo per ritornare tutti gli ordini
     static async findAll(): Promise<OrdineRecord[]> {
         return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM ordini', (err: Error | null, row: OrdineRecord[]) => {
+            db.all('SELECT * FROM ordini', (err: Error | null, rows: OrdineRecord[]) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(rows);
             });
         });
     }
@@ -49,7 +49,7 @@ export class Ordine {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM pagamenti WHERE id_pagamento = ?', [id], (err: Error | null, row: OrdineRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }

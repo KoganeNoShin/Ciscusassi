@@ -21,11 +21,11 @@ export class Torretta {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO torrette (id_torretta, ref_filiale) VALUES (?, ?)',
+                'INSERT INTO torrette (ref_filiale) VALUES (?)',
                 [ref_filiale],
                 function(this: RunResult, err: Error | null) {
                     if (err) reject(err);
-                    resolve(this.lastID);
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -34,9 +34,9 @@ export class Torretta {
     // definiamo il metodo per ritornare tutte le torrette
     static async findAll(): Promise<TorrettaRecord[]> {
         return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM torrette', (err: Error | null, row: TorrettaRecord[]) => {
+            db.all('SELECT * FROM torrette', (err: Error | null, rows: TorrettaRecord[]) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(rows);
             });
         });
     }
@@ -46,7 +46,7 @@ export class Torretta {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM torrette WHERE id_torretta = ?', [id], (err: Error | null, row: TorrettaRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }

@@ -1,4 +1,5 @@
 // importo il db
+import { RunResult } from 'sqlite3';
 import db from '../db';
 
 // importo il modulo bcryptjs per la gestione delle password
@@ -37,9 +38,9 @@ export class Impiegato {
             db.run(
                 'INSERT INTO impiegati (nome, cognome, ruolo, foto, email, data_nascita, password, ref_filiale) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [nome, cognome, ruolo, foto, email, data_nascita, hashedPassword, ref_filiale],
-                function(err) {
+                function(this: RunResult, err: Error | null) {
                     if (err) reject(err);
-                    resolve({ nome: nome, cognome: cognome, ruolo: ruolo, foto: foto, email: email, data_nascita: data_nascita, password: hashedPassword, ref_filiale: ref_filiale});
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -50,7 +51,7 @@ export class Impiegato {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM impiegati WHERE matricola = ?', [matricola], (err: Error | null, row: ImpiegatoRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }

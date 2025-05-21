@@ -31,7 +31,7 @@ export class Filiale {
                 [comune, indirizzo, num_tavoli, longitudine, latitudine, immagine],
                 function(this: RunResult, err: Error | null) {
                     if (err) reject(err);
-                    resolve(this.lastID);
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -41,7 +41,7 @@ export class Filiale {
         return new Promise((resolve, reject) => {
             db.all('SELECT * FROM filiali', (err: Error | null, rows: FilialeRecord[]) => {
                 if (err) reject(err);
-                resolve(rows);
+                else resolve(rows);
             });
         });
     }
@@ -51,7 +51,7 @@ export class Filiale {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM filiali WHERE id_filiale = ?', [id], (err: Error | null, row: FilialeRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }

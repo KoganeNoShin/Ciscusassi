@@ -23,11 +23,11 @@ export class Pagamento {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO pagamenti (id_pagamento, importo, data_ora_pagamento) VALUES (?, ?, ?)',
+                'INSERT INTO pagamenti (importo, data_ora_pagamento) VALUES (?, ?)',
                 [importo, data_ora_pagamento],
                 function(this: RunResult, err: Error | null) {
                     if (err) reject(err);
-                    resolve(this.lastID);
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -38,7 +38,7 @@ export class Pagamento {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM pagamenti WHERE id_pagamento = ?', [id], (err: Error | null, row: PagamentoRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }

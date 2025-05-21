@@ -25,11 +25,11 @@ export class OrdProd {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO ord_prod (id_ord_prod, is_romana, stato, ref_prodotto, ref_ordine) VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO ord_prod (is_romana, stato, ref_prodotto, ref_ordine) VALUES (?, ?, ?, ?)',
                 [is_romana, stato, ref_prodotto, ref_ordine],
                 function(this: RunResult, err: Error | null) {
                     if(err) reject(err);
-                    resolve(this.lastID);
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -40,7 +40,7 @@ export class OrdProd {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM ord_prod WHERE id_ord_prod = ?', [id], (err: Error | null, row: OrdProdRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }
@@ -50,7 +50,7 @@ export class OrdProd {
         return new Promise((resolve,reject) => {
             db.all('SELECT * FROM ord_prod WHERE ref_ordine = ?', [ref_ordine], (err: Error | null, rows: OrdProdRecord[]) => {
                 if (err) reject(err);
-                resolve(rows);
+                else resolve(rows);
             });
         });
     }

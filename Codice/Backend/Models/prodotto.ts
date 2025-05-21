@@ -25,11 +25,11 @@ export class Prodotto {
 
         return new Promise((resolve, reject) => {
             db.run(
-                'INSERT INTO prodotti (id_prodotto, nome, descrizione, costo, immagine, categoria, is_piatto_giorno) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO prodotti (nome, descrizione, costo, immagine, categoria, is_piatto_giorno) VALUES (?, ?, ?, ?, ?, ?)',
                 [nome, descrizione, costo, immagine, categoria, is_piatto_giorno],
                 function(this: RunResult, err: Error | null) {
                     if (err) reject(err);
-                    resolve(this.lastID);
+                    else resolve(this.lastID);
                 }
             );
         });
@@ -38,9 +38,9 @@ export class Prodotto {
     // definiamo il metodo per ritornare tutti i prodotti
     static async findAll(): Promise<ProdottoRecord[]> {
         return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM prodotti p ORDER BY p.categoria DESC', (err: Error | null, row: ProdottoRecord[]) => {
+            db.all('SELECT * FROM prodotti p ORDER BY p.categoria DESC', (err: Error | null, rows: ProdottoRecord[]) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(rows);
             });
         });
     }
@@ -49,7 +49,7 @@ export class Prodotto {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM prodotti WHERE is_piatto_giorno = 1',  (err: Error | null, row: ProdottoRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             }); 
         });
     }
@@ -59,7 +59,7 @@ export class Prodotto {
         return new Promise((resolve, reject) => {
             db.get('SELECT * FROM prodotti WHERE id_prodotto = ?', [id], (err: Error | null, row: ProdottoRecord) => {
                 if (err) reject(err);
-                resolve(row);
+                else resolve(row);
             });
         });
     }
