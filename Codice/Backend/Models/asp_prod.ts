@@ -42,3 +42,5 @@ export class AspProd {
         });
     }
 }
+
+export default AspProd;

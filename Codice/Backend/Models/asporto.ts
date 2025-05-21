@@ -55,3 +55,5 @@ export class Asporto {
     }
 
 }
+
+export default Asporto;

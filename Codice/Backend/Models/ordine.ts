@@ -64,3 +64,5 @@ export class Ordine {
         });
     }*/
 }
+
+export default Ordine;

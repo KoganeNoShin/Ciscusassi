@@ -10,6 +10,6 @@
     "rootDir": "./",
     "outDir": "./dist"
   },
-  "include": ["./**/*.ts"],        // include tutti i file TS nel progetto
+  "include": ["./**/*.ts", "Database/Seeders/seederAsporto.js"],        // include tutti i file TS nel progetto
   "exclude": ["node_modules", "dist"]
 }

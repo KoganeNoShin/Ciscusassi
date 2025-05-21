@@ -55,3 +55,5 @@ export class OrdProd {
         });
     }
 }
+
+export default OrdProd;

@@ -44,3 +44,5 @@ export class Pagamento {
     }
 
 }
+
+export default Pagamento;

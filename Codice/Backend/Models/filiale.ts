@@ -57,3 +57,5 @@ export class Filiale {
     }
 
 }
+
+export default Filiale;

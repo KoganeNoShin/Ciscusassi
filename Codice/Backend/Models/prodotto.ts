@@ -65,3 +65,5 @@ export class Prodotto {
     }
 
 }
+
+export default Prodotto;

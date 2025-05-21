@@ -61,3 +61,5 @@ export class Impiegato {
     }
 
 }
+
+export default Impiegato;

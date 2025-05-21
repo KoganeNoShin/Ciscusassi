@@ -51,3 +51,5 @@ export class Torretta {
         });
     }
 }
+
+export default Torretta;

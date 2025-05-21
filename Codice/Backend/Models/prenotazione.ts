@@ -56,3 +56,5 @@ export class Prenotazione {
     }
 
 }
+
+export default Prenotazione;

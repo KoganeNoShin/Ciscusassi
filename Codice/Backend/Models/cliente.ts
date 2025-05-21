@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs';
 
 // Definiamo il modello del nostro utente
 export interface ClienteData {
-    numero_carta?: string;
     nome: string;
     cognome: string;
     data_nascita: string;
@@ -16,7 +15,9 @@ export interface ClienteData {
     image: string;
 }
 
-export interface ClienteRecord extends ClienteData { }
+export interface ClienteRecord extends ClienteData {
+    numero_carta: number;
+}
 
 // Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 class Cliente {
