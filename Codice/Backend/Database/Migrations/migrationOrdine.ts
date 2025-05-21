@@ -1,11 +1,9 @@
 //importo il db
-const db = require('../../db');
+import db from '../../db';
 
 const nomeTabella = 'ordini';
 
-function createIfDoesntExists() 
-{
-
+function createIfDoesntExists() : Promise<string> {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
 
@@ -19,37 +17,28 @@ function createIfDoesntExists()
                 FOREIGN KEY (ref_pagamento) REFERENCES pagamenti (id_pagamento),
                 FOREIGN KEY (ref_cliente) REFERENCES clienti (numero_carta),
                 FOREIGN KEY (ref_prenotazione) REFERENCES prenotazioni (id_prenotazione)
-            )`, (err) => {
+            )`, 
+            (err: Error | null) => {
                 if (err) {
-                    console.error(`❌ Errore durante la creazione della tabella ${nomeTabella}:`, err.message);
-                    reject(err);
+                    reject(`❌ Errore durante la creazione della tabella ${nomeTabella}:${err.message}`);
                 } else {
-                    console.log(`✅ Tabella ${nomeTabella} creata con successo o già esistente.`);
-                    resolve();
+                    resolve(`✅ Tabella ${nomeTabella} creata con successo o già esistente!`);
                 }
-            });  
-    
+            });
         });
     });    
 
 }
 
-function dropTable()
+export function dropTable() : Promise<string>
 {
     return new Promise((resolve, reject) => {
-        db.run(`DROP TABLE IF EXISTS ${nomeTabella}`, (err) => {
-            if (err)
-            {
-                console.error(`❌ Errore durante il drop della tabella: ${nomeTabella}`, err.message);
-                reject(err);
-            } 
-            else
-            {
-                console.log(`🗑️  Tabella ${nomeTabella} droppata.`);
-                resolve();
-            } 
+        db.run(`DROP TABLE IF EXISTS ${nomeTabella}`, (err: Error |  null) => {
+            if (err) {
+                reject(`❌ Errore durante il drop della tabella: ${nomeTabella}:${err.message}`);
+            } else {
+                resolve(`🗑️  Tabella ${nomeTabella} droppata.`);
+            }            
         });
     });
 }
-
-module.exports = { createIfDoesntExists, dropTable };
