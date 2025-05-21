@@ -16,7 +16,7 @@ function createIfDoesntExists() {
                 email TEXT NOT NULL,
                 data_nascita TEXT,
                 password TEXT NOT NULL,
-                punti INTEGER NOT NULL,
+                punti INTEGER NOT NULL DEFAULT 0,
                 image BLOB NOT NULL
             )`, (err) => 
             {
