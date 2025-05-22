@@ -17,7 +17,12 @@ router.get('/filiali', FilialeController.getAllFiliali);
 //router.post('/register', AuthValidator.registerValidator, AuthValidator.validate, ClienteController.register);
 
 // Login
-//router.post('/login', AuthValidator.loginValidator, AuthValidator.validate, ClienteController.login);
+router.post(
+	'/login',
+	AuthValidator.loginValidator,
+	AuthValidator.validate,
+	ClienteController.login
+);
 
 // Logout
 //router.post('/logout', ClienteController.logout);

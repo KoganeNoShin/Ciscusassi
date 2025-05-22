@@ -1,4 +1,5 @@
 import { body, validationResult } from 'express-validator';
+import { Request, Response, NextFunction } from 'express';
 
 const registerValidator = [
 	body('nome').notEmpty().withMessage('Il nome è obbligatorio'),
@@ -25,16 +26,16 @@ const loginValidator = [
 	body('password')
 		.notEmpty()
 		.isLength({ min: 6 })
-		.isAlphanumeric()
 		.withMessage(
 			'La password è obbligatoria, minimo 6 caratteri ed 1 numero'
 		),
 ];
 
-const validate = (req, res, next) => {
+const validate = (req: Request, res: Response, next: NextFunction): void => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() });
+		res.status(400).json({ errors: errors.array() });
+		return;
 	}
 	next();
 };

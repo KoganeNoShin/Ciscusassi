@@ -5,13 +5,16 @@ import db from '../db';
 // importo il modulo bcryptjs per la gestione delle password
 import bcrypt from 'bcryptjs';
 
+export interface ClienteCredentials {
+	email: string;
+	password: string;
+}
+
 // Definiamo il modello del nostro utente
-export interface ClienteData {
+export interface ClienteData extends ClienteCredentials {
 	nome: string;
 	cognome: string;
 	data_nascita: string;
-	email: string;
-	password: string;
 	punti?: number;
 	image: string;
 }

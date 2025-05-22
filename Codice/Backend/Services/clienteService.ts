@@ -1,4 +1,8 @@
-import Cliente, { ClienteData, ClienteRecord } from '../Models/cliente';
+import Cliente, {
+	ClienteCredentials,
+	ClienteData,
+	ClienteRecord,
+} from '../Models/cliente';
 
 class ClienteService {
 	static async register(input: ClienteData) {
@@ -21,8 +25,19 @@ class ClienteService {
 		return await Cliente.create(clienteData);
 	}
 
-	static async login() {
-		return true;
+	static async login(input: ClienteCredentials): Promise<boolean> {
+		const user = await Cliente.findByEmail(input.email);
+
+		if (user) {
+			const passwordMatch = await Cliente.comparePassword(
+				input.password,
+				user.password
+			);
+
+			return passwordMatch;
+		} else {
+			return false;
+		}
 	}
 }
 

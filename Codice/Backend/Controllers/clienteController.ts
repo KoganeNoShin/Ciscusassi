@@ -23,6 +23,27 @@ class ClienteController {
 	}
 
 	static async login(req: Request, res: Response): Promise<void> {
+		try {
+			const logged = await ClienteService.login(req.body);
+
+			if (logged) {
+				res.status(200).json({
+					success: true,
+					message: 'Login effettuato!',
+				});
+			} else {
+				res.status(401).json({
+					success: false,
+					message: 'Email o password errata!',
+				});
+			}
+		} catch (error: any) {
+			res.status(400).json({
+				success: false,
+				message: 'Errore durante la registrazione' + error.message,
+			});
+		}
+
 		res.status(200).json({
 			success: true,
 			message: 'Login effettuato',
