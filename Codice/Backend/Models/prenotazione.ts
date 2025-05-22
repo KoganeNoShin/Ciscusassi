@@ -9,17 +9,17 @@ export interface PrenotazioneInput {
     otp: string;
     data_ora_prenotazione: string;
     ref_torretta: number;
-    ref_cliente: number;
+    ref_cliente: number | null;
 }
 export interface PrenotazioneRecord extends PrenotazioneInput {
-    id_prenotazione: number; 
+    id_prenotazione: number;
 }
 
 // Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 export class Prenotazione {
-  
+
     // definisco il metodo per creare un nuovo utente
-    static async create(data: PrenotazioneInput) : Promise<number>{ 
+    static async create(data: PrenotazioneInput): Promise<number> {
 
         const { numero_persone, otp, data_ora_prenotazione, ref_torretta, ref_cliente } = data;
 
@@ -27,7 +27,7 @@ export class Prenotazione {
             db.run(
                 'INSERT INTO prenotazioni (numero_persone, otp, data_ora_prenotazione, ref_torretta, ref_cliente) VALUES (?, ?, ?, ?, ?)',
                 [numero_persone, otp, data_ora_prenotazione, ref_torretta, ref_cliente],
-                function(this: RunResult, err: Error | null) {
+                function (this: RunResult, err: Error | null) {
                     if (err) reject(err);
                     else resolve(this.lastID);
                 }

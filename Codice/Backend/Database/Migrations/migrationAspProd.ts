@@ -3,7 +3,7 @@ import db from '../../db';
 
 const nomeTabella = 'asp_prod';
 
-function createIfDoesntExists() : Promise<string> {
+export function createIfDoesntExists(): Promise<string> {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
 
@@ -13,30 +13,31 @@ function createIfDoesntExists() : Promise<string> {
                 ref_prodotto INTEGER NOT NULL,
                 FOREIGN KEY (ref_asporto) REFERENCES asporto (id_asporto),
                 FOREIGN KEY (ref_prodotto) REFERENCES prodotto (id_prodotto)
-            )`, 
-            (err: Error | null) => {
-                if (err) {
-                    reject(`❌ Errore durante la creazione della tabella ${nomeTabella}:${err.message}`);
-                } else {
-                    resolve(`✅ Tabella ${nomeTabella} creata con successo o già esistente!`);
-                }
-            });  
-    
+            )`,
+                (err: Error | null) => {
+                    if (err) {
+                        reject(`❌ Errore durante la creazione della tabella ${nomeTabella}:${err.message}`);
+                    } else {
+                        resolve(`✅ Tabella ${nomeTabella} creata con successo o già esistente!`);
+                    }
+                });
+
         });
     });
-    
+
 
 }
 
-export function dropTable() : Promise<string>
-{
+export function dropTable(): Promise<string> {
     return new Promise((resolve, reject) => {
-        db.run(`DROP TABLE IF EXISTS ${nomeTabella}`, (err: Error |  null) => {
+        db.run(`DROP TABLE IF EXISTS ${nomeTabella}`, (err: Error | null) => {
             if (err) {
                 reject(`❌ Errore durante il drop della tabella: ${nomeTabella}:${err.message}`);
             } else {
                 resolve(`🗑️  Tabella ${nomeTabella} droppata.`);
-            }            
+            }
         });
     });
 }
+
+export default { createIfDoesntExists, dropTable };

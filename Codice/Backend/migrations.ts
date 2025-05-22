@@ -14,32 +14,32 @@ import migrationAspProd from './Database/Migrations/migrationAspProd';
 
 // Importiamo i seeder per popolare le tabelle
 
-import seederCliente from './Database/Seeders/seederCliente';
-import seederFiliale from './Database/Seeders/seederFiliale';
-import seederTorretta from './Database/Seeders/seederTorretta';
-import seederImpiegato from './Database/Seeders/seederImpiegato';
-import seederProdotto from './Database/Seeders/seederProdotto';
-import seederAsporto from './Database/Seeders/seederAsporto';
-import seederAspProd from './Database/Seeders/seederAspProd';
-import seederPrenotazione from './Database/Seeders/seederPrenotazione';
-import seederOrdine from './Database/Seeders/seederOrdine';
-import seederOrdProd from './Database/Seeders/seederOrdProd';
-import seederPagamento from './Database/Seeders/seederPagamento';
+import generateCliente from './Database/Seeders/seederCliente';
+import generateFiliale from './Database/Seeders/seederFiliale';
+import generateTorretta from './Database/Seeders/seederTorretta';
+import generateImpiegato from './Database/Seeders/seederImpiegato';
+import generateProdotto from './Database/Seeders/seederProdotto';
+import generateAsporto from './Database/Seeders/seederAsporto';
+import generateAspProd from './Database/Seeders/seederAspProd';
+import generatePrenotazione from './Database/Seeders/seederPrenotazione';
+import generateOrdine from './Database/Seeders/seederOrdine';
+import generateOrdProd from './Database/Seeders/seederOrdProd';
+import generatePagamento from './Database/Seeders/seederPagamento';
 
 const args = process.argv.slice(2);
 
 async function dropAll() {
-    await migrationCliente.dropTable();
-    await migrationFiliale.dropTable();
-    await migrationImpiegato.dropTable();
-    await migrationPagamento.dropTable();
-    await migrationTorretta.dropTable();
-    await migrationProdotto.dropTable();
+    await migrationAspProd.dropTable();     // dipende da Asporto e Prodotto
+    await migrationAsporto.dropTable();     // dipende da Cliente
+    await migrationOrdProdotto.dropTable(); // dipende da Ordine e Prodotto
+    await migrationOrdine.dropTable();      // dipende da Cliente e Filiale
     await migrationPrenotazione.dropTable();
-    await migrationOrdine.dropTable();
-    await migrationOrdProdotto.dropTable();
-    await migrationAsporto.dropTable();
-    await migrationAspProd.dropTable();
+    await migrationProdotto.dropTable();
+    await migrationTorretta.dropTable();
+    await migrationPagamento.dropTable();
+    await migrationImpiegato.dropTable();
+    await migrationFiliale.dropTable();
+    await migrationCliente.dropTable();
 }
 
 async function createTables() {
@@ -57,17 +57,17 @@ async function createTables() {
 }
 
 async function seedDB() {
-    await seederCliente.generateCliente(15);
-    await seederFiliale.generateFiliale();
-    await seederTorretta.generateTorretta();
-    await seederImpiegato.generateImpiegato();
-    await seederProdotto.generateProdotto();
-    await seederAsporto.generateAsporto(20);
-    await seederAspProd.generateAspProd();
-    await seederPrenotazione.generatePrenotazione(30);
-    await seederOrdine.generateOrdine();
-    await seederOrdProd.generateOrdProd();
-    await seederPagamento.generatePagamento();
+    await generateCliente(15);
+    await generateFiliale();
+    await generateTorretta();
+    await generateImpiegato();
+    await generateProdotto();
+    await generateAsporto(20);
+    await generateAspProd();
+    await generatePrenotazione(30);
+    await generateOrdine();
+    await generateOrdProd();
+    await generatePagamento();
 }
 
 async function run() {
@@ -87,6 +87,7 @@ async function run() {
 }
 
 
-run().catch((err) => {
+run().then(() => process.exit(0)).catch(err => {
     console.error(err);
+    process.exit(1);
 });

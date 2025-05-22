@@ -1,10 +1,10 @@
-const ord_prod = require('../../Models/ord_prod');
-const ordine = require('../../Models/ordine');
-const prodotto = require('../../Models/prodotto');
+import ord_prod from '../../Models/ord_prod';
+import ordine from '../../Models/ordine';
+import prodotto from '../../Models/prodotto';
 
-const { faker } = require('@faker-js/faker');
+import { faker } from '@faker-js/faker';
 
-async function generateOrdProd() {
+export async function generateOrdProd() {
     try {
         const ordini = await ordine.findAll();
         const prodotti = await prodotto.findAll();
@@ -12,19 +12,17 @@ async function generateOrdProd() {
         const idOrdini = ordini.map(o => o.id_ordine);
         const idProdotti = prodotti.map(p => p.id_prodotto);
 
-        for (const idOrdine of idOrdini) 
-        {
+        for (const idOrdine of idOrdini) {
 
             const numProdotti = faker.number.int({ min: 3, max: 8 });
-  
+
             for (let j = 0; j < numProdotti; j++) {
 
                 const ref_prodotto = faker.helpers.arrayElement(idProdotti);
                 const is_romana = false;
                 const stato = "CONSEGNATO";
-  
-                try
-                {
+
+                try {
                     await ord_prod.create({
                         ref_ordine: idOrdine,
                         ref_prodotto: ref_prodotto,
@@ -32,16 +30,18 @@ async function generateOrdProd() {
                         stato: stato
                     });
                     console.log(`🧾 Prodotto ${ref_prodotto} aggiunto all'ordine ${idOrdine}`);
-                }catch (err){
+                } catch (err) {
                     console.error(`❌ Errore nell'aggiunta di prodotto ${ref_prodotto} a ordine ${idOrdine}:`, err);
+                    throw err;
                 }
             }
         }
+        return "🧾 Prodotti aggiunti agli ordini!";
     }
-    catch (err)
-    {
-        console.error(`❌ Errore nell'aggiunta di prodotto ${ref_prodotto} a ordine ${idOrdine}:`, err);
-    }        
+    catch (err) {
+        console.error(`❌ Errore nell'aggiunta dei prodotti: `, err);
+        throw err;
+    }
 }
 
-module.exports = { generateOrdProd }
+export default generateOrdProd;
