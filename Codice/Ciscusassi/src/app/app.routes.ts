@@ -45,8 +45,8 @@ export const routes: Routes = [
 			),
 		canActivate: [authGuard],
 	},
-	{
-		path: 'login',
+	
+		/*{path: 'login',
 		loadComponent: () =>
 			import('./pages/account/login/login.page').then((m) => m.LoginPage),
 	},
@@ -56,7 +56,7 @@ export const routes: Routes = [
 			import('./pages/account/signin/signin.page').then(
 				(m) => m.SigninPage
 			),
-	},
+	},*/
 	{
 		path: 'ordina-al-tavolo',
 		loadComponent: () =>
@@ -119,7 +119,11 @@ export const routes: Routes = [
 			import('./pages/admin/modifica-filiali/modifica-filiali.page').then(
 				(m) => m.ModificaFilialiPage
 			),
-	},
+	},  {
+    path: 'modifica-dipendenti',
+    loadComponent: () => import('./pages/admin/modifica-dipendenti/modifica-dipendenti.page').then( m => m.ModificaDipendentiPage)
+  },
+
 ];
 
 export const AppRoutingModule = provideRouter(routes);

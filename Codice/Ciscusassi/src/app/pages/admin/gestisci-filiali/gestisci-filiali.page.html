@@ -46,17 +46,25 @@
 			<ion-card-content>
 				<div class="button-vertical">
 					<ion-button
-						[routerLink]="['/modifica-filiali']"
+						[routerLink]="['/modifica-filiali', f.id_filiale]"
 						expand="block"
 						color="secondary"
 						>Modifica filiale</ion-button
 					>
+					<ion-button
+						[routerLink]="['/modifica-dipendenti']"
+						expand="block"
+						color="secondary"
+						>Modifica dipendenti</ion-button
+					>
+
 					<ion-button
 						(click)="showAlert(f)"
 						expand="block"
 						color="primary"
 						>Rimuovi filiale</ion-button
 					>
+					
 				</div>
 			</ion-card-content>
 		</ion-card>

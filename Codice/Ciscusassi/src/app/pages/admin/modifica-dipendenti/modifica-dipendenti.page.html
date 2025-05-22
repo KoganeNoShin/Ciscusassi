@@ -1,0 +1,64 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>modificaDipendenti</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+	<div class="page-title">
+		Modifica dipendenti <ion-chip>Default</ion-chip>
+		<ion-chip color="primary">Chef</ion-chip>
+		<ion-chip color="secondary">Camerieri</ion-chip>
+		<ion-chip color="success">Amministratori</ion-chip>
+		<ion-chip color="danger">Tutti</ion-chip>
+	</div>
+	<div class="input-row">
+		<div class="input-wrapper">
+			<ion-input placeholder="Cerca un dipendente..."></ion-input>
+		</div>
+		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
+	</div>
+	<div class="grid-container">
+		<div class="center-container">
+			<ion-button
+				class="circle-button"
+				>+<ion-icon name="add"></ion-icon>
+			</ion-button>
+		</div>
+		@for (p of dipendenti; track p.matricola ){
+		<ion-card>
+			<ion-img
+				[src]="p.foto"
+				alt="foto del dipendente"
+				class="immagine-rotante"
+			></ion-img>
+
+			<ion-card-header>
+				<ion-card-title>{{ p.nome }}  {{ p.cognome }} €</ion-card-title>
+        matricola:: {{ p.matricola }}<br />
+				Ruolo: {{ p.ruolo }}<br />
+        Email: {{p.email}}<br />
+        data di nascita: {{p.data_nascita}}<br />
+			</ion-card-header>
+
+			<ion-card-content>
+				<div class="button-vertical">
+					<ion-button
+						expand="block"
+						color="secondary"
+						>Modifica piatto</ion-button
+					>
+					<ion-button
+						expand="block"
+						color="primary"
+						>Cancella piatto</ion-button
+					>
+				</div>
+			</ion-card-content>
+		</ion-card>
+		}
+	</div>
+
+	<!-- Alert fuori dal ciclo -->
+
+</ion-content>
