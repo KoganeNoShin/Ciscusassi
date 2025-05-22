@@ -52,8 +52,11 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 })
 export class GestisciPiattiPage implements OnInit {
 	piatti: ProdottoRecord[] = [];
+	filteredPiatti: ProdottoRecord[] = [];
 	loading: boolean = true;
 	error: boolean = false;
+	selectedCategoria: string = 'Tutti';
+
 
 	constructor(private prodottoService: ProdottoService) {
 		addIcons({ starOutline });
@@ -64,6 +67,7 @@ export class GestisciPiattiPage implements OnInit {
 
 		if (response.success && response.data) {
 			this.piatti = response.data;
+			this.filterTutti(); 
 		} else {
 			console.error(response.message || 'Errore sconosciuto');
 			this.error = true;
@@ -82,6 +86,30 @@ export class GestisciPiattiPage implements OnInit {
 			},
 		});
 	}
+	filterAntipasti() {
+    this.selectedCategoria = 'Antipasti';
+    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'ANTIPASTO');
+  }
+
+  filterPrimi() {
+    this.selectedCategoria = 'Primi';
+    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'PRIMO');
+  }
+
+  filterBevande() {
+    this.selectedCategoria = 'Bevande';
+    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'BEVANDA');
+  }
+
+  filterDolci() {
+    this.selectedCategoria = 'Dolci';
+    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'DOLCE');
+  }
+
+  filterTutti() {
+    this.selectedCategoria = 'Tutti';
+    this.filteredPiatti = this.piatti;
+  }
 
 	isAlertOpen = false;
 	selectedProdotto: ProdottoRecord | null = null;

@@ -6,12 +6,36 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
 	<div class="page-title">
-		Gestisci piatti <ion-chip>Default</ion-chip>
-		<ion-chip color="primary">Antipasti</ion-chip>
-		<ion-chip color="secondary">Primi</ion-chip>
-		<ion-chip color="success">Bevande</ion-chip>
-		<ion-chip color="warning">Dolci</ion-chip>
-		<ion-chip color="danger">Tutti</ion-chip>
+		Gestisci piatti 
+	<ion-chip
+  color="primary"
+  [outline]="selectedCategoria !== 'Antipasti'"
+  (click)="filterAntipasti()"
+>Antipasti</ion-chip>
+
+<ion-chip
+  color="secondary"
+  [outline]="selectedCategoria !== 'Primi'"
+  (click)="filterPrimi()"
+>Primi</ion-chip>
+
+<ion-chip
+  color="success"
+  [outline]="selectedCategoria !== 'Bevande'"
+  (click)="filterBevande()"
+>Bevande</ion-chip>
+
+<ion-chip
+  color="warning"
+  [outline]="selectedCategoria !== 'Dolci'"
+  (click)="filterDolci()"
+>Dolci</ion-chip>
+
+<ion-chip
+  color="danger"
+  [outline]="selectedCategoria !== 'Tutti'"
+  (click)="filterTutti()"
+>Tutti</ion-chip>
 	</div>
 	<div class="input-row">
 		<div class="input-wrapper">
@@ -27,7 +51,7 @@
 				>+<ion-icon name="add"></ion-icon>
 			</ion-button>
 		</div>
-		@for (p of piatti; track p.id_prodotto ){
+		@for (p of filteredPiatti; track p.id_prodotto ){
 		<ion-card>
 			<ion-icon name="star-outline" class="star-icon"></ion-icon>
 			<!-- Stellina -->
