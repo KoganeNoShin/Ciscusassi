@@ -7,12 +7,14 @@
 <ion-content [fullscreen]="true" class="ion-padding">
 	<div class="page-title">
 		Gestisci Filiali
-		<ion-chip color="primary">Filali Principali</ion-chip>
-		<ion-chip color="secondary">Tutte</ion-chip>
+		<ion-chip color="secondary" (click)="filterTutti()"  [outline]="selectedCategoria !== 'Tutte'">Visualizza tutte </ion-chip>
 	</div>
 	<div class="input-row">
 		<div class="input-wrapper">
-			<ion-input placeholder="Cerca una filiale..."></ion-input>
+			<ion-input placeholder="Cerca una filiale..."
+				 [(ngModel)]="searchTerm"
+  					(ionInput)="applyFilters()"
+				 ></ion-input>
 		</div>
 		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
 	</div>
@@ -24,7 +26,7 @@
 				>+<ion-icon name="add"></ion-icon>
 			</ion-button>
 		</div>
-		@for (f of filiali; track f.id_filiale) {
+		@for (f of filialiFiltered; track f.id_filiale) {
 		<ion-card>
 			<ion-img
 				[src]="f.immagine"

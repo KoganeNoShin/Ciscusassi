@@ -56,7 +56,7 @@ export class GestisciPiattiPage implements OnInit {
 	loading: boolean = true;
 	error: boolean = false;
 	selectedCategoria: string = 'Tutti';
-
+	searchTerm: string = '';
 
 	constructor(private prodottoService: ProdottoService) {
 		addIcons({ starOutline });
@@ -110,6 +110,17 @@ export class GestisciPiattiPage implements OnInit {
     this.selectedCategoria = 'Tutti';
     this.filteredPiatti = this.piatti;
   }
+
+  applyFilters() {
+  const categoria = this.selectedCategoria;
+  const term = this.searchTerm.toLowerCase();
+
+  this.filteredPiatti = this.piatti.filter(p => {
+    const matchCategoria = categoria === 'Tutti' || p.categoria === categoria;
+    const matchSearch = p.nome.toLowerCase().includes(term) || p.descrizione.toLowerCase().includes(term);
+    return matchCategoria && matchSearch;
+  });
+}
 
 	isAlertOpen = false;
 	selectedProdotto: ProdottoRecord | null = null;

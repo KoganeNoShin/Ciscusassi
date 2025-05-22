@@ -49,22 +49,22 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 })
 export class GestisciFilialiPage implements OnInit {
 	filiali: FilialeRecord[] = [];
+	filialiFiltered: FilialeRecord[] = [];
 	loading: boolean = true;
 	error: boolean = false;
+	searchTerm: string = '';
+	selectedCategoria: string = 'Tutte';
 
 	constructor(private filialeService: FilialeService) {}
 
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
-		console.log(response);
-
 		if (response.success && response.data) {
 			this.filiali = response.data;
-			this.loading = false;
+			this.applyFilters(); // ✅ Applichiamo subito i filtri, che al primo giro mostra tutto
 		} else {
 			console.error(response.message || 'Errore sconosciuto');
 			this.error = true;
 		}
-
 		this.loading = false;
 	}
 
@@ -82,6 +82,23 @@ export class GestisciFilialiPage implements OnInit {
 	isAlertOpen = false;
 	selectedFiliale: FilialeRecord | null = null;
 
+	// ✅ Applica la ricerca sul campo "indirizzo"
+	applyFilters() {
+		const term = this.searchTerm.trim().toLowerCase();
+
+		this.filialiFiltered = this.filiali.filter(filiale => {
+			const indirizzo = filiale.indirizzo?.toLowerCase() || '';
+			return indirizzo.includes(term);
+		});
+	}
+
+	// ✅ Mostra tutte le filiali (reset filtro)
+	filterTutti() {
+		this.selectedCategoria = 'Tutte';
+		this.searchTerm = '';
+		this.filialiFiltered = [...this.filiali];
+	}
+
 	showAlert(filiale: FilialeRecord) {
 		this.selectedFiliale = filiale;
 		this.isAlertOpen = true;
@@ -90,12 +107,11 @@ export class GestisciFilialiPage implements OnInit {
 	onConfirm() {
 		if (this.selectedFiliale) {
 			console.log('Confermata rimozione filiale:', this.selectedFiliale);
-			// Qui puoi chiamare il servizio per rimuovere la filiale, per esempio:
-			// this.filialiServiceService.rimuoviFiliale(this.selectedFiliale.id_filiale).subscribe(...);
-			// Poi aggiorna la lista, rimuovendo la filiale localmente o rifacendo la fetch
+			// Esegui qui l'eliminazione dal backend se necessario
 		}
 		this.isAlertOpen = false;
 		this.selectedFiliale = null;
+		this.applyFilters(); // ✅ Riapplica i filtri dopo eventuale cancellazione
 	}
 
 	onCancel() {
@@ -103,6 +119,7 @@ export class GestisciFilialiPage implements OnInit {
 		this.isAlertOpen = false;
 		this.selectedFiliale = null;
 	}
+
 	alertButtons = [
 		{
 			text: 'Annulla',

@@ -39,7 +39,12 @@
 	</div>
 	<div class="input-row">
 		<div class="input-wrapper">
-			<ion-input placeholder="Cerca un piatto..."></ion-input>
+			<ion-input
+  placeholder="Cerca un piatto..."
+  [(ngModel)]="searchTerm"
+  (ionInput)="applyFilters()"
+></ion-input>
+
 		</div>
 		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
 	</div>
