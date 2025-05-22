@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from 'express'; // Importiamo express per la libreria REST
-import db from './db'; // Importiamo il file db per la connessione con il DBMS
 
 import cors from 'cors'; // Importiamo il modulo cors per gestire le richieste cross-origin
 
@@ -13,7 +12,7 @@ app.use(express.json());
 
 // Or configure specific origins
 app.use(cors({
-    origin: '*', // Your Angular app URL
+    origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -28,7 +27,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Prendiamo la porta dal file .env oppure ne impostiamo una di default noi
-const PORT = Number.parseInt(process.env.PORT!) || 4200;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4200;
 
 // Avviamo il server
 app.listen(PORT, '0.0.0.0', () => {

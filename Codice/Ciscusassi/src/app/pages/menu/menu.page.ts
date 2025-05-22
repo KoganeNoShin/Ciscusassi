@@ -3,71 +3,69 @@ import { CommonModule } from '@angular/common';
 import { IonContent, IonList, IonItem } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 
-import { MenuService } from './menu.service';
+import { ProdottoService } from 'src/app/core/services/prodotto.service';
 import { IonSpinner } from '@ionic/angular/standalone';
-import { Prodotto } from 'src/app/core/interfaces/Prodotto';
+import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { PiattoDelGiornoComponent } from "../../components/piatto-del-giorno/piatto-del-giorno.component";
 import { MenuDividerComponent } from "../../components/menu-divider/menu-divider.component";
+import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.page.html',
-  styleUrls: ['./menu.page.scss'],
-  standalone: true,
-  imports: [IonItem, IonList, IonContent, CommonModule, HeroComponent, IonSpinner, PiattoDelGiornoComponent, MenuDividerComponent]
+	selector: 'app-menu',
+	templateUrl: './menu.page.html',
+	styleUrls: ['./menu.page.scss'],
+	standalone: true,
+	imports: [IonContent, CommonModule, HeroComponent, IonSpinner, PiattoDelGiornoComponent, MenuDividerComponent]
 })
 export class MenuPage implements OnInit {
 
-  piatti: Prodotto[] = [];
-  primi: Prodotto[] = [];
-  antipasti: Prodotto[] = [];
-  dolci: Prodotto[] = [];
-  bevande: Prodotto[] = [];
+	piatti: ProdottoRecord[] = [];
+	primi: ProdottoRecord[] = [];
+	antipasti: ProdottoRecord[] = [];
+	dolci: ProdottoRecord[] = [];
+	bevande: ProdottoRecord[] = [];
 
-  loading: boolean = true;
-  menuAperto: string | null = null;
-  /*
-  listaAntipastiAperta = false;
-  listaPrimiAperta = false;
-  listaDolciAperta = false;
-  listaBevandeAperta = false;
-  */
+	loading: boolean = true;
+	menuAperto: string | null = null;
+	error: boolean = false;
 
-  constructor(private menuService: MenuService) { }
+	constructor(private prodottoService: ProdottoService) { }
 
-  ngOnInit() {
-    this.menuService.GetPiatti().subscribe({
-      next: (response) => {
-        console.log(response);
-        this.piatti = response;
+	private handleResponse(response: ApiResponse<ProdottoRecord[]>): void {
+		console.log(response);
 
-        // Filtra i piatti per categoria
-        this.primi = this.piatti.filter(p => p.categoria === 'PRIMO');
-        this.antipasti = this.piatti.filter(p => p.categoria === 'ANTIPASTO');
-        this.dolci = this.piatti.filter(p => p.categoria === 'DOLCE');
-        this.bevande = this.piatti.filter(p => p.categoria === 'BEVANDA');
-        this.loading = false;
-      },
-      error: (err) => {
-        this.piatti = [];
-        this.primi = [];
-        this.antipasti = [];
-        this.dolci = [];
-        this.bevande = [];
-        this.loading = false;
-      }
-    })
-  }
+		if (response.success && response.data) {
 
-  AperturaLista(categoria: string) {
-    /*
-    this.listaAntipastiAperta = !this.listaAntipastiAperta;
-    this.listaPrimiAperta = !this.listaPrimiAperta;
-    this.listaDolciAperta = !this.listaDolciAperta;
-    this.listaBevandeAperta = !this.listaBevandeAperta;
-    */
-    this.menuAperto = this.menuAperto === categoria ? null : categoria;
-  }
+			this.piatti = response.data;
+
+			// Filtra i piatti per categoria
+			this.primi = this.piatti.filter(p => p.categoria === 'PRIMO');
+			this.antipasti = this.piatti.filter(p => p.categoria === 'ANTIPASTO');
+			this.dolci = this.piatti.filter(p => p.categoria === 'DOLCE');
+			this.bevande = this.piatti.filter(p => p.categoria === 'BEVANDA');
+		}
+		else {
+			console.error(response.message || 'Errore sconosciuto');
+			this.error = true;
+		}
+
+		this.loading = false;
+	}
+
+	ngOnInit() {
+		this.prodottoService.GetProdotti().subscribe({
+			next: (response) => this.handleResponse(response),
+			error: (err) => {
+				console.log(err);
+				this.loading = false;
+				this.error = true;
+			}
+		})
+	}
+
+	AperturaLista(categoria: string) {
+		this.menuAperto = this.menuAperto === categoria ? null : categoria;
+	}
 
 }
 

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { PiattoDelGiornoService } from './piatto-del-giorno.service';
+import { ProdottoService } from 'src/app/core/services/prodotto.service';
 import { IonSpinner } from '@ionic/angular/standalone';
+import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 
 @Component({
 	selector: 'app-piatto-del-giorno',
@@ -11,21 +13,33 @@ import { IonSpinner } from '@ionic/angular/standalone';
 })
 export class PiattoDelGiornoComponent implements OnInit {
 
-	piatto = { id_prodotto: 0, nome: "", descrizione: "", costo: 0.0, immagine: "", categoria: "", is_piatto_giorno: true };
+	piatto: ProdottoRecord | undefined;
 	loading: boolean = true;
+	error: boolean = false;
 
-	constructor(private piattoDelGiornoService: PiattoDelGiornoService) { }
+	constructor(private ProdottoService: ProdottoService) { }
+
+	private handleResponse(response: ApiResponse<ProdottoRecord>): void {
+		console.log(response);
+
+		if (response.success && response.data) {
+			this.piatto = response.data;
+			this.piatto.nome = this.piatto.nome.toUpperCase();
+		}
+		else {
+			console.error(response.message || 'Errore sconosciuto');
+			this.error = true;
+		}
+
+		this.loading = false;
+	}
 
 	ngOnInit() {
-		this.piattoDelGiornoService.GetPiattoDelGiorno().subscribe({
-			next: (response) => {
-				console.log(response);
-				this.piatto = response;
-				this.piatto.nome = this.piatto.nome.toUpperCase();
-				this.loading = false;
-			},
+		this.ProdottoService.GetPiattoDelGiorno().subscribe({
+			next: (response) => this.handleResponse(response),
 			error: (err) => {
 				console.log(err);
+				this.error = true;
 				this.loading = false;
 			}
 		})

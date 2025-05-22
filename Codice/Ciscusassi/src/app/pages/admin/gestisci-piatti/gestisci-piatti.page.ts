@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonAlert, IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
-import { ServicePiattiService } from './service-piatti.service';
-import { Prodotto } from 'src/app/core/interfaces/Prodotto';
+import { ProdottiService } from 'src/app/core/services/prodotto.service';
+import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { starOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { RouterModule } from '@angular/router';
@@ -18,13 +18,13 @@ import { IonInput } from '@ionic/angular/standalone';
   imports: [IonContent, RouterModule, IonInput, IonHeader, IonTitle, IonAlert, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonChip, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
 })
 export class GestisciPiattiPage implements OnInit {
-  piatti: Prodotto[] = [];
+  piatti: ProdottoRecord[] = [];
   loading: boolean = true;
 
-  constructor(private servicePiattiService: ServicePiattiService) { addIcons({ starOutline }); } //la prima è variabile, la seconda è una classe
+  constructor(private prodottiService: ProdottiService) { addIcons({ starOutline }); }
 
   ngOnInit() {
-    this.servicePiattiService.GetPiatti().subscribe({
+    this.prodottiService.GetProdotti().subscribe({
       next: (response) => {
         console.log(response);
         this.piatti = response;
@@ -39,9 +39,9 @@ export class GestisciPiattiPage implements OnInit {
   }
 
   isAlertOpen = false;
-  selectedProdotto: Prodotto | null = null;
+  selectedProdotto: ProdottoRecord | null = null;
 
-  showAlert(prodotto: Prodotto) {
+  showAlert(prodotto: ProdottoRecord) {
     this.selectedProdotto = prodotto;
     this.isAlertOpen = true;
   }

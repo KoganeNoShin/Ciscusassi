@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "node server.js",
-    "dev": "npx nodemon server.js",
+    "dev": "nodemon",
     "migrate": "npx ts-node migrations.ts --reset --seed"
   },
   "dependencies": {
