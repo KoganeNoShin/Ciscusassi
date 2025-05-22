@@ -23,10 +23,10 @@
 }
 
 #container a {
-  	text-decoration: none;
+	text-decoration: none;
 }
 
-.content{
+.content {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -35,17 +35,17 @@
 	height: 75%;
 }
 
-.map-div{
+.map-div {
 	height: 100vh;
 	width: 100vw;
-	background-color: #C29637;
+	background-color: #c29637;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 }
 
-.map-card{
+.map-card {
 	height: 75%; // o 50vh, o 100% se necessario
 	width: 50%;
 	margin: 0;
@@ -55,7 +55,7 @@
 	background-color: white;
 }
 
-img{
+img {
 	width: 40%;
 }
 
@@ -64,10 +64,10 @@ ion-card-content {
 	padding: 0;
 }
 
-h1{
-    font-family: 'LucidaCalligraphy', sans-serif;
+h1 {
+	font-family: 'LucidaCalligraphy', sans-serif;
 }
 
-p{
+p {
 	font-size: 1.5rem;
 }

@@ -1,108 +1,107 @@
 .map-div {
-  background-color: #C29637;
-  padding: 2rem 1rem;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	background-color: #c29637;
+	padding: 2rem 1rem;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .map-div h1 {
-  font-family: 'LucidaCalligraphy', cursive;
-  font-size: 2.5rem;
-  color: white;
-  text-align: center;
-  margin-bottom: 0.5rem;
+	font-family: 'LucidaCalligraphy', cursive;
+	font-size: 2.5rem;
+	color: white;
+	text-align: center;
+	margin-bottom: 0.5rem;
 }
 
 .map-div p {
-  font-size: 1.2rem;
-  color: white;
-  text-align: center;
-  margin-bottom: 1.5rem;
+	font-size: 1.2rem;
+	color: white;
+	text-align: center;
+	margin-bottom: 1.5rem;
 }
 
 /* Griglia centrale */
 ion-grid {
-  width: 100%;
-  max-width: 1200px;
+	width: 100%;
+	max-width: 1200px;
 }
 
 /* Colonna lista filiali */
 .filiali-list {
-  max-height: 50vh;
-  overflow-y: auto;
-  padding-right: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+	max-height: 50vh;
+	overflow-y: auto;
+	padding-right: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
 }
 
 .filiale {
-min-width: 10vh;
---background: #388E3C;
-  border-radius: 12px;
-  padding: 10px;
-  color: white;
-  --color: white;
-  font-family: 'Segoe UI', sans-serif;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+	min-width: 10vh;
+	--background: #388e3c;
+	border-radius: 12px;
+	padding: 10px;
+	color: white;
+	--color: white;
+	font-family: 'Segoe UI', sans-serif;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 ion-label {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 ion-label h2 {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  font-family: 'LucidaCalligraphy', cursive;
+	font-size: 1rem;
+	font-weight: bold;
+	color: #fff;
+	font-family: 'LucidaCalligraphy', cursive;
 }
 
 ion-label p {
-  font-size: 0.9rem;
-  margin: 2px 0;
-  color: #fff;
+	font-size: 0.9rem;
+	margin: 2px 0;
+	color: #fff;
 }
 
 ion-input {
-  --background: white;
-  border-radius: 20px;
-  padding-left: 1rem;
-  font-size: 1rem;
-  height: 44px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+	--background: white;
+	border-radius: 20px;
+	padding-left: 1rem;
+	font-size: 1rem;
+	height: 44px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 ion-item.search-input {
-  --background: transparent;
-  padding: 0;
-  margin-bottom: 12px;
-  box-shadow: none;
+	--background: transparent;
+	padding: 0;
+	margin-bottom: 12px;
+	box-shadow: none;
 }
 
 .map-card {
-  height: 70vh;
-  width: 100%;
-  border-radius: 16px;
-  background-color: white;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+	height: 70vh;
+	width: 100%;
+	border-radius: 16px;
+	background-color: white;
+	overflow: hidden;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 ion-card-content {
-  height: 100%;
-  width: 100%;
-  padding: 0;
+	height: 100%;
+	width: 100%;
+	padding: 0;
 }
 
 .map-card-content {
-  height: 100vh;
+	height: 100vh;
 }
 
-
 .barra-ricerca {
-	color: #000
+	color: #000;
 }

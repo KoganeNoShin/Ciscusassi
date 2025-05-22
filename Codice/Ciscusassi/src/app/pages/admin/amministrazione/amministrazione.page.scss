@@ -1,37 +1,37 @@
-ion-card{
-  background-color: var(--ion-color-quartiary);
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-  gap: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 80dvh;
-  height: 70dvh;
+ion-card {
+	background-color: var(--ion-color-quartiary);
+	padding-top: 5rem;
+	padding-bottom: 5rem;
+	gap: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	width: 80dvh;
+	height: 70dvh;
 }
-ion-img{
-  width: 70dvh;
-  height: auto;
+ion-img {
+	width: 70dvh;
+	height: auto;
 }
-ion-col{
-  --ion-grid-column-padding: 5rem;
-}
-
-ion-button{
-  width: 50%;
+ion-col {
+	--ion-grid-column-padding: 5rem;
 }
 
-ion-grid{
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
+ion-button {
+	width: 50%;
 }
-h1{
-  font-family: 'LucidaCalligraphy';
-  font-style: normal;
-  font-weight: lighter;
+
+ion-grid {
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+}
+h1 {
+	font-family: 'LucidaCalligraphy';
+	font-style: normal;
+	font-weight: lighter;
 }

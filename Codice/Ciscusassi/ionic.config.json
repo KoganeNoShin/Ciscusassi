@@ -1,12 +1,12 @@
 {
-  "name": "Ciscusassi",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone",
-  "server": {
-    "host": "0.0.0.0",
-    "port": 8100,
-    "cors": true
-  }
+	"name": "Ciscusassi",
+	"integrations": {
+		"capacitor": {}
+	},
+	"type": "angular-standalone",
+	"server": {
+		"host": "0.0.0.0",
+		"port": 8100,
+		"cors": true
+	}
 }

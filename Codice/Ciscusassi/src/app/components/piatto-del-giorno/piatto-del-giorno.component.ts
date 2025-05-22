@@ -9,15 +9,14 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 	templateUrl: './piatto-del-giorno.component.html',
 	styleUrls: ['./piatto-del-giorno.component.scss'],
 	standalone: true,
-	imports: [IonSpinner]
+	imports: [IonSpinner],
 })
 export class PiattoDelGiornoComponent implements OnInit {
-
 	piatto: ProdottoRecord | undefined;
 	loading: boolean = true;
 	error: boolean = false;
 
-	constructor(private ProdottoService: ProdottoService) { }
+	constructor(private ProdottoService: ProdottoService) {}
 
 	private handleResponse(response: ApiResponse<ProdottoRecord>): void {
 		console.log(response);
@@ -25,8 +24,7 @@ export class PiattoDelGiornoComponent implements OnInit {
 		if (response.success && response.data) {
 			this.piatto = response.data;
 			this.piatto.nome = this.piatto.nome.toUpperCase();
-		}
-		else {
+		} else {
 			console.error(response.message || 'Errore sconosciuto');
 			this.error = true;
 		}
@@ -41,8 +39,7 @@ export class PiattoDelGiornoComponent implements OnInit {
 				console.log(err);
 				this.error = true;
 				this.loading = false;
-			}
-		})
+			},
+		});
 	}
-
 }

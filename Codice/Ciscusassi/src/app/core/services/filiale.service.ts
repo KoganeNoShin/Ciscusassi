@@ -6,15 +6,16 @@ import { ApiResponse } from '../interfaces/ApiResponse';
 import { FilialeRecord } from '../interfaces/Filiale';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
-
 export class FilialeService {
-  private apiURL = environment.apiURL;
+	private apiURL = environment.apiURL;
 
-  constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) {}
 
-  GetSedi(): Observable<ApiResponse<FilialeRecord[]>> {
-    return this.http.get<ApiResponse<FilialeRecord[]>>(`${this.apiURL}/Filiali`);
-  }
+	GetSedi(): Observable<ApiResponse<FilialeRecord[]>> {
+		return this.http.get<ApiResponse<FilialeRecord[]>>(
+			`${this.apiURL}/Filiali`
+		);
+	}
 }

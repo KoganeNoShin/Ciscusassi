@@ -3,23 +3,29 @@
 <div id="smoke"></div>
 
 <div id="content" backgr>
-
-
-	@if (loading)
-	{
+	@if (loading) {
 		<ion-spinner name="bubbles"></ion-spinner>
-	}
-	@else
-	{
-		<h1> PIATTO DEL GIORNO </h1>
-		<div id="plate">
-			<img [src]="piatto.immagine" alt="Immagine del piatto" class="immagine-rotante">
-			<div id="plateInfo">
-				<h2> {{ piatto.nome }} - {{ piatto.costo }} € </h2>
-				<h3> {{ piatto.descrizione }} </h3>
+	} @else {
+		@if (!error) {
+			<h1>PIATTO DEL GIORNO</h1>
+			<div id="plate">
+				<img
+					[src]="piatto!.immagine"
+					alt="Immagine del piatto"
+					class="immagine-rotante"
+				/>
+				<div id="plateInfo">
+					<h2>{{ piatto!.nome }} - {{ piatto!.costo }} €</h2>
+					<h3>{{ piatto!.descrizione }}</h3>
+				</div>
 			</div>
-		</div>
-		<p> * Acquistando il piatto del giorno hai diritto a 10 pt fedeltà bonus. </p>
+			<p>
+				* Acquistando il piatto del giorno hai diritto a 10 pt fedeltà
+				bonus.
+			</p>
+		} @else {
+			<h1>ERRORE</h1>
+			<h3>C'è stato un errore durante il caricamento. Riprova!</h3>
+		}
 	}
-
 </div>

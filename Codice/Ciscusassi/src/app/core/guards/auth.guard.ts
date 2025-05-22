@@ -8,10 +8,9 @@ export const authGuard: CanActivateFn = async (route, state) => {
 	const navigation = inject(NavController);
 
 	if (await authService.isAuthenticated()) {
-    	return true;
-  	}
+		return true;
+	}
 
 	navigation.navigateRoot('/login');
 	return false;
-
 };

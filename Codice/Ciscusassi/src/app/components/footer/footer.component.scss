@@ -1,30 +1,29 @@
-#content{
-    display: flex;
-    flex-direction: row;
-    height: fit-content;
-    align-items: center;
-    font-size: .8rem;
+#content {
+	display: flex;
+	flex-direction: row;
+	height: fit-content;
+	align-items: center;
+	font-size: 0.8rem;
 }
 
-#leftDiv{
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: center;
-    width: fit-content;
-    position: absolute;
-    left: 0;
-    margin-left: 2rem;
+#leftDiv {
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	align-items: center;
+	width: fit-content;
+	position: absolute;
+	left: 0;
+	margin-left: 2rem;
 }
 
-
-#centerDiv{
-    width: 100vw;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 1.5rem;
-    justify-items: center;
-    align-items: center;
-    text-align: center;
+#centerDiv {
+	width: 100vw;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 1.5rem;
+	justify-items: center;
+	align-items: center;
+	text-align: center;
 }

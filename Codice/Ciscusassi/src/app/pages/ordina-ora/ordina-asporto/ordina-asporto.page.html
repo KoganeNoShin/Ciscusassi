@@ -1,51 +1,66 @@
 <ion-content fullscreen color="light" class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      
-      <!-- Colonna sinistra: immagine -->
-      <ion-col size="6">
-        <ion-img src="/assets/illustrations/MotorinoAsporto.png"></ion-img>
-      </ion-col>
+	<ion-grid>
+		<ion-row class="ion-align-items-center ion-justify-content-center">
+			<!-- Colonna sinistra: immagine -->
+			<ion-col size="6">
+				<ion-img
+					src="/assets/illustrations/MotorinoAsporto.png"
+				></ion-img>
+			</ion-col>
 
-      <!-- Colonna destra: form -->
-      <ion-col size="6">
-        <ion-card class="address-card">
-          <h1>INFORMAZIONI AGGIUNTIVE</h1>
+			<!-- Colonna destra: form -->
+			<ion-col size="6">
+				<ion-card class="address-card">
+					<h1>INFORMAZIONI AGGIUNTIVE</h1>
 
-          <ion-card-content>
-              <p>
-                Inserisci il tuo indirizzo per ricevere comodamente l'ordine alla tua posizione corrente.
-              </p>
+					<ion-card-content>
+						<p>
+							Inserisci il tuo indirizzo per ricevere comodamente
+							l'ordine alla tua posizione corrente.
+						</p>
 
-          <!-- Input indirizzo -->
-          <ion-input label="Inserisci l'indirizzo" label-placement="floating" fill="solid" [(ngModel)]="searchTerm" (ionInput)="onSearch()"></ion-input>
+						<!-- Input indirizzo -->
+						<ion-input
+							label="Inserisci l'indirizzo"
+							label-placement="floating"
+							fill="solid"
+							[(ngModel)]="searchTerm"
+							(ionInput)="onSearch()"
+						></ion-input>
 
-          <ion-list *ngIf="results.length">
-            <ion-item *ngFor="let place of results" (click)="selectPlace(place)">
-              {{ place.address.freeformAddress }}
-            </ion-item>
-          </ion-list>
+						<ion-list *ngIf="results.length">
+							<ion-item
+								*ngFor="let place of results"
+								(click)="selectPlace(place)"
+							>
+								{{ place.address.freeformAddress }}
+							</ion-item>
+						</ion-list>
 
-            <!-- Orario consegna -->
-            <ion-text>
-              <p>Inserisci orario di consegna:</p>
-            </ion-text>
+						<!-- Orario consegna -->
+						<ion-text>
+							<p>Inserisci orario di consegna:</p>
+						</ion-text>
 
-            <ion-datetime-button datetime="datetime"></ion-datetime-button>
-            <ion-modal [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime presentation="time" id="datetime"></ion-datetime>
-              </ng-template>
-            </ion-modal>
+						<ion-datetime-button
+							datetime="datetime"
+						></ion-datetime-button>
+						<ion-modal [keepContentsMounted]="true">
+							<ng-template>
+								<ion-datetime
+									presentation="time"
+									id="datetime"
+								></ion-datetime>
+							</ng-template>
+						</ion-modal>
 
-            <!-- Bottone finale -->
-            <ion-button fill="solid" shape="round" color="primary">
-              <ion-text color="light">PROCEDI</ion-text>
-            </ion-button>
-
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+						<!-- Bottone finale -->
+						<ion-button fill="solid" shape="round" color="primary">
+							<ion-text color="light">PROCEDI</ion-text>
+						</ion-button>
+					</ion-card-content>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 </ion-content>

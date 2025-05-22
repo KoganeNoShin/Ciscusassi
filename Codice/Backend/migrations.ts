@@ -29,65 +29,69 @@ import generatePagamento from './Database/Seeders/seederPagamento';
 const args = process.argv.slice(2);
 
 async function dropAll() {
-    await migrationAspProd.dropTable();     // dipende da Asporto e Prodotto
-    await migrationAsporto.dropTable();     // dipende da Cliente
-    await migrationOrdProdotto.dropTable(); // dipende da Ordine e Prodotto
-    await migrationOrdine.dropTable();      // dipende da Cliente e Filiale
-    await migrationPrenotazione.dropTable();
-    await migrationProdotto.dropTable();
-    await migrationTorretta.dropTable();
-    await migrationPagamento.dropTable();
-    await migrationImpiegato.dropTable();
-    await migrationFiliale.dropTable();
-    await migrationCliente.dropTable();
+	await migrationAspProd.dropTable(); // dipende da Asporto e Prodotto
+	await migrationAsporto.dropTable(); // dipende da Cliente
+	await migrationOrdProdotto.dropTable(); // dipende da Ordine e Prodotto
+	await migrationOrdine.dropTable(); // dipende da Cliente e Filiale
+	await migrationPrenotazione.dropTable();
+	await migrationProdotto.dropTable();
+	await migrationTorretta.dropTable();
+	await migrationPagamento.dropTable();
+	await migrationImpiegato.dropTable();
+	await migrationFiliale.dropTable();
+	await migrationCliente.dropTable();
 }
 
 async function createTables() {
-    await migrationCliente.createIfDoesntExists();
-    await migrationFiliale.createIfDoesntExists();
-    await migrationImpiegato.createIfDoesntExists();
-    await migrationPagamento.createIfDoesntExists();
-    await migrationTorretta.createIfDoesntExists();
-    await migrationProdotto.createIfDoesntExists();
-    await migrationOrdProdotto.createIfDoesntExists();
-    await migrationOrdine.createIfDoesntExists();
-    await migrationAsporto.createIfDoesntExists();
-    await migrationAspProd.createIfDoesntExists();
-    await migrationPrenotazione.createIfDoesntExists();
+	await migrationCliente.createIfDoesntExists();
+	await migrationFiliale.createIfDoesntExists();
+	await migrationImpiegato.createIfDoesntExists();
+	await migrationPagamento.createIfDoesntExists();
+	await migrationTorretta.createIfDoesntExists();
+	await migrationProdotto.createIfDoesntExists();
+	await migrationOrdProdotto.createIfDoesntExists();
+	await migrationOrdine.createIfDoesntExists();
+	await migrationAsporto.createIfDoesntExists();
+	await migrationAspProd.createIfDoesntExists();
+	await migrationPrenotazione.createIfDoesntExists();
 }
 
 async function seedDB() {
-    await generateCliente(15);
-    await generateFiliale();
-    await generateTorretta();
-    await generateImpiegato();
-    await generateProdotto();
-    await generateAsporto(20);
-    await generateAspProd();
-    await generatePrenotazione(30);
-    await generateOrdine();
-    await generateOrdProd();
-    await generatePagamento();
+	await generateCliente(15);
+	await generateFiliale();
+	await generateTorretta();
+	await generateImpiegato();
+	await generateProdotto();
+	await generateAsporto(20);
+	await generateAspProd();
+	await generatePrenotazione(30);
+	await generateOrdine();
+	await generateOrdProd();
+	await generatePagamento();
 }
 
 async function run() {
-    if (args.includes('--help')) {
-        console.log("ℹ️  Usa --reset per droppare le tabelle e ricostruire il DB da capo.");
-        console.log("ℹ️  Usa --seed per popolare le tabelle con dati randomici ma consistenti.");
-    }
-    else if (args.includes('--reset')) {
-        await dropAll();
-    }
+	if (args.includes('--help')) {
+		console.log(
+			'ℹ️  Usa --reset per droppare le tabelle e ricostruire il DB da capo.'
+		);
+		console.log(
+			'ℹ️  Usa --seed per popolare le tabelle con dati randomici ma consistenti.'
+		);
+	} else if (args.includes('--reset')) {
+		await dropAll();
+	}
 
-    await createTables();
+	await createTables();
 
-    if (args.includes('--seed')) {
-        await seedDB();
-    }
+	if (args.includes('--seed')) {
+		await seedDB();
+	}
 }
 
-
-run().then(() => process.exit(0)).catch(err => {
-    console.error(err);
-    process.exit(1);
-});
+run()
+	.then(() => process.exit(0))
+	.catch((err) => {
+		console.error(err);
+		process.exit(1);
+	});

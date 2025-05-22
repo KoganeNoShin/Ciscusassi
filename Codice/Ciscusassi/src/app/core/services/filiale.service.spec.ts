@@ -3,14 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { FilialeService } from './filiale.service';
 
 describe('PrenotaService', () => {
-  let service: FilialeService;
+	let service: FilialeService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(FilialeService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(FilialeService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

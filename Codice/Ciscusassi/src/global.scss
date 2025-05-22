@@ -10,20 +10,20 @@
  */
 
 /* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+@import '@ionic/angular/css/core.css';
 
 /* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
 
 /* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
 
 /**
  * Ionic Dark Mode
@@ -37,40 +37,44 @@
 @import '@ionic/angular/css/palettes/dark.system.css';
 
 @font-face {
-    font-family: 'JacquesFrancoisShadow';
-    src: url('/assets/fonts/JacquesFrancoisShadow-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-  
-@font-face {
-    font-family: 'LucidaCalligraphy';
-    src: url('/assets/fonts/LucidaUnicodeCalligraphy.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'JacquesFrancoisShadow';
+	src: url('/assets/fonts/JacquesFrancoisShadow-Regular.ttf')
+		format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @font-face {
-    font-family: 'Isocpeur-Regular';
-    src: url('/assets/fonts/Isocpeur-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'LucidaCalligraphy';
+	src: url('/assets/fonts/LucidaUnicodeCalligraphy.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
+@font-face {
+	font-family: 'Isocpeur-Regular';
+	src: url('/assets/fonts/Isocpeur-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
 h1 {
-    font-family: 'JacquesFrancoisShadow', sans-serif;
-    font-size: 3rem;
-    color: var(--ion-color-primary-contrast);
+	font-family: 'JacquesFrancoisShadow', sans-serif;
+	font-size: 3rem;
+	color: var(--ion-color-primary-contrast);
 }
 
-h2, h3, h4, h5, h6, p{
-    font-family: 'LucidaCalligraphy', sans-serif;
-    color: var(--ion-color-primary-contrast);
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+	font-family: 'LucidaCalligraphy', sans-serif;
+	color: var(--ion-color-primary-contrast);
 }
 
-ion-button > ion-text > p{
-    font-family: 'Isocpeur-Regular', sans-serif;
-    font-size: 1.2rem;
-
+ion-button > ion-text > p {
+	font-family: 'Isocpeur-Regular', sans-serif;
+	font-size: 1.2rem;
 }

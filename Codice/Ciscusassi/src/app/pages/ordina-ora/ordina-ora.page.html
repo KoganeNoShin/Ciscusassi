@@ -1,35 +1,48 @@
 <ion-content [fullscreen]="true" color="light" class="fixed-content">
-  <ion-row class="fixed-row">
-    <!-- Colonna immagine panino -->
-    <ion-col class="fixed-col-img">
-      <ion-img class="img-panino" [src]="'/assets/illustrations/Panino.png'"></ion-img>
-    </ion-col>
+	<ion-row class="fixed-row">
+		<!-- Colonna immagine panino -->
+		<ion-col class="fixed-col-img">
+			<ion-img
+				class="img-panino"
+				[src]="'/assets/illustrations/Panino.png'"
+			></ion-img>
+		</ion-col>
 
-    <!-- Colonna bottoni -->
-    <ion-col class="fixed-col-buttons">
-      
-      <!-- Bottone Ordina al Tavolo -->
-      <ion-button class="ordina" [routerLink]="['/ordina-al-tavolo']">
-        <div class="button-content">
-          <div class="button-text">
-            <h1>ORDINA AL TAVOLO</h1>
-            <p>Ordina comodamente dal tuo tavolo, non c'è bisogno di aspettare nessuno</p>
-          </div>
-          <ion-img class="img-ordinaora" [src]="'/assets/illustrations/OrdinaAlTavolo.png'"></ion-img>
-        </div>
-      </ion-button>
+		<!-- Colonna bottoni -->
+		<ion-col class="fixed-col-buttons">
+			<!-- Bottone Ordina al Tavolo -->
+			<ion-button class="ordina" [routerLink]="['/ordina-al-tavolo']">
+				<div class="button-content">
+					<div class="button-text">
+						<h1>ORDINA AL TAVOLO</h1>
+						<p>
+							Ordina comodamente dal tuo tavolo, non c'è bisogno
+							di aspettare nessuno
+						</p>
+					</div>
+					<ion-img
+						class="img-ordinaora"
+						[src]="'/assets/illustrations/OrdinaAlTavolo.png'"
+					></ion-img>
+				</div>
+			</ion-button>
 
-      <!-- Bottone Ordina Asporto -->
-      <ion-button class="asporto" [routerLink]="['/ordina-asporto']">
-        <div class="button-content">
-          <div class="button-text">
-            <h1>ORDINA D'ASPORTO</h1>
-            <p>Ordina da casa tua, appena sarà tutto pronto ti consegneremo un pasto delizioso!</p>
-          </div>
-          <ion-img class="img-asporto" [src]="'/assets/illustrations/OrdinaAsporto.png'"></ion-img>
-        </div>
-      </ion-button>
-
-    </ion-col>
-  </ion-row>
+			<!-- Bottone Ordina Asporto -->
+			<ion-button class="asporto" [routerLink]="['/ordina-asporto']">
+				<div class="button-content">
+					<div class="button-text">
+						<h1>ORDINA D'ASPORTO</h1>
+						<p>
+							Ordina da casa tua, appena sarà tutto pronto ti
+							consegneremo un pasto delizioso!
+						</p>
+					</div>
+					<ion-img
+						class="img-asporto"
+						[src]="'/assets/illustrations/OrdinaAsporto.png'"
+					></ion-img>
+				</div>
+			</ion-button>
+		</ion-col>
+	</ion-row>
 </ion-content>

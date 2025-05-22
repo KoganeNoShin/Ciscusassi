@@ -1,90 +1,90 @@
 .fixed-content {
-  height: 100vh;
-  overflow: hidden;
+	height: 100vh;
+	overflow: hidden;
 }
 
 .fixed-row {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 2vw;
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 2vw;
 }
 
 .fixed-col-img {
-  width: 400px;
-  max-width: 400px;
-  flex: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	width: 400px;
+	max-width: 400px;
+	flex: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .fixed-col-buttons {
-  width: 700px;
-  max-width: 700px;
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  gap: 3vh;
+	width: 700px;
+	max-width: 700px;
+	flex: none;
+	display: flex;
+	flex-direction: column;
+	gap: 3vh;
 }
 
 ion-button.ordina,
 ion-button.asporto {
-  height: 30vh;
-  width: 100%;
-  display: flex;
-  padding: 0;
-  --background: transparent;
-  box-shadow: none;
+	height: 30vh;
+	width: 100%;
+	display: flex;
+	padding: 0;
+	--background: transparent;
+	box-shadow: none;
 }
 
 ion-button.ordina {
-  --background: var(--ion-color-quartiary);
+	--background: var(--ion-color-quartiary);
 }
 
 ion-button.asporto {
-  --background: var(--ion-color-quinary);
+	--background: var(--ion-color-quinary);
 }
 
 .button-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 20px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 20px;
 }
 
 .button-text {
-  width: 60%;
-  text-align: left;
+	width: 60%;
+	text-align: left;
 }
 
 h1 {
-  font-family: 'Isocpeur-Regular';
-  font-style: italic;
-  font-size: 2rem;
-  margin: 0 0 0.5rem 0;
+	font-family: 'Isocpeur-Regular';
+	font-style: italic;
+	font-size: 2rem;
+	margin: 0 0 0.5rem 0;
 }
 
 p {
-  font-size: 1rem;
-  margin: 0;
-  text-transform: none;
+	font-size: 1rem;
+	margin: 0;
+	text-transform: none;
 }
 
 .img-ordinaora,
 .img-asporto {
-  width: 50vh;
-  height: auto;
-  object-fit: contain;
+	width: 50vh;
+	height: auto;
+	object-fit: contain;
 }
 
 .img-panino {
-  height: 80vh;
-  width: auto;
-  object-fit: contain;
+	height: 80vh;
+	width: auto;
+	object-fit: contain;
 }

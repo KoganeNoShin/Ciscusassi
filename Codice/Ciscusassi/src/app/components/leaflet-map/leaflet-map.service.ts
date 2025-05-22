@@ -4,17 +4,14 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-    providedIn: 'root'
+	providedIn: 'root',
 })
-
 export class LeafletMapService {
+	private apiURL = environment.apiURL;
 
-    private apiURL = environment.apiURL;
+	constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    GetFiliali(): Observable<any> {
-        return this.http.get(`${this.apiURL}/Filiali`);
-    }
-
+	GetFiliali(): Observable<any> {
+		return this.http.get(`${this.apiURL}/Filiali`);
+	}
 }

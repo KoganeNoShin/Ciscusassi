@@ -1,20 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import {
+	IonContent,
+	IonHeader,
+	IonTitle,
+	IonToolbar,
+} from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-signin',
-  templateUrl: './signin.page.html',
-  styleUrls: ['./signin.page.scss'],
-  standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+	selector: 'app-signin',
+	templateUrl: './signin.page.html',
+	styleUrls: ['./signin.page.scss'],
+	standalone: true,
+	imports: [
+		IonContent,
+		IonHeader,
+		IonTitle,
+		IonToolbar,
+		CommonModule,
+		FormsModule,
+	],
 })
 export class SigninPage implements OnInit {
+	constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+	ngOnInit() {}
 }

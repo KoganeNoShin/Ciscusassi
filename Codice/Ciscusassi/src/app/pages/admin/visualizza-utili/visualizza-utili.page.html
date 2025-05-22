@@ -1,43 +1,59 @@
 <ion-content [fullscreen]="true">
-  <ion-header>
-    <ion-toolbar color="light">
-      <ion-title class="title-style">VISUALIZZA UTILI</ion-title>
-    </ion-toolbar>
-  </ion-header>
+	<ion-header>
+		<ion-toolbar color="light">
+			<ion-title class="title-style">VISUALIZZA UTILI</ion-title>
+		</ion-toolbar>
+	</ion-header>
 
-  <ion-content class="ion-padding">
-    <div class="section-subtitle">Visualizza utili</div>
+	<ion-content class="ion-padding">
+		<div class="section-subtitle">Visualizza utili</div>
 
+		<div class="input-container">
+			<ion-select
+				placeholder="Anno"
+				class="custom-select"
+				interface="popover"
+			>
+				<ion-select-option *ngFor="let year of years" [value]="year"
+					>{{ year }}</ion-select-option
+				>
+			</ion-select>
 
-    <div class="input-container">
-      <ion-select placeholder="Anno" class="custom-select" interface="popover">
-        <ion-select-option *ngFor="let year of years" [value]="year">{{ year }}</ion-select-option>
-      </ion-select>
+			<ion-button color="success" class="excel-button"
+				>SCARICA EXCEL</ion-button
+			>
+		</div>
 
-      <ion-button color="success" class="excel-button">SCARICA EXCEL</ion-button>
-    </div>
+		<div class="table-wrapper">
+			<ion-grid class="custom-grid">
+				<ion-row class="table-header">
+					<ion-col size="2"
+						><strong>INDIRIZZO FILIALE</strong></ion-col
+					>
+					<ion-col size="1" *ngFor="let month of months"
+						><strong>{{ month }}</strong></ion-col
+					>
+					<ion-col size="1"><strong>Totale</strong></ion-col>
+				</ion-row>
 
-    <div class="table-wrapper">
-      <ion-grid class="custom-grid">
-        <ion-row class="table-header">
-          <ion-col size="2"><strong>INDIRIZZO FILIALE</strong></ion-col>
-          <ion-col size="1" *ngFor="let month of months"><strong>{{ month }}</strong></ion-col>
-          <ion-col size="1"><strong>Totale</strong></ion-col>
-        </ion-row>
+				<ion-row
+					*ngFor="let row of rows; let i = index"
+					[class.even]="i % 2 === 0"
+					[class.odd]="i % 2 !== 0"
+				>
+					<ion-col size="2">{{ row.address }}</ion-col>
+					<ion-col size="1" *ngFor="let value of row.values"
+						>- €</ion-col
+					>
+					<ion-col size="1">- €</ion-col>
+				</ion-row>
 
-        <ion-row *ngFor="let row of rows; let i = index" [class.even]="i % 2 === 0" [class.odd]="i % 2 !== 0">
-          <ion-col size="2">{{ row.address }}</ion-col>
-          <ion-col size="1" *ngFor="let value of row.values">- €</ion-col>
-          <ion-col size="1">- €</ion-col>
-        </ion-row>
-
-        <ion-row class="table-footer">
-          <ion-col size="2"><strong>TOTALE</strong></ion-col>
-          <ion-col size="1" *ngFor="let month of months">- €</ion-col>
-          <ion-col size="1">- €</ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-
-  </ion-content>
-
+				<ion-row class="table-footer">
+					<ion-col size="2"><strong>TOTALE</strong></ion-col>
+					<ion-col size="1" *ngFor="let month of months">- €</ion-col>
+					<ion-col size="1">- €</ion-col>
+				</ion-row>
+			</ion-grid>
+		</div>
+	</ion-content>
+</ion-content>

@@ -1,23 +1,30 @@
 <ion-header [translucent]="true">
-  	<ion-toolbar color="primary" id="content">
-    	<ion-buttons slot="start">
-      		<ion-button [routerLink]="['/']"> HOME </ion-button>
-    	</ion-buttons>
+	<ion-toolbar color="primary" id="content">
+		<ion-buttons slot="start">
+			<ion-button [routerLink]="['/']"> HOME </ion-button>
+		</ion-buttons>
 		<ion-buttons slot="start">
 			<ion-button [routerLink]="['/menu']"> MENU </ion-button>
 			<ion-button [routerLink]="['/ristoranti']"> RISTORANTI </ion-button>
 			<ion-button [routerLink]="['/ordina-ora']"> ORDINA ORA </ion-button>
 			<ion-button [routerLink]="['/prenota']"> PRENOTA </ion-button>
-	  	</ion-buttons>
+		</ion-buttons>
 		<ion-buttons slot="end">
-			<ion-button [routerLink]="['/amministrazione']"> AMMINISTRAZIONE </ion-button>
-			
-			<ion-button (click)="changeLanguage()"> 
-				@if (isItalian){ 🇮🇹 }
-				@else { 🇬🇧 }
+			<ion-button [routerLink]="['/amministrazione']">
+				AMMINISTRAZIONE
 			</ion-button>
 
-			<ion-button [routerLink]="['/login']"> <ion-icon slot="icon-only" name="person-circle"></ion-icon> </ion-button>
-	  	</ion-buttons>
-  	</ion-toolbar>
+			<ion-button (click)="changeLanguage()">
+				@if (isItalian) {
+					🇮🇹
+				} @else {
+					🇬🇧
+				}
+			</ion-button>
+
+			<ion-button [routerLink]="['/login']">
+				<ion-icon slot="icon-only" name="person-circle"></ion-icon>
+			</ion-button>
+		</ion-buttons>
+	</ion-toolbar>
 </ion-header>

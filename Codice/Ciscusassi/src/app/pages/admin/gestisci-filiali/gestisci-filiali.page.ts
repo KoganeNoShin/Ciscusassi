@@ -1,7 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonAlert, IonInput, IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
+import {
+	IonCard,
+	IonCardContent,
+	IonCardHeader,
+	IonCardTitle,
+	IonAlert,
+	IonInput,
+	IonContent,
+	IonHeader,
+	IonImg,
+	IonTitle,
+	IonToolbar,
+	IonButton,
+	IonIcon,
+} from '@ionic/angular/standalone';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { RouterModule } from '@angular/router';
@@ -13,26 +27,40 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 	templateUrl: './gestisci-filiali.page.html',
 	styleUrls: ['./gestisci-filiali.page.scss'],
 	standalone: true,
-	imports: [IonContent, RouterModule, IonHeader, IonTitle, IonToolbar, IonAlert, IonInput, CommonModule, FormsModule, IonCard, IonImg, IonChip, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
+	imports: [
+		IonContent,
+		RouterModule,
+		IonHeader,
+		IonTitle,
+		IonToolbar,
+		IonAlert,
+		IonInput,
+		CommonModule,
+		FormsModule,
+		IonCard,
+		IonImg,
+		IonChip,
+		IonCardHeader,
+		IonCardTitle,
+		IonCardContent,
+		IonButton,
+		IonIcon,
+	],
 })
-
 export class GestisciFilialiPage implements OnInit {
-
 	filiali: FilialeRecord[] = [];
 	loading: boolean = true;
 	error: boolean = false;
 
-	constructor(private filialeService: FilialeService) { }
+	constructor(private filialeService: FilialeService) {}
 
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
 		console.log(response);
 
 		if (response.success && response.data) {
-
 			this.filiali = response.data;
 			this.loading = false;
-		}
-		else {
+		} else {
 			console.error(response.message || 'Errore sconosciuto');
 			this.error = true;
 		}
@@ -47,7 +75,7 @@ export class GestisciFilialiPage implements OnInit {
 				console.log(err);
 				this.loading = false;
 				this.error = true;
-			}
+			},
 		});
 	}
 
@@ -79,13 +107,12 @@ export class GestisciFilialiPage implements OnInit {
 		{
 			text: 'Annulla',
 			role: 'cancel',
-			handler: () => this.onCancel()
+			handler: () => this.onCancel(),
 		},
 		{
 			text: 'OK',
 			role: 'confirm',
-			handler: () => this.onConfirm()
-		}
+			handler: () => this.onConfirm(),
+		},
 	];
-
 }

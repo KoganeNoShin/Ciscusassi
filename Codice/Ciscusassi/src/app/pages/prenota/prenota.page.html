@@ -1,50 +1,64 @@
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link
+	rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+	integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+	crossorigin=""
+/>
 
 <ion-content [fullscreen]="true">
+	<app-hero
+		title="PRENOTA"
+		description="Prenota il tuo tavolo e regalati 
+un esperienza culinaria senza tempo!"
+		[backgroundURL]="'PrenotazioneBackground.jpeg'"
+	></app-hero>
 
-  <app-hero title="PRENOTA" description="Prenota il tuo tavolo e regalati 
-un esperienza culinaria senza tempo!" [backgroundURL]="'PrenotazioneBackground.jpeg'"></app-hero>
-
-  <div class="map-div">
-		<h1> PRENOTA UN TAVOLO </h1>
-		<p> Trova il ristorante più adatto a te! </p>
+	<div class="map-div">
+		<h1>PRENOTA UN TAVOLO</h1>
+		<p>Trova il ristorante più adatto a te!</p>
 		@if(loading) {
-			<ion-spinner name="bubbles"></ion-spinner>
-		}
-		@else {
-			<ion-grid>
-				<ion-row>
-					<ion-col size="6" class = "filiali-col">
-						<ion-item class="barra-ricerca">
-    						<ion-input placeholder="Indirizzo Filiale" [(ngModel)] = "searchFiliale" (ionInput) = "filtroFiliali()"></ion-input>
-  						</ion-item>
+		<ion-spinner name="bubbles"></ion-spinner>
+		} @else {
+		<ion-grid>
+			<ion-row>
+				<ion-col size="6" class="filiali-col">
+					<ion-item class="barra-ricerca">
+						<ion-input
+							placeholder="Indirizzo Filiale"
+							[(ngModel)]="searchFiliale"
+							(ionInput)="filtroFiliali()"
+						></ion-input>
+					</ion-item>
 
-						<ion-list class ="filiali-list">
-							@for(f of filialiFiltrate; track f.id_filiale) {
-								<ion-item class = "filiale">
-									<ion-avatar slot="start">
-										<img [src]="f.immagine" alt="Immagine della Filiale" class="immagine-filiale">
-									</ion-avatar>
-									<ion-label>
-										<h2>{{ f.indirizzo }}</h2>
-										<p>{{ f.comune }}</p>
-										<p>12:00 - 15:00</p>
-										<p>19:00 - 22:00</p>
-									</ion-label>
-								</ion-item>
-							}
-						</ion-list>
-					</ion-col>
-					<ion-col size="6">
-						<ion-item class="map-card">
-								<ion-card-content class="map-card-content">
-									<app-leaflet-map></app-leaflet-map>
-								</ion-card-content>
+					<ion-list class="filiali-list">
+						@for(f of filialiFiltrate; track f.id_filiale) {
+						<ion-item class="filiale">
+							<ion-avatar slot="start">
+								<img
+									[src]="f.immagine"
+									alt="Immagine della Filiale"
+									class="immagine-filiale"
+								/>
+							</ion-avatar>
+							<ion-label>
+								<h2>{{ f.indirizzo }}</h2>
+								<p>{{ f.comune }}</p>
+								<p>12:00 - 15:00</p>
+								<p>19:00 - 22:00</p>
+							</ion-label>
 						</ion-item>
-					</ion-col>
-				</ion-row>
-			</ion-grid>
+						}
+					</ion-list>
+				</ion-col>
+				<ion-col size="6">
+					<ion-item class="map-card">
+						<ion-card-content class="map-card-content">
+							<app-leaflet-map></app-leaflet-map>
+						</ion-card-content>
+					</ion-item>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
 		}
 	</div>
 </ion-content>

@@ -1,26 +1,26 @@
 :host {
-  display: block;
-  width: 100%;
-  height: 100%;
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 
 .map {
-  width: 100%;
-  height: 100%;
-  background-color: #a6cfd1; // opzionale
+	width: 100%;
+	height: 100%;
+	background-color: #a6cfd1; // opzionale
 }
 
 .marker-img {
-  width: 40px;
-  height: 40px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 50%; // Arrotonda completamente
-  border: 2px solid white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+	width: 40px;
+	height: 40px;
+	background-size: cover;
+	background-position: center;
+	border-radius: 50%; // Arrotonda completamente
+	border: 2px solid white;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 }
 
-.loading-wrapper{
+.loading-wrapper {
 	height: 100%;
 	width: 100%;
 	display: flex;
@@ -28,7 +28,15 @@
 	align-items: center;
 }
 
-ion-spinner{
-  width: 100px;
-  height: 100px;
+ion-spinner {
+	width: 100px;
+	height: 100px;
+}
+
+.mapError {
+	background-color: red;
+	padding: 30px;
+	text-align: center;
+	width: 100%;
+	height: 100%;
 }

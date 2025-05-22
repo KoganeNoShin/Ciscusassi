@@ -1,64 +1,77 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>
-      Titolo della Pagina
-    </ion-title>
-  </ion-toolbar>
+	<ion-toolbar color="primary">
+		<ion-title> Titolo della Pagina </ion-title>
+	</ion-toolbar>
 </ion-header>
 
-
-
 <ion-content [fullscreen]="true" class="ion-padding">
- <div class="page-title">Gestisci piatti  <ion-chip>Default</ion-chip>
-<ion-chip color="primary">Antipasti</ion-chip>
-<ion-chip color="secondary">Primi</ion-chip>
-<ion-chip color="success">Bevande</ion-chip>
-<ion-chip color="warning">Dolci</ion-chip>
-<ion-chip color="danger">Tutti</ion-chip>
- </div>
- <div class="input-row">
-  <div class="input-wrapper">
-    <ion-input placeholder="Cerca un piatto..."></ion-input>
-  </div>
-  <!-- Puoi aggiungere altri elementi qui, se vuoi -->
-</div>
-  <div class="grid-container">
-   <div class="center-container">
-  <ion-button [routerLink]="['/aggiungi-piatti']" class="circle-button">+<ion-icon name="add" ></ion-icon>
-  </ion-button>
-  </div>
-    @for (p of piatti; track p.id_prodotto ){
-      <ion-card>
-        <ion-icon name="star-outline" class="star-icon" ></ion-icon > <!-- Stellina -->
-        <ion-img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante"></ion-img>
+	<div class="page-title">
+		Gestisci piatti <ion-chip>Default</ion-chip>
+		<ion-chip color="primary">Antipasti</ion-chip>
+		<ion-chip color="secondary">Primi</ion-chip>
+		<ion-chip color="success">Bevande</ion-chip>
+		<ion-chip color="warning">Dolci</ion-chip>
+		<ion-chip color="danger">Tutti</ion-chip>
+	</div>
+	<div class="input-row">
+		<div class="input-wrapper">
+			<ion-input placeholder="Cerca un piatto..."></ion-input>
+		</div>
+		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
+	</div>
+	<div class="grid-container">
+		<div class="center-container">
+			<ion-button
+				[routerLink]="['/aggiungi-piatti']"
+				class="circle-button"
+				>+<ion-icon name="add"></ion-icon>
+			</ion-button>
+		</div>
+		@for (p of piatti; track p.id_prodotto ){
+		<ion-card>
+			<ion-icon name="star-outline" class="star-icon"></ion-icon>
+			<!-- Stellina -->
+			<ion-img
+				[src]="p.immagine"
+				alt="Immagine del piatto"
+				class="immagine-rotante"
+			></ion-img>
 
-        <ion-card-header>
-          
-          <ion-card-title>{{ p.nome }} - {{ p.costo }} €</ion-card-title>
-      
-          Categoria: {{ p.categoria }}<br>
-          Id prodotto: {{p.id_prodotto}}<br>
-        </ion-card-header>
+			<ion-card-header>
+				<ion-card-title>{{ p.nome }} - {{ p.costo }} €</ion-card-title>
 
-        <ion-card-content>
-          <p>{{ p.descrizione }}</p>
-          <div class="button-vertical">
-            <ion-button expand="block" [routerLink]="['/modifica-piatti']" color="secondary">Modifica piatto</ion-button>
-            <ion-button (click)="showAlert(p)" expand="block" color="primary">Cancella piatto</ion-button>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    }
-  </div>
+				Categoria: {{ p.categoria }}<br />
+				Id prodotto: {{p.id_prodotto}}<br />
+			</ion-card-header>
 
-   <!-- Alert fuori dal ciclo -->
- <ion-alert
-  [isOpen]="isAlertOpen"
-  header="Conferma"
-  [message]="'Vuoi rimuovere il piatto: ' + (selectedProdotto?.nome || '') + '?'"
-  [buttons]="alertButtons"
-  (didDismiss)="isAlertOpen = false">
-</ion-alert>
+			<ion-card-content>
+				<p>{{ p.descrizione }}</p>
+				<div class="button-vertical">
+					<ion-button
+						expand="block"
+						[routerLink]="['/modifica-piatti']"
+						color="secondary"
+						>Modifica piatto</ion-button
+					>
+					<ion-button
+						(click)="showAlert(p)"
+						expand="block"
+						color="primary"
+						>Cancella piatto</ion-button
+					>
+				</div>
+			</ion-card-content>
+		</ion-card>
+		}
+	</div>
+
+	<!-- Alert fuori dal ciclo -->
+	<ion-alert
+		[isOpen]="isAlertOpen"
+		header="Conferma"
+		[message]="'Vuoi rimuovere il piatto: ' + (selectedProdotto?.nome || '') + '?'"
+		[buttons]="alertButtons"
+		(didDismiss)="isAlertOpen = false"
+	>
+	</ion-alert>
 </ion-content>
-
-

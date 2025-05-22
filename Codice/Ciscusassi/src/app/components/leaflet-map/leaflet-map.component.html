@@ -1,9 +1,16 @@
-@if (loading){
-    <div class="loading-wrapper">
-        <ion-spinner name=""></ion-spinner>
-    </div>
+@if (loading) {
+	<div class="loading-wrapper">
+		<ion-spinner name=""></ion-spinner>
+	</div>
+} @else {
+	@if (!error) {
+		<div id="map" class="map"></div>
+	} @else {
+		<div class="mapError">
+			<h1>ERRORE</h1>
+			<h3>
+				C'è stato un errore durante il caricamento della mappa. Riprova!
+			</h3>
+		</div>
+	}
 }
-@else {
-    <div id="map" class="map"></div>
-}
-

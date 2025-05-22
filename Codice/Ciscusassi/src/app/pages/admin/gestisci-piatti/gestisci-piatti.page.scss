@@ -1,149 +1,147 @@
 .page-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  font-family: 'LucidaCalligraphy';
-  font-style: normal;
-  font-weight: lighter;
-  color:black;
-  padding:1rem;
-  display: row;
+	text-align: center;
+	font-size: 2rem;
+	margin-bottom: 1rem;
+	font-family: 'LucidaCalligraphy';
+	font-style: normal;
+	font-weight: lighter;
+	color: black;
+	padding: 1rem;
+	display: row;
 }
 
 ion-content {
-  --background: white;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  padding: 60px 16px 16px 16px; /* 60px sopra, 16px ai lati e sotto */
-  min-height: 100vh;
-  /* rimuovi margin se non serve */
+	--background: white;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 16px;
+	padding: 60px 16px 16px 16px; /* 60px sopra, 16px ai lati e sotto */
+	min-height: 100vh;
+	/* rimuovi margin se non serve */
 }
 
-
 ion-card {
-  flex: 1 1 calc(50% - 16px); /* 2 card per riga base */
-  max-width: 300px;
-  min-width: 250px;
-  background-color: #f0f0f5; /* grigio chiaro */
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-  cursor: pointer;
+	flex: 1 1 calc(50% - 16px); /* 2 card per riga base */
+	max-width: 300px;
+	min-width: 250px;
+	background-color: #f0f0f5; /* grigio chiaro */
+	border-radius: 12px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s ease;
+	cursor: pointer;
 }
 
 ion-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+	transform: translateY(-6px);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 ion-card ion-card-title {
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  font-weight: 700;
-  color: #34495e;
-  font-size: 1.4rem;
-  margin-bottom: 4px;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+	font-family: 'Comic Sans MS', cursive, sans-serif;
+	font-weight: 700;
+	color: #34495e;
+	font-size: 1.4rem;
+	margin-bottom: 4px;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 ion-card ion-card-content p {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-style: italic;
-  color: #6c757d;
-  font-size: 1rem;
-  line-height: 1.4;
-  margin-top: 0;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-style: italic;
+	color: #6c757d;
+	font-size: 1rem;
+	line-height: 1.4;
+	margin-top: 0;
 }
 
 /* Media query per 3 card su desktop */
 @media (min-width: 900px) {
-  ion-card {
-    flex: 1 1 calc(33.333% - 16px); /* 3 card per riga */
-  }
+	ion-card {
+		flex: 1 1 calc(33.333% - 16px); /* 3 card per riga */
+	}
 }
 
 .grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
-  padding: 16px 0; /* opzionale: spazio verticale */
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 16px;
+	padding: 16px 0; /* opzionale: spazio verticale */
 }
 
 .button-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  margin-top: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	margin-top: 12px;
 }
 
 .star-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 28px;
-  color: #444;
-  cursor: pointer;
-  transition: color 0.3s ease;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 28px;
+	color: #444;
+	cursor: pointer;
+	transition: color 0.3s ease;
 }
 
 .star-icon:hover {
-  color: gold;
+	color: gold;
 }
 .star-icon.active {
-  color: gold;
+	color: gold;
 }
 
 ion-button {
-  --background: #007bff; /* blu */
-  --color: white;
-  --border-radius: 8px;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  font-weight: bold;
-  font-size: 1.2rem;
-  padding: 10px 10px;
+	--background: #007bff; /* blu */
+	--color: white;
+	--border-radius: 8px;
+	font-family: 'Comic Sans MS', cursive, sans-serif;
+	font-weight: bold;
+	font-size: 1.2rem;
+	padding: 10px 10px;
 }
 
 .circle-button {
-  --background: #28a745 !important; /* forza verde */
-  --color: white;
-  width: 100px;
-  height: 100px;
-  border-radius: 50% !important;
-  padding: 0 !important;
-  min-width: 0;
-  --border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
+	--background: #28a745 !important; /* forza verde */
+	--color: white;
+	width: 100px;
+	height: 100px;
+	border-radius: 50% !important;
+	padding: 0 !important;
+	min-width: 0;
+	--border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 40px;
 }
 
 .circle-button ion-icon {
-  font-size: 50px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
+	font-size: 50px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
 }
 
 .center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh; /* oppure altezza del contenitore */
-  
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh; /* oppure altezza del contenitore */
 }
 
 .input-row {
-  display: flex;
-  align-items: center;   /* allinea verticalmente */
-  justify-content: flex-start; /* tutto a sinistra */
-  gap: 1rem;             /* spazio tra gli elementi della riga */
+	display: flex;
+	align-items: center; /* allinea verticalmente */
+	justify-content: flex-start; /* tutto a sinistra */
+	gap: 1rem; /* spazio tra gli elementi della riga */
 }
 
 .input-wrapper {
-  flex: 0 0 auto;        /* larghezza minima per l'input */
-  width: 500px;          /* dimensione fissa o cambia a piacere */
-  color:black;
-  background-color: rgba(255, 255, 255, 0.7);;
+	flex: 0 0 auto; /* larghezza minima per l'input */
+	width: 500px; /* dimensione fissa o cambia a piacere */
+	color: black;
+	background-color: rgba(255, 255, 255, 0.7);
 }

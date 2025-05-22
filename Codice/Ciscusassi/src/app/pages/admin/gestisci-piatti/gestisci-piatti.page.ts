@@ -1,84 +1,122 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonAlert, IonContent, IonHeader, IonImg, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
-import { ProdottiService } from 'src/app/core/services/prodotto.service';
-import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
+import {
+	IonChip,
+	IonInput,
+	IonCard,
+	IonCardContent,
+	IonCardHeader,
+	IonCardTitle,
+	IonAlert,
+	IonContent,
+	IonHeader,
+	IonImg,
+	IonTitle,
+	IonToolbar,
+	IonButton,
+	IonIcon,
+} from '@ionic/angular/standalone';
+import { ProdottoService } from 'src/app/core/services/prodotto.service';
 import { starOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { RouterModule } from '@angular/router';
-import { IonChip } from '@ionic/angular/standalone';
-import { IonInput } from '@ionic/angular/standalone';
+
+import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 
 @Component({
-  selector: 'app-gestisci-piatti',
-  templateUrl: './gestisci-piatti.page.html',
-  styleUrls: ['./gestisci-piatti.page.scss'],
-  standalone: true,
-  imports: [IonContent, RouterModule, IonInput, IonHeader, IonTitle, IonAlert, IonToolbar, CommonModule, FormsModule, IonCard, IonImg, IonChip, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon]
+	selector: 'app-gestisci-piatti',
+	templateUrl: './gestisci-piatti.page.html',
+	styleUrls: ['./gestisci-piatti.page.scss'],
+	standalone: true,
+	imports: [
+		IonContent,
+		RouterModule,
+		IonInput,
+		IonHeader,
+		IonTitle,
+		IonAlert,
+		IonToolbar,
+		CommonModule,
+		FormsModule,
+		IonCard,
+		IonImg,
+		IonChip,
+		IonCardHeader,
+		IonCardTitle,
+		IonCardContent,
+		IonButton,
+		IonIcon,
+	],
 })
 export class GestisciPiattiPage implements OnInit {
-  piatti: ProdottoRecord[] = [];
-  loading: boolean = true;
+	piatti: ProdottoRecord[] = [];
+	loading: boolean = true;
+	error: boolean = false;
 
-  constructor(private prodottiService: ProdottiService) { addIcons({ starOutline }); }
+	constructor(private prodottoService: ProdottoService) {
+		addIcons({ starOutline });
+	}
 
-  ngOnInit() {
-    this.prodottiService.GetProdotti().subscribe({
-      next: (response) => {
-        console.log(response);
-        this.piatti = response;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.loading = false;
-        this.piatti = [];
-      }
-    })
+	private handleResponse(response: ApiResponse<ProdottoRecord[]>): void {
+		console.log(response);
 
-  }
+		if (response.success && response.data) {
+			this.piatti = response.data;
+		} else {
+			console.error(response.message || 'Errore sconosciuto');
+			this.error = true;
+		}
 
-  isAlertOpen = false;
-  selectedProdotto: ProdottoRecord | null = null;
+		this.loading = false;
+	}
 
-  showAlert(prodotto: ProdottoRecord) {
-    this.selectedProdotto = prodotto;
-    this.isAlertOpen = true;
-  }
+	ngOnInit() {
+		this.prodottoService.GetProdotti().subscribe({
+			next: (response) => this.handleResponse(response),
+			error: (err) => {
+				console.error(err);
+				this.loading = false;
+				this.error = true;
+			},
+		});
+	}
 
-  onConfirm() {
-    if (this.selectedProdotto) {
-      console.log('Confermata rimozione filiale:', this.selectedProdotto);
-      // Qui puoi chiamare il servizio per rimuovere la filiale, per esempio:
-      // this.filialiServiceService.rimuoviFiliale(this.selectedFiliale.id_filiale).subscribe(...);
-      // Poi aggiorna la lista, rimuovendo la filiale localmente o rifacendo la fetch
-    }
-    this.isAlertOpen = false;
-    this.selectedProdotto = null;
-  }
+	isAlertOpen = false;
+	selectedProdotto: ProdottoRecord | null = null;
 
-  onCancel() {
-    console.log('Rimozione annullata');
-    this.isAlertOpen = false;
-    this.selectedProdotto = null;
-  }
-  alertButtons = [
-    {
-      text: 'Annulla',
-      role: 'cancel',
-      handler: () => this.onCancel()
-    },
-    {
-      text: 'OK',
-      role: 'confirm',
-      handler: () => this.onConfirm()
-    }
-  ];
+	showAlert(prodotto: ProdottoRecord) {
+		this.selectedProdotto = prodotto;
+		this.isAlertOpen = true;
+	}
 
+	onConfirm() {
+		if (this.selectedProdotto) {
+			console.log('Confermata rimozione filiale:', this.selectedProdotto);
+			// Qui puoi chiamare il servizio per rimuovere la filiale, per esempio:
+			// this.filialiServiceService.rimuoviFiliale(this.selectedFiliale.id_filiale).subscribe(...);
+			// Poi aggiorna la lista, rimuovendo la filiale localmente o rifacendo la fetch
+		}
+		this.isAlertOpen = false;
+		this.selectedProdotto = null;
+	}
+
+	onCancel() {
+		console.log('Rimozione annullata');
+		this.isAlertOpen = false;
+		this.selectedProdotto = null;
+	}
+	alertButtons = [
+		{
+			text: 'Annulla',
+			role: 'cancel',
+			handler: () => this.onCancel(),
+		},
+		{
+			text: 'OK',
+			role: 'confirm',
+			handler: () => this.onConfirm(),
+		},
+	];
 }
-
-
-
-
-
-

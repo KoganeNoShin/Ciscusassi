@@ -5,11 +5,11 @@ import { HeroComponent } from 'src/app/components/hero/hero.component';
 import { PiattoDelGiornoComponent } from 'src/app/components/piatto-del-giorno/piatto-del-giorno.component';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
-  imports: [IonContent, HeroComponent, PiattoDelGiornoComponent],
+	selector: 'app-home',
+	templateUrl: 'home.page.html',
+	styleUrls: ['home.page.scss'],
+	imports: [IonContent, HeroComponent, PiattoDelGiornoComponent],
 })
 export class HomePage {
-  constructor() { }
+	constructor() {}
 }
