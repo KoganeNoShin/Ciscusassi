@@ -142,6 +142,19 @@ export class GestisciPiattiPage implements OnInit {
 		this.filteredPiatti = this.piatti;
 	}
 
+	filterPiattoDelGiorno() {
+  if (this.piattoDelGiorno) {
+    this.filteredPiatti = this.piatti.filter(
+      p => p.id_prodotto === this.piattoDelGiorno!.id_prodotto
+    );
+    this.selectedCategoria = 'PiattoDelGiorno';
+  } else {
+    this.filteredPiatti = [];
+    this.selectedCategoria = 'PiattoDelGiorno';
+  }
+}
+
+
 	applyFilters() {
 		const categoria = this.selectedCategoria;
 		const term = this.searchTerm.toLowerCase();
