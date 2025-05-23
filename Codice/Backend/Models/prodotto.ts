@@ -147,7 +147,6 @@ export class Prodotto {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE prodotti SET is_piatto_giorno = 0 WHERE is_piatto_giorno = 1',
-				[id],
 				function (this: RunResult, err: Error | null) {
 					if (err) reject(err);
 					else resolve();

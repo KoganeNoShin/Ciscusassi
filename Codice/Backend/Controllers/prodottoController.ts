@@ -103,10 +103,11 @@ class ProdottoController {
 
 			res.json({ success: true, message: 'Piatto del giorno cambiato con successo' });
 		} catch (err) {
-			console.error(err);
+			console.error("Errore interno:", err);
 			res.status(500).json({
 				success: false,
-				message: 'Errore interno del server',
+				message: "Errore interno del server",
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
