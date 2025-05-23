@@ -5,16 +5,23 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-	<div class="page-title">
-		Modifica dipendenti <ion-chip>Default</ion-chip>
-		<ion-chip color="primary">Chef</ion-chip>
-		<ion-chip color="secondary">Camerieri</ion-chip>
-		<ion-chip color="success">Amministratori</ion-chip>
-		<ion-chip color="danger">Tutti</ion-chip>
-	</div>
+<div class="page-title">
+  Modifica dipendenti 
+  <ion-chip [outline]="selectedCategoria !== 'Chef'" color="primary" (click)="filterChef()">Chef</ion-chip>
+  <ion-chip [outline]="selectedCategoria !== 'camerieri'" color="secondary" (click)="filterCamerieri()">Camerieri</ion-chip>
+  <ion-chip [outline]="selectedCategoria !== 'Amministratori'" color="success" (click)="filterAmministratori()">Amministratori</ion-chip>
+  <ion-chip [outline]="selectedCategoria !== 'Tutti'" color="danger" (click)="filterTutti()">Tutti</ion-chip>
+</div>
+
+
 	<div class="input-row">
 		<div class="input-wrapper">
-			<ion-input placeholder="Cerca un dipendente..."></ion-input>
+			<ion-input
+  [(ngModel)]="searchTerm"
+  (ionInput)="applyFilters()"
+  placeholder="Cerca un dipendente..."
+></ion-input>
+
 		</div>
 		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
 	</div>
@@ -25,7 +32,7 @@
 				>+<ion-icon name="add"></ion-icon>
 			</ion-button>
 		</div>
-		@for (p of dipendenti; track p.matricola ){
+		@for (p of filteredDipendenti; track p.matricola ){
 		<ion-card>
 			<ion-img
 				[src]="p.foto"
@@ -34,7 +41,7 @@
 			></ion-img>
 
 			<ion-card-header>
-				<ion-card-title>{{ p.nome }}  {{ p.cognome }} €</ion-card-title>
+				<ion-card-title>{{ p.nome }}  {{ p.cognome }} </ion-card-title>
         matricola:: {{ p.matricola }}<br />
 				Ruolo: {{ p.ruolo }}<br />
         Email: {{p.email}}<br />
@@ -46,12 +53,13 @@
 					<ion-button
 						expand="block"
 						color="secondary"
-						>Modifica piatto</ion-button
+						>Modifica dati dipendente</ion-button
 					>
 					<ion-button
 						expand="block"
 						color="primary"
-						>Cancella piatto</ion-button
+						(click)="showAlert(p)"
+						>Licenzia dipendente</ion-button
 					>
 				</div>
 			</ion-card-content>
@@ -60,5 +68,18 @@
 	</div>
 
 	<!-- Alert fuori dal ciclo -->
+	<ion-alert
+  [isOpen]="isAlertOpen"
+  header="Conferma"
+  [message]="
+    'Vuoi licenziare il dipendente:' + ' ' +
+    (selectedDipendente?.nome || '') + ' ' + (selectedDipendente?.cognome || '') + ', ' +
+    'Ruolo: ' + (selectedDipendente?.ruolo || '') 
+  "
+  [buttons]="alertButtons"
+  (didDismiss)="isAlertOpen = false"
+>
+</ion-alert>
+
 
 </ion-content>
