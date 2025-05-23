@@ -70,16 +70,6 @@ export class Ordine {
 			);
 		});
 	}
-
-	// Aggiorna pagamento
-	/*static async updatePagamento(id: number, idPagamento: number): Promise<RunResult>{
-        return new Promise((resolve, reject) => {
-            db.run('UPDATE pagamenti SET importo = ? WHERE id_pagamento = ?', [id, idPagamento], (err: Error | null, row: RunResult) => {
-                if (err) reject(err);
-                resolve(row);
-            });
-        });
-    }*/
 }
 
 export default Ordine;

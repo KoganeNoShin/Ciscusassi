@@ -18,7 +18,12 @@ router.put('/updateProdotto/:id', ProdottoController.updateProdotto);
 router.delete('/deleteProdotto/:id', ProdottoController.deleteProdotto);
 router.put('/chargePiattoDelGiorno/:id', ProdottoController.chargePiattoDelGiorno);
 
+// Route per le Filiali
 router.get('/filiali', FilialeController.getAllFiliali);
+router.post('/addFiliale', FilialeController.addFiliale);
+router.put('/updateFiliale/:id', FilialeController.updateFiliale);
+router.delete('/deleteFiliale/:id', FilialeController.deleteFiliale);
+
 router.get('/impiegati', ImpiegatoController.getAllImpiegati);
 
 
