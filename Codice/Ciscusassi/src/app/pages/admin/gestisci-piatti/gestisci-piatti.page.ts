@@ -18,7 +18,7 @@ import {
 	IonIcon,
 } from '@ionic/angular/standalone';
 import { ProdottoService } from 'src/app/core/services/prodotto.service';
-import { starOutline } from 'ionicons/icons';
+import { starOutline, star } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { RouterModule } from '@angular/router';
 
@@ -58,25 +58,15 @@ export class GestisciPiattiPage implements OnInit {
 	selectedCategoria: string = 'Tutti';
 	searchTerm: string = '';
 
+	piattoDelGiorno: ProdottoRecord | null = null;
+
 	constructor(private prodottoService: ProdottoService) {
-		addIcons({ starOutline });
-	}
-
-	private handleResponse(response: ApiResponse<ProdottoRecord[]>): void {
-		console.log(response);
-
-		if (response.success && response.data) {
-			this.piatti = response.data;
-			this.filterTutti(); 
-		} else {
-			console.error(response.message || 'Errore sconosciuto');
-			this.error = true;
-		}
-
-		this.loading = false;
+		addIcons({ starOutline, star });
 	}
 
 	ngOnInit() {
+		this.caricaPiattoDelGiorno();
+
 		this.prodottoService.GetProdotti().subscribe({
 			next: (response) => this.handleResponse(response),
 			error: (err) => {
@@ -86,41 +76,82 @@ export class GestisciPiattiPage implements OnInit {
 			},
 		});
 	}
+
+	private handleResponse(response: ApiResponse<ProdottoRecord[]>): void {
+		if (response.success && response.data) {
+			this.piatti = response.data;
+			this.filterTutti(); 
+		} else {
+			console.error(response.message || 'Errore sconosciuto');
+			this.error = true;
+		}
+		this.loading = false;
+	}
+
+	caricaPiattoDelGiorno(): void {
+		this.prodottoService.GetPiattoDelGiorno().subscribe({
+			next: (response) => {
+				if (response.success && response.data) {
+					this.piattoDelGiorno = response.data;
+				}
+			},
+			error: (err) => console.error('Errore nel caricamento del piatto del giorno', err),
+		});
+	}
+
+	selezionaPiattoDelGiorno(piatto: ProdottoRecord): void {
+		const isAlreadySelected = this.piattoDelGiorno?.id_prodotto === piatto.id_prodotto;
+
+		if (isAlreadySelected) {
+			this.piattoDelGiorno = null;
+			this.prodottoService.chargePiattoDelGiorno(0).subscribe({
+				next: () => console.log('Piatto del giorno rimosso'),
+				error: (err) => console.error('Errore nella rimozione del piatto del giorno', err),
+			});
+		} else {
+			this.piattoDelGiorno = piatto;
+			this.prodottoService.chargePiattoDelGiorno(piatto.id_prodotto).subscribe({
+				next: () => console.log('Piatto del giorno impostato:', piatto.nome),
+				error: (err) => console.error('Errore nell’impostazione del piatto del giorno', err),
+			});
+		}
+	}
+
 	filterAntipasti() {
-    this.selectedCategoria = 'Antipasti';
-    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'ANTIPASTO');
-  }
+		this.selectedCategoria = 'Antipasti';
+		this.filteredPiatti = this.piatti.filter(p => p.categoria === 'ANTIPASTO');
+	}
 
-  filterPrimi() {
-    this.selectedCategoria = 'Primi';
-    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'PRIMO');
-  }
+	filterPrimi() {
+		this.selectedCategoria = 'Primi';
+		this.filteredPiatti = this.piatti.filter(p => p.categoria === 'PRIMO');
+	}
 
-  filterBevande() {
-    this.selectedCategoria = 'Bevande';
-    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'BEVANDA');
-  }
+	filterBevande() {
+		this.selectedCategoria = 'Bevande';
+		this.filteredPiatti = this.piatti.filter(p => p.categoria === 'BEVANDA');
+	}
 
-  filterDolci() {
-    this.selectedCategoria = 'Dolci';
-    this.filteredPiatti = this.piatti.filter(p => p.categoria === 'DOLCE');
-  }
+	filterDolci() {
+		this.selectedCategoria = 'Dolci';
+		this.filteredPiatti = this.piatti.filter(p => p.categoria === 'DOLCE');
+	}
 
-  filterTutti() {
-    this.selectedCategoria = 'Tutti';
-    this.filteredPiatti = this.piatti;
-  }
+	filterTutti() {
+		this.selectedCategoria = 'Tutti';
+		this.filteredPiatti = this.piatti;
+	}
 
-  applyFilters() {
-  const categoria = this.selectedCategoria;
-  const term = this.searchTerm.toLowerCase();
+	applyFilters() {
+		const categoria = this.selectedCategoria;
+		const term = this.searchTerm.toLowerCase();
 
-  this.filteredPiatti = this.piatti.filter(p => {
-    const matchCategoria = categoria === 'Tutti' || p.categoria === categoria;
-    const matchSearch = p.nome.toLowerCase().includes(term) || p.descrizione.toLowerCase().includes(term);
-    return matchCategoria && matchSearch;
-  });
-}
+		this.filteredPiatti = this.piatti.filter(p => {
+			const matchCategoria = categoria === 'Tutti' || p.categoria === categoria;
+			const matchSearch = p.nome.toLowerCase().includes(term) || p.descrizione.toLowerCase().includes(term);
+			return matchCategoria && matchSearch;
+		});
+	}
 
 	isAlertOpen = false;
 	selectedProdotto: ProdottoRecord | null = null;
@@ -132,10 +163,8 @@ export class GestisciPiattiPage implements OnInit {
 
 	onConfirm() {
 		if (this.selectedProdotto) {
-			console.log('Confermata rimozione filiale:', this.selectedProdotto);
-			// Qui puoi chiamare il servizio per rimuovere la filiale, per esempio:
-			// this.filialiServiceService.rimuoviFiliale(this.selectedFiliale.id_filiale).subscribe(...);
-			// Poi aggiorna la lista, rimuovendo la filiale localmente o rifacendo la fetch
+			console.log('Confermata rimozione del prodotto:', this.selectedProdotto);
+			// this.prodottoService.deleteProdotto(this.selectedProdotto.id_prodotto).subscribe(...);
 		}
 		this.isAlertOpen = false;
 		this.selectedProdotto = null;
@@ -146,6 +175,7 @@ export class GestisciPiattiPage implements OnInit {
 		this.isAlertOpen = false;
 		this.selectedProdotto = null;
 	}
+
 	alertButtons = [
 		{
 			text: 'Annulla',
