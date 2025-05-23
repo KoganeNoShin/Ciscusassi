@@ -71,27 +71,29 @@ class Cliente {
 	}
 
 	// definiamo il metodo per ritornare tutti i clienti
-	static async findAll(): Promise<ClienteRecord[]> {
+	static async findAll(): Promise<ClienteRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
 				'SELECT * FROM clienti',
 				(err: Error | null, rows: ClienteRecord[]) => {
 					if (err) return reject(err);
-					else resolve(rows);
+					if (!rows) return resolve(null);
+					return resolve(rows);
 				}
 			);
 		});
 	}
 
 	// definisco il metodo per trovare un utente in base all'username
-	static async findByEmail(email: string): Promise<ClienteRecord> {
+	static async findByEmail(email: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM clienti WHERE email = ?',
 				[email],
 				(err: Error | null, row: ClienteRecord) => {
-					if (err) reject(err);
-					else resolve(row);
+					if (err) return reject(err);
+					if (!row) return resolve(null);
+					return resolve(row);
 				}
 			);
 		});
@@ -100,14 +102,42 @@ class Cliente {
 	// ricerca per numero_carta
 	static async findByNumeroCarta(
 		numero_carta: number
-	): Promise<ClienteRecord> {
+	): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM clienti WHERE numero_carta = ?',
 				[numero_carta],
 				(err: Error, row: ClienteRecord) => {
+					if (err) return reject(err);
+					if (!row) return resolve(null);
+					return resolve(row);
+				}
+			);
+		});
+	}
+
+	static async findByToken(token: string): Promise<ClienteRecord | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT * FROM clienti WHERE token = ?',
+				[token],
+				(err: Error, row: ClienteRecord) => {
+					if (err) return reject(err);
+					if (!row) return resolve(null);
+					return resolve(row);
+				}
+			);
+		});
+	}
+
+	static async invalidateToken(numeroCarta: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE clienti SET token = NULL WHERE numero_carta = ?',
+				[numeroCarta],
+				(err: Error | null) => {
 					if (err) reject(err);
-					else resolve(row);
+					else resolve();
 				}
 			);
 		});

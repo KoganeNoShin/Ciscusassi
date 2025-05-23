@@ -21,37 +21,6 @@ class ClienteController {
 			});
 		}
 	}
-
-	static async login(req: Request, res: Response): Promise<void> {
-		try {
-			const logged = await AuthService.login(req.body);
-
-			if (logged) {
-				res.status(200).json({
-					success: true,
-					data: logged,
-				});
-			} else {
-				res.status(401).json({
-					success: false,
-					message: 'Email o password errata!',
-				});
-			}
-		} catch (error: any) {
-			res.status(400).json({
-				success: false,
-				message: 'Errore durante il login: ' + error.message,
-			});
-		}
-	}
-
-	static async logout(req: Request, res: Response): Promise<void> {
-		// #Todo: Invalidare il token
-		res.status(200).json({
-			success: true,
-			message: 'Logout effettuato',
-		});
-	}
 }
 
 export default ClienteController;

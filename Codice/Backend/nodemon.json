@@ -6,6 +6,7 @@
 		"Routes",
 		"Services",
 		"Validators",
+		"Middleware",
 		"server.ts"
 	],
 	"ext": "ts",

@@ -30,11 +30,11 @@ export class Impiegato {
 
 		return new Promise((resolve, reject) => {
 			db.run(
-				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
+				'UPDATE impiegati SET token = ? WHERE matricola = ?',
 				[token, numeroCarta],
 				function (this: RunResult, err: Error) {
 					if (err) return reject(err);
-					else resolve(token);
+					else return resolve(token);
 				}
 			);
 		});
@@ -71,34 +71,65 @@ export class Impiegato {
 					ref_filiale,
 				],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve(this.lastID);
+					if (err) return reject(err);
+					else return resolve(this.lastID);
 				}
 			);
 		});
 	}
 
-	static async findAll(): Promise<ImpiegatoRecord[]> {
+	static async findAll(): Promise<ImpiegatoRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
 				'SELECT * FROM impiegati',
 				(err: Error | null, rows: ImpiegatoRecord[]) => {
-					if (err) reject(err);
-					else resolve(rows);
+					if (err) return reject(err);
+					if (!rows) return resolve(null);
+					return resolve(rows);
 				}
 			);
 		});
 	}
 
 	// ricerca per id
-	static async findByMatricola(matricola: string): Promise<ImpiegatoRecord> {
+	static async findByMatricola(
+		matricola: string
+	): Promise<ImpiegatoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM impiegati WHERE matricola = ?',
 				[matricola],
 				(err: Error | null, row: ImpiegatoRecord) => {
+					if (err) return reject(err);
+					if (!row) return resolve(null);
+					return resolve(row);
+				}
+			);
+		});
+	}
+
+	static async findByToken(token: string): Promise<ImpiegatoRecord | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT * FROM impiegati WHERE token = ?',
+				[token],
+				(err: Error, row: ImpiegatoRecord) => {
+					if (err) return reject(err);
+					if (!row) return resolve(null);
+					return resolve(row);
+				}
+			);
+		});
+	}
+
+	static async invalidateToken(matricola: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE impiegati SET token = NULL WHERE matricola = ?',
+				[matricola],
+				(err: Error | null) => {
 					if (err) reject(err);
-					else resolve(row);
+					else resolve();
 				}
 			);
 		});
