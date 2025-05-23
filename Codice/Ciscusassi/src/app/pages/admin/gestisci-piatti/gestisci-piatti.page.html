@@ -58,7 +58,14 @@
 		</div>
 		@for (p of filteredPiatti; track p.id_prodotto ){
 		<ion-card>
-			<ion-icon name="star-outline" class="star-icon"></ion-icon>
+	<ion-icon
+  [name]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'star' : 'star-outline'"
+  [color]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'warning' : 'medium'"
+  (click)="selezionaPiattoDelGiorno(p)"
+  class="star-icon"
+></ion-icon>
+
+
 			<!-- Stellina -->
 			<ion-img
 				[src]="p.immagine"
