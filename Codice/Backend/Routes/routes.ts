@@ -5,6 +5,7 @@ import ClienteController from '../Controllers/clienteController';
 import AuthValidator from '../Validators/authValidator';
 import ProdottoController from '../Controllers/prodottoController';
 import FilialeController from '../Controllers/filialeController';
+import ImpiegatoController from '../Controllers/impiegatoController';
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.get('/piattoDelGiorno', ProdottoController.getprodottoDelGiorno);
 router.get('/prodotti', ProdottoController.getAllProdotti);
 
 router.get('/filiali', FilialeController.getAllFiliali);
+router.get('/impiegati', ImpiegatoController.getAllImpiegati);
 
 // Registrazione
 //router.post('/register', AuthValidator.registerValidator, AuthValidator.validate, ClienteController.register);

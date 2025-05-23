@@ -61,6 +61,18 @@ export class Impiegato {
 		});
 	}
 
+	static async findAll(): Promise<ImpiegatoRecord[]> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM impiegati',
+				(err: Error | null, rows: ImpiegatoRecord[]) => {
+					if (err) reject(err);
+					else resolve(rows);
+				}
+			);
+		});
+	}
+
 	// ricerca per id
 	static async findByMatricola(matricola: string) {
 		return new Promise((resolve, reject) => {

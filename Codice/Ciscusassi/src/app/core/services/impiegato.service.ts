@@ -4,19 +4,20 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
-import { Dipendente} from '../interfaces/Dipendente';
+import { ImpiegatoRecord } from '../interfaces/Impiegato';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServiceDipendentiService {
+
+export class ImpiegatoService {
     private apiURL = environment.apiURL;
 
   constructor(private http: HttpClient) {}
 
-  GetDipendenti(): Observable<ApiResponse<Dipendente[]>> {
-    return this.http.get<ApiResponse<Dipendente[]>>(
-      `${this.apiURL}/Dipendenti`
+  GetImpiegati(): Observable<ApiResponse<ImpiegatoRecord[]>> {
+    return this.http.get<ApiResponse<ImpiegatoRecord[]>>(
+      `${this.apiURL}/Impiegati`
     );
   }
 }

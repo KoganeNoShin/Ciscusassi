@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonChip, IonInput, IonButton, IonIcon, IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
-import { Dipendente } from 'src/app/core/interfaces/Dipendente';
-import { ServiceDipendentiService } from 'src/app/core/services/service-dipendenti.service';
+import { ImpiegatoRecord } from 'src/app/core/interfaces/Impiegato';
+import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
 
 @Component({
   selector: 'app-modifica-dipendenti',
@@ -14,12 +14,12 @@ import { ServiceDipendentiService } from 'src/app/core/services/service-dipenden
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonChip,IonInput, IonButton, IonIcon, IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardContent]
 })
 export class ModificaDipendentiPage implements OnInit {
-    dipendenti: Dipendente[] = [];
+    dipendenti: ImpiegatoRecord[] = [];
     loading: boolean = true;
     error: boolean = false;
 
-  constructor(private serviceDipendentiService: ServiceDipendentiService) { }
-  private handleResponse(response: ApiResponse<Dipendente[]>): void {
+  constructor(private impiegatoService: ImpiegatoService) { }
+  private handleResponse(response: ApiResponse<ImpiegatoRecord[]>): void {
       console.log(response);
   
       if (response.success && response.data) {
@@ -33,7 +33,7 @@ export class ModificaDipendentiPage implements OnInit {
     }
 
   ngOnInit() {
-    this.serviceDipendentiService.GetDipendenti().subscribe({
+    this.impiegatoService.GetImpiegati().subscribe({
 			next: (response) => this.handleResponse(response),
 			error: (err) => {
 				console.error(err);

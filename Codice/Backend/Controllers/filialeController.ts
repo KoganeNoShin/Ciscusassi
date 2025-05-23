@@ -10,7 +10,7 @@ class FilialeController {
 			else
 				res.status(400).json({
 					success: false,
-					message: 'Nessun piatto trovato',
+					message: 'Nessuna filiale trovata',
 				});
 		} catch (err) {
 			console.error(err);

@@ -1,5 +1,4 @@
-export interface Dipendente {
-  matricola: number; // opzionale perché è autoincrement
+export interface ImpiegatoInput {
   nome: string;
   cognome: string;
   ruolo: string;
@@ -10,4 +9,7 @@ export interface Dipendente {
   ref_filiale: number;
 }
 
+export interface ImpiegatoRecord extends ImpiegatoInput {
+  matricola: number;
+}
 

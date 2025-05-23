@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ServiceDipendentiService } from './service-dipendenti.service';
+import { ServiceDipendentiService } from './impiegato.service';
 
 describe('ServiceDipendentiService', () => {
   let service: ServiceDipendentiService;
