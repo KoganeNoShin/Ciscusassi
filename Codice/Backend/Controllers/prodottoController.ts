@@ -20,6 +20,7 @@ class ProdottoController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
@@ -39,6 +40,7 @@ class ProdottoController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
@@ -51,13 +53,14 @@ class ProdottoController {
 			else
 				res.status(400).json({
 					success: false,
-					message: 'Errore durante l\'aggiunta del piatto',
+					message: 'Errore durante l\'aggiunta del piatto'
 				});
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
@@ -75,6 +78,7 @@ class ProdottoController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
@@ -91,6 +95,7 @@ class ProdottoController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}

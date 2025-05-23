@@ -17,6 +17,7 @@ class FilialeController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
@@ -36,6 +37,7 @@ class FilialeController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
@@ -53,6 +55,7 @@ class FilialeController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
@@ -67,6 +70,7 @@ class FilialeController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
 			});
 		}
 	}
