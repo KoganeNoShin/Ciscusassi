@@ -22,7 +22,9 @@ const registerValidator = [
 ];
 
 const loginValidator = [
-	body('email').notEmpty().isEmail().withMessage("L'email è obbligatoria"),
+	body('emailOMatricola')
+		.notEmpty()
+		.withMessage("L'email o la matricola sono obbligatorie!"),
 	body('password')
 		.notEmpty()
 		.isLength({ min: 6 })

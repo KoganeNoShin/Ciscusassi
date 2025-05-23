@@ -15,7 +15,8 @@ export function createIfDoesntExists(): Promise<string> {
                 data_nascita TEXT,
                 password TEXT NOT NULL,
                 punti INTEGER NOT NULL DEFAULT 0,
-                image BLOB NOT NULL
+                image BLOB NOT NULL,
+				token TEXT UNIQUE
             )`,
 				(err: Error | null) => {
 					if (err) {

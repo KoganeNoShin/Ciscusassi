@@ -1,6 +1,7 @@
 // importo il db
 import { RunResult } from 'sqlite3';
 import db from '../db';
+import crypto from 'crypto';
 
 // importo il modulo bcryptjs per la gestione delle password
 import bcrypt from 'bcryptjs';
@@ -25,6 +26,21 @@ export interface ClienteRecord extends ClienteData {
 
 // Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 class Cliente {
+	static async updateToken(numeroCarta: number): Promise<string> {
+		const token = crypto.randomBytes(64).toString('hex'); // 128 caratteri random
+
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
+				[token, numeroCarta],
+				function (this: RunResult, err: Error) {
+					if (err) return reject(err);
+					resolve(token);
+				}
+			);
+		});
+	}
+
 	// definisco il metodo per creare un nuovo utente
 	static async create(data: ClienteData): Promise<number> {
 		// Definiamo i campi come quelli presi dal data passato come parametro

@@ -1,5 +1,5 @@
 import { ClienteData } from '../Models/cliente';
-import ClienteService from '../Services/clienteService';
+import AuthService from '../Services/authService';
 
 import { Request, Response } from 'express';
 
@@ -7,7 +7,7 @@ class ClienteController {
 	static async register(req: Request, res: Response): Promise<void> {
 		try {
 			const data: ClienteData = req.body;
-			const result = await ClienteService.register(data);
+			const result = await AuthService.register(data);
 
 			res.status(200).json({
 				success: true,
@@ -17,19 +17,19 @@ class ClienteController {
 		} catch (error: any) {
 			res.status(400).json({
 				success: false,
-				message: 'Errore durante la registrazione' + error.message,
+				message: 'Errore durante la registrazione: ' + error.message,
 			});
 		}
 	}
 
 	static async login(req: Request, res: Response): Promise<void> {
 		try {
-			const logged = await ClienteService.login(req.body);
+			const logged = await AuthService.login(req.body);
 
 			if (logged) {
 				res.status(200).json({
 					success: true,
-					message: 'Login effettuato!',
+					data: logged,
 				});
 			} else {
 				res.status(401).json({
@@ -40,14 +40,9 @@ class ClienteController {
 		} catch (error: any) {
 			res.status(400).json({
 				success: false,
-				message: 'Errore durante la registrazione' + error.message,
+				message: 'Errore durante il login: ' + error.message,
 			});
 		}
-
-		res.status(200).json({
-			success: true,
-			message: 'Login effettuato',
-		});
 	}
 
 	static async logout(req: Request, res: Response): Promise<void> {

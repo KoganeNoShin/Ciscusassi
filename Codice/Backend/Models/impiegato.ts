@@ -5,6 +5,8 @@ import db from '../db';
 // importo il modulo bcryptjs per la gestione delle password
 import bcrypt from 'bcryptjs';
 
+import crypto from 'crypto';
+
 // Definiamo il modello dell'impiegatp
 export interface ImpiegatoInput {
 	nome: string;
@@ -23,6 +25,21 @@ export interface ImpiegatoRecord extends ImpiegatoInput {
 
 // Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 export class Impiegato {
+	static async updateToken(numeroCarta: number): Promise<string> {
+		const token = crypto.randomBytes(64).toString('hex'); // 128 caratteri random
+
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
+				[token, numeroCarta],
+				function (this: RunResult, err: Error) {
+					if (err) return reject(err);
+					else resolve(token);
+				}
+			);
+		});
+	}
+
 	// definisco il metodo per creare un nuovo utente
 	static async create(data: ImpiegatoInput) {
 		const {
@@ -74,7 +91,7 @@ export class Impiegato {
 	}
 
 	// ricerca per id
-	static async findByMatricola(matricola: string) {
+	static async findByMatricola(matricola: string): Promise<ImpiegatoRecord> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM impiegati WHERE matricola = ?',

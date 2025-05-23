@@ -17,6 +17,7 @@ export function createIfDoesntExists(): Promise<string> {
                 email TEXT NOT NULL,
                 data_nascita TEXT NOT NULL,
                 ref_filiale INTEGER NOT NULL,
+				token TEXT UNIQUE,
                 FOREIGN KEY (ref_filiale) REFERENCES filiali (id_filiale) 
             )`,
 				(err: Error | null) => {

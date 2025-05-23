@@ -15,7 +15,10 @@ router.get('/prodotti', ProdottoController.getAllProdotti);
 router.post('addProdotto', ProdottoController.addProdotto);
 router.put('/updateProdotto/:id', ProdottoController.updateProdotto);
 router.delete('/deleteProdotto/:id', ProdottoController.deleteProdotto);
-router.put('/chargePiattoDelGiorno/:id', ProdottoController.chargePiattoDelGiorno);
+router.put(
+	'/chargePiattoDelGiorno/:id',
+	ProdottoController.chargePiattoDelGiorno
+);
 
 // Route per le Filiali
 router.get('/filiali', FilialeController.getAllFiliali);
@@ -24,7 +27,6 @@ router.put('/updateFiliale/:id', FilialeController.updateFiliale);
 router.delete('/deleteFiliale/:id', FilialeController.deleteFiliale);
 
 router.get('/impiegati', ImpiegatoController.getAllImpiegati);
-
 
 // Registrazione
 //router.post('/register', AuthValidator.registerValidator, AuthValidator.validate, ClienteController.register);
