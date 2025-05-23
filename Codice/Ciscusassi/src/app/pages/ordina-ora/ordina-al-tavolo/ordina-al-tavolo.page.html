@@ -11,12 +11,12 @@
 							Inserisci l'OTP mostrato sullo schermo della torre
 						</p>
 					</ion-text>
-					<ion-input
+					<ion-input [(ngModel)]="otp"
 						label="Inserisci l'OTP"
 						label-placement="floating"
 						fill="solid"
 					></ion-input>
-					<ion-button
+					<ion-button [routerLink]="['/menu-tavolo']"
 						size="default"
 						fill="solid"
 						shape="round"

@@ -123,6 +123,14 @@ export const routes: Routes = [
     path: 'modifica-dipendenti',
     loadComponent: () => import('./pages/admin/modifica-dipendenti/modifica-dipendenti.page').then( m => m.ModificaDipendentiPage)
   },
+  {
+    path: 'menu-tavolo',
+    loadComponent: () => import('./pages/ordina-ora/ordina-al-tavolo/menu-tavolo/menu-tavolo.page').then( m => m.MenuTavoloPage)
+  },
+  {
+    path: 'menu-asporto',
+    loadComponent: () => import('./pages/ordina-ora/ordina-asporto/menu-asporto/menu-asporto.page').then( m => m.MenuAsportoPage)
+  },
 
 ];
 

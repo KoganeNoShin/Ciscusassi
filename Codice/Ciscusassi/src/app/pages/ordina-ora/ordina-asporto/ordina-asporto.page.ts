@@ -28,6 +28,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, Subject, distinctUntilChanged } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
 	selector: 'app-ordina-asporto',
@@ -52,6 +53,8 @@ import { environment } from 'src/environments/environment';
 		IonCard,
 		IonText,
 		IonButton,
+		FormsModule,
+		RouterModule
 	],
 })
 export class OrdinaAsportoPage implements OnInit {

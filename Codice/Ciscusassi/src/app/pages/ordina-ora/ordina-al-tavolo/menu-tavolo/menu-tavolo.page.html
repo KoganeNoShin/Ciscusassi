@@ -1,0 +1,11 @@
+<ion-content [fullscreen]="true">
+	<app-hero
+		title="MENU"
+		description="Benvenuto {{ nomeUtente }}!<br> Sei al tavolo {{ numeroTavolo }}<br> Protno ad ordinare? Scendi giù!"
+		[backgroundURL]="'MenuTavoloBackground.jpg'"
+	></app-hero>
+
+	<app-piatto-del-giorno></app-piatto-del-giorno>
+
+	<app-lista-menu [isOrdinazione]=true></app-lista-menu>
+</ion-content>

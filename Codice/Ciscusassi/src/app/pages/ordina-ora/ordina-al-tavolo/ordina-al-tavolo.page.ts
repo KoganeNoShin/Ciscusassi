@@ -7,14 +7,12 @@ import {
 	IonCol,
 	IonContent,
 	IonGrid,
-	IonHeader,
 	IonImg,
 	IonRow,
 	IonText,
-	IonTitle,
-	IonToolbar,
 	IonInput,
 } from '@ionic/angular/standalone';
+import { RouterModule } from '@angular/router';
 
 @Component({
 	selector: 'app-ordina-al-tavolo',
@@ -33,9 +31,11 @@ import {
 		IonCard,
 		IonText,
 		IonButton,
+		RouterModule
 	],
 })
 export class OrdinaAlTavoloPage implements OnInit {
+	otp: string = '';
 	constructor() {}
 
 	ngOnInit() {}
