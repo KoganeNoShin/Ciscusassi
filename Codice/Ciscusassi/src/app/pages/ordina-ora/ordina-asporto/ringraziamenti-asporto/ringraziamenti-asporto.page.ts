@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.service';
 import {
 	IonContent,
 	IonHeader,
@@ -35,7 +36,18 @@ import {
 ],
 })
 export class RingraziamentiAsportoPage implements OnInit {
-	constructor() {}
+	constructor(private filialeAsportoService: FilialeAsportoService) {	}
+	filiale: any;
+	tempo: any;
 
-	ngOnInit() {}
+
+	ngOnInit() {
+		this.filiale = this.filialeAsportoService.closestFiliale;
+		this.tempo = this.filialeAsportoService.travelTimeMinutes;
+		console.log('Filiale più vicina:', this.filiale);
+		console.log('Tempo stimato:', this.tempo, 'minuti');
+	}
+
 }
+
+
