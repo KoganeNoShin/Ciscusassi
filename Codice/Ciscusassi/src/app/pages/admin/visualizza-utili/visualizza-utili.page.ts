@@ -14,7 +14,6 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 
-// Per esportare Excel (devi installare xlsx: npm install xlsx)
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -41,18 +40,8 @@ export class VisualizzaUtiliPage implements OnInit {
   selectedYear: number | null = null;
 
   months = [
-    'Gennaio',
-    'Febbraio',
-    'Marzo',
-    'Aprile',
-    'Maggio',
-    'Giugno',
-    'Luglio',
-    'Agosto',
-    'Settembre',
-    'Ottobre',
-    'Novembre',
-    'Dicembre',
+    'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+    'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre',
   ];
 
   years = [2025, 2024, 2023, 2022, 2021];
@@ -62,7 +51,6 @@ export class VisualizzaUtiliPage implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    // Imposta anno di default (opzionale)
     this.selectedYear = this.years[0];
     this.loadDataForYear(this.selectedYear);
   }
@@ -74,48 +62,29 @@ export class VisualizzaUtiliPage implements OnInit {
   }
 
   loadDataForYear(year: number) {
-    // Simulazione caricamento dati da backend (puoi sostituire con chiamata API)
-    // Qui per esempio generiamo numeri casuali per ogni mese e indirizzo
-
     this.rows = [
-      {
-        address: 'Via Vincenzo Piazza Martini, 45',
-        values: this.randomValues(),
-      },
-      {
-        address: 'Via Palmerino , 52/A',
-        values: this.randomValues(),
-      },
-      {
-        address: 'Via Saitta Longhi, 116G',
-        values: this.randomValues(),
-      },
-      {
-        address: 'Via Catania, 17',
-        values: this.randomValues(),
-      },
+      { address: 'Via Vincenzo Piazza Martini, 45', values: this.randomValues() },
+      { address: 'Via Palmerino , 52/A', values: this.randomValues() },
+      { address: 'Via Saitta Longhi, 116G', values: this.randomValues() },
+      { address: 'Via Catania, 17', values: this.randomValues() },
     ];
   }
 
   randomValues(): number[] {
-    // Crea array di 12 valori numerici casuali (da 1000 a 10000)
     return Array.from({ length: 12 }, () =>
       Math.floor(Math.random() * 9000) + 1000
     );
   }
 
-  // Calcola totale per riga
   getRowTotal(row: { values: number[] }): number {
     return row.values.reduce((acc, val) => acc + val, 0);
   }
 
-  // Calcola totale per colonna (mese)
   getColumnTotal(index: number): number {
     if (!this.rows.length) return 0;
     return this.rows.reduce((acc, row) => acc + row.values[index], 0);
   }
 
-  // Calcola totale generale
   getGrandTotal(): number {
     if (!this.rows.length) return 0;
     return this.rows
@@ -123,31 +92,42 @@ export class VisualizzaUtiliPage implements OnInit {
       .reduce((acc, val) => acc + val, 0);
   }
 
+  formatItalianNumber(value: number): string {
+    return value.toLocaleString('it-IT');
+  }
+
   exportExcel() {
-    // Prepara dati in formato tabellare per Excel
     const dataForExcel = [];
 
-    // Header: indirizzo + mesi + totale
+    // Header
     const headerRow = ['INDIRIZZO FILIALE', ...this.months, 'TOTALE'];
     dataForExcel.push(headerRow);
 
-    // Riga dati
+    // Dati righe
     this.rows.forEach((row) => {
       const total = this.getRowTotal(row);
-      dataForExcel.push([row.address, ...row.values, total]);
+      dataForExcel.push([
+        row.address,
+        ...row.values.map((v) => this.formatItalianNumber(v)),
+        this.formatItalianNumber(total),
+      ]);
     });
 
-    // Riga totale per colonne
+    // Totali colonne
     const totalColumns = this.months.map((_, i) => this.getColumnTotal(i));
     const grandTotal = this.getGrandTotal();
-    dataForExcel.push(['TOTALE', ...totalColumns, grandTotal]);
+    dataForExcel.push([
+      'TOTALE',
+      ...totalColumns.map((v) => this.formatItalianNumber(v)),
+      this.formatItalianNumber(grandTotal),
+    ]);
 
-    // Crea worksheet e workbook
+    // Crea foglio e file
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataForExcel);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Utili');
 
-    // Esporta file Excel
+    // Salva file
     XLSX.writeFile(wb, `utili_${this.selectedYear ?? 'anno'}.xlsx`);
   }
 }
