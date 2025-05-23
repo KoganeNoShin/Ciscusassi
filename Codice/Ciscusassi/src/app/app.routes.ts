@@ -131,6 +131,14 @@ export const routes: Routes = [
     path: 'menu-asporto',
     loadComponent: () => import('./pages/ordina-ora/ordina-asporto/menu-asporto/menu-asporto.page').then( m => m.MenuAsportoPage)
   },
+  {
+    path: 'pagamento-asporto',
+    loadComponent: () => import('./pages/ordina-ora/ordina-asporto/pagamento-asporto/pagamento-asporto.page').then( m => m.PagamentoAsportoPage)
+  },
+  {
+    path: 'ringraziamenti-asporto',
+    loadComponent: () => import('./pages/ordina-ora/ordina-asporto/ringraziamenti-asporto/ringraziamenti-asporto.page').then( m => m.RingraziamentiAsportoPage)
+  },
 
 ];
 

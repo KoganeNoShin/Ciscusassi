@@ -1,0 +1,9 @@
+ion-button {
+  position: fixed;
+  font-size: 1rem;
+  bottom: 9%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+--background: var(--ion-color-secondary);
+}

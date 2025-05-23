@@ -1,0 +1,29 @@
+<ion-content fullscreen color="light" class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-align-items-center ion-justify-content-center">
+      <!-- Colonna sinistra: immagine -->
+      <ion-col size="12" size-md="6" class="image-col">
+        <ion-img src="/assets/illustrations/SceltaPagamentoAsporto.png"></ion-img>
+      </ion-col>
+
+      <!-- Colonna destra: form -->
+      <ion-col size="12" size-md="6" class="form-col">
+        <ion-card class="address-card">
+          <h1>PAGAMENTO</h1>
+
+          <ion-card-content>
+            <p>
+              I tuoi ordini: 65 €
+            </p>
+
+
+            <!-- Bottone finale -->
+            <ion-button  [routerLink]="['/ringraziamenti-asporto']" fill="solid" shape="round" color="primary">
+              <ion-text color="light">PAGA</ion-text>
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
