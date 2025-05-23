@@ -129,5 +129,6 @@ export class VisualizzaUtiliPage implements OnInit {
 
     // Salva file
     XLSX.writeFile(wb, `utili_${this.selectedYear ?? 'anno'}.xlsx`);
+    
   }
 }

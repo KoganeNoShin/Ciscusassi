@@ -5,13 +5,14 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonChip, IonInput, IonButt
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ImpiegatoRecord } from 'src/app/core/interfaces/Impiegato';
 import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-modifica-dipendenti',
   templateUrl: './modifica-dipendenti.page.html',
   styleUrls: ['./modifica-dipendenti.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonChip,IonInput, IonAlert, IonButton, IonIcon, IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardContent]
+  imports: [IonContent, RouterLink, IonHeader, IonTitle, IonButton, IonToolbar, CommonModule, FormsModule, IonChip,IonInput, IonAlert, IonButton, IonIcon, IonCard, IonImg, IonCardHeader, IonCardTitle, IonCardContent]
 })
 export class ModificaDipendentiPage implements OnInit {
     dipendenti: ImpiegatoRecord[] = [];

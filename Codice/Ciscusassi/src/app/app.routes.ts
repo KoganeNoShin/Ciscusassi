@@ -139,6 +139,14 @@ export const routes: Routes = [
     path: 'ringraziamenti-asporto',
     loadComponent: () => import('./pages/ordina-ora/ordina-asporto/ringraziamenti-asporto/ringraziamenti-asporto.page').then( m => m.RingraziamentiAsportoPage)
   },
+  {
+    path: 'aggiungi-dipendenti',
+    loadComponent: () => import('./pages/admin/aggiungi-dipendenti/aggiungi-dipendenti.page').then( m => m.AggiungiDipendentiPage)
+  },
+  {
+    path: 'modifica-dati-dipendenti',
+    loadComponent: () => import('./pages/admin/modifica-dati-dipendenti/modifica-dati-dipendenti.page').then( m => m.ModificaDatiDipendentiPage)
+  },
 
 ];
 
