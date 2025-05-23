@@ -16,7 +16,6 @@
 	align-items: center;
 	width: 100vw;
 	height: fit-content;
-    border-bottom: 3px solid var(--ion-color-tertiary);
 }
 
 .plate_giorno {
@@ -29,7 +28,6 @@
 	align-items: center;
 	width: 100vw;
 	height: fit-content;
-    border-bottom: 3px solid var(--ion-color-tertiary);
 }
 
 .plate:last-child {
@@ -50,26 +48,4 @@
 img {
 	width: 250px;
 	height: 250px;
-}
-
-ion-button.aggiungi{
-    --background: var(--ion-color-secondary);
-}
-
-ion-button.rimuovi{
-    --background: var(--ion-color-primary);
-}
-
-ion-button{
-    --color: white;
-    --border-radius: 10px;
-    font-size: 1rem;
-    
-}
-
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
 }

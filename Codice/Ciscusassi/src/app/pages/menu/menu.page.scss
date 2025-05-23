@@ -26,14 +26,6 @@
 	text-decoration: none;
 }
 
-.plate {
-	background-color: var(--ion-color-quartiary);
-}
-
-.plate_giorno {
-	background-color: var(--ion-color-tertiary);
-}
-
 #content {
 	text-align: center;
 	width: 100vw;
@@ -44,48 +36,4 @@
 	align-items: center;
 	z-index: 10;
 	padding-bottom: 5rem;
-}
-
-.plate {
-	display: flex;
-	flex-direction: row;
-	gap: 2rem;
-	padding: 2rem;
-	text-align: left;
-	justify-content: center;
-	align-items: center;
-	width: 100vw;
-	height: fit-content;
-}
-
-.plate_giorno {
-	display: flex;
-	flex-direction: row;
-	gap: 2rem;
-	padding: 2rem;
-	text-align: left;
-	justify-content: center;
-	align-items: center;
-	width: 100vw;
-	height: fit-content;
-}
-
-.plate:last-child {
-	padding-bottom: 5rem;
-}
-
-.plateInfo {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-	text-align: left;
-	justify-content: start;
-	align-items: start;
-	word-wrap: break-word;
-	width: 50%;
-}
-
-img {
-	width: 250px;
-	height: 250px;
 }
