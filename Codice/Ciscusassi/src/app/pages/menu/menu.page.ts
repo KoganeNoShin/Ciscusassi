@@ -9,6 +9,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { PiattoDelGiornoComponent } from '../../components/piatto-del-giorno/piatto-del-giorno.component';
 import { MenuDividerComponent } from '../../components/menu-divider/menu-divider.component';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { ProdottoMenuComponent } from 'src/app/components/prodotto-menu/prodotto-menu.component';
 
 @Component({
 	selector: 'app-menu',
@@ -22,6 +23,7 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 		IonSpinner,
 		PiattoDelGiornoComponent,
 		MenuDividerComponent,
+		ProdottoMenuComponent
 	],
 })
 export class MenuPage implements OnInit {

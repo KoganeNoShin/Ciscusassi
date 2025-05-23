@@ -21,17 +21,7 @@
 		@if(menuAperto === 'antipasti'){
 		<div>
 			@for (a of antipasti; track a.id_prodotto) {
-			<div class="plate">
-				<img
-					[src]="a.immagine"
-					alt="Immagine del piatto"
-					class="immagine-rotante"
-				/>
-				<div class="plateInfo">
-					<h2>{{ a.nome }} - {{ a.costo }} €</h2>
-					<h3>{{ a.descrizione }}</h3>
-				</div>
-			</div>
+			<app-prodotto-menu [prodotto]="a"></app-prodotto-menu>
 			}
 		</div>
 		}
@@ -44,30 +34,10 @@
 		@if(menuAperto === 'primi'){
 		<div>
 			@for (p of primi; track p.id_prodotto) { @if(p.is_piatto_giorno) {
-			<div class="plate_giorno">
-				<img
-					[src]="p.immagine"
-					alt="Immagine del piatto"
-					class="immagine-rotante"
-				/>
-				<div class="plateInfo">
-					<h2>{{ p.nome }} - {{ p.costo }} €</h2>
-					<h3>{{ p.descrizione }}</h3>
-				</div>
-			</div>
+			<app-prodotto-menu [isPiattoGiorno]="true" [prodotto]="p"></app-prodotto-menu>
 			} } @for (p of primi; track p.id_prodotto) {
 			@if(!p.is_piatto_giorno) {
-			<div class="plate">
-				<img
-					[src]="p.immagine"
-					alt="Immagine del piatto"
-					class="immagine-rotante"
-				/>
-				<div class="plateInfo">
-					<h2>{{ p.nome }} - {{ p.costo }} €</h2>
-					<h3>{{ p.descrizione }}</h3>
-				</div>
-			</div>
+			<app-prodotto-menu [prodotto]="p"></app-prodotto-menu>
 			} }
 		</div>
 		}
@@ -80,17 +50,7 @@
 		@if(menuAperto === 'dolci'){
 		<div>
 			@for (d of dolci; track d.id_prodotto) {
-			<div class="plate">
-				<img
-					[src]="d.immagine"
-					alt="Immagine del piatto"
-					class="immagine-rotante"
-				/>
-				<div class="plateInfo">
-					<h2>{{ d.nome }} - {{ d.costo }} €</h2>
-					<h3>{{ d.descrizione }}</h3>
-				</div>
-			</div>
+			<app-prodotto-menu [prodotto]="d"></app-prodotto-menu>
 			}
 		</div>
 		}
@@ -103,17 +63,7 @@
 		@if(menuAperto === 'bevande'){
 		<div>
 			@for (b of bevande; track b.id_prodotto) {
-			<div class="plate">
-				<img
-					[src]="b.immagine"
-					alt="Immagine del piatto"
-					class="immagine-rotante"
-				/>
-				<div class="plateInfo">
-					<h2>{{ b.nome }} - {{ b.costo }} €</h2>
-					<h3>{{ b.descrizione }}</h3>
-				</div>
-			</div>
+			<app-prodotto-menu [prodotto]="b"></app-prodotto-menu>
 			}
 		</div>
 		} }
