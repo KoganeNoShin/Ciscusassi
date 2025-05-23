@@ -18,13 +18,11 @@ import {
 	IonDatetime,
 	IonModal,
 	IonDatetimeButton,
-	IonItem,
 	IonLabel,
 	IonList,
 	IonCardHeader,
 	IonCardTitle,
-	IonCardContent,
-} from '@ionic/angular/standalone';
+	IonCardContent, IonItem } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, Subject, distinctUntilChanged } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -35,7 +33,7 @@ import { Router, RouterModule } from '@angular/router';
 	templateUrl: './ordina-asporto.page.html',
 	styleUrls: ['./ordina-asporto.page.scss'],
 	standalone: true,
-	imports: [
+	imports: [IonItem, 
 		IonCardContent,
 		IonList,
 		IonItem,
@@ -62,6 +60,7 @@ export class OrdinaAsportoPage implements OnInit {
 	results: any[] = [];
 	selectedAddress = '';
 	selectedCoords: { lat: number; lon: number } | null = null;
+	indirizzoScelto = '';
 
 	private searchSubject = new Subject<string>();
 	private tomtomApiKey = environment.tomtomApiKey;
@@ -111,6 +110,14 @@ export class OrdinaAsportoPage implements OnInit {
 			lon: place.position.lon,
 		};
 		this.searchTerm = this.selectedAddress;
+		this.results = [];
+	}
+
+	svuotaCampo(){
+		this.indirizzoScelto = this.selectedAddress
+		this.searchTerm = '';
+		this.selectedAddress = '';
+		this.selectedCoords = null;
 		this.results = [];
 	}
 }
