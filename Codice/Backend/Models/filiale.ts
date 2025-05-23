@@ -78,7 +78,7 @@ export class Filiale {
 	static async addFiliale(id: FilialeInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO filiale (comune, indirizzo, num_tavoli, longitudine, latitudine, immagine) VALUES (?, ?, ?, ?, ?, ?)',
+				'INSERT INTO filiali (comune, indirizzo, num_tavoli, longitudine, latitudine, immagine) VALUES (?, ?, ?, ?, ?, ?)',
 				[
 					id.comune,
 					id.indirizzo,

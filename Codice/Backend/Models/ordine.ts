@@ -70,6 +70,61 @@ export class Ordine {
 			);
 		});
 	}
+
+	// Aggiunta Ordine
+	static async addOrdine(id: OrdineInput): Promise<number> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO ordini username_ordinante, data_ora_ordinazione, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?)',
+				[
+					id.username_ordinante,
+					id.data_ora_ordinazione,
+					id.ref_prenotazione,
+					id.ref_cliente,
+					id.ref_pagamento,
+				],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve(this.lastID);
+				}
+			);
+		})
+	}
+
+	// Modifica Ordine
+	static async updateOrdine(data: OrdineInput, id: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE ordini SET username_ordinante = ?, data_ora_ordinazione = ?, ref_prenotazione = ?, ref_cliente = ?, ref_pagamento = ? WHERE id_ordine = ?',
+				[
+					data.username_ordinante,
+					data.data_ora_ordinazione,
+					data.ref_prenotazione,
+					data.ref_cliente,
+					data.ref_pagamento,
+					id,
+				],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve();
+				}
+			);
+		});
+	}
+
+	// Elimina Piatto
+	static async deleteOrdine(id: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'DELETE FROM ordini WHERE id_ordine = ?',
+				[id],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve();
+				}
+			);
+		});
+	}
 }
 
 export default Ordine;

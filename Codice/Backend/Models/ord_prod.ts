@@ -33,6 +33,18 @@ export class OrdProd {
 		});
 	}
 
+	static async findAll(): Promise<OrdProdRecord[]> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM ord_prod',
+				(err: Error | null, rows: OrdProdRecord[]) => {
+					if (err) reject(err);
+					else resolve(rows);
+				}
+			);
+		});
+	}
+
 	// Ricerca per id
 	static async findById(id: number): Promise<OrdProdRecord> {
 		return new Promise((resolve, reject) => {
@@ -60,6 +72,73 @@ export class OrdProd {
 			);
 		});
 	}
+
+	// Aggiungi un prodotto ordinato
+	static async addProdotto(ref_ordine: number, ref_prodotto: number): Promise<number> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO ord_prod (ref_ordine, ref_prodotto) VALUES (?, ?)',
+				[ref_ordine, ref_prodotto],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve(this.lastID);
+				}
+			);
+		});
+	}
+	
+	// Rimuovi un prodotto ordinato
+	static async removeProdotto(id_ord_prod: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'DELETE FROM ord_prod WHERE id_ord_prod = ?',
+				[id_ord_prod],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve();
+				}
+			);
+		});
+	}
+	// IsRomana cambio
+	static async cambiaRomana(id_ord_prod: number): Promise<void> {
+	return new Promise((resolve, reject) => {
+		db.get(
+			'SELECT is_romana FROM ord_prod WHERE id_ord_prod = ?',
+			[id_ord_prod],
+			(err: Error | null, row: { is_romana: number }) => {
+				if (err) return reject(err);
+				if (!row) return reject(new Error("Ordine non trovato"));
+
+				const nuovoValore = !row.is_romana;
+
+				db.run(
+					'UPDATE ord_prod SET is_romana = ? WHERE id_ord_prod = ?',
+					[nuovoValore, id_ord_prod],
+					function (this: RunResult, err: Error | null) {
+						if (err) reject(err);
+						else resolve();
+					}
+				);
+			}
+		);
+		});
+	}
+
+	// Modifica stato
+	static async modificaStato(id_ord_prod: number, stato: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE ord_prod SET stato = ? WHERE id_ord_prod = ?',
+				[stato, id_ord_prod],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve();
+				}
+			);
+		});
+	}
 }
+
 
 export default OrdProd;
