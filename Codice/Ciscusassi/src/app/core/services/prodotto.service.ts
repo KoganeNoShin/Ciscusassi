@@ -24,4 +24,11 @@ export class ProdottoService {
 			`${this.apiURL}/PiattoDelGiorno`
 		);
 	}
+
+	chargePiattoDelGiorno(id: number): Observable<ApiResponse<ProdottoRecord>> {
+		return this.http.put<ApiResponse<ProdottoRecord>>(
+			`${this.apiURL}/chargePiattoDelGiorno/${id}`,
+			{}
+		);
+	}
 }
