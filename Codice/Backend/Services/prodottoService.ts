@@ -40,6 +40,10 @@ class ProdottoService {
 	static async deleteProdotto(id: number): Promise<void> {
 		return await Prodotto.deleteProdotto(id);
 	}
+
+	static async chargePiattoDelGiorno(id: number): Promise<void> {
+		return await Prodotto.chargePiattoDelGiorno(id);
+	}
 }
 
 export default ProdottoService;

@@ -94,6 +94,22 @@ class ProdottoController {
 			});
 		}
 	}
+
+	static async chargePiattoDelGiorno(req: Request, res: Response): Promise<void> {
+		try {
+			await ProdottoService.chargePiattoDelGiorno(
+				parseInt(req.params.id)
+			);
+
+			res.json({ success: true, message: 'Piatto del giorno cambiato con successo' });
+		} catch (err) {
+			console.error(err);
+			res.status(500).json({
+				success: false,
+				message: 'Errore interno del server',
+			});
+		}
+	}
 }
 
 export default ProdottoController;

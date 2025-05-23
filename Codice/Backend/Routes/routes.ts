@@ -16,6 +16,7 @@ router.get('/prodotti', ProdottoController.getAllProdotti);
 router.post('addProdotto', ProdottoController.addProdotto);
 router.put('/updateProdotto/:id', ProdottoController.updateProdotto);
 router.delete('/deleteProdotto/:id', ProdottoController.deleteProdotto);
+router.put('/chargePiattoDelGiorno/:id', ProdottoController.chargePiattoDelGiorno);
 
 router.get('/filiali', FilialeController.getAllFiliali);
 router.get('/impiegati', ImpiegatoController.getAllImpiegati);
