@@ -85,6 +85,63 @@ export class Prodotto {
 			);
 		});
 	}
+
+	// Aggiunta Piatto
+	static async addProdotto(id: ProdottoInput): Promise<number> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO prodotti (nome, descrizione, costo, immagine, categoria, is_piatto_giorno) VALUES (?, ?, ?, ?, ?, ?)',
+				[
+					id.nome,
+					id.descrizione,
+					id.costo,
+					id.immagine,
+					id.categoria,
+					id.is_piatto_giorno,
+				],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve(this.lastID);
+				}
+			);
+		})
+	}
+
+	// Modifica Piatto
+	static async updateProdotto(data: ProdottoInput, id: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE prodotti SET nome = ?, descrizione = ?, costo = ?, immagine = ?, categoria = ?, is_piatto_giorno = ? WHERE id_prodotto = ?',
+				[
+					data.nome,
+					data.descrizione,
+					data.costo,
+					data.immagine,
+					data.categoria,
+					data.is_piatto_giorno,
+					id,
+				],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve();
+				}
+			);
+		});
+	}
+
+	// Elimina Piatto
+	static async deleteProdotto(id: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'DELETE FROM prodotti WHERE id_prodotto = ?',
+				[id],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve();
+				}
+			);
+		});
+	}
 }
 
 export default Prodotto;
