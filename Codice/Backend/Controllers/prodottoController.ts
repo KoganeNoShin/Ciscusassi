@@ -69,12 +69,7 @@ class ProdottoController {
 				parseInt(req.params.id)
 			);
 
-			if (piatto) res.json({ success: true, data: piatto });
-			else
-				res.status(400).json({
-					success: false,
-					message: 'Errore durante l\'aggiornamento del piatto',
-				});
+			res.json({ success: true, data: piatto });
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
@@ -86,16 +81,11 @@ class ProdottoController {
 
 	static async deleteProdotto(req: Request, res: Response): Promise<void> {
 		try {
-			const piatto = await ProdottoService.deleteProdotto(
+			await ProdottoService.deleteProdotto(
 				parseInt(req.params.id)
 			);
 
-			if (piatto) res.json({ success: true, data: piatto });
-			else
-				res.status(400).json({
-					success: false,
-					message: 'Errore durante l\'eliminazione del piatto',
-				});
+			res.json({ success: true, message: 'Piatto eliminato con successo' });
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
