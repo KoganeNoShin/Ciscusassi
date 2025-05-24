@@ -1,4 +1,5 @@
 // importo il db
+import { ref } from 'process';
 import db from '../db';
 import { RunResult } from 'sqlite3';
 
@@ -7,6 +8,7 @@ export interface AsportoInput {
 	indirizzo: string;
 	data_ora_consegna: string;
 	ref_cliente: number;
+	ref_pagamento: number;
 }
 
 export interface AsportoRecord extends AsportoInput {
@@ -17,12 +19,12 @@ export interface AsportoRecord extends AsportoInput {
 export class Asporto {
 	// definisco il metodo per creare un nuovo utente
 	static async create(data: AsportoInput): Promise<number> {
-		const { indirizzo, data_ora_consegna, ref_cliente } = data;
+		const { indirizzo, data_ora_consegna, ref_cliente, ref_pagamento } = data;
 
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO asporti (indirizzo, data_ora_consegna, ref_cliente) VALUES (?, ?, ?)',
-				[indirizzo, data_ora_consegna, ref_cliente],
+				'INSERT INTO asporti (indirizzo, data_ora_consegna, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?)',
+				[indirizzo, data_ora_consegna, ref_cliente, ref_pagamento],
 				function (this: RunResult, err: Error | null) {
 					if (err) reject(err);
 					else resolve(this.lastID);

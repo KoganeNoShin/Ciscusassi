@@ -16,6 +16,12 @@ async function generatePagamento() {
 
 			for (const op of ordProds) {
 				const p = await prodotto.findById(op.ref_prodotto);
+				if (!p) {
+					console.error(
+						`❌ Prodotto con id ${op.ref_prodotto} non trovato per l'ordine ${o.id_ordine}`
+					);
+					continue;
+				}
 				importo += p.costo;
 			}
 
