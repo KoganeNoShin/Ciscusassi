@@ -10,9 +10,11 @@
 			<ion-button [routerLink]="['/prenota']"> PRENOTA </ion-button>
 		</ion-buttons>
 		<ion-buttons slot="end">
-			<ion-button [routerLink]="['/amministrazione']">
-				AMMINISTRAZIONE
-			</ion-button>
+			@if (role != '' && role != 'cliente') {
+				<ion-button [routerLink]="['/amministrazione']">
+					AMMINISTRAZIONE
+				</ion-button>
+			}
 
 			<ion-button (click)="changeLanguage()">
 				@if (isItalian) {

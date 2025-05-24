@@ -11,6 +11,11 @@
 					<ion-text color="light">
 						<h1>LOGIN</h1>
 					</ion-text>
+
+					@if (error) {
+					<p>{{errorMsg}}</p>
+					}
+
 					<form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
 						<ion-item>
 							<ion-label position="floating"
@@ -33,9 +38,12 @@
 						<ion-button
 							expand="full"
 							type="submit"
-							[disabled]="formLogin.invalid"
+							[disabled]="formLogin.invalid || loading"
 						>
-							Login
+							@if(!loading) { LOGIN } @else {
+							<ion-spinner name="bubbles"></ion-spinner>
+
+							}
 						</ion-button>
 					</form>
 				</ion-card>

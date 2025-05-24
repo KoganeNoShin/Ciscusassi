@@ -11,6 +11,7 @@ import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
 
 import { RouterModule } from '@angular/router';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
 	selector: 'app-header',
@@ -28,8 +29,9 @@ import { RouterModule } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 	isItalian = true;
+	role: string = '';
 
-	constructor() {
+	constructor(private authService: AuthenticationService) {
 		addIcons({ personCircle });
 	}
 
@@ -37,5 +39,9 @@ export class HeaderComponent implements OnInit {
 		this.isItalian = !this.isItalian;
 	}
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.authService.role$.subscribe((role) => {
+			this.role = role;
+		});
+	}
 }

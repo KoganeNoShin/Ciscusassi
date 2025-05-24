@@ -1,16 +1,19 @@
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
-import { NavController } from '@ionic/angular';
 
-export const authGuard: CanActivateFn = async (route, state) => {
-	const authService = inject(AuthenticationService);
-	const navigation = inject(NavController);
+export const authGuard = (allowedRoles: string[]): CanActivateFn => {
+	return async () => {
+		const authService = inject(AuthenticationService);
+		const router = inject(Router);
 
-	if (await authService.isAuthenticated()) {
-		return true;
-	}
+		const token = await authService.getToken();
+		const role = authService.getRole();
 
-	navigation.navigateRoot('/login');
-	return false;
+		if (token && allowedRoles.includes(role)) {
+			return true;
+		} else {
+			return router.createUrlTree(['/login']);
+		}
+	};
 };

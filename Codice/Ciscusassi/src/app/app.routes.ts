@@ -43,7 +43,7 @@ export const routes: Routes = [
 			import('./pages/admin/amministrazione/amministrazione.page').then(
 				(m) => m.AmministrazionePage
 			),
-		canActivate: [authGuard],
+		canActivate: [authGuard(['amministratore', 'chef', 'cameriere'])],
 	},
 	{
 		path: 'gestione-account',

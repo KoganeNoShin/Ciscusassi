@@ -11,6 +11,7 @@ import {
 	IonButton,
 	IonLabel,
 	IonItem,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 
 import {
@@ -24,6 +25,10 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { Credentials, LoginRecord } from 'src/app/core/interfaces/Credentials';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { IonInput } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
+
+import { inject } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-login',
@@ -31,6 +36,7 @@ import { IonInput } from '@ionic/angular/standalone';
 	styleUrls: ['./login.page.scss'],
 	standalone: true,
 	imports: [
+		IonSpinner,
 		IonItem,
 		IonLabel,
 		IonButton,
@@ -50,21 +56,29 @@ import { IonInput } from '@ionic/angular/standalone';
 export class LoginPage implements OnInit {
 	formLogin: FormGroup = new FormGroup({});
 	error: boolean = false;
-	loading: boolean = true;
+	loading: boolean = false;
+	errorMsg: string = '';
 
 	constructor(
 		private fb: FormBuilder,
-		private authenticationService: AuthenticationService
+		private authenticationService: AuthenticationService,
+		private navigation: NavController
 	) {}
 
 	private handleResponse(response: ApiResponse<LoginRecord>): void {
 		console.log(response);
 
 		if (response.success && response.data) {
-			// TODO: DOBBIAMO SALVARLE IN LOCALE
 			console.log(response.data);
+			this.authenticationService
+				.setToken(response.data.token)
+				.then(() => {
+					this.authenticationService.setRole(response.data!.ruolo);
+					this.navigation.navigateRoot('/home');
+				});
 		} else {
 			console.error(response.message || 'Errore sconosciuto');
+			this.errorMsg = response.message || 'Errore sconosciuto';
 			this.error = true;
 		}
 
@@ -79,12 +93,19 @@ export class LoginPage implements OnInit {
 	}
 
 	onSubmit() {
+		this.loading = true;
+
 		if (this.formLogin.valid) {
 			const credentials: Credentials = this.formLogin.value;
 
 			this.authenticationService.login(credentials).subscribe({
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
+					this.errorMsg =
+						err?.error?.message ||
+						err.message ||
+						'Errore durante il login.';
+
 					console.log(err);
 					this.error = true;
 					this.loading = false;
