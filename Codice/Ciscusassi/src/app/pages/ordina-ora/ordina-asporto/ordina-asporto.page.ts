@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   IonButton,
   IonCard,
@@ -15,9 +16,10 @@ import {
   IonCardContent,
   IonRow,
   IonText,
+  ToastController
 } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { async, debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { RouterModule } from '@angular/router';
@@ -75,7 +77,9 @@ export class OrdinaAsportoPage implements OnInit {
   constructor(
     private servizioFiliale: FilialeService,
     private http: HttpClient,
-    private servizioFilialeAsporto: FilialeAsportoService
+    private servizioFilialeAsporto: FilialeAsportoService,
+	private router: Router,
+	private toastController: ToastController
   ) {
     // Imposto debounce per la ricerca per ridurre chiamate API
     this.soggettoRicerca
@@ -93,6 +97,7 @@ export class OrdinaAsportoPage implements OnInit {
         this.erroreNellaRichiesta = true;
       },
     });
+	
   }
 
   /**
@@ -255,22 +260,38 @@ export class OrdinaAsportoPage implements OnInit {
    * Funzione per svuotare il campo e impostare la filiale più vicina nel servizio
    * Mantiene il nome come richiesto.
    */
-  svuotaCampo() {
-    if (this.filialePiuVicino) {
+  async svuotaCampo() {
+  if (this.filialePiuVicino) {
+    console.log('Filiale più vicina selezionata:', this.filialePiuVicino);
+    console.log(
+      'Tempo di viaggio stimato (minuti):',
+      this.tempoViaggioMinuti ?? 'Non disponibile'
+    );
 
-      console.log('Filiale più vicina selezionata:', this.filialePiuVicino);
-      console.log(
-        'Tempo di viaggio stimato (minuti):',
-        this.tempoViaggioMinuti ?? 'Non disponibile'
-      );
-      this.servizioFilialeAsporto.setFiliale(
-        this.filialePiuVicino,
-        this.tempoViaggioMinuti
-      );
-    } else {
-      console.log('Nessuna filiale trovata o selezionata.');
+    this.servizioFilialeAsporto.setFiliale(
+      this.filialePiuVicino,
+      this.tempoViaggioMinuti
+    );
+
+    if (this.tempoViaggioMinuti !== undefined && this.tempoViaggioMinuti !== null) {
+      if (this.tempoViaggioMinuti < 30) {
+        console.log(true);
+        this.router.navigate(['/menu-asporto']);
+      } else {
+        const toast = await this.toastController.create({
+          message: 'Ci dispiace ma la località selezionata è troppo lontana, non possiamo consegnare fin lì.',
+          duration: 3000,
+          position: 'bottom',
+          color: 'warning',
+        });
+        await toast.present();
+      }
     }
+  } else {
+    console.log('Nessuna filiale trovata o selezionata.');
   }
+}
+
 
   async procedi() {
     if (this.coordinateSelezionate) {
@@ -287,4 +308,5 @@ export class OrdinaAsportoPage implements OnInit {
 
     this.svuotaCampo(); // mantiene la tua logica di invio dati
   }
+
 }

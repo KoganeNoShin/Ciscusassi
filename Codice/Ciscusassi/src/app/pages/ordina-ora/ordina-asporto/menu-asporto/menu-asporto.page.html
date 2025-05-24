@@ -8,5 +8,5 @@
 	<app-piatto-del-giorno></app-piatto-del-giorno>
 
 	<app-lista-menu [isOrdinazione]=true></app-lista-menu>
-	<ion-button [routerLink]="['/pagamento-asporto']">PROCEDI AL PAGAMENTO</ion-button>
+	<ion-button (click)="checkTotale()">PROCEDI AL PAGAMENTO</ion-button>
 </ion-content>

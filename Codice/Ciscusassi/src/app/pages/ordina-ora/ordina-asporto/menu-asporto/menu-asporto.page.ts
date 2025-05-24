@@ -5,8 +5,10 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton } from '@ionic/a
 import { HeroComponent } from "../../../../components/hero/hero.component";
 import { PiattoDelGiornoComponent } from "../../../../components/piatto-del-giorno/piatto-del-giorno.component";
 import { ListaMenuComponent } from "../../../../components/lista-menu/lista-menu.component";
-import { RouterModule } from '@angular/router';
-
+import { Router, RouterModule } from '@angular/router';
+import { ToastController } from '@ionic/angular/standalone';
+import { CarrelloService } from 'src/app/core/services/carrello.service';
+import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 
 @Component({
   selector: 'app-menu-asporto',
@@ -16,9 +18,28 @@ import { RouterModule } from '@angular/router';
   imports: [IonContent, CommonModule, FormsModule, HeroComponent, PiattoDelGiornoComponent, ListaMenuComponent, IonButton, RouterModule]
 })
 export class MenuAsportoPage implements OnInit {
-    nomeUtente: string = "Mario Rossi";
+  nomeUtente: string = "Mario Rossi";
+  prodottiNelCarrello: ProdottoRecord[] = [];
+  totale: number = 0;
 
-  constructor() { }
+  constructor(private servizioCarrello: CarrelloService, private router: Router, private toastController: ToastController) { }
+    
+  
+    async checkTotale(){
+      this.prodottiNelCarrello = this.servizioCarrello.getProdotti();    
+      this.totale = this.prodottiNelCarrello.reduce((acc, prodotto) => acc + prodotto.costo, 0);
+      if (this.totale <= 30) {
+        const toast = await this.toastController.create({
+            message: 'Possiamo consenare solo ordini superiori a 30€',
+            duration: 3000,
+            position: 'bottom',
+            color: 'warning',
+          });
+          await toast.present();
+      } else {
+        this.router.navigateByUrl('/pagamento-asporto');
+      }
+  }
 
   ngOnInit() {
   }

@@ -21,4 +21,8 @@ export class CarrelloService {
   getProdotti(): ProdottoRecord[] {
     return this.prodottiNelCarrello;
   }
+
+  svuotaCarrello(){
+    this.prodottiNelCarrello = [];
+  }
 }

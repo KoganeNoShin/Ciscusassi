@@ -13,12 +13,12 @@
 
           <ion-card-content>
             <p>
-              I tuoi ordini: 65 €
+              I tuoi ordini: {{ totale }}€
             </p>
 
 
             <!-- Bottone finale -->
-            <ion-button  [routerLink]="['/ringraziamenti-asporto']" fill="solid" shape="round" color="primary">
+            <ion-button (click)="svuotaCarrello()" [routerLink]="'/ringraziamenti-asporto'" fill="solid" shape="round" color="primary">
               <ion-text color="light">PAGA</ion-text>
             </ion-button>
           </ion-card-content>
