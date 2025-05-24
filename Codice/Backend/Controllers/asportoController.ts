@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import AsportoService from '../Services/asportoService';
 import PagamentoService from '../Services/pagamentoService';
 import AspProdService from '../Services/asp_prodService';
+import { PagamentoInput } from '../Models/pagamento';
+import { AsportoInput } from '../Models/asporto';
 
 class AsportoController {
     static async addAsporto(req: Request, res: Response): Promise<void> {
@@ -16,10 +18,10 @@ class AsportoController {
                 return;
             }
 
-            const pagamentoData = {importo, data_ora_pagamento};
+            const pagamentoData = {importo, data_ora_pagamento} as PagamentoInput;
             const ref_pagamento = await PagamentoService.addPagamento(pagamentoData);
 
-            const asportoData = {indirizzo, data_ora_consegna, ref_cliente, ref_pagamento};
+            const asportoData = {indirizzo, data_ora_consegna, ref_cliente, ref_pagamento} as AsportoInput;
             const asporto = await AsportoService.addAsporto(asportoData);
 
             await Promise.all(prodotti.map((ref_prodotto: number) => {
