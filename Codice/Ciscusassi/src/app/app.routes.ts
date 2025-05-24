@@ -45,8 +45,15 @@ export const routes: Routes = [
 			),
 		canActivate: [authGuard],
 	},
-	
-		/*{path: 'login',
+	{
+		path: 'gestione-account',
+		loadComponent: () =>
+			import(
+				'./pages/account/gestione-account/gestione-account.page'
+			).then((m) => m.GestioneAccountPage),
+	},
+	{
+		path: 'login',
 		loadComponent: () =>
 			import('./pages/account/login/login.page').then((m) => m.LoginPage),
 	},
@@ -56,7 +63,7 @@ export const routes: Routes = [
 			import('./pages/account/signin/signin.page').then(
 				(m) => m.SigninPage
 			),
-	},*/
+	},
 	{
 		path: 'ordina-al-tavolo',
 		loadComponent: () =>
@@ -119,35 +126,56 @@ export const routes: Routes = [
 			import('./pages/admin/modifica-filiali/modifica-filiali.page').then(
 				(m) => m.ModificaFilialiPage
 			),
-	},  {
-    path: 'modifica-dipendenti',
-    loadComponent: () => import('./pages/admin/modifica-dipendenti/modifica-dipendenti.page').then( m => m.ModificaDipendentiPage)
-  },
-  {
-    path: 'menu-tavolo',
-    loadComponent: () => import('./pages/ordina-ora/ordina-al-tavolo/menu-tavolo/menu-tavolo.page').then( m => m.MenuTavoloPage)
-  },
-  {
-    path: 'menu-asporto',
-    loadComponent: () => import('./pages/ordina-ora/ordina-asporto/menu-asporto/menu-asporto.page').then( m => m.MenuAsportoPage)
-  },
-  {
-    path: 'pagamento-asporto',
-    loadComponent: () => import('./pages/ordina-ora/ordina-asporto/pagamento-asporto/pagamento-asporto.page').then( m => m.PagamentoAsportoPage)
-  },
-  {
-    path: 'ringraziamenti-asporto',
-    loadComponent: () => import('./pages/ordina-ora/ordina-asporto/ringraziamenti-asporto/ringraziamenti-asporto.page').then( m => m.RingraziamentiAsportoPage)
-  },
-  {
-    path: 'aggiungi-dipendenti',
-    loadComponent: () => import('./pages/admin/aggiungi-dipendenti/aggiungi-dipendenti.page').then( m => m.AggiungiDipendentiPage)
-  },
-  {
-    path: 'modifica-dati-dipendenti',
-    loadComponent: () => import('./pages/admin/modifica-dati-dipendenti/modifica-dati-dipendenti.page').then( m => m.ModificaDatiDipendentiPage)
-  },
-
+	},
+	{
+		path: 'modifica-dipendenti',
+		loadComponent: () =>
+			import(
+				'./pages/admin/modifica-dipendenti/modifica-dipendenti.page'
+			).then((m) => m.ModificaDipendentiPage),
+	},
+	{
+		path: 'menu-tavolo',
+		loadComponent: () =>
+			import(
+				'./pages/ordina-ora/ordina-al-tavolo/menu-tavolo/menu-tavolo.page'
+			).then((m) => m.MenuTavoloPage),
+	},
+	{
+		path: 'menu-asporto',
+		loadComponent: () =>
+			import(
+				'./pages/ordina-ora/ordina-asporto/menu-asporto/menu-asporto.page'
+			).then((m) => m.MenuAsportoPage),
+	},
+	{
+		path: 'pagamento-asporto',
+		loadComponent: () =>
+			import(
+				'./pages/ordina-ora/ordina-asporto/pagamento-asporto/pagamento-asporto.page'
+			).then((m) => m.PagamentoAsportoPage),
+	},
+	{
+		path: 'ringraziamenti-asporto',
+		loadComponent: () =>
+			import(
+				'./pages/ordina-ora/ordina-asporto/ringraziamenti-asporto/ringraziamenti-asporto.page'
+			).then((m) => m.RingraziamentiAsportoPage),
+	},
+	{
+		path: 'aggiungi-dipendenti',
+		loadComponent: () =>
+			import(
+				'./pages/admin/aggiungi-dipendenti/aggiungi-dipendenti.page'
+			).then((m) => m.AggiungiDipendentiPage),
+	},
+	{
+		path: 'modifica-dati-dipendenti',
+		loadComponent: () =>
+			import(
+				'./pages/admin/modifica-dati-dipendenti/modifica-dati-dipendenti.page'
+			).then((m) => m.ModificaDatiDipendentiPage),
+	},
 ];
 
 export const AppRoutingModule = provideRouter(routes);
