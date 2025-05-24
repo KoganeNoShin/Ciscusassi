@@ -1,5 +1,6 @@
 import asporto from '../../Models/asporto';
-import cliente, { ClienteRecord } from '../../Models/cliente';
+import cliente from '../../Models/cliente';
+import pagamento from '../../Models/pagamento';
 
 import { faker } from '@faker-js/faker';
 
@@ -12,18 +13,20 @@ export async function generateAsporto(count: number): Promise<string> {
 
 
 		for (let i = 0; i < count; i++) {
-			const indirizzo =
-				faker.location.street() +
-				' ' +
-				faker.location.secondaryAddress();
+			const indirizzo = faker.location.street() + ' ' + faker.location.secondaryAddress();
 			const data_ora_consegna = faker.date.anytime().toISOString();
 			const ref_cliente = faker.helpers.arrayElement(idClienti);
 
+			const importo = faker.number.float({ min: 8, max: 50, fractionDigits: 2 });
+			const data_ora_pagamento = faker.date.recent().toISOString();
+			const ref_pagamento = await pagamento.create({ importo, data_ora_pagamento });;
+
 			try {
 				await asporto.create({
-					indirizzo,
-					data_ora_consegna,
-					ref_cliente,
+				indirizzo,
+				data_ora_consegna,
+				ref_cliente,
+				ref_pagamento,
 				});
 				console.log(
 					`🏍️  Abbiamo consegnato d'asporto in via ${indirizzo} ed in data ${data_ora_consegna}!`
