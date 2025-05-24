@@ -88,6 +88,8 @@ export class Prodotto {
 
 	// Aggiunta Piatto
 	static async addProdotto(id: ProdottoInput): Promise<number> {
+		console.log('Aggiunta Prodotto:', id.nome);
+
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO prodotti (nome, descrizione, costo, immagine, categoria, is_piatto_giorno) VALUES (?, ?, ?, ?, ?, ?)',
@@ -100,8 +102,15 @@ export class Prodotto {
 					id.is_piatto_giorno,
 				],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve(this.lastID);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						console.error('🧾 Query params:', id);
+						reject(err);
+					}
+					else {
+						console.log('✅ [DB SUCCESS] Nuovo prodotto inserito con ID:', this.lastID);
+						resolve(this.lastID);
+					}
 				}
 			);
 		})

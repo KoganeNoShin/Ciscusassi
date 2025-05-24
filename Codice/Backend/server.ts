@@ -8,13 +8,16 @@ import rotte from './Routes/routes'; // Esponiamo le rotte contenute nel file ro
 const app = express();
 
 // Impostiamo il server per rispondere in json
-app.use(express.json());
+//app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+
 
 // Or configure specific origins
 app.use(
 	cors({
-		origin: '*', // oppure '*' in fase di sviluppo
-  		credentials: true
+		origin: 'http://localhost:8100',
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+		allowedHeaders: ['Content-Type'],
 		// origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
 		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
 		// allowedHeaders: ['Content-Type', 'Authorization'],
