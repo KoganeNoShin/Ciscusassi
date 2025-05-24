@@ -4,6 +4,7 @@ export interface AsportoInput {
 	ref_cliente: number;
 	importo: number;
 	data_ora_pagamento: string;
+	prodotti: number[];
 }
 
 export interface AsportoRecord extends AsportoInput {

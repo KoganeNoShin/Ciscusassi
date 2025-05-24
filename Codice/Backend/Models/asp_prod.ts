@@ -11,18 +11,18 @@ export interface AspProdRecord extends AspProdInput {
 	id_asp_prod: number;
 }
 
-// Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 export class AspProd {
-	// definisco il metodo per creare un nuovo utente
+	// Creazione di un nuovo asporto prodotto
 	static async create(data: AspProdInput): Promise<number> {
-		const { ref_asporto, ref_prodotto } = data;
-
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO asp_prod (ref_asporto, ref_prodotto) VALUES (?, ?)',
-				[ref_asporto, ref_prodotto],
+				[data.ref_asporto, data.ref_prodotto],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						reject(err);
+					}
 					else resolve(this.lastID);
 				}
 			);
