@@ -17,7 +17,7 @@ const router = express.Router();
 // Route per i Prodotti
 router.get('/piattoDelGiorno', ProdottoController.getprodottoDelGiorno);
 router.get('/prodotti', ProdottoController.getAllProdotti);
-router.post('addProdotto', ProdottoController.addProdotto);
+router.post('/addProdotto', ProdottoController.addProdotto);
 router.put('/updateProdotto/:id', ProdottoController.updateProdotto);
 router.delete('/deleteProdotto/:id', ProdottoController.deleteProdotto);
 router.put(
