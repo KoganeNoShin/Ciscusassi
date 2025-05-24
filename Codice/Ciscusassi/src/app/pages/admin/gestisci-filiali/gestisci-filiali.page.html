@@ -48,7 +48,8 @@
 			<ion-card-content>
 				<div class="button-vertical">
 					<ion-button
-						[routerLink]="['/modifica-filiali', f.id_filiale]"
+						[routerLink]="['/modifica-filiali']"
+						[state]="{ filiale: f }"
 						expand="block"
 						color="secondary"
 						>Modifica filiale</ion-button
