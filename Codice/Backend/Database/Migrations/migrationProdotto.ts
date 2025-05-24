@@ -14,7 +14,7 @@ export function createIfDoesntExists(): Promise<string> {
                 costo DOUBLE NOT NULL,
                 immagine BLOB NOT NULL,
                 categoria TEXT NOT NULL,
-                is_piatto_giorno BOOLEAN
+                is_piatto_giorno BOOLEAN DEFAULT 0
             )`,
 				(err: Error | null) => {
 					if (err) {

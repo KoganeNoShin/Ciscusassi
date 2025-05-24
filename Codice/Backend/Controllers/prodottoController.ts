@@ -47,6 +47,16 @@ class ProdottoController {
 
 	static async addProdotto(req: Request, res: Response): Promise<void> {
 		try {
+
+			const { nome, descrizione, costo, immagine, categoria } = req.body;
+
+			if (!nome || !descrizione || costo == null || !immagine || !categoria) {
+				res.status(400).json({
+					success: false,
+					message: 'Campi obbligatori mancanti: nome, descrizione, costo, immagine, categoria',
+				});
+			}
+
 			const piatto = await ProdottoService.addProdotto(req.body);
 
 			if (piatto) res.json({ success: true, data: piatto });
