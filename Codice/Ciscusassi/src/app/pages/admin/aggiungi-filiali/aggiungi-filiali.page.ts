@@ -10,7 +10,13 @@ import {
   IonIcon,
   IonInput,
   IonButton,
+  IonList,
+  IonItem,
+  ToastController,
 } from '@ionic/angular/standalone';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FilialeService } from 'src/app/core/services/filiale.service';
+import { FilialeInput } from 'src/app/core/interfaces/Filiale';
 
 @Component({
   selector: 'app-aggiungi-filiali',
@@ -28,6 +34,9 @@ import {
     IonIcon,
     IonInput,
     IonButton,
+    IonList,
+    IonItem,
+    HttpClientModule,
   ],
 })
 export class AggiungiFilialiPage implements OnInit {
@@ -35,11 +44,16 @@ export class AggiungiFilialiPage implements OnInit {
   comune: string = '';
   numTavoli: number | null = null;
   immagineBase64: string = '';
+  suggestions: string[] = [];
+  timeout: any = null;
 
-  constructor() {}
+  constructor(
+    private filialeService: FilialeService,
+    private toastController: ToastController,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
-    // Precaricamento dati da navigation state, se presente
     const navigation = window.history.state;
     if (navigation && navigation.filiale) {
       const f = navigation.filiale;
@@ -59,26 +73,115 @@ export class AggiungiFilialiPage implements OnInit {
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Seleziona un file immagine valido.');
+      this.presentToast('Seleziona un file immagine valido.', 'warning');
     }
   }
 
-  creaFiliale(): void {
-    if (!this.indirizzo.trim() || !this.comune.trim() || this.numTavoli === null || !this.immagineBase64) {
-      alert('⚠️ Compila tutti i campi obbligatori e inserisci un\'immagine.');
+  onIndirizzoInput(): void {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      if (this.indirizzo.trim().length < 3) {
+        this.suggestions = [];
+        return;
+      }
+
+      const query = `${this.indirizzo}, ${this.comune}`;
+      this.http
+        .get<any[]>(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`
+        )
+        .subscribe(
+          (res) => {
+            this.suggestions = res.map((item) => item.display_name);
+          },
+          (err) => {
+            console.error('Errore durante il suggerimento:', err);
+            this.suggestions = [];
+          }
+        );
+    }, 300);
+  }
+
+  selectSuggestion(s: string): void {
+    this.indirizzo = s;
+    this.suggestions = [];
+  }
+
+  async creaFiliale(): Promise<void> {
+    if (
+      !this.indirizzo.trim() ||
+      !this.comune.trim() ||
+      this.numTavoli === null ||
+      !this.immagineBase64
+    ) {
+      this.presentToast('Compila tutti i campi obbligatori.', 'warning');
       return;
     }
 
-    // Qui puoi mettere la logica per salvare la filiale tramite servizio API
-    console.log('Filiale da creare/modificare:', {
-      indirizzo: this.indirizzo,
-      comune: this.comune,
-      numTavoli: this.numTavoli,
-      immagineBase64: this.immagineBase64,
-    });
+    const fullAddress = `${this.indirizzo}, ${this.comune}`;
+    try {
+      const coords = await this.geocodificaIndirizzo(fullAddress);
+      if (!coords) {
+        this.presentToast('Indirizzo non trovato. Verifica e riprova.', 'danger');
+        return;
+      }
 
-    alert('Filiale creata/modificata con successo!');
-    this.resetForm();
+      const nuovaFiliale: FilialeInput = {
+        indirizzo: this.indirizzo,
+        comune: this.comune,
+        num_tavoli: this.numTavoli,
+        immagine: this.immagineBase64,
+        latitudine: coords.lat,
+        longitudine: coords.lon,
+      };
+
+      this.filialeService.addFiliale(nuovaFiliale).subscribe({
+        next: async (res) => {
+          if (res.success) {
+            this.presentToast('Filiale aggiunta con successo! 🎉', 'success');
+            this.resetForm();
+          } else {
+            this.presentToast("Errore durante l'aggiunta della filiale.", 'danger');
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.presentToast('Errore di rete o server.', 'danger');
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      this.presentToast('Errore nel recupero coordinate.', 'danger');
+    }
+  }
+
+  async geocodificaIndirizzo(address: string): Promise<{ lat: number; lon: number } | null> {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+      address
+    )}`;
+    try {
+      const res: any = await this.http.get(url).toPromise();
+      if (res && res.length > 0) {
+        return {
+          lat: parseFloat(res[0].lat),
+          lon: parseFloat(res[0].lon),
+        };
+      }
+      return null;
+    } catch (err) {
+      console.error('Errore geocoding:', err);
+      return null;
+    }
+  }
+
+  async presentToast(message: string, color: 'success' | 'danger' | 'warning') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500,
+      position: 'top',
+      color,
+    });
+    toast.present();
   }
 
   resetForm(): void {
@@ -86,5 +189,6 @@ export class AggiungiFilialiPage implements OnInit {
     this.comune = '';
     this.numTavoli = null;
     this.immagineBase64 = '';
+    this.suggestions = [];
   }
 }

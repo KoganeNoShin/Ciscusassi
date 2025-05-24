@@ -26,7 +26,10 @@ export class FilialeService {
 		);
 	}
 
-	updateFiliale(id: number, filiale: FilialeInput): Observable<ApiResponse<void>> {
+	updateFiliale(
+		id: number,
+		filiale: FilialeInput
+	): Observable<ApiResponse<void>> {
 		return this.http.put<ApiResponse<void>>(
 			`${this.apiURL}/updateFiliale/${id}`,
 			filiale
