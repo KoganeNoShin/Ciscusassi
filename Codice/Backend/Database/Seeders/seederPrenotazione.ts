@@ -10,7 +10,9 @@ export async function generatePrenotazione(count: number): Promise<string> {
 		const idTorrette = torrette.map((t) => t.id_torretta);
 
 		const clienti = await cliente.findAll();
+		if (!clienti || clienti.length === 0) throw new Error("Nessun cliente trovato");
 		const idClienti = clienti.map((c) => c.numero_carta);
+
 
 		for (let i = 0; i < count; i++) {
 			let numero_persone = faker.number.int({ min: 1, max: 8 });

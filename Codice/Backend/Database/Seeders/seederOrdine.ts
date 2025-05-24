@@ -8,7 +8,9 @@ import { faker } from '@faker-js/faker';
 async function generateOrdine(): Promise<string> {
 	try {
 		const clienti = await cliente.findAll();
+		if (!clienti || clienti.length === 0) throw new Error("Nessun cliente trovato");
 		const idClienti = clienti.map((c) => c.numero_carta);
+
 
 		const prenotazioni = await prenotazione.findAll();
 
@@ -20,6 +22,12 @@ async function generateOrdine(): Promise<string> {
 					const clienteObj = await cliente.findByNumeroCarta(
 						p.ref_cliente
 					);
+					if (!clienteObj) {
+						console.error(
+							`❌ Cliente con ref_cliente ${p.ref_cliente} non trovato!`
+						);
+						continue;
+					}
 					const data_ora_ordinazione = new Date(
 						Date.parse(p.data_ora_prenotazione) +
 							faker.number.int({ min: 10, max: 30 }) * 60000

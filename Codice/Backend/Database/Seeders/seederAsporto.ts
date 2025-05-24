@@ -6,7 +6,10 @@ import { faker } from '@faker-js/faker';
 export async function generateAsporto(count: number): Promise<string> {
 	try {
 		const clienti = await cliente.findAll();
+		if (!clienti || clienti.length === 0) throw new Error("Nessun cliente trovato");
 		const idClienti = clienti.map((c) => c.numero_carta);
+
+
 
 		for (let i = 0; i < count; i++) {
 			const indirizzo =
