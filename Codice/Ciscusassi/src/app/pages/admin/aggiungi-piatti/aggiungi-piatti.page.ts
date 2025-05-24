@@ -15,6 +15,7 @@ import {
   IonTextarea,
   IonTitle,
   IonToolbar,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -56,7 +57,10 @@ export class AggiungiPiattiPage implements OnInit {
 
   categorieDisponibili: string[] = ['ANTIPASTO', 'PRIMO', 'BEVANDA', 'DOLCE'];
 
-  constructor(private prodottoService: ProdottoService) {}
+  constructor(
+    private prodottoService: ProdottoService,
+    private toastCtrl: ToastController
+  ) {}
 
   ngOnInit(): void {}
 
@@ -71,37 +75,54 @@ export class AggiungiPiattiPage implements OnInit {
     }
   }
 
-  creaPiatto(): void {
-  // Validazione campi obbligatori
-  if (!this.nome.trim() || !this.categoria || this.costo === null || !this.immagineBase64) {
-    alert('⚠️ Tutti i campi obbligatori devono essere compilati.');
-    return;
+  async creaPiatto(): Promise<void> {
+    // Validazione campi obbligatori
+    if (!this.nome.trim() || !this.categoria || this.costo === null || !this.immagineBase64) {
+      const toast = await this.toastCtrl.create({
+        message: '⚠️ Tutti i campi obbligatori devono essere compilati.',
+        duration: 2500,
+        color: 'warning',
+        position: 'bottom',
+      });
+      await toast.present();
+      return;
+    }
+
+    const nuovoProdotto: ProdottoInput = {
+      nome: this.nome.trim(),
+      descrizione: this.descrizione?.trim() || '',
+      costo: this.costo,
+      categoria: this.categoria,
+      immagine: this.immagineBase64,
+      is_piatto_giorno: this.isPiattoGiorno === true ? true : false,
+    };
+
+    this.prodottoService.addProdotto(nuovoProdotto).subscribe({
+      next: async (response) => {
+        console.log('✅ Risposta dal server:', response);
+
+        const toast = await this.toastCtrl.create({
+          message: '✅ Piatto creato correttamente.',
+          duration: 2000,
+          color: 'success',
+          position: 'bottom',
+        });
+        await toast.present();
+
+        this.resetForm();
+      },
+      error: async (err) => {
+        console.error('❌ Errore HTTP:', err);
+        const toast = await this.toastCtrl.create({
+          message: '❌ Errore durante la creazione del piatto. Dettagli: ' + (err?.message || 'Errore sconosciuto'),
+          duration: 3000,
+          color: 'danger',
+          position: 'bottom',
+        });
+        await toast.present();
+      },
+    });
   }
-
-  const nuovoProdotto: ProdottoInput = {
-    nome: this.nome.trim(),
-    descrizione: this.descrizione?.trim() || '',
-    costo: this.costo,
-    categoria: this.categoria,
-    immagine: this.immagineBase64,
-    is_piatto_giorno: this.isPiattoGiorno === true ? true : false, 
-  };
-
-  // Esegui la richiesta
-  this.prodottoService.addProdotto(nuovoProdotto).subscribe({
-    next: (response) => {
-      console.log('✅ Risposta dal server:', response);
-
-      // Anche se la risposta non ha un campo 'success', se siamo in next, vuol dire che la chiamata è riuscita
-      alert('✅ Piatto creato correttamente.');
-      this.resetForm();
-    },
-    error: (err) => {
-      console.error('❌ Errore HTTP:', err);
-      alert('❌ Errore durante la creazione del piatto.\nDettagli: ' + (err?.message || 'Errore sconosciuto'));
-    },
-  });
-}
 
   resetForm(): void {
     this.nome = '';

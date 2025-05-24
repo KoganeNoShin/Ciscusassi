@@ -1,122 +1,78 @@
 <ion-header>
-	<ion-toolbar color="primary">
-		<ion-title> Titolo della Pagina </ion-title>
-	</ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-title> Titolo della Pagina </ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-	<div class="page-title">
-		Gestisci piatti
-		<ion-chip
-			color="primary"
-			[outline]="selectedCategoria !== 'Antipasti'"
-			(click)="filterAntipasti()"
-			>Antipasti</ion-chip
-		>
+  <div class="page-title">
+    Gestisci piatti
 
-		<ion-chip
-			color="secondary"
-			[outline]="selectedCategoria !== 'Primi'"
-			(click)="filterPrimi()"
-			>Primi</ion-chip
-		>
+    <ion-chip color="primary" [outline]="selectedCategoria !== 'Antipasti'" (click)="filterAntipasti()">Antipasti</ion-chip>
+    <ion-chip color="secondary" [outline]="selectedCategoria !== 'Primi'" (click)="filterPrimi()">Primi</ion-chip>
+    <ion-chip color="success" [outline]="selectedCategoria !== 'Bevande'" (click)="filterBevande()">Bevande</ion-chip>
+    <ion-chip color="warning" [outline]="selectedCategoria !== 'Dolci'" (click)="filterDolci()">Dolci</ion-chip>
+    <ion-chip color="danger" [outline]="selectedCategoria !== 'Tutti'" (click)="filterTutti()">Tutti</ion-chip>
+    <ion-chip color="medium" [outline]="selectedCategoria !== 'PiattoDelGiorno'" (click)="filterPiattoDelGiorno()">Piatto del giorno</ion-chip>
+  </div>
 
-		<ion-chip
-			color="success"
-			[outline]="selectedCategoria !== 'Bevande'"
-			(click)="filterBevande()"
-			>Bevande</ion-chip
-		>
+  <div class="input-row">
+    <div class="input-wrapper">
+      <ion-input placeholder="Cerca un piatto..." [(ngModel)]="searchTerm" (ionInput)="applyFilters()"></ion-input>
+    </div>
+  </div>
 
-		<ion-chip
-			color="warning"
-			[outline]="selectedCategoria !== 'Dolci'"
-			(click)="filterDolci()"
-			>Dolci</ion-chip
-		>
+  <div class="grid-container">
+    <div class="center-container">
+      <ion-button [routerLink]="['/aggiungi-piatti']" class="circle-button">+<ion-icon name="add"></ion-icon></ion-button>
+    </div>
 
-		<ion-chip
-			color="danger"
-			[outline]="selectedCategoria !== 'Tutti'"
-			(click)="filterTutti()"
-			>Tutti</ion-chip
-		>
-		<ion-chip
-			color="medium"
-			[outline]="selectedCategoria !== 'PiattoDelGiorno'"
-			(click)="filterPiattoDelGiorno()"
-			>Piatto del giorno</ion-chip
-		>
-	</div>
-	<div class="input-row">
-		<div class="input-wrapper">
-			<ion-input
-				placeholder="Cerca un piatto..."
-				[(ngModel)]="searchTerm"
-				(ionInput)="applyFilters()"
-			></ion-input>
-		</div>
-		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
-	</div>
-	<div class="grid-container">
-		<div class="center-container">
-			<ion-button
-				[routerLink]="['/aggiungi-piatti']"
-				class="circle-button"
-				>+<ion-icon name="add"></ion-icon>
-			</ion-button>
-		</div>
-		@for (p of filteredPiatti; track p.id_prodotto ){
-		<ion-card>
-			<ion-icon
-				[name]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'star' : 'star-outline'"
-				[color]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'warning' : 'medium'"
-				(click)="selezionaPiattoDelGiorno(p)"
-				class="star-icon"
-			></ion-icon>
+    @for (p of filteredPiatti; track p.id_prodotto) {
+      <ion-card>
+        <ion-icon
+          [name]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'star' : 'star-outline'"
+          [color]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'warning' : 'medium'"
+          (click)="selezionaPiattoDelGiorno(p)"
+          class="star-icon"
+        ></ion-icon>
 
-			<!-- Stellina -->
-			<ion-img
-				[src]="p.immagine"
-				alt="Immagine del piatto"
-				class="immagine-rotante"
-			></ion-img>
+        <ion-img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante"></ion-img>
 
-			<ion-card-header>
-				<ion-card-title>{{ p.nome }} - {{ p.costo }} €</ion-card-title>
+        <ion-card-header>
+          <ion-card-title>{{ p.nome }} - {{ p.costo }} €</ion-card-title>
+          Categoria: {{ p.categoria }}<br />
+          Id prodotto: {{ p.id_prodotto }}<br />
+        </ion-card-header>
 
-				Categoria: {{ p.categoria }}<br />
-				Id prodotto: {{p.id_prodotto}}<br />
-			</ion-card-header>
+        <ion-card-content>
+          <p>{{ p.descrizione }}</p>
+          <div class="button-vertical">
+            <!-- ✅ RouterLink aggiornato con stato -->
+            <ion-button
+              expand="block"
+              [routerLink]="['/modifica-piatti']"
+              [state]="{ piatto: p }"
+              color="secondary"
+            >
+              Modifica piatto
+            </ion-button>
 
-			<ion-card-content>
-				<p>{{ p.descrizione }}</p>
-				<div class="button-vertical">
-					<ion-button
-						expand="block"
-						[routerLink]="['/modifica-piatti']"
-						color="secondary"
-						>Modifica piatto</ion-button
-					>
-					<ion-button
-						(click)="showAlert(p)"
-						expand="block"
-						color="primary"
-						>Cancella piatto</ion-button
-					>
-				</div>
-			</ion-card-content>
-		</ion-card>
-		}
-	</div>
+            <ion-button (click)="showAlert(p)" expand="block" color="primary">
+              Cancella piatto
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
 
-	<!-- Alert fuori dal ciclo -->
-	<ion-alert
-		[isOpen]="isAlertOpen"
-		header="Conferma"
-		[message]="'Vuoi licenziare il dipendente: ' + (selectedProdotto?.nome || '') + '?'"
-		[buttons]="alertButtons"
-		(didDismiss)="isAlertOpen = false"
-	>
-	</ion-alert>
+  <!-- Alert -->
+  <ion-alert
+    [isOpen]="isAlertOpen"
+    header="Conferma"
+    [message]="'Vuoi licenziare il dipendente: ' + (selectedProdotto?.nome || '') + '?'"
+    [buttons]="alertButtons"
+    (didDismiss)="isAlertOpen = false"
+  >
+  </ion-alert>
 </ion-content>

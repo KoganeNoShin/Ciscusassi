@@ -202,34 +202,41 @@ export class GestisciPiattiPage implements OnInit {
 		this.selectedProdotto = prodotto;
 		this.isAlertOpen = true;
 	}
-		onConfirm() {
-	if (this.selectedProdotto) {
-		const id = this.selectedProdotto.id_prodotto;
+	onConfirm() {
+		if (this.selectedProdotto) {
+			const id = this.selectedProdotto.id_prodotto;
 
-		this.prodottoService.deleteProdotto(id).subscribe({
-			next: (response) => {
-				if (response.success) {
-					console.log('Prodotto eliminato con successo:', id);
-					// Aggiorna la lista rimuovendo il prodotto eliminato
-					this.piatti = this.piatti.filter(p => p.id_prodotto !== id);
-					this.applyFilters(); // Ricalcola i filtri applicati
-				} else {
-					console.error('Errore nella risposta del server:', response.message);
-				}
-			},
-			error: (err) => {
-				console.error('Errore durante l’eliminazione del prodotto:', err);
-			},
-			complete: () => {
-				this.isAlertOpen = false;
-				this.selectedProdotto = null;
-			},
-		});
-	} else {
-		this.isAlertOpen = false;
-		this.selectedProdotto = null;
-	}
-
+			this.prodottoService.deleteProdotto(id).subscribe({
+				next: (response) => {
+					if (response.success) {
+						console.log('Prodotto eliminato con successo:', id);
+						// Aggiorna la lista rimuovendo il prodotto eliminato
+						this.piatti = this.piatti.filter(
+							(p) => p.id_prodotto !== id
+						);
+						this.applyFilters(); // Ricalcola i filtri applicati
+					} else {
+						console.error(
+							'Errore nella risposta del server:',
+							response.message
+						);
+					}
+				},
+				error: (err) => {
+					console.error(
+						'Errore durante l’eliminazione del prodotto:',
+						err
+					);
+				},
+				complete: () => {
+					this.isAlertOpen = false;
+					this.selectedProdotto = null;
+				},
+			});
+		} else {
+			this.isAlertOpen = false;
+			this.selectedProdotto = null;
+		}
 	}
 
 	onCancel() {
@@ -239,15 +246,15 @@ export class GestisciPiattiPage implements OnInit {
 	}
 
 	alertButtons = [
-  {
-    text: 'Annulla',
-    role: 'cancel',
-    handler: () => this.onCancel(),
-  },
-  {
-    text: 'OK',
-    role: 'confirm',
-    handler: () => this.onConfirm(),
-  },
-];
+		{
+			text: 'Annulla',
+			role: 'cancel',
+			handler: () => this.onCancel(),
+		},
+		{
+			text: 'OK',
+			role: 'confirm',
+			handler: () => this.onConfirm(),
+		},
+	];
 }
