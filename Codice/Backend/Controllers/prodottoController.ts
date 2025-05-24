@@ -48,12 +48,21 @@ class ProdottoController {
 	static async addProdotto(req: Request, res: Response): Promise<void> {
 		try {
 
-			const { nome, descrizione, costo, immagine, categoria, isPiattoGiorno} = req.body;
+			const { nome, descrizione, costo, immagine, categoria, isPiattoGiorno } = req.body;
 
-			if (!nome || !descrizione || costo == null || !immagine || !categoria || isPiattoGiorno === undefined) {
+			const missingFields: string[] = [];
+
+			if (!nome) missingFields.push('nome');
+			if (!descrizione) missingFields.push('descrizione');
+			if (costo === null || costo === undefined) missingFields.push('costo');
+			if (!immagine) missingFields.push('immagine');
+			if (!categoria) missingFields.push('categoria');
+			if (isPiattoGiorno === undefined) missingFields.push('piatto del giorno');
+
+			if (missingFields.length > 0) {
 				res.status(400).json({
 					success: false,
-					message: 'Campi obbligatori mancanti: nome, descrizione, costo, immagine, categoria, piatto del giorno',
+					message: `Campi obbligatori mancanti: ${missingFields.join(', ')}`,
 				});
 			}
 
