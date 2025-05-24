@@ -21,115 +21,137 @@ import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { RouterModule } from '@angular/router';
 import { IonChip } from '@ionic/angular/standalone';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { ToastController } from '@ionic/angular';
 
 @Component({
-	selector: 'app-gestisci-filiali',
-	templateUrl: './gestisci-filiali.page.html',
-	styleUrls: ['./gestisci-filiali.page.scss'],
-	standalone: true,
-	imports: [
-		IonContent,
-		RouterModule,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
-		IonAlert,
-		IonInput,
-		CommonModule,
-		FormsModule,
-		IonCard,
-		IonImg,
-		IonChip,
-		IonCardHeader,
-		IonCardTitle,
-		IonCardContent,
-		IonButton,
-		IonIcon,
-	],
+  selector: 'app-gestisci-filiali',
+  templateUrl: './gestisci-filiali.page.html',
+  styleUrls: ['./gestisci-filiali.page.scss'],
+  standalone: true,
+  imports: [
+    IonContent,
+    RouterModule,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonAlert,
+    IonInput,
+    CommonModule,
+    FormsModule,
+    IonCard,
+    IonImg,
+    IonChip,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonButton,
+    IonIcon,
+  ],
 })
 export class GestisciFilialiPage implements OnInit {
-	filiali: FilialeRecord[] = [];
-	filialiFiltered: FilialeRecord[] = [];
-	loading: boolean = true;
-	error: boolean = false;
-	searchTerm: string = '';
-	selectedCategoria: string = 'Tutte';
+  filiali: FilialeRecord[] = [];
+  filialiFiltered: FilialeRecord[] = [];
+  loading: boolean = true;
+  error: boolean = false;
+  searchTerm: string = '';
+  selectedCategoria: string = 'Tutte';
 
-	constructor(private filialeService: FilialeService) {}
+  isAlertOpen = false;
+  selectedFiliale: FilialeRecord | null = null;
 
-	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
-		if (response.success && response.data) {
-			this.filiali = response.data;
-			this.applyFilters(); // ✅ Applichiamo subito i filtri, che al primo giro mostra tutto
-		} else {
-			console.error(response.message || 'Errore sconosciuto');
-			this.error = true;
-		}
-		this.loading = false;
-	}
+  constructor(
+    private filialeService: FilialeService,
+    private toastController: ToastController
+  ) {}
 
-	ngOnInit() {
-		this.filialeService.GetSedi().subscribe({
-			next: (response) => this.handleResponse(response),
-			error: (err) => {
-				console.log(err);
-				this.loading = false;
-				this.error = true;
-			},
-		});
-	}
+  ngOnInit() {
+    this.filialeService.GetSedi().subscribe({
+      next: (response) => this.handleResponse(response),
+      error: (err) => {
+        console.log(err);
+        this.loading = false;
+        this.error = true;
+      },
+    });
+  }
 
-	isAlertOpen = false;
-	selectedFiliale: FilialeRecord | null = null;
+  private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
+    if (response.success && response.data) {
+      this.filiali = response.data;
+      this.applyFilters();
+    } else {
+      console.error(response.message || 'Errore sconosciuto');
+      this.error = true;
+    }
+    this.loading = false;
+  }
 
-	// ✅ Applica la ricerca sul campo "indirizzo"
-	applyFilters() {
-		const term = this.searchTerm.trim().toLowerCase();
+  applyFilters() {
+    const term = this.searchTerm.trim().toLowerCase();
+    this.filialiFiltered = this.filiali.filter(f =>
+      f.indirizzo?.toLowerCase().includes(term)
+    );
+  }
 
-		this.filialiFiltered = this.filiali.filter(filiale => {
-			const indirizzo = filiale.indirizzo?.toLowerCase() || '';
-			return indirizzo.includes(term);
-		});
-	}
+  filterTutti() {
+    this.selectedCategoria = 'Tutte';
+    this.searchTerm = '';
+    this.filialiFiltered = [...this.filiali];
+  }
 
-	// ✅ Mostra tutte le filiali (reset filtro)
-	filterTutti() {
-		this.selectedCategoria = 'Tutte';
-		this.searchTerm = '';
-		this.filialiFiltered = [...this.filiali];
-	}
+  showAlert(filiale: FilialeRecord) {
+    this.selectedFiliale = filiale;
+    this.isAlertOpen = true;
+  }
 
-	showAlert(filiale: FilialeRecord) {
-		this.selectedFiliale = filiale;
-		this.isAlertOpen = true;
-	}
+  async onConfirm() {
+    if (this.selectedFiliale) {
+      const id = this.selectedFiliale.id_filiale;
+      this.filialeService.deleteFiliale(id).subscribe({
+        next: async (res) => {
+          if (res.success) {
+            this.filiali = this.filiali.filter(f => f.id_filiale !== id);
+            this.applyFilters();
+            await this.presentToast('Filiale eliminata con successo', 'success');
+          } else {
+            await this.presentToast('Errore durante l\'eliminazione della filiale', 'danger');
+          }
+        },
+        error: async (err) => {
+          console.error('Errore eliminazione:', err);
+          await this.presentToast('Errore di rete durante l\'eliminazione', 'danger');
+        },
+      });
+    }
+    this.isAlertOpen = false;
+    this.selectedFiliale = null;
+  }
 
-	onConfirm() {
-		if (this.selectedFiliale) {
-			console.log('Confermata rimozione filiale:', this.selectedFiliale);
-			// Esegui qui l'eliminazione dal backend se necessario
-		}
-		this.isAlertOpen = false;
-		this.selectedFiliale = null;
-		this.applyFilters(); // ✅ Riapplica i filtri dopo eventuale cancellazione
-	}
+  onCancel() {
+    this.isAlertOpen = false;
+    this.selectedFiliale = null;
+  }
 
-	onCancel() {
-		console.log('Rimozione annullata');
-		this.isAlertOpen = false;
-		this.selectedFiliale = null;
-	}
+  alertButtons = [
+    {
+      text: 'Annulla',
+      role: 'cancel',
+      handler: () => this.onCancel(),
+    },
+    {
+      text: 'OK',
+      role: 'confirm',
+      handler: () => this.onConfirm(),
+    },
+  ];
 
-	alertButtons = [
-		{
-			text: 'Annulla',
-			role: 'cancel',
-			handler: () => this.onCancel(),
-		},
-		{
-			text: 'OK',
-			role: 'confirm',
-			handler: () => this.onConfirm(),
-		},
-	];
+  async presentToast(message: string, color: 'success' | 'danger') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500,
+      position: 'top',
+      color,
+    });
+    await toast.present();
+  }
 }

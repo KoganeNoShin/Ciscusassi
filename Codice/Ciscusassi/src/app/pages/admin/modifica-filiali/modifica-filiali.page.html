@@ -29,7 +29,16 @@
         <ion-input
           placeholder="Modifica l'indirizzo"
           [(ngModel)]="filiale.indirizzo"
+          (ionInput)="cercaIndirizzo($event)"
+          autocomplete="off"
         ></ion-input>
+
+        <!-- Lista suggerimenti -->
+        <ion-list *ngIf="showSuggerimenti" class="suggestions-list" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; margin-bottom: 10px;">
+          <ion-item button *ngFor="let s of suggerimenti" (click)="selezionaIndirizzo(s)">
+            {{ s.display_name }}
+          </ion-item>
+        </ion-list>
 
         <ion-input
           placeholder="Modifica il comune"
@@ -48,6 +57,7 @@
           expand="block"
           color="success"
           style="margin-top: 20px;"
+          [disabled]="loading"
           (click)="modificaFiliale()"
         >
           MODIFICA FILIALE
