@@ -53,34 +53,58 @@ export class Prodotto {
 			db.all(
 				'SELECT * FROM prodotti p ORDER BY p.categoria DESC',
 				(err: Error | null, rows: ProdottoRecord[]) => {
-					if (err) reject(err);
-					else resolve(rows);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessun piatto trovato');
+						resolve([]);
+					}else {
+						console.log('✅ [DB SUCCESS] SELECT prodotti eseguita con successo');
+						resolve(rows);
+					}
 				}
 			);
 		});
 	}
 
-	static async getPiattoDelGiorno(): Promise<ProdottoRecord> {
+	static async getPiattoDelGiorno(): Promise<ProdottoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM prodotti WHERE is_piatto_giorno = 1',
 				(err: Error | null, row: ProdottoRecord) => {
-					if (err) reject(err);
-					else resolve(row);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.log('⚠️ [DB WARNING] Nessun piatto trovato del giorno');
+						resolve(null);
+					} else {
+						console.log('✅ [DB SUCCESS] SELECT Piatto del giorno eseguita con successo');
+						resolve(row);
+					}
 				}
 			);
 		});
 	}
 
 	// ricerca per id
-	static async findById(id: number): Promise<ProdottoRecord> {
+	static async findById(id: number): Promise<ProdottoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM prodotti WHERE id_prodotto = ?',
 				[id],
 				(err: Error | null, row: ProdottoRecord) => {
-					if (err) reject(err);
-					else resolve(row);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.log('⚠️ [DB WARNING] Nessun piatto trovato con ID:', id);
+						resolve(null);
+					} else {
+						console.log('✅ [DB SUCCESS] SELECT Piatto trovato eseguita con successo');
+						resolve(row);
+					}
 				}
 			);
 		});
@@ -131,8 +155,15 @@ export class Prodotto {
 					id,
 				],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve();
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						console.error('🧾 Query params:', id);
+						reject(err);
+					}
+					else {
+						console.log('✅ [DB SUCCESS] Aggiornamento prodotto inserito con ID:', this.lastID);
+						resolve();
+					}
 				}
 			);
 		});
@@ -145,8 +176,15 @@ export class Prodotto {
 				'DELETE FROM prodotti WHERE id_prodotto = ?',
 				[id],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve();
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
+						console.error('🧾 Query params:', id);
+						reject(err);
+					}
+					else {
+						console.log('✅ [DB SUCCESS] Eliminazione prodotto inserito con ID:', id);
+						resolve();
+					}
 				}
 			);
 		});
@@ -157,16 +195,29 @@ export class Prodotto {
 			db.run(
 				'UPDATE prodotti SET is_piatto_giorno = 0 WHERE is_piatto_giorno = 1',
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve();
-				}
-			);
-			db.run(
-				'UPDATE prodotti SET is_piatto_giorno = 1 WHERE id_prodotto = ?',
-				[id],
-				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve();
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante UPDATE piatto del giorno:', err.message);
+						console.error('🧾 Query params:', id);
+						reject(err);
+					}
+					
+					console.log('✅ [DB SUCCESS] Aggiornamento rimozione piatto del giorno');
+					
+					db.run(
+						'UPDATE prodotti SET is_piatto_giorno = 1 WHERE id_prodotto = ?',
+						[id],
+						function (this: RunResult, err: Error | null) {
+							if (err) {
+								console.error('❌ [DB ERROR] Errore durante UPDATE piatto del giorno:', err.message);
+								console.error('🧾 Query params:', id);
+								reject(err);
+							}
+							else {
+								console.log('✅ [DB SUCCESS] Aggiornamento piatto del giorno con ID:', id);
+								resolve();
+							}
+						}
+					);
 				}
 			);
 		});

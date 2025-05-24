@@ -2,10 +2,7 @@ import { Request, Response } from 'express';
 import ProdottoService from '../Services/prodottoService';
 
 class ProdottoController {
-	static async getprodottoDelGiorno(
-		req: Request,
-		res: Response
-	): Promise<void> {
+	static async getprodottoDelGiorno(req: Request, res: Response): Promise<void> {
 		try {
 			const piatto = await ProdottoService.getPiattoDelGiorno();
 
@@ -29,7 +26,7 @@ class ProdottoController {
 		try {
 			const prodotti = await ProdottoService.getAllProdotti();
 
-			if (prodotti) res.json({ success: true, data: prodotti });
+			if (prodotti && prodotti.length > 0) res.json({ success: true, data: prodotti });
 			else
 				res.status(400).json({
 					success: false,

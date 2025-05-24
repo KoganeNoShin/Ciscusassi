@@ -3,7 +3,7 @@ import Prodotto, { ProdottoInput, ProdottoRecord } from '../Models/prodotto';
 class ProdottoService {
 	static async getPiattoDelGiorno(): Promise<ProdottoRecord | null> {
 		const piatto = await Prodotto.getPiattoDelGiorno();
-		return piatto || null;
+		return piatto;
 	}
 
 	static async getAllProdotti(): Promise<ProdottoRecord[] | null> {
