@@ -59,6 +59,76 @@ export class Asporto {
 			);
 		});
 	}
+
+	// Aggiunta di un Asporto
+	static async addAsporto(data: AsportoInput): Promise<number> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO Asporto (indirizzo, data_ora_consegna, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?)',
+				[
+					data.indirizzo,
+					data.data_ora_consegna,
+					data.ref_cliente,
+					data.ref_pagamento,
+				],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						console.error('🧾 Query params:', data);
+						reject(err);
+					}
+					else {
+						console.log('✅ [DB SUCCESS] Nuovo prodotto inserito con ID:', this.lastID);
+						resolve(this.lastID);
+					}
+				}
+			);
+		})
+	}
+
+	// Rimozione di un Asporto
+	static async deleteAsporto(id: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'DELETE FROM asporti WHERE id_asporto = ?',
+				[id],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
+						reject(err);
+					} else {
+						console.log('✅ [DB SUCCESS] Asporto rimosso con ID:', id);
+						resolve();
+					}
+				}
+			);
+		});
+	}
+
+	// Aggiornamento di un Asporto
+	static async updateAsporto(id: number, data: AsportoInput): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE asporti SET indirizzo = ?, data_ora_consegna = ?, ref_cliente = ?, ref_pagamento = ? WHERE id_asporto = ?',
+				[
+					data.indirizzo,
+					data.data_ora_consegna,
+					data.ref_cliente,
+					data.ref_pagamento,
+					id,
+				],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						reject(err);
+					} else {
+						console.log('✅ [DB SUCCESS] Asporto aggiornato con ID:', id);
+						resolve();
+					}
+				}
+			);
+		});
+	}
 }
 
 export default Asporto;

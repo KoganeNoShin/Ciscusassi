@@ -11,6 +11,7 @@ import OrdineProdottoController from '../Controllers/ord_prodController';
 import authMiddleware from '../Middleware/authMiddleware';
 import roleMiddleware from '../Middleware/roleMiddleware';
 import AuthController from '../Controllers/authController';
+import AsportoController from '../Controllers/asportoController';
 
 const router = express.Router();
 
@@ -20,10 +21,7 @@ router.get('/prodotti', ProdottoController.getAllProdotti);
 router.post('/addProdotto', ProdottoController.addProdotto);
 router.put('/updateProdotto/:id', ProdottoController.updateProdotto);
 router.delete('/deleteProdotto/:id', ProdottoController.deleteProdotto);
-router.put(
-	'/chargePiattoDelGiorno/:id',
-	ProdottoController.chargePiattoDelGiorno
-);
+router.put('/chargePiattoDelGiorno/:id', ProdottoController.chargePiattoDelGiorno);
 
 // Route per le Filiali
 router.get('/filiali', FilialeController.getAllFiliali);
@@ -41,17 +39,18 @@ router.delete('/deleteOrdine/:id', OrdineController.deleteOrdine);
 // Route per gli Ordini e Prodotti
 router.get('/ordiniProdotti', OrdineProdottoController.getAllOrdini);
 router.get('/ordiniProdotti/:id', OrdineProdottoController.getById);
-router.get(
-	'/ordiniProdotti/ref_ordine/:ref_ordine',
-	OrdineProdottoController.getByRefOrdine
-);
+router.get('/ordiniProdotti/ref_ordine/:ref_ordine', OrdineProdottoController.getByRefOrdine);
 router.post('/addOrdineProdotto', OrdineProdottoController.addOrdineProdotto);
-router.put(
-	'/deleteOrdineProdotto/:id',
-	OrdineProdottoController.deleteOrdineProdotto
-);
+router.put('/deleteOrdineProdotto/:id', OrdineProdottoController.deleteOrdineProdotto);
 router.put('/romana/:id', OrdineProdottoController.cambiaRomana);
 router.put('/cambiaStato/:id', OrdineProdottoController.cambioStato);
+
+// Route per Asporto
+router.get('/asporti', AsportoController.getAllAsporti);
+router.post('/addAsporto', AsportoController.addAsporto);
+router.put('/updateAsporto/:id', AsportoController.updateAsporto);
+router.delete('/deleteAsporto/:id', AsportoController.deleteAsporto);
+
 
 router.get('/impiegati', ImpiegatoController.getAllImpiegati);
 
