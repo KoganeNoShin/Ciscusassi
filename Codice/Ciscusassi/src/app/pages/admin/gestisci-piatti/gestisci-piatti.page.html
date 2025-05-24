@@ -6,50 +6,55 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
 	<div class="page-title">
-		Gestisci piatti 
-	<ion-chip
-  color="primary"
-  [outline]="selectedCategoria !== 'Antipasti'"
-  (click)="filterAntipasti()"
->Antipasti</ion-chip>
+		Gestisci piatti
+		<ion-chip
+			color="primary"
+			[outline]="selectedCategoria !== 'Antipasti'"
+			(click)="filterAntipasti()"
+			>Antipasti</ion-chip
+		>
 
-<ion-chip
-  color="secondary"
-  [outline]="selectedCategoria !== 'Primi'"
-  (click)="filterPrimi()"
->Primi</ion-chip>
+		<ion-chip
+			color="secondary"
+			[outline]="selectedCategoria !== 'Primi'"
+			(click)="filterPrimi()"
+			>Primi</ion-chip
+		>
 
-<ion-chip
-  color="success"
-  [outline]="selectedCategoria !== 'Bevande'"
-  (click)="filterBevande()"
->Bevande</ion-chip>
+		<ion-chip
+			color="success"
+			[outline]="selectedCategoria !== 'Bevande'"
+			(click)="filterBevande()"
+			>Bevande</ion-chip
+		>
 
-<ion-chip
-  color="warning"
-  [outline]="selectedCategoria !== 'Dolci'"
-  (click)="filterDolci()"
->Dolci</ion-chip>
+		<ion-chip
+			color="warning"
+			[outline]="selectedCategoria !== 'Dolci'"
+			(click)="filterDolci()"
+			>Dolci</ion-chip
+		>
 
-<ion-chip
-  color="danger"
-  [outline]="selectedCategoria !== 'Tutti'"
-  (click)="filterTutti()"
->Tutti</ion-chip>
-<ion-chip
-  color="medium"
-  [outline]="selectedCategoria !== 'PiattoDelGiorno'"
-  (click)="filterPiattoDelGiorno()"
->Piatto del giorno</ion-chip>
+		<ion-chip
+			color="danger"
+			[outline]="selectedCategoria !== 'Tutti'"
+			(click)="filterTutti()"
+			>Tutti</ion-chip
+		>
+		<ion-chip
+			color="medium"
+			[outline]="selectedCategoria !== 'PiattoDelGiorno'"
+			(click)="filterPiattoDelGiorno()"
+			>Piatto del giorno</ion-chip
+		>
 	</div>
 	<div class="input-row">
 		<div class="input-wrapper">
 			<ion-input
-  placeholder="Cerca un piatto..."
-  [(ngModel)]="searchTerm"
-  (ionInput)="applyFilters()"
-></ion-input>
-
+				placeholder="Cerca un piatto..."
+				[(ngModel)]="searchTerm"
+				(ionInput)="applyFilters()"
+			></ion-input>
 		</div>
 		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
 	</div>
@@ -63,13 +68,12 @@
 		</div>
 		@for (p of filteredPiatti; track p.id_prodotto ){
 		<ion-card>
-	<ion-icon
-  [name]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'star' : 'star-outline'"
-  [color]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'warning' : 'medium'"
-  (click)="selezionaPiattoDelGiorno(p)"
-  class="star-icon"
-></ion-icon>
-
+			<ion-icon
+				[name]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'star' : 'star-outline'"
+				[color]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'warning' : 'medium'"
+				(click)="selezionaPiattoDelGiorno(p)"
+				class="star-icon"
+			></ion-icon>
 
 			<!-- Stellina -->
 			<ion-img
