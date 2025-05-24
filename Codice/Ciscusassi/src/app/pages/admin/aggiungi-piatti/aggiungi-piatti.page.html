@@ -1,60 +1,48 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>aggiungiPiatti</ion-title>
+    <ion-title>Aggiungi Piatti</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-content class="ion-padding">
-    <div class="page-title">CREA PIATTO</div>
-    <ion-card class="custom-card">
-      <div class="card-content">
-        <!-- Box immagine cliccabile -->
-        <div class="image-upload" (click)="fileInput.click()">
-          <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
-
-          <ng-container *ngIf="immagineBase64; else placeholder">
-            <img
-              [src]="immagineBase64"
-              alt="Anteprima immagine"
-              style="width: 100%; height: auto; border-radius: 8px;"
-            />
-          </ng-container>
-
-          <ng-template #placeholder>
-            <h1>Inserisci un'immagine per il piatto</h1>
-            <ion-icon name="image-outline" size="large"></ion-icon>
-          </ng-template>
-        </div>
-
-        <!-- Campi form -->
-        <div class="form-fields">
-          <ion-input
-            placeholder="Inserisci il nome"
-            [(ngModel)]="nome"
-          ></ion-input>
-
-          <ion-textarea
-            placeholder="Inserisci una descrizione"
-            [(ngModel)]="descrizione"
-          ></ion-textarea>
-
-          <ion-input
-            type="number"
-            placeholder="Costo"
-            [(ngModel)]="costo"
-          ></ion-input>
-
-          <ion-input
-            placeholder="Categoria"
-            [(ngModel)]="categoria"
-          ></ion-input>
-
-          <ion-button expand="block" color="success" (click)="creaPiatto()">
-            CREA PIATTO
-          </ion-button>
-        </div>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="page-title">CREA PIATTO</div>
+  <ion-card class="custom-card">
+    <div class="card-content">
+      <!-- Upload immagine -->
+      <div class="image-upload" (click)="fileInput.click()">
+        <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
+        <ng-container *ngIf="immagineBase64; else placeholder">
+          <img
+            [src]="immagineBase64"
+            alt="Anteprima immagine"
+            style="width: 100%; height: auto; border-radius: 8px;"
+          />
+        </ng-container>
+        <ng-template #placeholder>
+          <h1>Inserisci un'immagine per il piatto</h1>
+          <ion-icon name="image-outline" size="large"></ion-icon>
+        </ng-template>
       </div>
-    </ion-card>
-  </ion-content>
+
+      <!-- Campi form -->
+      <div class="form-fields">
+        <ion-input placeholder="Inserisci il nome" [(ngModel)]="nome"></ion-input>
+
+        <ion-textarea placeholder="Inserisci una descrizione" [(ngModel)]="descrizione"></ion-textarea>
+
+        <ion-input type="number" placeholder="Costo" [(ngModel)]="costo"></ion-input>
+
+        <ion-item>
+          <ion-label>Categoria</ion-label>
+          <ion-select [(ngModel)]="categoria" placeholder="Seleziona una categoria">
+            <ion-select-option *ngFor="let cat of categorieDisponibili" [value]="cat">
+              {{ cat }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" color="success" (click)="creaPiatto()">CREA PIATTO</ion-button>
+      </div>
+    </div>
+  </ion-card>
 </ion-content>

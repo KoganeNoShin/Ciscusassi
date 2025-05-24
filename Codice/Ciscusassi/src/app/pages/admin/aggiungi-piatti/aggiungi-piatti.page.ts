@@ -8,6 +8,10 @@ import {
   IonHeader,
   IonIcon,
   IonInput,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
   IonTextarea,
   IonTitle,
   IonToolbar,
@@ -32,9 +36,13 @@ import { ProdottoService } from 'src/app/core/services/prodotto.service';
     IonTextarea,
     IonTitle,
     IonToolbar,
+    IonButton,
+    IonItem,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
     CommonModule,
     FormsModule,
-    IonButton,
     HttpClientModule,
   ],
 })
@@ -45,6 +53,8 @@ export class AggiungiPiattiPage implements OnInit {
   categoria: string = '';
   immagineBase64: string = '';
   isPiattoGiorno: boolean = false;
+
+  categorieDisponibili: string[] = ['ANTIPASTO', 'PRIMO', 'BEVANDA', 'DOLCE'];
 
   constructor(private prodottoService: ProdottoService) {}
 
@@ -62,31 +72,36 @@ export class AggiungiPiattiPage implements OnInit {
   }
 
   creaPiatto(): void {
-    if (!this.nome || !this.categoria || this.costo === null || !this.immagineBase64) {
-      alert('Compila tutti i campi obbligatori!');
-      return;
-    }
-
-    const nuovoProdotto: ProdottoInput = {
-      nome: this.nome,
-      descrizione: this.descrizione,
-      costo: this.costo,
-      categoria: this.categoria,
-      immagine: this.immagineBase64,
-      is_piatto_giorno: false, // Impostazione predefinita, può essere modificata in seguito
-    };
-
-    this.prodottoService.addProdotto(nuovoProdotto).subscribe({
-      next: () => {
-        alert('Piatto creato con successo!');
-        this.resetForm();
-      },
-      error: (err: any) => {
-        console.error('Errore nella creazione del piatto:', err);
-        alert('Errore durante la creazione del piatto.');
-      },
-    });
+  // Validazione campi obbligatori
+  if (!this.nome.trim() || !this.categoria || this.costo === null || !this.immagineBase64) {
+    alert('⚠️ Tutti i campi obbligatori devono essere compilati.');
+    return;
   }
+
+  const nuovoProdotto: ProdottoInput = {
+    nome: this.nome.trim(),
+    descrizione: this.descrizione?.trim() || '',
+    costo: this.costo,
+    categoria: this.categoria,
+    immagine: this.immagineBase64,
+    is_piatto_giorno: this.isPiattoGiorno === true ? true : false, 
+  };
+
+  // Esegui la richiesta
+  this.prodottoService.addProdotto(nuovoProdotto).subscribe({
+    next: (response) => {
+      console.log('✅ Risposta dal server:', response);
+
+      // Anche se la risposta non ha un campo 'success', se siamo in next, vuol dire che la chiamata è riuscita
+      alert('✅ Piatto creato correttamente.');
+      this.resetForm();
+    },
+    error: (err) => {
+      console.error('❌ Errore HTTP:', err);
+      alert('❌ Errore durante la creazione del piatto.\nDettagli: ' + (err?.message || 'Errore sconosciuto'));
+    },
+  });
+}
 
   resetForm(): void {
     this.nome = '';
