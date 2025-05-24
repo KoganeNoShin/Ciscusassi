@@ -3,229 +3,288 @@ import { CommonModule } from '@angular/common';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FormsModule } from '@angular/forms';
 import {
-	IonButton,
-	IonCard,
-	IonCol,
-	IonContent,
-	IonGrid,
-	IonInput,
-	IonList,
-	IonModal,
-	IonRow,
-	IonText,
-	IonDatetimeButton,
-	IonDatetime,
-	IonItem,
-	IonImg,
-	IonCardContent,
+  IonButton,
+  IonCard,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonInput,
+  IonList,
+  IonItem,
+  IonImg,
+  IonCardContent,
+  IonRow,
+  IonText,
 } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
-import { debounceTime, Subject, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { RouterModule } from '@angular/router';
 import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.service';
 
-
 @Component({
-	selector: 'app-ordina-asporto',
-	templateUrl: './ordina-asporto.page.html',
-	styleUrls: ['./ordina-asporto.page.scss'],
-	standalone: true,
-	imports: [
-		IonCardContent,
-		IonImg,
-		IonItem,
-		IonList,
-		IonInput,
-		IonContent,
-		CommonModule,
-		FormsModule,
-		IonGrid,
-		IonRow,
-		IonCol,
-		IonCard,
-		IonText,
-		IonButton,
-		RouterModule
-	],
+  selector: 'app-ordina-asporto',
+  templateUrl: './ordina-asporto.page.html',
+  styleUrls: ['./ordina-asporto.page.scss'],
+  standalone: true,
+  imports: [
+    IonCardContent,
+    IonImg,
+    IonItem,
+    IonList,
+    IonInput,
+    IonContent,
+    CommonModule,
+    FormsModule,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonCard,
+    IonText,
+    IonButton,
+    RouterModule,
+  ],
 })
 export class OrdinaAsportoPage implements OnInit {
-	searchTerm = '';
-	results: any[] = [];
-	selectedAddress = '';
-	selectedCoords: { lat: number; lon: number } | null = null;
-	indirizzoScelto = '';
-	distanceInfo: any = null;
-	filiali: FilialeRecord[] = [];
-	closestFiliale: FilialeRecord | null = null;
-	closestDistanceMeters: number | null = null;
-	closestTravelTimeSeconds: number | null = null;
-	travelTimeMinutes: number | null = null; // <-- Variabile aggiunta
+  // Termini e dati di ricerca
+  testoRicerca: string = '';
+  indirizziTrovati: any[] = [];
+  indirizzoSelezionato: string = '';
+  coordinateSelezionate: { lat: number; lon: number } | null = null;
 
-	private searchSubject = new Subject<string>();
-	private tomtomApiKey = environment.tomtomApiKey;
+  // Lista filiali e filiale più vicina con informazioni
+  elencoFiliali: FilialeRecord[] = [];
+  filialePiuVicino: FilialeRecord | null = null;
+  distanzaFilialeMetri: number | null = null;
+  tempoViaggioSecondi: number | null = null;
+  tempoViaggioMinuti: number | null = null;
 
-	loading = true;
-	error = false;
+  // Stato caricamento e errori
+  caricamentoInCorso: boolean = true;
+  erroreNellaRichiesta: boolean = false;
 
-	constructor(
-		private filialeService: FilialeService,
-		private http: HttpClient,
-		private filialeAsportoService: FilialeAsportoService
+  // Cache per risultati geocoding
+  cacheRisultati: Map<string, any[]> = new Map();
 
-	) {
-		this.searchSubject
-			.pipe(debounceTime(800), distinctUntilChanged())
-			.subscribe((term) => {
-				this.geocode(term);
-			});
-	}
+  // Debounce per ricerca input
+  private soggettoRicerca = new Subject<string>();
 
-	ngOnInit() {
-		this.filialeService.GetSedi().subscribe({
-			next: (response) => this.handleResponse(response),
-			error: (err) => {
-				console.log(err);
-				this.loading = false;
-				this.error = true;
-			},
-		});
-	}
+  private chiaveTomTom = environment.tomtomApiKey;
 
-	onSearch() {
-		if (this.searchTerm.length > 3) {
-			this.searchSubject.next(this.searchTerm);
-		} else {
-			this.results = [];
-		}
-	}
+  constructor(
+    private servizioFiliale: FilialeService,
+    private http: HttpClient,
+    private servizioFilialeAsporto: FilialeAsportoService
+  ) {
+    // Imposto debounce per la ricerca per ridurre chiamate API
+    this.soggettoRicerca
+      .pipe(debounceTime(800), distinctUntilChanged())
+      .subscribe((termine) => this.eseguiGeocoding(termine));
+  }
 
-	private cache = new Map<string, any[]>();
+  ngOnInit() {
+    // Carico elenco filiali da backend all'inizializzazione
+    this.servizioFiliale.GetSedi().subscribe({
+      next: (risposta) => this.processaRispostaFiliali(risposta),
+      error: (err) => {
+        console.error('Errore caricamento filiali:', err);
+        this.caricamentoInCorso = false;
+        this.erroreNellaRichiesta = true;
+      },
+    });
+  }
 
-	private handleResponse(response: any) {
-		if (response.success && response.data) {
-			this.filiali = response.data;
-			const referencePoint = { lat: 38.1157, lon: 13.3615 }; // Centro Palermo
-			this.findClosestFilialeByTravelTime(referencePoint);
-		} else {
-			console.error(response.message || 'Errore sconosciuto');
-			this.error = true;
-		}
-		this.loading = false;
-	}
+  /**
+   * Metodo invocato dall'input di ricerca indirizzi
+   */
+  avviaRicerca() {
+    if (this.testoRicerca.length > 3) {
+      this.soggettoRicerca.next(this.testoRicerca);
+    } else {
+      this.indirizziTrovati = [];
+    }
+  }
 
-	geocode(query: string) {
-		const normalizedQuery = query.trim().toLowerCase();
+  /**
+   * Gestione risposta elenco filiali
+   */
+  private async processaRispostaFiliali(risposta: any) {
+    if (risposta.success && risposta.data) {
+      this.elencoFiliali = risposta.data;
+      // Se coordinate selezionate, calcolo la filiale più vicina
+      if (this.coordinateSelezionate) {
+        await this.trovaFilialePiuVicina(this.coordinateSelezionate);
+      }
+    } else {
+      console.error('Errore nel recupero filiali:', risposta.message || 'Messaggio non disponibile');
+      this.erroreNellaRichiesta = true;
+    }
+    this.caricamentoInCorso = false;
+  }
 
-		if (this.cache.has(normalizedQuery)) {
-			this.results = this.cache.get(normalizedQuery) || [];
-			return;
-		}
+  /**
+   * Effettua la ricerca geocoding con TomTom API
+   */
+  private eseguiGeocoding(indirizzo: string) {
+    const chiaveRicerca = indirizzo.trim().toLowerCase();
 
-		const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}%20Palermo.json?key=${this.tomtomApiKey}&limit=5&countrySet=IT`;
+    // Uso cache per evitare chiamate ripetute
+    if (this.cacheRisultati.has(chiaveRicerca)) {
+      this.indirizziTrovati = this.cacheRisultati.get(chiaveRicerca) || [];
+      return;
+    }
 
-		this.http.get<any>(url).subscribe((response) => {
-			const results = response.results || [];
-			this.results = results;
-			this.cache.set(normalizedQuery, results);
-		});
-	}
+    const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
+      indirizzo
+    )}%20Palermo.json?key=${this.chiaveTomTom}&limit=2&countrySet=IT`;
 
-	private getRouteData(
-		origin: { lat: number; lon: number },
-		destination: { lat: number; lon: number },
-		traffic: boolean = false
-	): Promise<{ distance: number; travelTime: number }> {
-		const baseUrl = 'https://api.tomtom.com/routing/1/calculateRoute';
-		const originStr = `${origin.lat},${origin.lon}`;
-		const destinationStr = `${destination.lat},${destination.lon}`;
-		const url = `${baseUrl}/${originStr}:${destinationStr}/json?key=${this.tomtomApiKey}&computeTravelTimeFor=all&traffic=${traffic}`;
+    this.http.get<any>(url).subscribe((risposta) => {
+      const risultati = risposta.results || [];
+      this.indirizziTrovati = risultati;
+      this.cacheRisultati.set(chiaveRicerca, risultati);
+    });
+  }
 
-		return this.http
-			.get<any>(url)
-			.toPromise()
-			.then((response) => {
-				if (response.routes && response.routes.length > 0) {
-					const summary = response.routes[0].summary;
-					return {
-						distance: summary.lengthInMeters,
-						travelTime: summary.travelTimeInSeconds,
-					};
-				}
-				throw new Error('No route data');
-			});
-	}
+  /**
+   * Ottiene dati di percorso (distanza e tempo) tra origine e destinazione
+   */
+  private ottieniDatiPercorso(
+    destinazione: { lat: number; lon: number },
+    origine: { lat: number; lon: number },
+    traffico: boolean = false
+  ): Promise<{ distanza: number; tempo: number }> {
+    const baseUrl = 'https://api.tomtom.com/routing/1/calculateRoute';
+    const origineStr = `${origine.lat},${origine.lon}`;
+    const destinazioneStr = `${destinazione.lat},${destinazione.lon}`;
+    const url = `${baseUrl}/${origineStr}:${destinazioneStr}/json?key=${this.chiaveTomTom}&computeTravelTimeFor=all&traffic=${traffico}`;
 
-	async findClosestFilialeByTravelTime(origin: { lat: number; lon: number }) {
-		if (!this.filiali || this.filiali.length === 0) {
-			this.closestFiliale = null;
-			this.closestDistanceMeters = null;
-			this.closestTravelTimeSeconds = null;
-			this.travelTimeMinutes = null;
-			return;
-		}
+    return this.http
+      .get<any>(url)
+      .toPromise()
+      .then((risposta) => {
+        if (risposta.routes && risposta.routes.length > 0) {
+          const sommario = risposta.routes[0].summary;
+          return {
+            distanza: sommario.lengthInMeters,
+            tempo: sommario.travelTimeInSeconds,
+          };
+        }
+        throw new Error('Dati percorso non disponibili');
+      });
+  }
 
-		let closest: FilialeRecord | null = null;
-		let minTravelTime = Number.MAX_SAFE_INTEGER;
-		let minDistance = Number.MAX_SAFE_INTEGER;
+  /**
+   * Cerca la filiale più vicina in termini di tempo di viaggio da una posizione
+   * Ottimizzato per chiamate parallele (più veloce)
+   */
+  async trovaFilialePiuVicina(puntoPartenza: { lat: number; lon: number }) {
+    if (!this.elencoFiliali || this.elencoFiliali.length === 0) {
+      this.filialePiuVicino = null;
+      this.distanzaFilialeMetri = null;
+      this.tempoViaggioSecondi = null;
+      this.tempoViaggioMinuti = null;
+      return;
+    }
 
-		for (const filiale of this.filiali) {
-			try {
-				const routeData = await this.getRouteData(origin, {
-					lat: filiale.latitudine,
-					lon: filiale.longitudine,
-				});
-				if (routeData.travelTime < minTravelTime) {
-					minTravelTime = routeData.travelTime;
-					minDistance = routeData.distance;
-					closest = filiale;
-				}
-			} catch (error) {
-				console.error('Errore nel calcolo percorso:', error);
-			}
-		}
+    const promises = this.elencoFiliali.map(async (filiale) => {
+      try {
+        const datiPercorso = await this.ottieniDatiPercorso(puntoPartenza, {
+          lat: filiale.latitudine,
+          lon: filiale.longitudine,
+        });
+        return {
+          filiale,
+          tempo: datiPercorso.tempo,
+          distanza: datiPercorso.distanza,
+        };
+      } catch (err) {
+        console.error('Errore calcolo percorso per filiale', filiale, err);
+        return null;
+      }
+    });
 
-		this.closestFiliale = closest;
-		this.closestDistanceMeters =
-			minDistance === Number.MAX_SAFE_INTEGER ? null : minDistance;
-		this.closestTravelTimeSeconds =
-			minTravelTime === Number.MAX_SAFE_INTEGER ? null : minTravelTime;
+    const risultati = await Promise.all(promises);
+    const validi = risultati.filter((r) => r !== null) as {
+      filiale: FilialeRecord;
+      tempo: number;
+      distanza: number;
+    }[];
 
-		this.travelTimeMinutes = this.closestTravelTimeSeconds
-			? Math.round(this.closestTravelTimeSeconds / 60)
-			: null;
-	}
+    if (validi.length === 0) {
+      this.filialePiuVicino = null;
+      this.distanzaFilialeMetri = null;
+      this.tempoViaggioSecondi = null;
+      this.tempoViaggioMinuti = null;
+      return;
+    }
 
-	selectPlace(place: any) {
-		this.selectedAddress =
-			place.address.freeformAddress || place.address.streetName || '';
-		this.selectedCoords = {
-			lat: place.position.lat,
-			lon: place.position.lon,
-		};
-		this.searchTerm = this.selectedAddress;
-		this.results = [];
+    let filialePiùVicina = validi[0].filiale;
+    let tempoMinimo = validi[0].tempo;
+    let distanzaMinima = validi[0].distanza;
 
-		if (this.selectedCoords) {
-			this.findClosestFilialeByTravelTime(this.selectedCoords);
-		}
-	}
+    for (const r of validi) {
+      if (r.tempo < tempoMinimo) {
+        tempoMinimo = r.tempo;
+        distanzaMinima = r.distanza;
+        filialePiùVicina = r.filiale;
+      }
+    }
 
-	svuotaCampo() {
-		this.indirizzoScelto = this.selectedAddress;
-		this.searchTerm = '';
-		this.selectedAddress = '';
-		this.selectedCoords = null;
-		this.results = [];
-		this.distanceInfo = null;
+    this.filialePiuVicino = filialePiùVicina;
+    this.distanzaFilialeMetri = distanzaMinima;
+    this.tempoViaggioSecondi = tempoMinimo;
+    this.tempoViaggioMinuti = Math.round(tempoMinimo / 60);
+  }
 
-		if (this.closestFiliale) {
-			console.log('Filiale più vicina:', this.closestFiliale);
-			console.log('Tempo di viaggio (minuti):', this.travelTimeMinutes ?? 'N/A');
-			this.filialeAsportoService.setFiliale(this.closestFiliale, this.travelTimeMinutes);
-		} else {
-			console.log('Nessuna filiale trovata o selezionata.');
-		}
-	}
+  /**
+   * Seleziona un indirizzo dai risultati della ricerca
+   */
+  selezionaIndirizzo(indirizzo: any) {
+    this.indirizzoSelezionato =
+      indirizzo.address.freeformAddress || indirizzo.address.streetName || '';
+    this.coordinateSelezionate = {
+      lat: indirizzo.position.lat,
+      lon: indirizzo.position.lon,
+    };
+    this.testoRicerca = this.indirizzoSelezionato;
+    this.indirizziTrovati = [];
+  }
+
+  /**
+   * Funzione per svuotare il campo e impostare la filiale più vicina nel servizio
+   * Mantiene il nome come richiesto.
+   */
+  svuotaCampo() {
+    if (this.filialePiuVicino) {
+
+      console.log('Filiale più vicina selezionata:', this.filialePiuVicino);
+      console.log(
+        'Tempo di viaggio stimato (minuti):',
+        this.tempoViaggioMinuti ?? 'Non disponibile'
+      );
+      this.servizioFilialeAsporto.setFiliale(
+        this.filialePiuVicino,
+        this.tempoViaggioMinuti
+      );
+    } else {
+      console.log('Nessuna filiale trovata o selezionata.');
+    }
+  }
+
+  async procedi() {
+    if (this.coordinateSelezionate) {
+      this.caricamentoInCorso = true; // blocca bottone o mostra loader se vuoi
+      await this.trovaFilialePiuVicina(this.coordinateSelezionate);
+      this.caricamentoInCorso = false;
+    }
+
+    // Ora che la filiale più vicina è aggiornata, puoi pulire il campo
+    this.testoRicerca = ''; // Pulisce il campo input
+    this.indirizzoSelezionato = ''; // Pulisce l'indirizzo selezionato
+    this.coordinateSelezionate = null;
+    this.indirizziTrovati = [];
+
+    this.svuotaCampo(); // mantiene la tua logica di invio dati
+  }
 }

@@ -22,22 +22,23 @@
               label="Inserisci l'indirizzo"
               label-placement="floating"
               fill="solid"
-              [(ngModel)]="searchTerm"
-              (ionInput)="onSearch()"
+              [(ngModel)]="testoRicerca"
+              (ionInput)="avviaRicerca()"
             ></ion-input>
-		<div class="autocomplete-wrapper">
-        <ion-list *ngIf="results.length">
-          <ion-item *ngFor="let place of results" (click)="selectPlace(place)">
-            {{ place.address.freeformAddress }}
-          </ion-item>
-        </ion-list>
-		</div>
 
-            <!-- Orario consegna -->
+            <div class="autocomplete-wrapper">
+              <ion-list *ngIf="indirizziTrovati.length">
+                <ion-item *ngFor="let luogo of indirizziTrovati" (click)="selezionaIndirizzo(luogo)">
+                  {{ luogo.address.freeformAddress }}
+                </ion-item>
+              </ion-list>
+            </div>
+
+            <!--
             <ion-text>
               <p>Inserisci orario di consegna:</p>
             </ion-text>
-            <!-- 
+
             <ion-datetime-button datetime="datetime"></ion-datetime-button>
             <ion-modal [keepContentsMounted]="true">
               <ng-template>
@@ -45,11 +46,16 @@
               </ng-template>
             </ion-modal>
             -->
-           
 
-            <ion-button (click)="svuotaCampo()" [routerLink]="['/menu-asporto']" fill="solid" shape="round" color="primary">
-              <ion-text color="light">PROCEDI</ion-text>
-            </ion-button>
+           <ion-button
+  (click)="procedi()"
+  [disabled]="caricamentoInCorso || !coordinateSelezionate"
+  fill="solid"
+  shape="round"
+  color="primary"
+>
+  <ion-text color="light">PROCEDI</ion-text>
+</ion-button>
           </ion-card-content>
         </ion-card>
       </ion-col>
