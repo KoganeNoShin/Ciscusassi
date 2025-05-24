@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
-import { ProdottoRecord } from '../interfaces/Prodotto';
+import { ProdottoInput, ProdottoRecord } from '../interfaces/Prodotto';
 
 @Injectable({
 	providedIn: 'root',
@@ -32,15 +32,15 @@ export class ProdottoService {
 		);
 	}
 
-	addProdotto(prodotto: ProdottoRecord): Observable<ApiResponse<ProdottoRecord>> {
-		return this.http.post<ApiResponse<ProdottoRecord>>(
+	addProdotto(prodotto: ProdottoInput): Observable<ApiResponse<number>> {
+		return this.http.post<ApiResponse<number>>(
 			`${this.apiURL}/addProdotto`,
 			prodotto
 		);
 	}
 	
-	updateProdotto(id: number, prodotto: ProdottoRecord): Observable<ApiResponse<ProdottoRecord>> {
-		return this.http.put<ApiResponse<ProdottoRecord>>(
+	updateProdotto(id: number, prodotto: ProdottoInput): Observable<ApiResponse<void>> {
+		return this.http.put<ApiResponse<void>>(
 			`${this.apiURL}/updateProdotto/${id}`,
 			prodotto
 		);
