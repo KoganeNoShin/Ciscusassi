@@ -28,20 +28,6 @@ export class AspProd {
 			);
 		});
 	}
-
-	// ricerca per id
-	static async findById(id: number): Promise<AspProdRecord> {
-		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT * FROM asp_prod WHERE id_asp_prod = ?',
-				[id],
-				(err: Error | null, row: AspProdRecord) => {
-					if (err) reject(err);
-					else resolve(row);
-				}
-			);
-		});
-	}
 }
 
 export default AspProd;

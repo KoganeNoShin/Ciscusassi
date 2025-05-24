@@ -46,10 +46,7 @@ router.put('/romana/:id', OrdineProdottoController.cambiaRomana);
 router.put('/cambiaStato/:id', OrdineProdottoController.cambioStato);
 
 // Route per Asporto
-router.get('/asporti', AsportoController.getAllAsporti);
 router.post('/addAsporto', AsportoController.addAsporto);
-router.put('/updateAsporto/:id', AsportoController.updateAsporto);
-router.delete('/deleteAsporto/:id', AsportoController.deleteAsporto);
 
 
 router.get('/impiegati', ImpiegatoController.getAllImpiegati);
