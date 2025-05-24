@@ -98,3 +98,10 @@ h1 {
 	padding: 0.5rem 1rem; /* padding intorno */
 	border-radius: 15px; /* bordi arrotondati */
 }
+
+.preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 20px;
+  object-fit: cover;
+}

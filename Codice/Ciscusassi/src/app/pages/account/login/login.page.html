@@ -9,41 +9,35 @@
 			<ion-col size="6">
 				<ion-card>
 					<ion-text color="light">
-						<h1>GESTIONE ACCOUNT</h1>
+						<h1>LOGIN</h1>
 					</ion-text>
-					<ion-button
-						size="default"
-						fill="solid"
-						shape="round"
-						color="secondary"
-					>
-						<ion-text color="light">
-							<p>ACCEDI</p>
-						</ion-text>
-					</ion-button>
-					<ion-button
-						size="default"
-						fill="solid"
-						shape="round"
-						color="secondary"
-					>
-						<ion-text color="light">
-							<p>REGISTRATI</p>
-						</ion-text>
-					</ion-button>
-					<ion-text color="light">
-						<p>Oppure</p>
-					</ion-text>
-					<ion-button
-						size="default"
-						fill="solid"
-						shape="round"
-						color="primary"
-					>
-						<ion-text color="light">
-							<p>ENTRA COME OSPITE</p>
-						</ion-text>
-					</ion-button>
+					<form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
+						<ion-item>
+							<ion-label position="floating"
+								>Email o matricola</ion-label
+							>
+							<ion-input
+								formControlName="emailOMatricola"
+								type="text"
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-label position="floating">Password</ion-label>
+							<ion-input
+								type="password"
+								formControlName="password"
+							></ion-input>
+						</ion-item>
+
+						<ion-button
+							expand="full"
+							type="submit"
+							[disabled]="formLogin.invalid"
+						>
+							Login
+						</ion-button>
+					</form>
 				</ion-card>
 			</ion-col>
 		</ion-row>

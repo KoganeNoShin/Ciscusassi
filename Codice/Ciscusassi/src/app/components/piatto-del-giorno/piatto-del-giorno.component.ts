@@ -16,7 +16,7 @@ export class PiattoDelGiornoComponent implements OnInit {
 	loading: boolean = true;
 	error: boolean = false;
 
-	constructor(private ProdottoService: ProdottoService) {}
+	constructor(private prodottoService: ProdottoService) {}
 
 	private handleResponse(response: ApiResponse<ProdottoRecord>): void {
 		console.log(response);
@@ -33,7 +33,7 @@ export class PiattoDelGiornoComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.ProdottoService.GetPiattoDelGiorno().subscribe({
+		this.prodottoService.GetPiattoDelGiorno().subscribe({
 			next: (response) => this.handleResponse(response),
 			error: (err) => {
 				console.log(err);
