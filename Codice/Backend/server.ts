@@ -13,9 +13,11 @@ app.use(express.json());
 // Or configure specific origins
 app.use(
 	cors({
-		origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
-		methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		allowedHeaders: ['Content-Type', 'Authorization'],
+		origin: '*', // oppure '*' in fase di sviluppo
+  		credentials: true
+		// origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
+		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		// allowedHeaders: ['Content-Type', 'Authorization'],
 	})
 );
 
