@@ -31,4 +31,24 @@ export class ProdottoService {
 			{}
 		);
 	}
+
+	addProdotto(prodotto: ProdottoRecord): Observable<ApiResponse<ProdottoRecord>> {
+		return this.http.post<ApiResponse<ProdottoRecord>>(
+			`${this.apiURL}/addProdotto`,
+			prodotto
+		);
+	}
+	
+	updateProdotto(id: number, prodotto: ProdottoRecord): Observable<ApiResponse<ProdottoRecord>> {
+		return this.http.put<ApiResponse<ProdottoRecord>>(
+			`${this.apiURL}/updateProdotto/${id}`,
+			prodotto
+		);
+	}
+
+	deleteProdotto(id: number): Observable<ApiResponse<void>> {
+		return this.http.delete<ApiResponse<void>>(
+			`${this.apiURL}/deleteProdotto/${id}`
+		);
+	}
 }
