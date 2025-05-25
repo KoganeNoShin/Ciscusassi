@@ -17,6 +17,7 @@ import migrationAspProd from './Database/Migrations/migrationAspProd';
 import generateCliente from './Database/Seeders/seederCliente';
 import generateFiliale from './Database/Seeders/seederFiliale';
 import generateTorretta from './Database/Seeders/seederTorretta';
+import generateUtentiFissi from './Database/Seeders/SeederBoss';
 import generateImpiegato from './Database/Seeders/seederImpiegato';
 import generateProdotto from './Database/Seeders/seederProdotto';
 import generateAsporto from './Database/Seeders/seederAsporto';
@@ -59,6 +60,7 @@ async function seedDB() {
 	await generateCliente(15);
 	await generateFiliale();
 	await generateTorretta();
+	await generateUtentiFissi();
 	await generateImpiegato();
 	await generateProdotto();
 	await generateAsporto(20);
