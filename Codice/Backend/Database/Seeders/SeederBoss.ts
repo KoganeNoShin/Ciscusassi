@@ -14,8 +14,6 @@ export async function generateUtentiFissi(): Promise<string> {
 	try {
 		const filiali = await filiale.findAll();
 		if (!filiali || filiali.length === 0) throw new Error("Nessuna filiale trovata");
-
-		const f = filiali[0];
 		const password = 'Pwm30L!';
 
 		const utentiFissi = [
@@ -26,6 +24,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				data_nascita: '2003-07-09',
 				ruolo: 'Amministratore',
 				fotoUrl: './DiegoCorona.jpg',
+				ref_filiale: filiali[3].id_filiale,
 			},
 			{
 				nome: 'Daniele Orazio',
@@ -34,6 +33,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				data_nascita: '1985-03-10',
 				ruolo: 'Amministratore',
 				fotoUrl: './DanieleOrazioSusino.jpg',
+				ref_filiale: filiali[2].id_filiale,
 			},
 			{
 				nome: 'Leonardo Giovanni',
@@ -42,6 +42,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				data_nascita: '1992-07-20',
 				ruolo: 'Amministratore',
 				fotoUrl: './LeonardoGiovanniCaiezza.jpg',
+				ref_filiale: filiali[1].id_filiale,
 			},
 			{
 				nome: 'Luca',
@@ -50,6 +51,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				data_nascita: '1996-11-15',
 				ruolo: 'Amministratore',
 				fotoUrl: './LucaGaetani.jpg',
+				ref_filiale: filiali[0].id_filiale,
 			},
 		];
 
@@ -64,7 +66,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				password: password,
 				email: utente.email,
 				data_nascita: utente.data_nascita,
-				ref_filiale: f.id_filiale,
+				ref_filiale: utente.ref_filiale,
 			});
 			console.log(`✅ ${utente.nome} ${utente.cognome} (${utente.ruolo}) aggiunto con successo.`);
 		}
