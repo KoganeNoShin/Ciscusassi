@@ -11,16 +11,12 @@ const app = express();
 //app.use(express.json());
 app.use(express.json({ limit: '10mb' }));
 
-
 // Or configure specific origins
 app.use(
 	cors({
-		origin: 'http://localhost:8100',
+		origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type'],
-		// origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
-		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		// allowedHeaders: ['Content-Type', 'Authorization'],
 	})
 );
 
