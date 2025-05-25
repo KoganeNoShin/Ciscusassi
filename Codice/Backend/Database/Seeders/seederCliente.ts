@@ -48,7 +48,6 @@ async function generateCliente(count: number): Promise<string> {
 					cognome: cognome,
 					email: email,
 					password: password,
-					punti: punti,
 					data_nascita: data_nascita,
 					image: imageBase64,
 				});
