@@ -34,4 +34,10 @@ h1 {
 	font-family: 'LucidaCalligraphy';
 	font-style: normal;
 	font-weight: lighter;
+	color: var(--ion-color-bianco);
+	width: 70%;
+}
+
+ion-card {
+	background-color: var(--ion-color-verdechiaro);
 }

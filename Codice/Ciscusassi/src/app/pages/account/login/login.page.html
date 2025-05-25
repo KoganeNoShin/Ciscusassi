@@ -8,12 +8,12 @@
 			</ion-col>
 			<ion-col size="6">
 				<ion-card>
-					<ion-text color="light">
-						<h1>LOGIN</h1>
+					<ion-text>
+						<h1 class="title">LOGIN</h1>
 					</ion-text>
 
 					@if (error) {
-					<p>{{errorMsg}}</p>
+					<p class="errorMsg">{{errorMsg}}</p>
 					}
 
 					<form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
@@ -22,8 +22,8 @@
 								>Email o matricola</ion-label
 							>
 							<ion-input
-								formControlName="emailOMatricola"
-								type="text"
+								formControlName="email"
+								type="email"
 							></ion-input>
 						</ion-item>
 
@@ -36,8 +36,10 @@
 						</ion-item>
 
 						<ion-button
-							expand="full"
+							expand="block"
 							type="submit"
+							shape="round"
+							color="arancione"
 							[disabled]="formLogin.invalid || loading"
 						>
 							@if(!loading) { LOGIN } @else {

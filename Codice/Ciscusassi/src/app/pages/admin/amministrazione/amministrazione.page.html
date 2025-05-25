@@ -8,30 +8,25 @@
 			</ion-col>
 			<ion-col size="12" size-md="4" size-lg="6" class="ion-text-center">
 				<ion-card>
-					<ion-text color="light">
-						<h1>Benvenuto Pippo!</h1>
-					</ion-text>
+					<h1>Benvenuto {{username}}!</h1>
+
 					<ion-button
 						[routerLink]="['/gestisci-piatti']"
 						size="default"
 						fill="solid"
 						shape="round"
-						color="primary"
+						color="rosso"
 					>
-						<ion-text color="light">
-							<p>Gestisci piatti</p>
-						</ion-text>
+						Gestisci piatti
 					</ion-button>
 					<ion-button
 						[routerLink]="['/gestisci-filiali']"
 						size="default"
 						fill="solid"
 						shape="round"
-						color="primary"
+						color="rosso"
 					>
-						<ion-text color="light">
-							<p>Gestisci filiali</p>
-						</ion-text>
+						Gestisci filiali
 					</ion-button>
 
 					<ion-button
@@ -39,11 +34,9 @@
 						size="default"
 						fill="solid"
 						shape="round"
-						color="primary"
+						color="rosso"
 					>
-						<ion-text color="light">
-							<p>Gestisci utili</p>
-						</ion-text>
+						Gestisci utili
 					</ion-button>
 				</ion-card>
 			</ion-col>

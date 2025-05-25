@@ -1,16 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import {
-	IonFooter,
-	IonIcon,
-	IonToolbar,
-	IonButtons,
-	IonButton,
-	IonHeader,
-} from '@ionic/angular/standalone';
-
-import { addIcons } from 'ionicons';
-import { personCircle } from 'ionicons/icons';
+import { IonFooter, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
 	selector: 'app-footer',

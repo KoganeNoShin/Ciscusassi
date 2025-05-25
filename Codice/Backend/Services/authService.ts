@@ -27,7 +27,7 @@ class AuthService {
 	}
 
 	static async login(input: credentials): Promise<LoginRecord | undefined> {
-		const user = await Cliente.findByEmail(input.emailOMatricola);
+		const user = await Cliente.findByEmail(input.email);
 
 		if (user) {
 			const passwordMatch = await Cliente.comparePassword(
@@ -49,9 +49,7 @@ class AuthService {
 			return loginRecord;
 		}
 
-		const impiegato = await Impiegato.findByMatricola(
-			input.emailOMatricola
-		);
+		const impiegato = await Impiegato.findByEmail(input.email);
 
 		if (impiegato) {
 			const passwordMatch = await Impiegato.comparePassword(
@@ -77,6 +75,25 @@ class AuthService {
 		}
 
 		return;
+	}
+
+	static async logout(token: string): Promise<boolean> {
+		// Tipizza req come AuthenticatedRequest per accedere a req.user
+		const cliente = await Cliente.findByToken(token);
+
+		if (cliente) {
+			await Cliente.invalidateToken(token);
+			return true;
+		}
+
+		const impiegato = await Impiegato.findByToken(token);
+
+		if (impiegato) {
+			await Impiegato.invalidateToken(token);
+			return true;
+		}
+
+		return false;
 	}
 }
 

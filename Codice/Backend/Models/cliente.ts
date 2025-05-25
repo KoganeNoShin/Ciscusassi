@@ -121,11 +121,11 @@ class Cliente {
 		});
 	}
 
-	static async invalidateToken(numeroCarta: string): Promise<void> {
+	static async invalidateToken(token: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'UPDATE clienti SET token = NULL WHERE numero_carta = ?',
-				[numeroCarta],
+				'UPDATE clienti SET token = NULL WHERE token = ?',
+				[token],
 				(err: Error | null) => {
 					if (err) reject(err);
 					else resolve();

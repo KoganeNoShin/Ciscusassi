@@ -2,9 +2,6 @@ import AuthService from '../Services/authService';
 
 import { Request, Response } from 'express';
 
-import Cliente from '../Models/cliente';
-import Impiegato from '../Models/impiegato';
-
 class AuthController {
 	static async login(req: Request, res: Response): Promise<void> {
 		try {
@@ -31,10 +28,9 @@ class AuthController {
 
 	static async logout(req: Request, res: Response): Promise<void> {
 		try {
-			// Tipizza req come AuthenticatedRequest per accedere a req.user
-			const user = (req as any).user;
+			const token = req.headers.authorization?.replace('Bearer ', '');
 
-			if (!user) {
+			if (!token) {
 				res.status(401).json({
 					success: false,
 					message: 'Non autenticato',
@@ -42,16 +38,19 @@ class AuthController {
 				return;
 			}
 
-			if (user.ruolo === 'cliente') {
-				await Cliente.invalidateToken(user.numero_carta); // o user.id
-			} else {
-				await Impiegato.invalidateToken(user.matricola); // o user.id
-			}
+			const loggedOut = await AuthService.logout(token);
 
-			res.status(200).json({
-				success: true,
-				message: 'Logout effettuato',
-			});
+			if (loggedOut) {
+				res.status(200).json({
+					success: true,
+					message: 'Logout effettuato',
+				});
+			} else {
+				res.status(401).json({
+					success: true,
+					message: 'Token non valido o utente non trovato!',
+				});
+			}
 		} catch (error) {
 			console.error('Errore logout:', error);
 			res.status(500).json({

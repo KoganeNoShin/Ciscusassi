@@ -74,7 +74,8 @@ p {
 	color: var(--ion-color-primary-contrast);
 }
 
-ion-button > ion-text > p {
+ion-button {
 	font-family: 'Isocpeur-Regular', sans-serif;
 	font-size: 1.2rem;
+	color: var(--ion-color-bianco);
 }

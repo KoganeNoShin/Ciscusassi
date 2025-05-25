@@ -1,5 +1,5 @@
 export interface credentials {
-	emailOMatricola: string;
+	email: string;
 	password: string;
 }
 

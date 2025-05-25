@@ -9,6 +9,8 @@ import { Credentials } from '../interfaces/Credentials';
 
 import { Storage } from '@ionic/storage-angular';
 
+import { firstValueFrom } from 'rxjs';
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -44,6 +46,10 @@ export class AuthenticationService {
 		);
 	}
 
+	invalidateToken(): Observable<ApiResponse<string>> {
+		return this.http.get<ApiResponse<string>>(`${this.apiURL}/logout`);
+	}
+
 	getPoints(): Observable<ApiResponse<number>> {
 		return this.http.get<ApiResponse<number>>(`${this.apiURL}/points`, {
 			headers: {
@@ -62,10 +68,23 @@ export class AuthenticationService {
 	}
 
 	async logout(): Promise<void> {
-		await this.clearToken();
-		await this.clearRole();
-		await this.clearUsername();
-		await this.clearAvatar();
+		try {
+			const response = await firstValueFrom(this.invalidateToken());
+
+			if (!response.success) {
+				console.error(response.message || 'Errore sconosciuto');
+			}
+
+			await Promise.all([
+				this.clearToken(),
+				this.clearRole(),
+				this.clearUsername(),
+				this.clearAvatar(),
+			]);
+		} catch (err) {
+			console.error('Errore durante il logout:', err);
+			throw err;
+		}
 	}
 
 	// ----- LOADERS ------

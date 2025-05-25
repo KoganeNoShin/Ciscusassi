@@ -122,6 +122,21 @@ export class Impiegato {
 		});
 	}
 
+	// definisco il metodo per trovare un utente in base all'username
+	static async findByEmail(email: string): Promise<ImpiegatoRecord | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT * FROM impiegati WHERE email = ?',
+				[email],
+				(err: Error | null, row: ImpiegatoRecord) => {
+					if (err) return reject(err);
+					if (!row) return resolve(null);
+					return resolve(row);
+				}
+			);
+		});
+	}
+
 	static async invalidateToken(matricola: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(

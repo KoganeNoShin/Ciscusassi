@@ -1,5 +1,5 @@
 ion-card {
-	background-color: var(--ion-color-quartiary);
+	background-color: var(--ion-color-verdechiaro);
 	padding-top: 5rem;
 	padding-bottom: 5rem;
 	gap: 2rem;
@@ -24,4 +24,12 @@ ion-grid {
 	height: 100vh;
 	justify-content: center;
 	align-items: center;
+}
+
+h1 {
+	color: var(--ion-color-bianco);
+}
+
+p {
+	color: var(--ion-color-bianco);
 }

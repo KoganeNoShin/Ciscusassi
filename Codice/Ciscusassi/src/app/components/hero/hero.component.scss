@@ -30,6 +30,7 @@
 
 #hero h1 {
 	margin-bottom: 30px;
+	color: var(--ion-color-bianco);
 }
 
 #hero p {
@@ -37,10 +38,12 @@
 	line-height: 22px;
 	width: 50%;
 	margin: 0;
+	color: var(--ion-color-bianco);
 }
 
 #chevron {
 	position: absolute;
 	bottom: 0;
 	margin-bottom: 5%;
+	color: var(--ion-color-arancione);
 }

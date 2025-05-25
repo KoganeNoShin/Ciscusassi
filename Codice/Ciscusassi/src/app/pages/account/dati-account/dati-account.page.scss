@@ -1,5 +1,5 @@
-ion-card {
-	background-color: var(--ion-color-quartiary);
+.card-container {
+	background-color: var(--ion-color-verdechiaro);
 	padding-top: 5rem;
 	padding-bottom: 5rem;
 	gap: 2rem;
@@ -8,6 +8,30 @@ ion-card {
 	justify-content: center;
 	align-items: center;
 	text-align: center;
+}
+
+.card-profilo {
+	background-color: var(--ion-color-bianconeve);
+}
+
+.username {
+	color: black;
+}
+
+.punti {
+	color: var(--ion-color-arancione);
+}
+
+.card-flex {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 4rem;
+}
+
+.titolo {
+	color: var(--ion-color-bianco);
 }
 
 ion-col {

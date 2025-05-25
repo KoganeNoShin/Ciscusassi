@@ -16,6 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 import { Router } from 'express';
 import { RouterModule } from '@angular/router';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
 	selector: 'app-amministrazione',
@@ -37,7 +38,13 @@ import { RouterModule } from '@angular/router';
 	],
 })
 export class AmministrazionePage implements OnInit {
-	constructor() {}
+	username: string = '';
 
-	ngOnInit() {}
+	constructor(private authService: AuthenticationService) {}
+
+	ngOnInit() {
+		this.authService.username$.subscribe((username) => {
+			this.username = username;
+		});
+	}
 }

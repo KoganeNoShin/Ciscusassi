@@ -31,7 +31,7 @@
 }
 
 #background {
-	background-color: var(--ion-color-tertiary);
+	background-color: var(--ion-color-verdescuro);
 	z-index: -10;
 	width: 100vw;
 	height: 100vh;
@@ -64,20 +64,25 @@
 
 h1 {
 	margin-top: 0;
+	color: var(--ion-color-bianco);
 }
 
 h2 {
 	font-size: 2rem;
+	color: var(--ion-color-bianco);
 }
 
 h3 {
 	font-size: 1.2rem;
+	color: var(--ion-color-bianco);
 }
 
 p {
 	font-size: 0.8rem;
+	color: var(--ion-color-bianco);
 }
 
 img {
 	border-radius: 100%;
+	color: var(--ion-color-bianco);
 }

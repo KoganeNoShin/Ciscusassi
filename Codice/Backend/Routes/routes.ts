@@ -79,7 +79,7 @@ router.post(
 	AuthController.login
 );
 
-router.post('/logout', authMiddleware, AuthController.logout);
+router.get('/logout', authMiddleware, AuthController.logout);
 
 router.get('/points', authMiddleware, ClienteController.getPoints);
 

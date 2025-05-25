@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+
 import {
 	IonContent,
 	IonGrid,
@@ -11,15 +10,15 @@ import {
 	IonText,
 	IonButton,
 	IonCardContent,
-	IonLabel,
-	IonItem,
-	IonList,
 	IonSpinner,
+	IonAvatar,
 } from '@ionic/angular/standalone';
 
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-dati-account',
@@ -27,6 +26,7 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 	styleUrls: ['./dati-account.page.scss'],
 	standalone: true,
 	imports: [
+		IonAvatar,
 		IonSpinner,
 		IonCardContent,
 		IonContent,
@@ -35,46 +35,58 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 		IonRow,
 		IonImg,
 		IonCard,
-		IonText,
 		IonButton,
 		RouterModule,
+		IonAvatar,
 	],
 })
 export class DatiAccountPage implements OnInit {
 	username: string = '';
+	role: string = '';
 	avatar: string = '';
 	points: number = 0;
 
 	loading: boolean = true;
+	loadingLogout: boolean = false;
+
 	error: boolean = false;
 	errorMsg: string = '';
 
-	constructor(private authService: AuthenticationService) {}
+	constructor(
+		private authService: AuthenticationService,
+		private router: Router
+	) {}
 
 	ngOnInit() {
 		this.authService.username$.subscribe((username) => {
 			this.username = username;
 		});
 
+		this.authService.role$.subscribe((role) => {
+			this.role = role;
+		});
+
 		this.authService.avatar$.subscribe((avatar) => {
 			this.avatar = avatar;
 		});
 
-		this.authService.getPoints().subscribe({
-			next: (response) => this.handleResponse(response),
-			error: (err) => {
-				console.log(err);
-				this.error = true;
-				this.loading = false;
-			},
-		});
+		if (this.role == 'cliente') {
+			this.authService.getPoints().subscribe({
+				next: (response) => this.handleResponse(response),
+				error: (err) => {
+					console.log(err);
+					this.error = true;
+					this.loading = false;
+				},
+			});
+		}
 	}
 
 	private handleResponse(response: ApiResponse<number>): void {
 		console.log(response);
 
-		if (response.success && response.data) {
-			this.points = response.data;
+		if (response.success) {
+			this.points = response.data!;
 		} else {
 			console.error(response.message || 'Errore sconosciuto');
 			this.error = true;
@@ -84,8 +96,18 @@ export class DatiAccountPage implements OnInit {
 		this.loading = false;
 	}
 
-	logout() {
-		console.log('logout');
+	async logout() {
+		this.loadingLogout = true;
+		try {
+			await this.authService.logout();
+			this.loadingLogout = false;
+			this.router.navigate(['/login']);
+		} catch (err) {
+			console.error('Errore durante il logout:', err);
+			this.error = true;
+			this.errorMsg = 'Errore durante il logout. Riprova più tardi.';
+			this.loadingLogout = false;
+		}
 	}
 
 	deleteAccount() {
