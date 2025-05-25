@@ -1,25 +1,33 @@
 import Pagamento, { PagamentoInput, PagamentoRecord } from "../Models/pagamento";
 
 class PagamentoService {
-    static async addPagamento(input: PagamentoInput): Promise<number> {
-        return await Pagamento.create(input);
-    }
+	private static validate(input: PagamentoInput): void {
+		if (input.importo <= 0) {
+			throw new Error('L\'importo deve essere maggiore di zero.');
+		}
 
-    static async deletePagamento(id: number): Promise<void> {
-        return await Pagamento.deletePagamento(id);
-    }
+		const timestamp = Date.parse(input.data_ora_pagamento);
+		if (isNaN(timestamp)) {
+			throw new Error('La data di pagamento non è valida.');
+		}
 
-    static async updatePagamento(id: number, input: PagamentoInput): Promise<void> {
-        return await Pagamento.updatePagamento(id, input);
-    }
+		const dataPagamento = new Date(timestamp);
 
-    static async getAllPagamenti(): Promise<PagamentoRecord[] | null> {
-        return await Pagamento.findAll();
-    }
+		const adesso = new Date();
 
-    static async getPagamentoById(id: number): Promise<PagamentoRecord | null> {
-        return await Pagamento.findById(id);
-    }
+		const ieri = new Date();
+		ieri.setHours(0, 0, 0, 0);
+		ieri.setDate(adesso.getDate() - 1);
+
+		if (!(dataPagamento.getTime() >= ieri.getTime() && dataPagamento.getTime() <= adesso.getTime())){
+			throw new Error("La data di pagamento deve essere oggi o ieri.");
+		}
+	}
+
+	static async addPagamento(data: PagamentoInput): Promise<number> {
+		this.validate(data);
+		return await Pagamento.create(data);
+	}
 }
 
 export default PagamentoService;

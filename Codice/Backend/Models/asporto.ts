@@ -31,6 +31,25 @@ export class Asporto {
 			);
 		});
 	}
+
+	// Selezione per ID
+	static async getByID(id: number): Promise<AsportoRecord | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT * FROM asporti WHERE id_asporto = ?',
+				[id],
+				(err: Error | null, row: AsportoRecord | null) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.log('⚠️ [DB WARNING] Nessun Asporto trovato');
+						resolve(null);
+					} else resolve(row);
+				}
+			);
+		});
+	}
 }
 
 export default Asporto;

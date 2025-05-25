@@ -30,77 +30,22 @@ export class Pagamento {
 		});
 	}
 
-	// Rimozione di un Pagamento
-	static async deletePagamento(id: number): Promise<void> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'DELETE FROM pagamenti WHERE id_pagamento = ?',
-				[id],
-				function (this: RunResult, err: Error | null) {
-					if (err) {
-						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
-						reject(err);
-					} else {
-						resolve();
-					}
-				}
-			);
-		});
-	}
-
-	// Aggiornamento di un Pagamento
-	static async updatePagamento(id: number, data: PagamentoInput): Promise<void> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE pagamenti SET importo = ?, data_ora_pagamento = ? WHERE id_pagamento = ?',
-				[data.importo, data.data_ora_pagamento, id],
-				function (this: RunResult, err: Error | null) {
-					if (err) {
-						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
-						reject(err);
-					} else {
-						resolve();
-					}
-				}
-			);
-		});
-	}
-	
-	// Seleziona per id
-	static async findById(id: number): Promise<PagamentoRecord | null> {
+	// Selezione per ID
+	static async getByID(id: number): Promise<PagamentoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM pagamenti WHERE id_pagamento = ?',
 				[id],
-				(err: Error | null, row: PagamentoRecord) => {
+				(err: Error | null, row: PagamentoRecord | null) => {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);
 					} else if (!row) {
-						console.warn('⚠️ [DB WARNING] Nessun Asporto trovato');
+						console.log('⚠️ [DB WARNING] Nessun Pagamento trovato');
 						resolve(null);
-					}else {
-						resolve(row);
-					}
+					} else resolve(row);
 				}
 			);
-		});
-	}
-
-	// Ricerca tutti i pagamenti
-	static async findAll(): Promise<PagamentoRecord[]> {
-		return new Promise((resolve, reject) => {
-			db.all('SELECT * FROM pagamenti', (err: Error | null, rows: PagamentoRecord[]) => {
-				if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
-						reject(err);
-					} else if (!rows || rows.length === 0) {
-						console.warn('⚠️ [DB WARNING] Nessun piatto trovato');
-						resolve([]);
-					}else {
-						resolve(rows);
-					}
-			});
 		});
 	}
 }

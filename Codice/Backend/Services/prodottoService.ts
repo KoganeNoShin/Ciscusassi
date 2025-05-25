@@ -1,49 +1,79 @@
 import Prodotto, { ProdottoInput, ProdottoRecord } from '../Models/prodotto';
 
 class ProdottoService {
-	static async getPiattoDelGiorno(): Promise<ProdottoRecord | null> {
-		const piatto = await Prodotto.getPiattoDelGiorno();
-		return piatto;
+	private static validate(data: ProdottoInput): void {
+		const categorieValide = ['Antipasto', 'Primo', 'Dolce', 'Bibita'];
+		if (!categorieValide.includes(data.categoria)) {
+			throw new Error(`Categoria non valida: ${data.categoria}. Le categorie ammesse sono: ${categorieValide.join(', ')}`);
+		}
+		if (data.costo <= 0) {
+			throw new Error('Il costo deve essere maggiore di zero.');
+		}
+		if (!data.nome || !data.descrizione || data.nome.trim() === '' || data.descrizione.trim() === '') {
+			throw new Error('Nome e descrizione sono obbligatori.');
+		}
+		if (!data.immagine || data.immagine.trim() === '') {
+			throw new Error('L\'immagine è obbligatoria.');
+		}
 	}
 
-	static async getAllProdotti(): Promise<ProdottoRecord[] | null> {
-		const piatti = await Prodotto.findAll();
-		return piatti || null;
+
+	static async addProdotto(data: ProdottoInput): Promise<number> {
+		try {
+			this.validate(data);
+			return await Prodotto.create(data);
+		} catch (error) {
+			console.error('❌ [ProdottoService] Errore durante l\'aggiunta del prodotto:', error);
+			throw error;
+		}
 	}
 
-	static async addProdotto(input: ProdottoInput): Promise<number | null> {
-		const piattoData: ProdottoInput = {
-			nome: input.nome,
-			descrizione: input.descrizione,
-			costo: input.costo,
-			immagine: input.immagine,
-			categoria: input.categoria,
-			is_piatto_giorno: input.is_piatto_giorno,
-		};
-
-		return await Prodotto.addProdotto(piattoData);
-	}
-
-	static async updateProdotto(input: ProdottoInput, id: number): Promise<void> {
-		const piattoData: ProdottoInput = {
-			nome: input.nome,
-			descrizione: input.descrizione,
-			costo: input.costo,
-			immagine: input.immagine,
-			categoria: input.categoria,
-			is_piatto_giorno: input.is_piatto_giorno,
-		};
-
-		return await Prodotto.updateProdotto(piattoData, id);
+	static async updateProdotto(data: ProdottoInput, id: number): Promise<void> {
+		try {
+			this.validate(data);
+			await Prodotto.updateProdotto(data, id);
+		} catch (error) {
+			console.error('❌ [ProdottoService] Errore durante l\'aggiunta del prodotto:', error);
+			throw error;
+		}
 	}
 
 	static async deleteProdotto(id: number): Promise<void> {
-		return await Prodotto.deleteProdotto(id);
+		try {
+			await Prodotto.deleteProdotto(id);
+		} catch (error) {
+			console.error('❌ [ProdottoService] Errore durante l\'eliminazione del prodotto:', error);
+			throw error;
+		}
 	}
 
 	static async chargePiattoDelGiorno(id: number): Promise<void> {
-		return await Prodotto.chargePiattoDelGiorno(id);
+		try {
+			await Prodotto.disattivaPiattoDelGiorno();
+
+			await Prodotto.attivaPiattoDelGiorno(id);
+		} catch (error) {
+			console.error('❌ [ProdottoService] Errore durante il caricamento del piatto del giorno:', error);
+			throw error;
+		}
+	}
+
+	static async getAllProdotti(): Promise<ProdottoRecord[]> {
+		try {
+			return await Prodotto.getAll();
+		} catch (error) {
+			console.error('❌ [ProdottoService] Errore durante il recupero dei prodotti:', error);
+			throw error;
+		}
+	}
+
+	static async getPiattoDelGiorno(): Promise<ProdottoRecord | null> {
+		try {
+			return await Prodotto.getPiattoDelGiorno();
+		} catch (error) {
+			console.error('❌ [ProdottoService] Errore durante il recupero del piatto del giorno:', error);
+			throw error;
+		}
 	}
 }
-
 export default ProdottoService;
