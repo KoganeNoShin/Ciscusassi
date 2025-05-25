@@ -4,6 +4,11 @@ import cors from 'cors'; // Importiamo il modulo cors per gestire le richieste c
 
 import rotte from './Routes/routes'; // Esponiamo le rotte contenute nel file routes le rotte come quelle
 
+import dotenv from 'dotenv';
+
+// Carichiamo il file dotenv
+dotenv.config();
+
 // Avviamo l'app come un server express
 const app = express();
 
