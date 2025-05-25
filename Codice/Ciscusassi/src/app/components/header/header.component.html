@@ -24,9 +24,29 @@
 				}
 			</ion-button>
 
-			<ion-button [routerLink]="['/gestione-account']">
-				<ion-icon slot="icon-only" name="person-circle"></ion-icon>
-			</ion-button>
+			@if (avatar && avatar !== '') {
+				<ion-button
+					[routerLink]="['/dati-account']"
+					fill="clear"
+					shape="round"
+					class="avatar-button"
+				>
+					<ion-avatar slot="start">
+						<img [src]="avatar" alt="Il tuo avatar" />
+					</ion-avatar>
+				</ion-button>
+			} @else {
+				<ion-button
+					[routerLink]="['/gestione-account']"
+					fill="clear"
+					shape="round"
+					class="avatar-button"
+				>
+					<ion-avatar slot="start">
+						<ion-icon name="person-circle" size="large"></ion-icon>
+					</ion-avatar>
+				</ion-button>
+			}
 		</ion-buttons>
 	</ion-toolbar>
 </ion-header>

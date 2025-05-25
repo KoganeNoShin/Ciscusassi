@@ -5,6 +5,7 @@ import {
 	IonToolbar,
 	IonButtons,
 	IonButton,
+	IonAvatar,
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -18,6 +19,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 	templateUrl: './header.component.html',
 	styleUrls: ['./header.component.scss'],
 	imports: [
+		IonAvatar,
 		RouterModule,
 		IonHeader,
 		IonIcon,
@@ -30,6 +32,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 export class HeaderComponent implements OnInit {
 	isItalian = true;
 	role: string = '';
+	avatar: string = '';
 
 	constructor(private authService: AuthenticationService) {
 		addIcons({ personCircle });
@@ -42,6 +45,10 @@ export class HeaderComponent implements OnInit {
 	ngOnInit() {
 		this.authService.role$.subscribe((role) => {
 			this.role = role;
+		});
+
+		this.authService.avatar$.subscribe((avatar) => {
+			this.avatar = avatar;
 		});
 	}
 }

@@ -1,4 +1,4 @@
-import { ClienteData } from '../Models/cliente';
+import Cliente, { ClienteData } from '../Models/cliente';
 import AuthService from '../Services/authService';
 
 import { Request, Response } from 'express';
@@ -18,6 +18,27 @@ class ClienteController {
 			res.status(400).json({
 				success: false,
 				message: 'Errore durante la registrazione: ' + error.message,
+			});
+		}
+	}
+
+	static async getPoints(req: Request, res: Response): Promise<void> {
+		const token = req.headers.authorization?.replace('Bearer ', '');
+
+		if (!token) {
+			res.status(401).json({
+				success: false,
+				message: 'Token mancante',
+			});
+		}
+
+		try {
+			const punti = await Cliente.getPoints(token!);
+			res.json({ success: true, data: punti });
+		} catch (error) {
+			res.status(401).json({
+				success: false,
+				message: (error as Error).message,
 			});
 		}
 	}

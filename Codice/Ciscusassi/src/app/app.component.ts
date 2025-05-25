@@ -22,7 +22,6 @@ export class AppComponent {
 
 	async initStorage() {
 		await this.storage.create();
-		await this.authService.loadRole();
-		await this.authService.loadToken();
+		await this.authService.init();
 	}
 }

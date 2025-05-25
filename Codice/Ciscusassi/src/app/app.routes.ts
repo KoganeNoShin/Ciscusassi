@@ -176,6 +176,27 @@ export const routes: Routes = [
 				'./pages/admin/modifica-dati-dipendenti/modifica-dati-dipendenti.page'
 			).then((m) => m.ModificaDatiDipendentiPage),
 	},
+	{
+		path: 'dati-account',
+		loadComponent: () =>
+			import('./pages/account/dati-account/dati-account.page').then(
+				(m) => m.DatiAccountPage
+			),
+	},
+	{
+		path: 'cambia-password',
+		loadComponent: () =>
+			import('./pages/account/cambia-password/cambia-password.page').then(
+				(m) => m.CambiaPasswordPage
+			),
+	},
+	{
+		path: 'cambia-email',
+		loadComponent: () =>
+			import('./pages/account/cambia-email/cambia-email.page').then(
+				(m) => m.CambiaEmailPage
+			),
+	},
 ];
 
 export const AppRoutingModule = provideRouter(routes);

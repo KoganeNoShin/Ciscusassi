@@ -69,12 +69,22 @@ export class LoginPage implements OnInit {
 		console.log(response);
 
 		if (response.success && response.data) {
-			console.log(response.data);
-			this.authenticationService
-				.setToken(response.data.token)
-				.then(() => {
-					this.authenticationService.setRole(response.data!.ruolo);
-					this.navigation.navigateRoot('/home');
+			const { token, ruolo, username, avatar } = response.data;
+
+			Promise.all([
+				this.authenticationService.setToken(token),
+				this.authenticationService.setRole(ruolo),
+				this.authenticationService.setUsername(username),
+				this.authenticationService.setAvatar(avatar),
+			])
+				.then(() => this.navigation.navigateRoot('/home'))
+				.catch((err) => {
+					console.error(
+						'Errore durante il salvataggio dei dati:',
+						err
+					);
+					this.errorMsg = 'Errore durante il salvataggio dei dati.';
+					this.error = true;
 				});
 		} else {
 			console.error(response.message || 'Errore sconosciuto');

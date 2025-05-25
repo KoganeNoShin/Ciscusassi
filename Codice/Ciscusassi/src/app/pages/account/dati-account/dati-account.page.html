@@ -1,0 +1,75 @@
+<ion-content [fullscreen]="true" color="light">
+	<ion-grid fixed>
+		<ion-row class="ion-align-items-center ion-justify-content-center">
+			<ion-col size="6">
+				<ion-img
+					[src]="'/assets/illustrations/TizioChiave.png'"
+				></ion-img>
+			</ion-col>
+			<ion-col size="6">
+				<ion-card>
+					<ion-text color="light">
+						<h1>INFORMAZIONI ACCOUNT</h1>
+						<ion-card>
+							<ion-card-content>
+								<ion-img [src]="avatar"></ion-img>
+								<h4>{{username}}</h4>
+
+								@if(loading){
+								<ion-spinner name="bubbles"></ion-spinner>
+								}@else {
+								<p>{{points}} punti</p>
+								}
+							</ion-card-content>
+						</ion-card>
+						<ion-button
+							size="default"
+							fill="solid"
+							shape="round"
+							color="secondary"
+							[routerLink]="['/cambia-password']"
+						>
+							<ion-text color="primary" class="ion-text-center">
+								<p>CAMBIA PASSWORD</p>
+							</ion-text>
+						</ion-button>
+						<ion-button
+							size="default"
+							fill="solid"
+							shape="round"
+							color="secondary"
+							[routerLink]="['/cambia-email']"
+						>
+							<ion-text color="primary" class="ion-text-center">
+								<p>CAMBIA EMAIL</p>
+							</ion-text>
+						</ion-button>
+						<ion-button
+							size="default"
+							fill="solid"
+							shape="round"
+							color="primary"
+							(click)="logout()"
+						>
+							<ion-text color="primary" class="ion-text-center">
+								<p>LOGOUT</p>
+							</ion-text>
+						</ion-button>
+
+						<ion-button
+							size="default"
+							fill="solid"
+							shape="round"
+							color="primary"
+							(click)="deleteAccount()"
+						>
+							<ion-text color="primary" class="ion-text-center">
+								<p>ELIMINA ACCOUNT</p>
+							</ion-text>
+						</ion-button>
+					</ion-text>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-content>

@@ -16,12 +16,12 @@ export interface ClienteData extends ClienteCredentials {
 	nome: string;
 	cognome: string;
 	data_nascita: string;
-	punti?: number;
 	image: string;
 }
 
 export interface ClienteRecord extends ClienteData {
 	numero_carta: number;
+	punti: number;
 }
 
 // Interagisce direttamente con il database per le operazioni CRUD sugli utenti
@@ -45,7 +45,6 @@ class Cliente {
 	static async create(data: ClienteData): Promise<number> {
 		// Definiamo i campi come quelli presi dal data passato come parametro
 		const { nome, cognome, data_nascita, email, password, image } = data;
-		const punti = data.punti || 0; // Se non viene passato il campo punti, lo inizializziamo a 0
 
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
@@ -53,15 +52,7 @@ class Cliente {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO clienti (nome, cognome, data_nascita, email, password, punti, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
-				[
-					nome,
-					cognome,
-					data_nascita,
-					email,
-					hashedPassword,
-					punti,
-					image,
-				],
+				[nome, cognome, data_nascita, email, hashedPassword, 0, image],
 				function (this: RunResult, err: Error) {
 					if (err) return reject(err);
 					else resolve(this.lastID);
@@ -160,6 +151,16 @@ class Cliente {
 
 		// Se la password è corretta ritorna vero
 		return this.comparePassword(password, user.password);
+	}
+
+	static async getPoints(token: string): Promise<number> {
+		const user = await this.findByToken(token);
+
+		if (!user) {
+			throw new Error('Utente non trovato o token non valido');
+		}
+
+		return user.punti;
 	}
 }
 

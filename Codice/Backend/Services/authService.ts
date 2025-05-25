@@ -21,7 +21,6 @@ class AuthService {
 			email: input.email,
 			password: input.password,
 			image: input.image,
-			punti: 0,
 		};
 
 		return await Cliente.create(clienteData);
@@ -43,6 +42,8 @@ class AuthService {
 			const loginRecord: LoginRecord = {
 				token: token,
 				ruolo: 'cliente',
+				username: `${user.nome} ${user.cognome}`,
+				avatar: user.image,
 			};
 
 			return loginRecord;
@@ -68,6 +69,8 @@ class AuthService {
 					| 'chef'
 					| 'cameriere'
 					| 'amministratore',
+				username: `${impiegato.nome} ${impiegato.cognome}`,
+				avatar: impiegato.foto,
 			};
 
 			return loginRecord;
