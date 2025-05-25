@@ -52,8 +52,7 @@ export async function generateProdotto(): Promise<string> {
 					descrizione: descrizione,
 					costo: costo,
 					immagine: immagine,
-					categoria: categoria,
-					is_piatto_giorno: is_piatto_giorno,
+					categoria: categoria
 				});
 				console.log(
 					`🍝 Piatto ${nome} di categoria ${categoria} al prezzo di ${costo}€ è stato aggiunto! ${is_piatto_giorno ? 'È il piatto del giorno!' : ''}`

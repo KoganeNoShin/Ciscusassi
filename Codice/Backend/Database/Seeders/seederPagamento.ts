@@ -15,7 +15,7 @@ async function generatePagamento() {
 			const ordProds = await ord_prod.findByRefOrdine(o.id_ordine);
 
 			for (const op of ordProds) {
-				const p = await prodotto.findById(op.ref_prodotto);
+				const p = await prodotto.getByID(op.ref_prodotto);
 				if (!p) {
 					console.error(
 						`❌ Prodotto con id ${op.ref_prodotto} non trovato per l'ordine ${o.id_ordine}`

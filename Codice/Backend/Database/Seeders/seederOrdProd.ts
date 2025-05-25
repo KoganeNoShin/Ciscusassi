@@ -7,7 +7,7 @@ import { faker } from '@faker-js/faker';
 export async function generateOrdProd() {
 	try {
 		const ordini = await ordine.findAll();
-		const prodotti = await prodotto.findAll();
+		const prodotti = await prodotto.getAll();
 
 		const idOrdini = ordini.map((o) => o.id_ordine);
 		const idProdotti = prodotti.map((p) => p.id_prodotto);

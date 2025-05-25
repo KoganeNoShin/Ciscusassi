@@ -20,7 +20,6 @@ import generateTorretta from './Database/Seeders/seederTorretta';
 import generateImpiegato from './Database/Seeders/seederImpiegato';
 import generateProdotto from './Database/Seeders/seederProdotto';
 import generateAsporto from './Database/Seeders/seederAsporto';
-import generateAspProd from './Database/Seeders/seederAspProd';
 import generatePrenotazione from './Database/Seeders/seederPrenotazione';
 import generateOrdine from './Database/Seeders/seederOrdine';
 import generateOrdProd from './Database/Seeders/seederOrdProd';
@@ -63,7 +62,6 @@ async function seedDB() {
 	await generateImpiegato();
 	await generateProdotto();
 	await generateAsporto(20);
-	await generateAspProd();
 	await generatePrenotazione(30);
 	await generateOrdine();
 	await generateOrdProd();
