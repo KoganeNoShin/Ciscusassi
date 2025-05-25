@@ -44,7 +44,6 @@ export async function generateProdotto(): Promise<string> {
 			});
 			let immagine = 'data:image/jpeg;base64,' + prodotti[i].immagine;
 			let categoria = prodotti[i].categoria;
-			let is_piatto_giorno = i === 0;
 
 			try {
 				await prodotto.create({
@@ -55,7 +54,7 @@ export async function generateProdotto(): Promise<string> {
 					categoria: categoria
 				});
 				console.log(
-					`🍝 Piatto ${nome} di categoria ${categoria} al prezzo di ${costo}€ è stato aggiunto! ${is_piatto_giorno ? 'È il piatto del giorno!' : ''}`
+					`🍝 Piatto ${nome} di categoria ${categoria} al prezzo di ${costo}€ è stato aggiunto!'}`
 				);
 			} catch (err) {
 				console.log(
@@ -63,6 +62,13 @@ export async function generateProdotto(): Promise<string> {
 				);
 				throw err;
 			}
+		}
+		try {
+			await prodotto.attivaPiattoDelGiorno(1);
+			`🍝 Piatto del giorno è stato aggiunto!'}`
+		} catch (err) {
+			console.log(`♻️ Piatto del giorno è andato a male! Causa di andata a male: ${err}`);
+			throw err;
 		}
 
 		return '🍝 Piatti generati con successo!';
