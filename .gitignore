@@ -5,3 +5,4 @@
 # Environment files
 Codice/Ciscusassi/src/environments/environment.prod.ts
 Codice/Ciscusassi/src/environments/environment.ts
+.env

@@ -4,6 +4,11 @@ import cors from 'cors'; // Importiamo il modulo cors per gestire le richieste c
 
 import rotte from './Routes/routes'; // Esponiamo le rotte contenute nel file routes le rotte come quelle
 
+import dotenv from 'dotenv';
+
+// Carichiamo il file dotenv
+dotenv.config();
+
 // Avviamo l'app come un server express
 const app = express();
 
@@ -11,16 +16,12 @@ const app = express();
 //app.use(express.json());
 app.use(express.json({ limit: '10mb' }));
 
-
 // Or configure specific origins
 app.use(
 	cors({
-		origin: 'http://localhost:8100',
+		origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type'],
-		// origin: process.env.CORS_ORIGIN || 'http://localhost:8100',
-		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		// allowedHeaders: ['Content-Type', 'Authorization'],
 	})
 );
 
