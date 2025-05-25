@@ -16,7 +16,7 @@ import AsportoController from '../Controllers/asportoController';
 const router = express.Router();
 
 // Route per i Prodotti
-router.get('/piattoDelGiorno', ProdottoController.getprodottoDelGiorno);
+router.get('/piattoDelGiorno', ProdottoController.getProdottoDelGiorno);
 router.get('/prodotti', ProdottoController.getAllProdotti);
 router.post('/addProdotto', ProdottoController.addProdotto);
 router.put('/updateProdotto/:id', ProdottoController.updateProdotto);

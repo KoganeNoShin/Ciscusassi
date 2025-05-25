@@ -6,12 +6,12 @@ import { PagamentoInput } from '../Models/pagamento';
 import { AsportoInput } from '../Models/asporto';
 
 class AsportoController {
-    static async addAsporto(req: Request, res: Response): Promise<Response> {
+    static async addAsporto(req: Request, res: Response): Promise<void> {
         try {
             const {indirizzo, data_ora_consegna, ref_cliente, importo, data_ora_pagamento, prodotti} = req.body;
 
             if(!Array.isArray(prodotti) || prodotti.length === 0) {
-                return res.status(400).json({
+                res.status(400).json({
                     success: false,
                     message: 'Devi specificare almeno un prodotto per l\'asporto'
                 });
@@ -27,10 +27,10 @@ class AsportoController {
                 prodotti.map((ref_prodotto: number) => AspProdService.addAspProd(asporto, ref_prodotto))
             );
 
-            return res.status(201).json({ success: true, data: asporto });
+            res.status(201).json({ success: true, data: asporto });
         } catch (err) {
             console.error(err);
-            return res.status(500).json({
+            res.status(500).json({
                 success: false,
                 message: 'Errore interno del server',
                 error: (err instanceof Error ? err.message : String(err))
