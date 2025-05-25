@@ -2,7 +2,7 @@ import Prodotto, { ProdottoInput, ProdottoRecord } from '../Models/prodotto';
 
 class ProdottoService {
 	private static validate(data: ProdottoInput): void {
-		const categorieValide = ['Antipasto', 'Primo', 'Dolce', 'Bibita'];
+		const categorieValide = ['ANTIPASTO', 'PRIMO', 'DOLCE', 'BEVANDA'];
 		if (!categorieValide.includes(data.categoria)) {
 			throw new Error(`Categoria non valida: ${data.categoria}. Le categorie ammesse sono: ${categorieValide.join(', ')}`);
 		}
