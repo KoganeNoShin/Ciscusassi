@@ -27,10 +27,10 @@ export class MenuAsportoPage implements OnInit {
   
     async checkTotale(){
       this.prodottiNelCarrello = this.servizioCarrello.getProdotti();    
-      this.totale = this.prodottiNelCarrello.reduce((acc, prodotto) => acc + prodotto.costo, 0);
+      this.totale = parseFloat(this.prodottiNelCarrello.reduce((acc, prodotto) => acc + prodotto.costo, 0).toFixed(2));
       if (this.totale <= 30) {
         const toast = await this.toastController.create({
-            message: 'Possiamo consenare solo ordini superiori a 30€',
+            message: 'Possiamo consegnare solo ordini superiori a 30€',
             duration: 3000,
             position: 'bottom',
             color: 'warning',

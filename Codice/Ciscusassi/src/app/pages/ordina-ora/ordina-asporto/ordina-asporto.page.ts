@@ -19,7 +19,7 @@ import {
   ToastController
 } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
-import { async, debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { RouterModule } from '@angular/router';
@@ -49,46 +49,37 @@ import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.ser
   ],
 })
 export class OrdinaAsportoPage implements OnInit {
-  // Termini e dati di ricerca
   testoRicerca: string = '';
   indirizziTrovati: any[] = [];
   indirizzoSelezionato: string = '';
   coordinateSelezionate: { lat: number; lon: number } | null = null;
 
-  // Lista filiali e filiale più vicina con informazioni
   elencoFiliali: FilialeRecord[] = [];
   filialePiuVicino: FilialeRecord | null = null;
   distanzaFilialeMetri: number | null = null;
   tempoViaggioSecondi: number | null = null;
   tempoViaggioMinuti: number | null = null;
 
-  // Stato caricamento e errori
   caricamentoInCorso: boolean = true;
   erroreNellaRichiesta: boolean = false;
-
-  // Cache per risultati geocoding
   cacheRisultati: Map<string, any[]> = new Map();
 
-  // Debounce per ricerca input
   private soggettoRicerca = new Subject<string>();
-
   private chiaveTomTom = environment.tomtomApiKey;
 
   constructor(
     private servizioFiliale: FilialeService,
     private http: HttpClient,
     private servizioFilialeAsporto: FilialeAsportoService,
-	private router: Router,
-	private toastController: ToastController
+    private router: Router,
+    private toastController: ToastController
   ) {
-    // Imposto debounce per la ricerca per ridurre chiamate API
     this.soggettoRicerca
       .pipe(debounceTime(800), distinctUntilChanged())
       .subscribe((termine) => this.eseguiGeocoding(termine));
   }
 
   ngOnInit() {
-    // Carico elenco filiali da backend all'inizializzazione
     this.servizioFiliale.GetSedi().subscribe({
       next: (risposta) => this.processaRispostaFiliali(risposta),
       error: (err) => {
@@ -97,12 +88,8 @@ export class OrdinaAsportoPage implements OnInit {
         this.erroreNellaRichiesta = true;
       },
     });
-	
   }
 
-  /**
-   * Metodo invocato dall'input di ricerca indirizzi
-   */
   avviaRicerca() {
     if (this.testoRicerca.length > 3) {
       this.soggettoRicerca.next(this.testoRicerca);
@@ -111,13 +98,9 @@ export class OrdinaAsportoPage implements OnInit {
     }
   }
 
-  /**
-   * Gestione risposta elenco filiali
-   */
   private async processaRispostaFiliali(risposta: any) {
     if (risposta.success && risposta.data) {
       this.elencoFiliali = risposta.data;
-      // Se coordinate selezionate, calcolo la filiale più vicina
       if (this.coordinateSelezionate) {
         await this.trovaFilialePiuVicina(this.coordinateSelezionate);
       }
@@ -128,13 +111,8 @@ export class OrdinaAsportoPage implements OnInit {
     this.caricamentoInCorso = false;
   }
 
-  /**
-   * Effettua la ricerca geocoding con TomTom API
-   */
   private eseguiGeocoding(indirizzo: string) {
     const chiaveRicerca = indirizzo.trim().toLowerCase();
-
-    // Uso cache per evitare chiamate ripetute
     if (this.cacheRisultati.has(chiaveRicerca)) {
       this.indirizziTrovati = this.cacheRisultati.get(chiaveRicerca) || [];
       return;
@@ -151,9 +129,6 @@ export class OrdinaAsportoPage implements OnInit {
     });
   }
 
-  /**
-   * Ottiene dati di percorso (distanza e tempo) tra origine e destinazione
-   */
   private ottieniDatiPercorso(
     destinazione: { lat: number; lon: number },
     origine: { lat: number; lon: number },
@@ -179,10 +154,6 @@ export class OrdinaAsportoPage implements OnInit {
       });
   }
 
-  /**
-   * Cerca la filiale più vicina in termini di tempo di viaggio da una posizione
-   * Ottimizzato per chiamate parallele (più veloce)
-   */
   async trovaFilialePiuVicina(puntoPartenza: { lat: number; lon: number }) {
     if (!this.elencoFiliali || this.elencoFiliali.length === 0) {
       this.filialePiuVicino = null;
@@ -242,9 +213,6 @@ export class OrdinaAsportoPage implements OnInit {
     this.tempoViaggioMinuti = Math.round(tempoMinimo / 60);
   }
 
-  /**
-   * Seleziona un indirizzo dai risultati della ricerca
-   */
   selezionaIndirizzo(indirizzo: any) {
     this.indirizzoSelezionato =
       indirizzo.address.freeformAddress || indirizzo.address.streetName || '';
@@ -256,57 +224,48 @@ export class OrdinaAsportoPage implements OnInit {
     this.indirizziTrovati = [];
   }
 
-  /**
-   * Funzione per svuotare il campo e impostare la filiale più vicina nel servizio
-   * Mantiene il nome come richiesto.
-   */
   async svuotaCampo() {
-  if (this.filialePiuVicino) {
-    console.log('Filiale più vicina selezionata:', this.filialePiuVicino);
-    console.log(
-      'Tempo di viaggio stimato (minuti):',
-      this.tempoViaggioMinuti ?? 'Non disponibile'
-    );
+    if (this.filialePiuVicino) {
+      console.log('✅ Filiale più vicina selezionata:', this.filialePiuVicino);
+      console.log('📍 Indirizzo selezionato da utente:', this.indirizzoSelezionato);
 
-    this.servizioFilialeAsporto.setFiliale(
-      this.filialePiuVicino,
-      this.tempoViaggioMinuti
-    );
+      this.servizioFilialeAsporto.setFiliale(
+        this.filialePiuVicino,
+        this.tempoViaggioMinuti,
+        this.indirizzoSelezionato
+      );
 
-    if (this.tempoViaggioMinuti !== undefined && this.tempoViaggioMinuti !== null) {
-      if (this.tempoViaggioMinuti < 30) {
-        console.log(true);
-        this.router.navigate(['/menu-asporto']);
-      } else {
-        const toast = await this.toastController.create({
-          message: 'Ci dispiace ma la località selezionata è troppo lontana, non possiamo consegnare fin lì.',
-          duration: 3000,
-          position: 'bottom',
-          color: 'warning',
-        });
-        await toast.present();
+      if (this.tempoViaggioMinuti !== undefined && this.tempoViaggioMinuti !== null) {
+        if (this.tempoViaggioMinuti < 30) {
+          this.router.navigate(['/menu-asporto']);
+        } else {
+          const toast = await this.toastController.create({
+            message: 'Ci dispiace ma la località selezionata è troppo lontana.',
+            duration: 3000,
+            position: 'bottom',
+            color: 'warning',
+          });
+          await toast.present();
+        }
       }
+    } else {
+      console.log('⚠️ Nessuna filiale trovata o selezionata.');
     }
-  } else {
-    console.log('Nessuna filiale trovata o selezionata.');
   }
-}
-
 
   async procedi() {
     if (this.coordinateSelezionate) {
-      this.caricamentoInCorso = true; // blocca bottone o mostra loader se vuoi
+      this.caricamentoInCorso = true;
       await this.trovaFilialePiuVicina(this.coordinateSelezionate);
       this.caricamentoInCorso = false;
     }
 
-    // Ora che la filiale più vicina è aggiornata, puoi pulire il campo
-    this.testoRicerca = ''; // Pulisce il campo input
-    this.indirizzoSelezionato = ''; // Pulisce l'indirizzo selezionato
-    this.coordinateSelezionate = null;
+    // Pulizia campi input
+    this.testoRicerca = '';
     this.indirizziTrovati = [];
+    this.coordinateSelezionate = null;
 
-    this.svuotaCampo(); // mantiene la tua logica di invio dati
+    // Chiamata aggiornata (con await)
+    await this.svuotaCampo();
   }
-
 }
