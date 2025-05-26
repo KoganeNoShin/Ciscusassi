@@ -54,8 +54,11 @@
 						color="secondary"
 						>Modifica filiale</ion-button
 					>
+					<!-- Modificato: passiamo filialeId anche come query param -->
 					<ion-button
 						[routerLink]="['/modifica-dipendenti']"
+						[state]="{ filialeId: f.id_filiale }"
+						[queryParams]="{ id_filiale: f.id_filiale }"
 						expand="block"
 						color="secondary"
 						>Modifica dipendenti</ion-button
