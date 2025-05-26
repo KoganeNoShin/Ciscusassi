@@ -16,6 +16,7 @@ import {
 	IonToolbar,
 	IonButton,
 	IonIcon,
+	ToastController,
 } from '@ionic/angular/standalone';
 import { ProdottoService } from 'src/app/core/services/prodotto.service';
 import { starOutline, star } from 'ionicons/icons';
@@ -60,7 +61,13 @@ export class GestisciPiattiPage implements OnInit {
 
 	piattoDelGiorno: ProdottoRecord | null = null;
 
-	constructor(private prodottoService: ProdottoService) {
+	isAlertOpen = false;
+	selectedProdotto: ProdottoRecord | null = null;
+
+	constructor(
+		private prodottoService: ProdottoService,
+		private toastController: ToastController
+	) {
 		addIcons({ starOutline, star });
 	}
 
@@ -96,10 +103,7 @@ export class GestisciPiattiPage implements OnInit {
 				}
 			},
 			error: (err) =>
-				console.error(
-					'Errore nel caricamento del piatto del giorno',
-					err
-				),
+				console.error('Errore nel caricamento del piatto del giorno', err),
 		});
 	}
 
@@ -110,12 +114,11 @@ export class GestisciPiattiPage implements OnInit {
 		if (isAlreadySelected) {
 			this.piattoDelGiorno = null;
 			this.prodottoService.chargePiattoDelGiorno(0).subscribe({
-				next: () => console.log('Piatto del giorno rimosso'),
-				error: (err) =>
-					console.error(
-						'Errore nella rimozione del piatto del giorno',
-						err
-					),
+				next: () => this.showToast('Piatto del giorno rimosso', 'success'),
+				error: (err) => {
+					console.error('Errore nella rimozione del piatto del giorno', err);
+					this.showToast('Errore nella rimozione del piatto del giorno', 'danger');
+				},
 			});
 		} else {
 			this.piattoDelGiorno = piatto;
@@ -123,45 +126,33 @@ export class GestisciPiattiPage implements OnInit {
 				.chargePiattoDelGiorno(piatto.id_prodotto)
 				.subscribe({
 					next: () =>
-						console.log(
-							'Piatto del giorno impostato:',
-							piatto.nome
-						),
-					error: (err) =>
-						console.error(
-							'Errore nell’impostazione del piatto del giorno',
-							err
-						),
+						this.showToast('Piatto del giorno impostato', 'success'),
+					error: (err) => {
+						console.error('Errore nell’impostazione del piatto del giorno', err);
+						this.showToast('Errore nell’impostazione del piatto', 'danger');
+					},
 				});
 		}
 	}
 
 	filterAntipasti() {
 		this.selectedCategoria = 'Antipasti';
-		this.filteredPiatti = this.piatti.filter(
-			(p) => p.categoria === 'ANTIPASTO'
-		);
+		this.filteredPiatti = this.piatti.filter((p) => p.categoria === 'ANTIPASTO');
 	}
 
 	filterPrimi() {
 		this.selectedCategoria = 'Primi';
-		this.filteredPiatti = this.piatti.filter(
-			(p) => p.categoria === 'PRIMO'
-		);
+		this.filteredPiatti = this.piatti.filter((p) => p.categoria === 'PRIMO');
 	}
 
 	filterBevande() {
 		this.selectedCategoria = 'Bevande';
-		this.filteredPiatti = this.piatti.filter(
-			(p) => p.categoria === 'BEVANDA'
-		);
+		this.filteredPiatti = this.piatti.filter((p) => p.categoria === 'BEVANDA');
 	}
 
 	filterDolci() {
 		this.selectedCategoria = 'Dolci';
-		this.filteredPiatti = this.piatti.filter(
-			(p) => p.categoria === 'DOLCE'
-		);
+		this.filteredPiatti = this.piatti.filter((p) => p.categoria === 'DOLCE');
 	}
 
 	filterTutti() {
@@ -186,8 +177,7 @@ export class GestisciPiattiPage implements OnInit {
 		const term = this.searchTerm.toLowerCase();
 
 		this.filteredPiatti = this.piatti.filter((p) => {
-			const matchCategoria =
-				categoria === 'Tutti' || p.categoria === categoria;
+			const matchCategoria = categoria === 'Tutti' || p.categoria === categoria;
 			const matchSearch =
 				p.nome.toLowerCase().includes(term) ||
 				p.descrizione.toLowerCase().includes(term);
@@ -195,13 +185,11 @@ export class GestisciPiattiPage implements OnInit {
 		});
 	}
 
-	isAlertOpen = false;
-	selectedProdotto: ProdottoRecord | null = null;
-
 	showAlert(prodotto: ProdottoRecord) {
 		this.selectedProdotto = prodotto;
 		this.isAlertOpen = true;
 	}
+
 	onConfirm() {
 		if (this.selectedProdotto) {
 			const id = this.selectedProdotto.id_prodotto;
@@ -209,24 +197,17 @@ export class GestisciPiattiPage implements OnInit {
 			this.prodottoService.deleteProdotto(id).subscribe({
 				next: (response) => {
 					if (response.success) {
-						console.log('Prodotto eliminato con successo:', id);
-						// Aggiorna la lista rimuovendo il prodotto eliminato
-						this.piatti = this.piatti.filter(
-							(p) => p.id_prodotto !== id
-						);
-						this.applyFilters(); // Ricalcola i filtri applicati
+						this.piatti = this.piatti.filter((p) => p.id_prodotto !== id);
+						this.applyFilters();
+						this.showToast('Prodotto eliminato con successo', 'success');
 					} else {
-						console.error(
-							'Errore nella risposta del server:',
-							response.message
-						);
+						console.error('Errore nella risposta del server:', response.message);
+						this.showToast('Errore durante l’eliminazione', 'danger');
 					}
 				},
 				error: (err) => {
-					console.error(
-						'Errore durante l’eliminazione del prodotto:',
-						err
-					);
+					console.error('Errore durante l’eliminazione del prodotto:', err);
+					this.showToast('Errore durante l’eliminazione', 'danger');
 				},
 				complete: () => {
 					this.isAlertOpen = false;
@@ -257,4 +238,14 @@ export class GestisciPiattiPage implements OnInit {
 			handler: () => this.onConfirm(),
 		},
 	];
+
+	private async showToast(message: string, color: 'success' | 'danger') {
+		const toast = await this.toastController.create({
+			message,
+			duration: 2000,
+			color,
+			position: 'top',
+		});
+		toast.present();
+	}
 }

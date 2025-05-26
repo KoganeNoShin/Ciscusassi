@@ -19,6 +19,8 @@ import {
 	IonCardContent,
 } from '@ionic/angular/standalone';
 
+import { ToastController } from '@ionic/angular';
+
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ImpiegatoRecord } from 'src/app/core/interfaces/Impiegato';
 import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
@@ -64,7 +66,8 @@ export class ModificaDipendentiPage implements OnInit {
 	constructor(
 		private impiegatoService: ImpiegatoService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private toastController: ToastController
 	) {}
 
 	ngOnInit() {
@@ -163,19 +166,21 @@ export class ModificaDipendentiPage implements OnInit {
 
 	onConfirm() {
 		if (this.selectedDipendente) {
-			this.loading = true;
-			this.impiegatoService.DeleteImpiegato(this.selectedDipendente.matricola).subscribe({
+			const matricolaToDelete = this.selectedDipendente.matricola;
+
+			// Rimozione ottimistica dalla lista
+			this.dipendenti = this.dipendenti.filter(
+				(d) => d.matricola !== matricolaToDelete
+			);
+			this.applyFilters();
+
+			this.impiegatoService.DeleteImpiegato(matricolaToDelete).subscribe({
 				next: () => {
-					// Rimuovi il dipendente dalla lista e aggiorna i filtri
-					this.dipendenti = this.dipendenti.filter(
-						(d) => d.matricola !== this.selectedDipendente?.matricola
-					);
-					this.applyFilters();
-					this.loading = false;
+					this.showToastMessage('Dipendente eliminato con successo', 'success');
 				},
 				error: (err) => {
 					console.error('Errore durante la cancellazione:', err);
-					this.loading = false;
+					this.showToastMessage('Errore durante la cancellazione', 'danger');
 				},
 			});
 		}
@@ -200,4 +205,16 @@ export class ModificaDipendentiPage implements OnInit {
 			handler: () => this.onConfirm(),
 		},
 	];
+
+	private async showToastMessage(message: string, color: 'success' | 'danger') {
+		const toast = await this.toastController.create({
+			message,
+			duration: 2000,
+			color,
+			position: 'top',
+			animated: true,
+			icon: color === 'success' ? 'checkmark-circle' : 'alert-circle'
+		});
+		await toast.present();
+	}
 }
