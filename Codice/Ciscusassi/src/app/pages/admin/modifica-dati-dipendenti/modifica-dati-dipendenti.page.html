@@ -10,20 +10,38 @@
     <div class="card-content">
 
       <!-- Box immagine cliccabile -->
-      <div class="image-upload" (click)="fileInput.click()">
-        <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
-        <ion-icon name="image-outline"></ion-icon>
-   
-        <img *ngIf="foto" [src]="foto" alt="Preview immagine" class="preview-image" />
+      <div class="image-upload" (click)="fileInput.click()" style="text-align:center; cursor:pointer;">
+        <input
+          #fileInput
+          type="file"
+          hidden
+          (change)="onFileSelected($event)"
+          class="preview-image"
+        />
+        <ion-icon name="image-outline" size="large"></ion-icon>
+
+        <div *ngIf="foto" class="image-preview" style="margin-top:16px;">
+          <img [src]="foto" alt="Anteprima immagine" />
+        </div>
       </div>
 
       <!-- Campi form -->
       <div class="form-fields">
-        <ion-input [(ngModel)]="nome" placeholder="Modifica il nome"></ion-input>
-        <ion-input [(ngModel)]="cognome" placeholder="Modifica il cognome"></ion-input>
-        <ion-input [(ngModel)]="dataNascita" type="date" placeholder="Modifica la data di nascita"></ion-input>
-        <ion-input [(ngModel)]="ruolo" placeholder="Modifica il ruolo"></ion-input>
-        <ion-input [(ngModel)]="email" type="email" placeholder="Modifica l'email"></ion-input>
+        <ion-input placeholder="Modifica il nome" [(ngModel)]="nome"></ion-input>
+        <ion-input placeholder="Modifica il cognome" [(ngModel)]="cognome"></ion-input>
+        <ion-input type="date" placeholder="Modifica la data di nascita" [(ngModel)]="dataNascita"></ion-input>
+
+        <ion-select placeholder="Modifica il ruolo" [(ngModel)]="ruolo">
+          <ion-select-option value="Amministratore">Amministratore</ion-select-option>
+          <ion-select-option value="Chef">Chef</ion-select-option>
+          <ion-select-option value="Cameriere">Cameriere</ion-select-option>
+        </ion-select>
+
+        <ion-select placeholder="Modifica la filiale" [(ngModel)]="ref_filiale">
+          <ion-select-option *ngFor="let filiale of filiali" [value]="filiale.id_filiale">
+            {{ filiale.comune }} - {{ filiale.indirizzo }}
+          </ion-select-option>
+        </ion-select>
 
         <ion-button expand="block" color="success" (click)="salvaModifiche()">
           CONFERMA MODIFICA DIPENDENTE
