@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
 	IonContent,
 	IonHeader,
@@ -22,7 +22,6 @@ import {
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ImpiegatoRecord } from 'src/app/core/interfaces/Impiegato';
 import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
-import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'app-modifica-dipendenti',
@@ -57,7 +56,10 @@ export class ModificaDipendentiPage implements OnInit {
 	selectedCategoria: string = 'Tutti';
 	searchTerm: string = '';
 	filteredDipendenti: ImpiegatoRecord[] = [];
-	id_filiale: number = 0; // inizializza
+	id_filiale: number = 0;
+
+	isAlertOpen = false;
+	selectedDipendente: ImpiegatoRecord | null = null;
 
 	constructor(
 		private impiegatoService: ImpiegatoService,
@@ -66,7 +68,6 @@ export class ModificaDipendentiPage implements OnInit {
 	) {}
 
 	ngOnInit() {
-		// Proviamo prima a leggere da query param, fallback su navigation state
 		this.route.queryParams.subscribe((params) => {
 			const idFromQuery = +params['id_filiale'] || 0;
 			if (idFromQuery) {
@@ -79,7 +80,6 @@ export class ModificaDipendentiPage implements OnInit {
 					this.id_filiale = navState.filialeId;
 					this.fetchImpiegati(this.id_filiale);
 				} else {
-					// Nessun id disponibile, gestisci errore o fallback
 					this.loading = false;
 					this.error = true;
 					console.error(
@@ -156,9 +156,6 @@ export class ModificaDipendentiPage implements OnInit {
 		});
 	}
 
-	isAlertOpen = false;
-	selectedDipendente: ImpiegatoRecord | null = null;
-
 	showAlert(dipendente: ImpiegatoRecord) {
 		this.selectedDipendente = dipendente;
 		this.isAlertOpen = true;
@@ -166,11 +163,21 @@ export class ModificaDipendentiPage implements OnInit {
 
 	onConfirm() {
 		if (this.selectedDipendente) {
-			console.log(
-				'Confermata rimozione dipendente:',
-				this.selectedDipendente
-			);
-			// Puoi rimuovere/aggiornare qui
+			this.loading = true;
+			this.impiegatoService.DeleteImpiegato(this.selectedDipendente.matricola).subscribe({
+				next: () => {
+					// Rimuovi il dipendente dalla lista e aggiorna i filtri
+					this.dipendenti = this.dipendenti.filter(
+						(d) => d.matricola !== this.selectedDipendente?.matricola
+					);
+					this.applyFilters();
+					this.loading = false;
+				},
+				error: (err) => {
+					console.error('Errore durante la cancellazione:', err);
+					this.loading = false;
+				},
+			});
 		}
 		this.isAlertOpen = false;
 		this.selectedDipendente = null;
