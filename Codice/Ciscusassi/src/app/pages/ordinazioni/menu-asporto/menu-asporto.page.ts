@@ -9,6 +9,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 import { PiattoDelGiornoComponent } from 'src/app/components/piatto-del-giorno/piatto-del-giorno.component';
 import { ListaMenuComponent } from 'src/app/components/lista-menu/lista-menu.component';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
   selector: 'app-menu-asporto',
@@ -18,11 +19,11 @@ import { ListaMenuComponent } from 'src/app/components/lista-menu/lista-menu.com
   imports: [IonContent, CommonModule, FormsModule, HeroComponent, PiattoDelGiornoComponent, ListaMenuComponent, IonButton, RouterModule]
 })
 export class MenuAsportoPage implements OnInit {
-  nomeUtente: string = "Mario Rossi";
+  nomeUtente: string = "";
   prodottiNelCarrello: ProdottoRecord[] = [];
   totale: number = 0;
 
-  constructor(private servizioCarrello: CarrelloService, private router: Router, private toastController: ToastController) { }
+  constructor(private servizioCarrello: CarrelloService, private router: Router, private toastController: ToastController, private servizioAutenticazione: AuthenticationService) { }
     
   
     async checkTotale(){
@@ -42,6 +43,7 @@ export class MenuAsportoPage implements OnInit {
   }
 
   ngOnInit() {
+    this.nomeUtente = this.servizioAutenticazione.getUsername();
+    }
   }
 
-}
