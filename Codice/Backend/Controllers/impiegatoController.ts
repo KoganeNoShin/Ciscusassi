@@ -50,14 +50,25 @@ class ImpiegatoController {
 
 	static async getAllImpiegati(req: Request, res: Response): Promise<void> {
 		try {
-			const impiegati = await ImpiegatoService.getAllImpiegati();
-
-			if (impiegati) res.json({ success: true, data: impiegati });
-			else
+			const idFiliale = parseInt(req.params.id);
+			if (isNaN(idFiliale)) {
 				res.status(400).json({
 					success: false,
-					message: 'Nessun impiegato trovato',
+					message: 'ID filiale non valido',
 				});
+				return;
+			}
+
+			const impiegati = await ImpiegatoService.getByFiliale(idFiliale);
+
+			if (impiegati && impiegati.length > 0) {
+				res.json({ success: true, data: impiegati });
+			} else {
+				res.status(404).json({
+					success: false,
+					message: 'Nessun impiegato trovato per la filiale specificata',
+				});
+			}
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({

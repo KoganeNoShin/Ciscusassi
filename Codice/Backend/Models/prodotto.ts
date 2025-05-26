@@ -126,7 +126,7 @@ export class Prodotto {
 					} else if (!rows || rows.length === 0) {
 						console.warn('⚠️ [DB WARNING] Nessun piatto trovato');
 						resolve([]);
-					}else resolve(rows);
+					} else resolve(rows);
 				}
 			);
 		});

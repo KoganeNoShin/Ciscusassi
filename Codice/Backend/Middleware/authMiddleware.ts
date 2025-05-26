@@ -35,7 +35,7 @@ const authMiddleware = (
 				next();
 			} else {
 				// Non cliente, cerco impiegato
-				return Impiegato.findByToken(token).then((impiegato) => {
+				return Impiegato.getByToken(token).then((impiegato) => {
 					if (impiegato) {
 						req.user = {
 							...impiegato,

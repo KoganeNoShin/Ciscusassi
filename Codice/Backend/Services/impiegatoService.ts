@@ -22,12 +22,6 @@ class ImpiegatoService {
             throw new Error('La foto deve essere in formato base64 valido (data:image/...).');
         }
 
-        // Email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(input.email)) {
-            throw new Error('L\'email non è valida.');
-        }
-
         // Data di nascita
         const timestamp = Date.parse(input.data_nascita);
         if (isNaN(timestamp)) {
@@ -47,6 +41,12 @@ class ImpiegatoService {
     }
 
     private static async validateImpiegatoInput(input: ImpiegatoInput): Promise<void> {
+        // Email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(input.email)) {
+            throw new Error('L\'email non è valida.');
+        }
+
         // Password
         if (!input.password || input.password.length < 8) {
             throw new Error('La password deve contenere almeno 8 caratteri.');
@@ -84,9 +84,13 @@ class ImpiegatoService {
         }
     }
 
-    static async getAllImpiegati(): Promise<ImpiegatoRecord[] | null> {
-        const impiegati = await Impiegato.findAll();
-        return impiegati || null;
+    static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
+        try {
+            return await Impiegato.getByFiliale(id_filiale);
+        } catch (error) {
+            console.error('❌ [ImpiegatoService] Errore durante la selezione degli impiegato:', error);
+            throw error;
+        }
     }
 }
 export default ImpiegatoService;

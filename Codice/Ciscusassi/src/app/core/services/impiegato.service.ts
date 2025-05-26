@@ -38,9 +38,9 @@ export class ImpiegatoService {
     );
   }
 
-  GetImpiegati(): Observable<ApiResponse<ImpiegatoRecord[]>> {
+  GetImpiegati(filialeId: number): Observable<ApiResponse<ImpiegatoRecord[]>> {
     return this.http.get<ApiResponse<ImpiegatoRecord[]>>(
-      `${this.apiURL}/Impiegati`
+      `${this.apiURL}/impiegati/${filialeId}`
     );
   }
 }

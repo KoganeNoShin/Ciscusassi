@@ -4,7 +4,7 @@ import Cliente, {
 	ClienteRecord,
 } from '../Models/cliente';
 import { credentials, LoginRecord } from '../Models/credentials';
-import Impiegato from '../Models/impiegato';
+import Impiegato, { ImpiegatoRecord } from '../Models/impiegato';
 
 class AuthService {
 	static async register(input: ClienteData) {
@@ -49,16 +49,19 @@ class AuthService {
 			return loginRecord;
 		}
 
-		const impiegato = await Impiegato.findByEmail(input.email);
+		const impiegatoCredentials = await Impiegato.getPassword(input.email);
 
-		if (impiegato) {
+		if (impiegatoCredentials) {
 			const passwordMatch = await Impiegato.comparePassword(
 				input.password,
-				impiegato.password
+				impiegatoCredentials.password
 			);
 
 			if (!passwordMatch) return;
 
+			const impiegato = await Impiegato.getByEmail(input.email);
+
+			if (!impiegato) throw new Error('Impiegato non trovato');
 			const token = await Impiegato.updateToken(impiegato.matricola);
 
 			const loginRecord: LoginRecord = {
@@ -86,10 +89,10 @@ class AuthService {
 			return true;
 		}
 
-		const impiegato = await Impiegato.findByToken(token);
+		const impiegato = await Impiegato.getByToken(token);
 
 		if (impiegato) {
-			await Impiegato.invalidateToken(token);
+			await Impiegato.invalidateToken(impiegato.matricola);
 			return true;
 		}
 
