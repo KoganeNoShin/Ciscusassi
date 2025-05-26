@@ -2,17 +2,8 @@ import Filiale, { FilialeInput, FilialeRecord } from '../Models/filiale';
 
 class FilialeService {
 	private static validate(input: FilialeInput): void {
-		const comuniPalermo = [
-			'Palermo', 'Bagheria', 'Monreale', 'Partinico', 'Carini',
-			'Altofonte', 'Cefalù', 'Termini Imerese', 'Villabate', 'Misilmeri',
-			'Casteldaccia', 'Capaci', 'Terrasini', 'Cinisi'
-		];
-
 		if (!input.comune || input.comune.trim() === '') {
 			throw new Error('Il campo "comune" è obbligatorio.');
-		}
-		if (!comuniPalermo.includes(input.comune)) {
-			throw new Error(`Il comune "${input.comune}" non è nella provincia di Palermo.`);
 		}
 
 		if (!input.indirizzo || input.indirizzo.trim() === '') {
