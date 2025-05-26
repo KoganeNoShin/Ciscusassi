@@ -9,9 +9,17 @@ import {
   IonButton,
   IonCard,
   IonIcon,
-  IonInput
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  ToastController
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+
+import { FilialeService } from 'src/app/core/services/filiale.service';
+import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
+import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
+import { ImpiegatoData } from 'src/app/core/interfaces/Impiegato';
 
 @Component({
   selector: 'app-modifica-dati-dipendenti',
@@ -29,6 +37,8 @@ import { Router } from '@angular/router';
     IonToolbar,
     CommonModule,
     FormsModule,
+    IonSelect,
+    IonSelectOption
   ],
 })
 export class ModificaDatiDipendentiPage implements OnInit {
@@ -36,27 +46,62 @@ export class ModificaDatiDipendentiPage implements OnInit {
   cognome: string = '';
   dataNascita: string = '';
   ruolo: string = '';
-  email: string = '';
   foto: string = ''; // base64 immagine
+  ref_filiale!: number;
+  matricola!: number;
 
-  constructor(private router: Router) {}
+  filiali: FilialeRecord[] = [];
+
+  constructor(
+    private router: Router,
+    private filialeService: FilialeService,
+    private impiegatoService: ImpiegatoService,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
-  const navigation = this.router.getCurrentNavigation();
-if (navigation?.extras?.state && navigation.extras.state['dipendente']) {
-  const dip = navigation.extras.state['dipendente'];
-  console.log('Dipendente ricevuto:', dip);
-  this.nome = dip.nome || '';
-  this.cognome = dip.cognome || '';
-  this.dataNascita = dip.dataNascita || dip.data_nascita || '';
-  this.ruolo = dip.ruolo || '';
-  this.email = dip.email || '';
-  this.foto = dip.foto || dip.image || '';
-} else {
-  // Gestisci il caso in cui non ci siano dati, es. mostra un messaggio o reindirizza
-  console.warn('Nessun dipendente trovato nello stato della navigazione');
-}
+    const navigation = this.router.getCurrentNavigation();
+    if (
+      navigation?.extras?.state &&
+      navigation.extras.state['dipendente']
+    ) {
+      const dip = navigation.extras.state['dipendente'];
+      this.matricola = dip.matricola;
+      this.nome = dip.nome || '';
+      this.cognome = dip.cognome || '';
+      this.dataNascita = dip.data_nascita || dip.dataNascita || '';
+      this.ruolo = dip.ruolo || '';
+      this.foto = dip.foto || dip.image || '';
+      this.ref_filiale = dip.ref_filiale;
+      // email e password rimossi
+    } else {
+      console.warn('Nessun dipendente trovato nello stato della navigazione');
+    }
+    this.caricaFiliali();
+  }
 
+  caricaFiliali() {
+    this.filialeService.GetSedi().subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.filiali = res.data;
+        }
+      },
+      error: (err) => {
+        console.error('Errore caricamento filiali:', err);
+        this.presentToast('Errore nel caricamento delle filiali.', 'danger');
+      }
+    });
+  }
+
+  async presentToast(message: string, color: string = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 
   onFileSelected(event: any) {
@@ -64,23 +109,47 @@ if (navigation?.extras?.state && navigation.extras.state['dipendente']) {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.foto = reader.result as string; // stringa base64 con data:image/...
-        console.log('Immagine convertita in base64:', this.foto);
+        this.foto = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
 
   salvaModifiche() {
-    const datiModificati = {
+    if (!this.matricola) {
+      this.presentToast('Errore: matricola dipendente non trovata.', 'danger');
+      return;
+    }
+
+    if (!this.ref_filiale) {
+      this.presentToast('Seleziona una filiale.', 'danger');
+      return;
+    }
+
+    if (!this.nome || !this.cognome || !this.dataNascita || !this.ruolo) {
+      this.presentToast('Completa tutti i campi obbligatori.', 'danger');
+      return;
+    }
+
+    const datiModificati: ImpiegatoData = {
       nome: this.nome,
       cognome: this.cognome,
-      dataNascita: this.dataNascita,
+      data_nascita: this.dataNascita,
       ruolo: this.ruolo,
-      email: this.email,
-      foto: this.foto
+      foto: this.foto,
+      ref_filiale: this.ref_filiale
     };
-    console.log('Dati modificati da salvare:', datiModificati);
-    // Qui inserisci la chiamata al servizio API per salvare i dati aggiornati
+
+    this.impiegatoService.UpdateImpiegato(this.matricola, datiModificati).subscribe({
+      next: (res) => {
+        console.log('Dipendente aggiornato con successo:', res);
+        this.presentToast('Dipendente aggiornato con successo!', 'success');
+        // qui puoi fare redirect o altre azioni
+      },
+      error: (err) => {
+        console.error('Errore aggiornamento dipendente:', err);
+        this.presentToast('Errore durante l\'aggiornamento del dipendente.', 'danger');
+      }
+    });
   }
 }
