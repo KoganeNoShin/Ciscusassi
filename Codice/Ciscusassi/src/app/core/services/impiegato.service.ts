@@ -15,6 +15,29 @@ export class ImpiegatoService {
 
   constructor(private http: HttpClient) {}
 
+  AddImpiegato(impiegato: ImpiegatoRecord): Observable<ApiResponse<ImpiegatoRecord>> {
+    return this.http.post<ApiResponse<ImpiegatoRecord>>(
+      `${this.apiURL}/addImpiegato`,
+      impiegato
+    );
+  }
+
+  UpdateImpiegato(
+    matricola: number,
+    impiegato: ImpiegatoRecord
+  ): Observable<ApiResponse<ImpiegatoRecord>> {
+    return this.http.put<ApiResponse<ImpiegatoRecord>>(
+      `${this.apiURL}/updateImpiegato/${matricola}`,
+      impiegato
+    );
+  }
+
+  DeleteImpiegato(matricola: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(
+      `${this.apiURL}/deleteImpiegato/${matricola}`
+    );
+  }
+
   GetImpiegati(): Observable<ApiResponse<ImpiegatoRecord[]>> {
     return this.http.get<ApiResponse<ImpiegatoRecord[]>>(
       `${this.apiURL}/Impiegati`

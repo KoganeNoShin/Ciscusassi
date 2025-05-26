@@ -1,7 +1,53 @@
 import { Request, Response } from 'express';
 import ImpiegatoService from '../Services/impiegatoService';
+import { ImpiegatoInput } from '../Models/impiegato';
 
 class ImpiegatoController {
+	static async addImpiegato(req: Request, res: Response): Promise<void> {
+		try {
+			const {nome, cognome, ruolo, foto, email, data_nascita, ref_filiale, password} = req.body;
+
+			const newImpiegato: ImpiegatoInput = {nome, cognome, ruolo, foto, email, data_nascita, ref_filiale, password};
+			const id = await ImpiegatoService.addImpiegato(newImpiegato);
+			res.status(201).json({ success: true, data: id });
+		} catch (err) {
+			console.error(err);
+			res.status(500).json({
+				success: false,
+				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
+			});
+		}
+	}
+
+	static async updateImpiegato(req: Request, res: Response): Promise<void> {
+		try {
+			await ImpiegatoService.updateImpiegato(req.body, parseInt(req.params.matricola));
+			res.json({ success: true, message: 'Impiegato aggiornato con successo' });
+		} catch (err) {
+			console.error(err);
+			res.status(500).json({
+				success: false,
+				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
+			});
+		}
+	}
+
+	static async deleteImpiegato(req: Request, res: Response): Promise<void> {
+		try {
+			await ImpiegatoService.deleteImpiegato(parseInt(req.params.matricola));
+			res.json({ success: true, message: 'Impiegato eliminato con successo' });
+		} catch (err) {
+			console.error(err);
+			res.status(500).json({
+				success: false,
+				message: 'Errore interno del server',
+				error: (err instanceof Error ? err.message : String(err))
+			});
+		}
+	}
+
 	static async getAllImpiegati(req: Request, res: Response): Promise<void> {
 		try {
 			const impiegati = await ImpiegatoService.getAllImpiegati();

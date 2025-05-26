@@ -7,24 +7,94 @@ import bcrypt from 'bcryptjs';
 
 import crypto from 'crypto';
 
-// Definiamo il modello dell'impiegatp
-export interface ImpiegatoInput {
+// Definiamo il modello dell'impiegato
+export interface ImpiegatoData {
 	nome: string;
 	cognome: string;
 	ruolo: string;
 	foto: string;
 	email: string;
 	data_nascita: string;
-	password: string;
 	ref_filiale: number;
+}
+
+export interface ImpiegatoInput extends ImpiegatoData {
+	password: string;
 }
 
 export interface ImpiegatoRecord extends ImpiegatoInput {
 	matricola: number;
 }
 
-// Interagisce direttamente con il database per le operazioni CRUD sugli utenti
+
 export class Impiegato {
+	// Creazione di un nuovo Impiegato
+	static async create(data: ImpiegatoInput): Promise<number> {
+		const password = data.password;
+
+		// genSalt genera un seed casuale per l'hashing della password
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(password, salt);
+
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO impiegati (nome, cognome, ruolo, foto, email, data_nascita, password, ref_filiale) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+				[data.nome, data.cognome, data.ruolo, data.foto, data.email, data.data_nascita, hashedPassword, data.ref_filiale],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						reject(err);
+					}
+					else resolve(this.lastID);
+				}
+			);
+		});
+	}
+
+	// Modifica Impiegato
+	static async updateImpiegato(data: ImpiegatoData, matricola: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE impiegati SET nome = ?, cognome = ?, ruolo = ?, foto = ?, email = ?, data_nascita = ?, ref_filiale = ? WHERE matricola = ?',
+				[data.nome, data.cognome, data.ruolo, data.foto, data.email, data.data_nascita, data.ref_filiale, matricola],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						console.error('🧾 Query params:', matricola);
+						reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun impiegato aggiornato con matricola ${matricola}`);
+						return reject(new Error(`Nessun impiegato trovato con matricola ${matricola}`));
+					}
+					else resolve();
+				}
+			);
+		});
+	}
+
+	// Elimina Impiegato
+	static async deleteImpiegato(matricola: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'DELETE FROM impiegati WHERE matricola = ?',
+				[matricola],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
+						reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun impiegato eliminato con matricola ${matricola}`);
+						return reject(new Error(`Nessun impiegato trovato con matricola ${matricola}`));
+					}
+					else resolve();
+				}
+			);
+		});
+	}
+
+	// Aggiornamento Token Impiegato
 	static async updateToken(numeroCarta: number): Promise<string> {
 		const token = crypto.randomBytes(64).toString('hex'); // 128 caratteri random
 
@@ -35,44 +105,6 @@ export class Impiegato {
 				function (this: RunResult, err: Error) {
 					if (err) return reject(err);
 					else return resolve(token);
-				}
-			);
-		});
-	}
-
-	// definisco il metodo per creare un nuovo utente
-	static async create(data: ImpiegatoInput) {
-		const {
-			nome,
-			cognome,
-			ruolo,
-			foto,
-			email,
-			data_nascita,
-			password,
-			ref_filiale,
-		} = data;
-
-		// genSalt genera un seed casuale per l'hashing della password
-		const salt = await bcrypt.genSalt(10);
-		const hashedPassword = await bcrypt.hash(password, salt);
-
-		return new Promise((resolve, reject) => {
-			db.run(
-				'INSERT INTO impiegati (nome, cognome, ruolo, foto, email, data_nascita, password, ref_filiale) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-				[
-					nome,
-					cognome,
-					ruolo,
-					foto,
-					email,
-					data_nascita,
-					hashedPassword,
-					ref_filiale,
-				],
-				function (this: RunResult, err: Error | null) {
-					if (err) return reject(err);
-					else return resolve(this.lastID);
 				}
 			);
 		});

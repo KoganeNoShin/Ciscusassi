@@ -57,6 +57,10 @@ router.put('/cambiaStato/:id', OrdineProdottoController.cambioStato);
 // Route per Asporto
 router.post('/addAsporto', AsportoController.addAsporto);
 
+// Route per i Impiegati
+router.post('/addImpiegato', ImpiegatoController.addImpiegato);
+router.put('/updateImpiegato/:matricola', ImpiegatoController.updateImpiegato);
+router.delete('/deleteImpiegato/:matricola', ImpiegatoController.deleteImpiegato);
 router.get('/impiegati', ImpiegatoController.getAllImpiegati);
 
 /* ESEMPIO DI COME PROTEGGERE LE ROTTE 

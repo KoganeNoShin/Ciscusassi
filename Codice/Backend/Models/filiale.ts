@@ -97,19 +97,24 @@ export class Filiale {
 		});
 	}
 
-	/*// ricerca per id
-	static async findById(id: number): Promise<FilialeRecord> {
+	// Seleziona per id
+	static async getById(id: number): Promise<FilialeRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM filiali WHERE id_filiale = ?',
 				[id],
 				(err: Error | null, row: FilialeRecord) => {
-					if (err) reject(err);
-					else resolve(row);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.log('⚠️ [DB WARNING] Nessun Prodotto trovato');
+						resolve(null);
+					} else resolve(row);
 				}
 			);
 		});
-	}*/
+	}
 }
 
 export default Filiale;
