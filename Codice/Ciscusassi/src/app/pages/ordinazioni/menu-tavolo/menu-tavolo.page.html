@@ -8,4 +8,6 @@
 	<app-piatto-del-giorno></app-piatto-del-giorno>
 
 	<app-lista-menu [isOrdinazione]=true></app-lista-menu>
+	<ion-button [routerLink]="['/visualizza-ordini']" class="visualizza">VISUALIZZA ORDINI</ion-button>
+	<ion-button (click)="checkTotale()">INVIA ORDINE</ion-button>
 </ion-content>

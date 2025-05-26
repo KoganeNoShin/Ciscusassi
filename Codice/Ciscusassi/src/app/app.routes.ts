@@ -196,7 +196,11 @@ export const routes: Routes = [
 			import('./pages/account/cambia-email/cambia-email.page').then(
 				(m) => m.CambiaEmailPage
 			),
-	},
+	},  {
+    path: 'visualizza-ordini',
+    loadComponent: () => import('./pages/ordinazioni/visualizza-ordini/visualizza-ordini.page').then( m => m.VisualizzaOrdiniPage)
+  },
+
 ];
 
 export const AppRoutingModule = provideRouter(routes);
