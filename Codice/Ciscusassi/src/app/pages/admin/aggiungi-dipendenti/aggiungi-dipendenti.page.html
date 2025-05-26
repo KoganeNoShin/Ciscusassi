@@ -1,40 +1,41 @@
 <ion-header [translucent]="true">
-	<ion-toolbar>
-		<ion-title>aggiungiDipendenti</ion-title>
-	</ion-toolbar>
+  <ion-toolbar>
+    <ion-title>Aggiungi Dipendente</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-	<ion-content class="ion-padding">
-		<div class="page-title">AGGIUNGI DIPENDENTE</div>
-		<ion-card class="custom-card">
-			<div class="card-content">
-				<!-- Box immagine cliccabile -->
-				<div class="image-upload" (click)="fileInput.click()">
-					<input #fileInput type="file" hidden />
-					<h1>Inserisci un'immagine per il dipendente</h1>
-					<ion-icon name="image-outline" size="large"></ion-icon>
-				</div>
+  <ion-content class="ion-padding">
+    <div class="page-title">AGGIUNGI DIPENDENTE</div>
 
-				<!-- Campi form -->
-				<div class="form-fields">
-					<ion-input placeholder="Inserisci il nome"></ion-input>
-					<ion-input placeholder="Inserisci il cognome"></ion-input>
-					<ion-input
-						type="date"
-						placeholder="Inserisci la data di nascita"
-					></ion-input>
-					<ion-input placeholder="Inserisci il ruolo"></ion-input>
-					<ion-input
-						type="email"
-						placeholder="Inserisci l'email"
-					></ion-input>
+    <ion-card class="custom-card">
+      <div class="card-content">
 
-					<ion-button expand="block" color="success"
-						>AGGIUNGI DIPENDENTE</ion-button
-					>
-				</div>
-			</div>
-		</ion-card>
-	</ion-content>
+        <!-- Box immagine cliccabile -->
+        <div class="image-upload" (click)="fileInput.click()" style="text-align: center; cursor: pointer;">
+          <input #fileInput type="file" hidden (change)="onImageSelected($event)" class="preview-image"/>
+          <ion-icon name="image-outline" size="large"></ion-icon>
+
+          <!-- Anteprima immagine -->
+          <div *ngIf="imageBase64" class="image-preview" style="margin-top: 16px;">
+            <img [src]="imageBase64" alt="Anteprima immagine" />
+          </div>
+        </div>
+
+        <!-- Campi form -->
+        <div class="form-fields">
+          <ion-input placeholder="Inserisci il nome" [(ngModel)]="nome"></ion-input>
+          <ion-input placeholder="Inserisci il cognome" [(ngModel)]="cognome"></ion-input>
+          <ion-input type="date" [(ngModel)]="dataNascita"></ion-input>
+          <ion-input placeholder="Inserisci il ruolo" [(ngModel)]="ruolo"></ion-input>
+          <ion-input type="email" placeholder="Inserisci l'email" [(ngModel)]="email"></ion-input>
+
+          <ion-button expand="block" color="success" (click)="aggiungiDipendente()">
+            AGGIUNGI DIPENDENTE
+          </ion-button>
+        </div>
+
+      </div>
+    </ion-card>
+  </ion-content>
 </ion-content>

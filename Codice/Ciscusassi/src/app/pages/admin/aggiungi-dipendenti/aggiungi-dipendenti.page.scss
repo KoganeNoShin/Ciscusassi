@@ -37,6 +37,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		
 		cursor: pointer;
 		background-color: #f0eaea;
 		transition: background-color 0.3s;
@@ -97,4 +98,20 @@ h1 {
 	margin-bottom: 1.5rem; /* spazio sotto */
 	padding: 0.5rem 1rem; /* padding intorno */
 	border-radius: 15px; /* bordi arrotondati */
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.preview-image {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
