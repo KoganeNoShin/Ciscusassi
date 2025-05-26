@@ -1,39 +1,80 @@
 import Filiale, { FilialeInput, FilialeRecord } from '../Models/filiale';
 
 class FilialeService {
-	static async getAllFiliali(): Promise<FilialeRecord[] | null> {
-		const filiali = await Filiale.findAll();
-		return filiali || null;
+	private static validate(input: FilialeInput): void {
+		const comuniPalermo = [
+			'Palermo', 'Bagheria', 'Monreale', 'Partinico', 'Carini',
+			'Altofonte', 'Cefalù', 'Termini Imerese', 'Villabate', 'Misilmeri',
+			'Casteldaccia', 'Capaci', 'Terrasini', 'Cinisi'
+		];
+
+		if (!input.comune || input.comune.trim() === '') {
+			throw new Error('Il campo "comune" è obbligatorio.');
+		}
+		if (!comuniPalermo.includes(input.comune)) {
+			throw new Error(`Il comune "${input.comune}" non è nella provincia di Palermo.`);
+		}
+
+		if (!input.indirizzo || input.indirizzo.trim() === '') {
+			throw new Error('Il campo "indirizzo" è obbligatorio.');
+		}
+
+		if (!Number.isInteger(input.num_tavoli) || input.num_tavoli <= 0) {
+			throw new Error('Il numero di tavoli deve essere un intero positivo.');
+		}
+
+		const lon = parseFloat(input.longitudine);
+		if (isNaN(lon) || lon < -180 || lon > 180) {
+			throw new Error('La longitudine deve essere un numero valido tra -180 e 180.');
+		}
+
+		const lat = parseFloat(input.latitudine);
+		if (isNaN(lat) || lat < -90 || lat > 90) {
+			throw new Error('La latitudine deve essere un numero valido tra -90 e 90.');
+		}
+
+		if (!input.immagine || !input.immagine.startsWith('data:image/')) {
+			throw new Error('L\'immagine deve essere in formato base64 valido (data:image/...).');
+		}
+	}
+	
+
+	static async addFiliale(data: FilialeRecord): Promise<number | null> {
+		try {
+			this.validate(data);
+			return await Filiale.create(data);
+		} catch(error) {
+			console.error('❌ [FilialeService] Errore durante l\'aggiunta della Filiale:', error);
+			throw error;
+		}
 	}
 
-	static async addFiliale(input: FilialeRecord): Promise<number | null> {
-		const filialeData: FilialeInput = {
-			comune: input.comune,
-			indirizzo: input.indirizzo,
-			num_tavoli: input.num_tavoli,
-			longitudine: input.longitudine,
-			latitudine: input.latitudine,
-			immagine: input.immagine,
-		};
-
-		return await Filiale.addFiliale(filialeData);
-	}
-
-	static async updateFiliale(input: FilialeInput, id: number): Promise<void> {
-		const filialeData: FilialeInput = {
-			comune: input.comune,
-			indirizzo: input.indirizzo,
-			num_tavoli: input.num_tavoli,
-			longitudine: input.longitudine,
-			latitudine: input.latitudine,
-			immagine: input.immagine,
-		};
-
-		return await Filiale.updateFiliale(filialeData, id);
+	static async updateFiliale(data: FilialeInput, id: number): Promise<void> {
+		try {
+			this.validate(data);
+			return await Filiale.updateFiliale(data, id);
+		} catch(error) {
+			console.error('❌ [FilialeService] Errore durante la modifica della Filiale:', error);
+			throw error;
+		}
 	}
 
 	static async deleteFiliale(id: number): Promise<void> {
-		return await Filiale.deleteFiliale(id);
+		try{
+			await Filiale.deleteFiliale(id);
+		} catch (error) {
+			console.error('❌ [FilialeService] Errore durante l\'eliminazione della Filiale:', error);
+			throw error;
+		}
+	}
+
+	static async getAllFiliali(): Promise<FilialeRecord[] | null> {
+		try {
+			return await Filiale.getAll();
+		} catch (error) {
+			console.error('❌ [FilialeService] Errore durante il recupero delle Filiali:', error);
+			throw error;
+		}
 	}
 }
 

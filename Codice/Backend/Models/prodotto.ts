@@ -38,10 +38,8 @@ export class Prodotto {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE prodotti SET nome = ?, descrizione = ?, costo = ?, immagine = ?, categoria = ? WHERE id_prodotto = ?',
-				[
-					data.nome, data.descrizione, data.costo, data.immagine, data.categoria, 
-					id,
-				],
+				[data.nome, data.descrizione, data.costo, data.immagine, data.categoria, 
+				id],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
