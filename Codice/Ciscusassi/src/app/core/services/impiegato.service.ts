@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
-import { ImpiegatoRecord } from '../interfaces/Impiegato';
+import { ImpiegatoInput, ImpiegatoRecord } from '../interfaces/Impiegato';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +15,8 @@ export class ImpiegatoService {
 
   constructor(private http: HttpClient) {}
 
-  AddImpiegato(impiegato: ImpiegatoRecord): Observable<ApiResponse<ImpiegatoRecord>> {
-    return this.http.post<ApiResponse<ImpiegatoRecord>>(
+  AddImpiegato(impiegato: ImpiegatoInput): Observable<ApiResponse<ImpiegatoRecord>> {
+    return this.http.post<ApiResponse<ImpiegatoInput>>(
       `${this.apiURL}/addImpiegato`,
       impiegato
     );
