@@ -18,19 +18,38 @@ const router = express.Router();
 // Route per i Prodotti
 router.get('/piattoDelGiorno', ProdottoController.getProdottoDelGiorno);
 router.get('/prodotti', ProdottoController.getAllProdotti);
-router.post('/addProdotto', ProdottoController.addProdotto);
-router.put('/updateProdotto/:id', ProdottoController.updateProdotto);
-router.delete('/deleteProdotto/:id', ProdottoController.deleteProdotto);
-router.put(
-	'/chargePiattoDelGiorno/:id',
+router.post('/addProdotto',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	ProdottoController.addProdotto);
+router.put('/updateProdotto/:id',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	ProdottoController.updateProdotto);
+router.delete('/deleteProdotto/:id',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	ProdottoController.deleteProdotto);
+router.put('/chargePiattoDelGiorno/:id',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
 	ProdottoController.chargePiattoDelGiorno
 );
 
 // Route per le Filiali
 router.get('/filiali', FilialeController.getAllFiliali);
-router.post('/addFiliale', FilialeController.addFiliale);
-router.put('/updateFiliale/:id', FilialeController.updateFiliale);
-router.delete('/deleteFiliale/:id', FilialeController.deleteFiliale);
+router.post('/addFiliale', 
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	FilialeController.addFiliale);
+router.put('/updateFiliale/:id',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	FilialeController.updateFiliale);
+router.delete('/deleteFiliale/:id',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	FilialeController.deleteFiliale);
 
 // Route per gli Ordini
 router.get('/ordini', OrdineController.getAllOrdini);
@@ -42,15 +61,9 @@ router.delete('/deleteOrdine/:id', OrdineController.deleteOrdine);
 // Route per gli Ordini e Prodotti
 router.get('/ordiniProdotti', OrdineProdottoController.getAllOrdini);
 router.get('/ordiniProdotti/:id', OrdineProdottoController.getById);
-router.get(
-	'/ordiniProdotti/ref_ordine/:ref_ordine',
-	OrdineProdottoController.getByRefOrdine
-);
+router.get('/ordiniProdotti/ref_ordine/:ref_ordine', OrdineProdottoController.getByRefOrdine);
 router.post('/addOrdineProdotto', OrdineProdottoController.addOrdineProdotto);
-router.put(
-	'/deleteOrdineProdotto/:id',
-	OrdineProdottoController.deleteOrdineProdotto
-);
+router.put('/deleteOrdineProdotto/:id', OrdineProdottoController.deleteOrdineProdotto);
 router.put('/romana/:id', OrdineProdottoController.cambiaRomana);
 router.put('/cambiaStato/:id', OrdineProdottoController.cambioStato);
 
@@ -58,10 +71,22 @@ router.put('/cambiaStato/:id', OrdineProdottoController.cambioStato);
 router.post('/addAsporto', AsportoController.addAsporto);
 
 // Route per i Impiegati
-router.post('/addImpiegato', ImpiegatoController.addImpiegato);
-router.put('/updateImpiegato/:matricola', ImpiegatoController.updateImpiegato);
-router.delete('/deleteImpiegato/:matricola', ImpiegatoController.deleteImpiegato);
-router.get('/impiegati/:id', ImpiegatoController.getAllImpiegati);
+router.post('/addImpiegato',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	ImpiegatoController.addImpiegato);
+router.put('/updateImpiegato/:matricola',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	ImpiegatoController.updateImpiegato);
+router.delete('/deleteImpiegato/:matricola',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	ImpiegatoController.deleteImpiegato);
+router.get('/impiegati/:id',
+	authMiddleware,
+	roleMiddleware(['amministratore']),
+	ImpiegatoController.getAllImpiegati);
 
 /* ESEMPIO DI COME PROTEGGERE LE ROTTE 
 router.post(
