@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton } from '@ionic/angular/standalone';
-import { HeroComponent } from "../../../../components/hero/hero.component";
-import { PiattoDelGiornoComponent } from "../../../../components/piatto-del-giorno/piatto-del-giorno.component";
-import { ListaMenuComponent } from "../../../../components/lista-menu/lista-menu.component";
 import { Router, RouterModule } from '@angular/router';
 import { ToastController } from '@ionic/angular/standalone';
 import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
+import { HeroComponent } from 'src/app/components/hero/hero.component';
+import { PiattoDelGiornoComponent } from 'src/app/components/piatto-del-giorno/piatto-del-giorno.component';
+import { ListaMenuComponent } from 'src/app/components/lista-menu/lista-menu.component';
 
 @Component({
   selector: 'app-menu-asporto',

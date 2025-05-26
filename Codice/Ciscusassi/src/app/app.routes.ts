@@ -28,7 +28,7 @@ export const routes: Routes = [
 	{
 		path: 'ordina-ora',
 		loadComponent: () =>
-			import('./pages/ordina-ora/ordina-ora.page').then(
+			import('./pages/ordinazioni/ordina-ora/ordina-ora.page').then(
 				(m) => m.OrdinaOraPage
 			),
 	},
@@ -68,14 +68,14 @@ export const routes: Routes = [
 		path: 'ordina-al-tavolo',
 		loadComponent: () =>
 			import(
-				'./pages/ordina-ora/ordina-al-tavolo/ordina-al-tavolo.page'
+				'./pages/ordinazioni/ordina-al-tavolo/ordina-al-tavolo.page'
 			).then((m) => m.OrdinaAlTavoloPage),
 	},
 	{
 		path: 'ordina-asporto',
 		loadComponent: () =>
 			import(
-				'./pages/ordina-ora/ordina-asporto/ordina-asporto.page'
+				'./pages/ordinazioni/ordina-asporto/ordina-asporto.page'
 			).then((m) => m.OrdinaAsportoPage),
 	},
 	{
@@ -138,28 +138,28 @@ export const routes: Routes = [
 		path: 'menu-tavolo',
 		loadComponent: () =>
 			import(
-				'./pages/ordina-ora/ordina-al-tavolo/menu-tavolo/menu-tavolo.page'
+				'./pages/ordinazioni/menu-tavolo/menu-tavolo.page'
 			).then((m) => m.MenuTavoloPage),
 	},
 	{
 		path: 'menu-asporto',
 		loadComponent: () =>
 			import(
-				'./pages/ordina-ora/ordina-asporto/menu-asporto/menu-asporto.page'
+				'./pages/ordinazioni/menu-asporto/menu-asporto.page'
 			).then((m) => m.MenuAsportoPage),
 	},
 	{
 		path: 'pagamento-asporto',
 		loadComponent: () =>
 			import(
-				'./pages/ordina-ora/ordina-asporto/pagamento-asporto/pagamento-asporto.page'
+				'./pages/ordinazioni/pagamento-asporto/pagamento-asporto.page'
 			).then((m) => m.PagamentoAsportoPage),
 	},
 	{
 		path: 'ringraziamenti-asporto',
 		loadComponent: () =>
 			import(
-				'./pages/ordina-ora/ordina-asporto/ringraziamenti-asporto/ringraziamenti-asporto.page'
+				'./pages/ordinazioni/ringraziamenti-asporto/ringraziamenti-asporto.page'
 			).then((m) => m.RingraziamentiAsportoPage),
 	},
 	{
