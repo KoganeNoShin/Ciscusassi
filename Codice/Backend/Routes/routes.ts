@@ -12,6 +12,7 @@ import authMiddleware from '../Middleware/authMiddleware';
 import roleMiddleware from '../Middleware/roleMiddleware';
 import AuthController from '../Controllers/authController';
 import AsportoController from '../Controllers/asportoController';
+import PagamentoController from '../Controllers/pagamentoController';
 
 const router = express.Router();
 
@@ -50,6 +51,9 @@ router.delete('/deleteFiliale/:id',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	FilialeController.deleteFiliale);
+
+// Route per i Pagamenti
+router.get('/pagamenti/:year', PagamentoController.getPagamentiByYear);
 
 // Route per gli Ordini
 router.get('/ordini', OrdineController.getAllOrdini);

@@ -8,6 +8,11 @@ export interface PagamentoInput {
 	data_ora_pagamento: string;
 }
 
+export interface PagamentoMensile {
+	mese: string;
+	importo: number;
+}
+
 export interface PagamentoRecord extends PagamentoInput {
 	id_pagamento: number;
 }
@@ -48,6 +53,31 @@ export class Pagamento {
 			);
 		});
 	}
+
+	// Selezione dei pagamenti per Anno
+	static async getByYear(year: number): Promise<PagamentoRecord[]> {
+	return new Promise((resolve, reject) => {
+		const start = `${year}-01-01 00:00:00`;
+		const end = `${year}-12-31 23:59:59`;
+
+		db.all(
+			'SELECT * FROM pagamenti WHERE data_ora_pagamento BETWEEN ? AND ?',
+			[start, end],
+			(err: Error | null, rows: PagamentoRecord[]) => {
+				if (err) {
+					console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+					return reject(err);
+				}
+				if (!rows || rows.length === 0) {
+					console.warn(`⚠️ [DB WARNING] Nessun pagamento trovato per l'anno ${year}`);
+					return resolve([]);
+				}
+				resolve(rows);
+			}
+		);
+	});
+}
+
 }
 
 export default Pagamento;
