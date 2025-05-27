@@ -1,4 +1,15 @@
-import Pagamento, { PagamentoInput, PagamentoMensile } from "../Models/pagamento";
+import Pagamento, { PagamentoInput } from "../Models/pagamento";
+import Filiale from "../Models/filiale";
+import Prodotto from "../Models/prodotto";
+import Prenotazione from "../Models/prenotazione";
+import Torretta from "../Models/torretta";
+import { ref } from "process";
+
+export interface PagamentoMensile {
+	mese: string;
+	importo: number;
+	ref_filiale: number;
+}
 
 class PagamentoService {
 	private static validate(input: PagamentoInput): void {
@@ -30,6 +41,47 @@ class PagamentoService {
 	}
 
 	static async getPagamentoByYear(year: number): Promise<PagamentoMensile[]> {
+		try {
+			if( year < 2000 || year > new Date().getFullYear()) {
+				throw new Error('L\'anno deve essere compreso tra il 2000 e l\'anno corrente.');
+			}
+
+			const meseNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+
+			const filiali = await Filiale.getAll();
+			if (!filiali || filiali.length === 0) {
+				throw new Error('Nessuna filiale trovata.');
+			}
+			const ref_filiali: number[] = filiali.map((f) => f.id_filiale);
+
+			const pagamentoMensile: PagamentoMensile[] = [];
+
+			for(const f in ref_filiali) {
+				for(const m in meseNames) {
+					pagamentoMensile.push({
+						mese : m,
+						importo: 0,
+						ref_filiale: f
+					});
+				}
+			}
+			
+			const prodotto = await Prodotto.getAll();
+
+			const prenotazione = await Prenotazione.findAll();
+
+			const torretta = await Torretta.findAll();
+
+			for (const f of filiali) {
+
+			}
+			return PagamentoMensile;
+		} catch (error) {
+			console.error('❌ [PagamentoService] Errore durante il recupero dei pagamenti:', error);
+			throw error;
+		}
+	}
+	/*static async getPagamentoByYear(year: number): Promise<PagamentoMensile[]> {
 		try {
 			if (year < 2000 || year > new Date().getFullYear()) {
 				throw new Error('L\'anno deve essere compreso tra il 2000 e l\'anno corrente.');
@@ -63,7 +115,7 @@ class PagamentoService {
 			console.error('❌ [PagamentoService] Errore durante il recupero dei pagamenti:', error);
 			throw error;
 		}
-	}
+	}*/
 }
 
 export default PagamentoService;

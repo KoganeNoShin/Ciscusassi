@@ -8,11 +8,6 @@ export interface PagamentoInput {
 	data_ora_pagamento: string;
 }
 
-export interface PagamentoMensile {
-	mese: string;
-	importo: number;
-}
-
 export interface PagamentoRecord extends PagamentoInput {
 	id_pagamento: number;
 }
