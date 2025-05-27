@@ -3,7 +3,7 @@ import filiale from '../../Models/filiale';
 
 export async function generateTorretta(): Promise<string> {
 	try {
-		const filiali = await filiale.findAll();
+		const filiali = await filiale.getAll();
 
 		for (let i = 0; i < filiali.length; i++) {
 			const nTorrette = Math.ceil(filiali[i].num_tavoli / 3);

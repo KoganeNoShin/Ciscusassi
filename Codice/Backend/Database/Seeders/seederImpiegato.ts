@@ -28,7 +28,7 @@ async function getBase64(imageUrl: string): Promise<string> {
 
 export async function generateImpiegato(): Promise<string> {
 	try {
-		const filiali = await filiale.findAll();
+		const filiali = await filiale.getAll();
 
 		for (const f of filiali) {
 			// --- Amministratori ---

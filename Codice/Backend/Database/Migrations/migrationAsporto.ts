@@ -13,8 +13,10 @@ export function createIfDoesntExists(): Promise<string> {
                 data_ora_consegna TEXT NOT NULL,
                 ref_cliente INTEGER NOT NULL,
 				ref_pagamento INTEGER NOT NULL,
+				ref_filiale INTEGER NOT NULL,
                 FOREIGN KEY (ref_cliente) REFERENCES cliente (numero_carta)
 				FOREIGN KEY (ref_pagamento) REFERENCES pagamento (id_pagamento)
+				FOREIGN KEY (ref_filiale) REFERENCES filiale (id_filiale)
             )`,
 				(err: Error | null) => {
 					if (err) {

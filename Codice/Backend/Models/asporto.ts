@@ -8,6 +8,7 @@ export interface AsportoInput {
 	data_ora_consegna: string;
 	ref_cliente: number;
 	ref_pagamento: number;
+	ref_filiale: number;
 }
 
 export interface AsportoRecord extends AsportoInput {
@@ -19,7 +20,7 @@ export class Asporto {
 	static async create(data: AsportoInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO asporti (indirizzo, data_ora_consegna, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?)',
+				'INSERT INTO asporti (indirizzo, data_ora_consegna, ref_cliente, ref_pagamento, ref_filiale) VALUES (?, ?, ?, ?, ?)',
 				[data.indirizzo, data.data_ora_consegna, data.ref_cliente, data.ref_pagamento],
 				function (this: RunResult, err: Error | null) {
 					if (err) {

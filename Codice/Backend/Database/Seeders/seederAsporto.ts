@@ -3,6 +3,7 @@ import cliente from '../../Models/cliente';
 import pagamento from '../../Models/pagamento';
 import prodotto from '../../Models/prodotto';
 import aspProd from '../../Models/asp_prod';
+import filiale from '../../Models/filiale';
 
 import { faker } from '@faker-js/faker';
 
@@ -16,6 +17,10 @@ export async function generateAsporto(count: number): Promise<string> {
 		if (!prodotti || prodotti.length === 0) throw new Error("Nessun prodotto trovato");
 		const idProdotti = prodotti.map((p) => p.id_prodotto);
 
+		const filiali = await filiale.getAll();
+		if (!filiali || filiali.length === 0) throw new Error("Nessuna filiale trovata");
+		const idFiliali = filiali.map((f) => f.id_filiale);
+
 		for (let i = 0; i < count; i++) {
 			const indirizzo = faker.location.street() + ' ' + faker.location.secondaryAddress();
 			const data_ora_consegna = faker.date.anytime().toISOString();
@@ -25,12 +30,19 @@ export async function generateAsporto(count: number): Promise<string> {
 			const data_ora_pagamento = faker.date.recent().toISOString();
 			const ref_pagamento = await pagamento.create({ importo, data_ora_pagamento });
 
+			if (!ref_pagamento) {
+				throw new Error("Errore durante la creazione del pagamento");
+			}
+
+			const ref_filiale = faker.helpers.arrayElement(idFiliali);
+
 			try {
 				const id_asporto = await asporto.create({
 					indirizzo,
 					data_ora_consegna,
 					ref_cliente,
 					ref_pagamento,
+					ref_filiale,
 				});
 
 				console.log(`🏍️  Abbiamo consegnato d'asporto in via ${indirizzo} ed in data ${data_ora_consegna}!`);

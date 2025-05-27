@@ -12,7 +12,7 @@ function getBase64FromFile(localPath: string): string {
 
 export async function generateUtentiFissi(): Promise<string> {
 	try {
-		const filiali = await filiale.findAll();
+		const filiali = await filiale.getAll();
 		if (!filiali || filiali.length === 0) throw new Error("Nessuna filiale trovata");
 		const password = 'Pwm30L!';
 
