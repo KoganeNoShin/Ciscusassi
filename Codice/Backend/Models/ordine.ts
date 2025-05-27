@@ -44,6 +44,19 @@ export class Ordine {
 		});
 	}
 
+	static async addPagamento(ref_pagamento : number, id_ordine: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE ordini SET ref_pagamento = ? WHERE id_ordine = ?',
+				[ref_pagamento, id_ordine],
+				function (this: RunResult, err: Error | null) {
+					if (err) reject(err);
+					else resolve();
+				}
+			);
+		});
+	}
+
 	// definiamo il metodo per ritornare tutti gli ordini
 	static async findAll(): Promise<OrdineRecord[]> {
 		return new Promise((resolve, reject) => {

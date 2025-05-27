@@ -16,15 +16,10 @@ import migrationAspProd from './Database/Migrations/migrationAspProd';
 
 import generateCliente from './Database/Seeders/seederCliente';
 import generateFiliale from './Database/Seeders/seederFiliale';
-import generateTorretta from './Database/Seeders/seederTorretta';
 import generateUtentiFissi from './Database/Seeders/SeederBoss';
-import generateImpiegato from './Database/Seeders/seederImpiegato';
 import generateProdotto from './Database/Seeders/seederProdotto';
 import generateAsporto from './Database/Seeders/seederAsporto';
 import generatePrenotazione from './Database/Seeders/seederPrenotazione';
-import generateOrdine from './Database/Seeders/seederOrdine';
-import generateOrdProd from './Database/Seeders/seederOrdProd';
-import generatePagamento from './Database/Seeders/seederPagamento';
 
 const args = process.argv.slice(2);
 
@@ -59,15 +54,10 @@ async function createTables() {
 async function seedDB() {
 	await generateCliente(15);
 	await generateFiliale();
-	await generateTorretta();
 	await generateUtentiFissi();
-	await generateImpiegato();
 	await generateProdotto();
 	await generateAsporto(20);
-	await generatePrenotazione(30);
-	await generateOrdine();
-	await generateOrdProd();
-	await generatePagamento();
+	await generatePrenotazione(50);
 }
 
 async function run() {

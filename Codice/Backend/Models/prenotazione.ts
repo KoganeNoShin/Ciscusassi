@@ -9,7 +9,7 @@ export interface PrenotazioneInput {
 	otp: string;
 	data_ora_prenotazione: string;
 	ref_torretta: number;
-	ref_cliente: number | null;
+	ref_cliente?: number | null;
 }
 export interface PrenotazioneRecord extends PrenotazioneInput {
 	id_prenotazione: number;

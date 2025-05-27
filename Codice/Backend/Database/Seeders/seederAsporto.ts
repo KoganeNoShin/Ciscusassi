@@ -50,13 +50,11 @@ export async function generateAsporto(count: number): Promise<string> {
 				const nProdotti = faker.number.int({ min: 3, max: 8 });
 				for (let j = 0; j < nProdotti; j++) {
 					const ref_prodotto = faker.helpers.arrayElement(idProdotti);
-					await aspProd.create({ ref_asporto: id_asporto, ref_prodotto });
+					await aspProd.create({ ref_asporto: id_asporto, ref_prodotto});
 					console.log(`🛍️  Prodotto ${ref_prodotto} associato all'asporto ${id_asporto}`);
 				}
 			} catch (err) {
-				console.error(
-					`🔫 In via ${indirizzo} abita un pazzo, quindi non abbiamo consegnato d'asporto! Causa di spavento: ${err}`
-				);
+				console.error(`🔫 In via ${indirizzo} abita un pazzo, quindi non abbiamo consegnato d'asporto! Causa di spavento: ${err}`);
 				throw err;
 			}
 		}

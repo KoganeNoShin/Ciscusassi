@@ -21,7 +21,7 @@ export class Asporto {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO asporti (indirizzo, data_ora_consegna, ref_cliente, ref_pagamento, ref_filiale) VALUES (?, ?, ?, ?, ?)',
-				[data.indirizzo, data.data_ora_consegna, data.ref_cliente, data.ref_pagamento],
+				[data.indirizzo, data.data_ora_consegna, data.ref_cliente, data.ref_pagamento, data.ref_filiale],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
