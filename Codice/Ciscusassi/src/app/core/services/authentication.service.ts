@@ -29,9 +29,6 @@ export class AuthenticationService {
 	private avatarSubject = new BehaviorSubject<string>('');
 	avatar$ = this.avatarSubject.asObservable();
 
-	private pointsSubject = new BehaviorSubject<number>(0);
-	points$ = this.pointsSubject.asObservable();
-
 	constructor(
 		private http: HttpClient,
 		private storage: Storage
