@@ -1,15 +1,5 @@
-import Pagamento, { PagamentoInput } from "../Models/pagamento";
+import Pagamento, { PagamentoInput , PagamentoMensile } from "../Models/pagamento";
 import Filiale from "../Models/filiale";
-import Prodotto from "../Models/prodotto";
-import Prenotazione from "../Models/prenotazione";
-import Torretta from "../Models/torretta";
-import { ref } from "process";
-
-export interface PagamentoMensile {
-	mese: string;
-	importo: number;
-	ref_filiale: number;
-}
 
 class PagamentoService {
 	private static validate(input: PagamentoInput): void {
@@ -40,7 +30,6 @@ class PagamentoService {
 		return await Pagamento.create(data);
 	}
 
-	/*
 	static async getPagamentoByYear(year: number): Promise<PagamentoMensile[]> {
 		try {
 			if( year < 2000 || year > new Date().getFullYear()) {
@@ -57,59 +46,28 @@ class PagamentoService {
 
 			const pagamentoMensile: PagamentoMensile[] = [];
 
-			for(const f in ref_filiali) {
-				for(const m in meseNames) {
+			for(const f of ref_filiali) {
+				for(const m of meseNames) {
 					pagamentoMensile.push({
-						mese : m,
+						data : m,
 						importo: 0,
-						ref_filiale: f
+						filiale: f
 					});
 				}
 			}
-			
-			const prodotto = await Prodotto.getAll();
 
-			const prenotazione = await Prenotazione.findAll();
+			const pagamentiOrdini = await Pagamento.getPagamentiOrdiniByYear(year);
+			const pagamentiAsporto = await Pagamento.getPagamentiAsportiByYear(year);
+			const pagamenti = [...pagamentiOrdini, ...pagamentiAsporto];
 
-			const torretta = await Torretta.findAll();
+			for(const p of pagamenti) {
+				const meseIndex = new Date(p.data).getMonth();
 
-			for (const f of filiali) {
+				const index = pagamentoMensile.findIndex(pagamento => pagamento.filiale === p.filiale && pagamento.data === meseNames[meseIndex]);
 
-			}
-			return PagamentoMensile;
-		} catch (error) {
-			console.error('❌ [PagamentoService] Errore durante il recupero dei pagamenti:', error);
-			throw error;
-		}
-	}
-	/*
-	/*static async getPagamentoByYear(year: number): Promise<PagamentoMensile[]> {
-		try {
-			if (year < 2000 || year > new Date().getFullYear()) {
-				throw new Error('L\'anno deve essere compreso tra il 2000 e l\'anno corrente.');
-			}
-
-			const pagamentoMensile: PagamentoMensile[] = [
-				{ mese: 'Gennaio', importo: 0 },
-				{ mese: 'Febbraio', importo: 0 },
-				{ mese: 'Marzo', importo: 0 },
-				{ mese: 'Aprile', importo: 0 },
-				{ mese: 'Maggio', importo: 0 },
-				{ mese: 'Giugno', importo: 0 },
-				{ mese: 'Luglio', importo: 0 },
-				{ mese: 'Agosto', importo: 0 },
-				{ mese: 'Settembre', importo: 0 },
-				{ mese: 'Ottobre', importo: 0 },
-				{ mese: 'Novembre', importo: 0 },
-				{ mese: 'Dicembre', importo: 0 }
-			];
-			
-			const pagamenti = await Pagamento.getByYear(year);
-			for (const p of pagamenti) {
-				const dataPagamento = new Date(p.data_ora_pagamento);
-				const mese = dataPagamento.getMonth();
-
-				pagamentoMensile[mese].importo += p.importo;
+				if (index !== -1) {
+          			pagamentoMensile[index].importo += p.importo;
+        		}
 			}
 
 			return pagamentoMensile;
@@ -117,7 +75,7 @@ class PagamentoService {
 			console.error('❌ [PagamentoService] Errore durante il recupero dei pagamenti:', error);
 			throw error;
 		}
-	}*/
+	}
 }
 
 export default PagamentoService;

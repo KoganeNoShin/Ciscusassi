@@ -12,6 +12,12 @@ export interface PagamentoRecord extends PagamentoInput {
 	id_pagamento: number;
 }
 
+export interface PagamentoMensile {
+	data: string;
+	importo: number;
+	filiale: number;
+}
+
 export class Pagamento {
 	// Creazione di un nuovo pagamento
 	static async create(data: PagamentoInput): Promise<number> {
@@ -51,28 +57,80 @@ export class Pagamento {
 
 	// Selezione dei pagamenti per Anno
 	static async getByYear(year: number): Promise<PagamentoRecord[]> {
-	return new Promise((resolve, reject) => {
-		const start = `${year}-01-01 00:00:00`;
-		const end = `${year}-12-31 23:59:59`;
+		return new Promise((resolve, reject) => {
+			const start = `${year}-01-01 00:00:00`;
+			const end = `${year}-12-31 23:59:59`;
 
-		db.all(
-			'SELECT * FROM pagamenti WHERE data_ora_pagamento BETWEEN ? AND ?',
-			[start, end],
-			(err: Error | null, rows: PagamentoRecord[]) => {
-				if (err) {
-					console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
-					return reject(err);
+			db.all(
+				'SELECT * FROM pagamenti WHERE data_ora_pagamento BETWEEN ? AND ?',
+				[start, end],
+				(err: Error | null, rows: PagamentoRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						return reject(err);
+					}
+					if (!rows || rows.length === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun pagamento trovato per l'anno ${year}`);
+						return resolve([]);
+					}
+					resolve(rows);
 				}
-				if (!rows || rows.length === 0) {
-					console.warn(`⚠️ [DB WARNING] Nessun pagamento trovato per l'anno ${year}`);
-					return resolve([]);
-				}
-				resolve(rows);
-			}
-		);
-	});
-}
+			);
+		});
+	}
 
+	// Selezione dei pagamenti ordini per Anno
+	static async getPagamentiOrdiniByYear(year: number): Promise<PagamentoMensile[]> {
+		return new Promise((resolve, reject) => {
+			const start = `${year}-01-01 00:00:00`;
+			const end = `${year}-12-31 23:59:59`;
+
+			db.all(
+				`SELECT p.importo AS importo, p.data_ora_pagamento as data, t.ref_filiale AS filiale 
+				FROM pagamenti p 
+				INNER JOIN ordini o ON p.id_pagamento = o.ref_pagamento 
+				INNER JOIN prenotazioni pr ON o.ref_prenotazione = pr.id_prenotazione 
+				INNER JOIN torrette t ON pr.ref_torretta = t.id_torretta 
+				WHERE p.data_ora_pagamento BETWEEN ? AND ?`,
+				[start, end],
+				(err: Error | null, rows: PagamentoMensile[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						return reject(err);
+					}
+					if (!rows || rows.length === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun pagamento trovato per l'anno ${year}`);
+						return resolve([]);
+					}
+					resolve(rows);
+				}
+			);
+		});
+	}
+
+	// Selezione dei pagamenti ordini per Anno
+	static async getPagamentiAsportiByYear(year: number): Promise<PagamentoMensile[]> {
+		return new Promise((resolve, reject) => {
+			const start = `${year}-01-01 00:00:00`;
+			const end = `${year}-12-31 23:59:59`;
+
+			db.all(
+				'SELECT p.importo AS importo, p.data_ora_pagamento as data, a.ref_filiale AS filiale FROM pagamenti p INNER JOIN asporti as a ON p.id_pagamento = a.ref_pagamento WHERE p.data_ora_pagamento BETWEEN ? AND ?',
+				[start, end],
+				(err: Error | null, rows: PagamentoMensile[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						return reject(err);
+					}
+					if (!rows || rows.length === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun pagamento trovato per l'anno ${year}`);
+						return resolve([]);
+					}
+					resolve(rows);
+				}
+			);
+		});
+	}
 }
 
 export default Pagamento;

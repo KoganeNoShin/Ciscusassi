@@ -2,7 +2,6 @@ import {Request, Response} from 'express';
 import PagamentoService from '../Services/pagamentoService';
 
 class PagamentoController {
-    /*
     static async getPagamentiByYear(req: Request, res: Response): Promise<void> {
         try {
             const year = parseInt(req.params.year);
@@ -22,7 +21,6 @@ class PagamentoController {
             });
         }
     }
-        */
 }
 
 export default PagamentoController;
