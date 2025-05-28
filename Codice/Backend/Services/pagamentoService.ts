@@ -40,6 +40,7 @@ class PagamentoService {
 		return await Pagamento.create(data);
 	}
 
+	/*
 	static async getPagamentoByYear(year: number): Promise<PagamentoMensile[]> {
 		try {
 			if( year < 2000 || year > new Date().getFullYear()) {
@@ -81,6 +82,7 @@ class PagamentoService {
 			throw error;
 		}
 	}
+	/*
 	/*static async getPagamentoByYear(year: number): Promise<PagamentoMensile[]> {
 		try {
 			if (year < 2000 || year > new Date().getFullYear()) {
