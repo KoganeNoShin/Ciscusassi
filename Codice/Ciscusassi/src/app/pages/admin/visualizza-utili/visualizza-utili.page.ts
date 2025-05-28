@@ -13,8 +13,10 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-
 import * as XLSX from 'xlsx';
+
+import { PagamentoService } from 'src/app/core/services/pagamento.service';
+import { FilialeService } from 'src/app/core/services/filiale.service';
 
 @Component({
   selector: 'app-visualizza-utili',
@@ -44,13 +46,17 @@ export class VisualizzaUtiliPage implements OnInit {
     'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre',
   ];
 
-  years = [2025, 2024, 2023, 2022, 2021];
+  years = [2025, 2024, 2023];
 
   rows: { address: string; values: number[] }[] = [];
 
-  constructor() {}
+  constructor(
+    private pagamentoService: PagamentoService,
+    private filialeService: FilialeService
+  ) {}
 
   ngOnInit() {
+    // Seleziona l’anno più recente di default e carica i dati
     this.selectedYear = this.years[0];
     this.loadDataForYear(this.selectedYear);
   }
@@ -62,18 +68,66 @@ export class VisualizzaUtiliPage implements OnInit {
   }
 
   loadDataForYear(year: number) {
-    this.rows = [
-      { address: 'Via Vincenzo Piazza Martini, 45', values: this.randomValues() },
-      { address: 'Via Palmerino , 52/A', values: this.randomValues() },
-      { address: 'Via Saitta Longhi, 116G', values: this.randomValues() },
-      { address: 'Via Catania, 17', values: this.randomValues() },
-    ];
-  }
+    this.filialeService.GetSedi().subscribe({
+      next: (filialiResponse) => {
+        const filiali = filialiResponse.data ?? [];
 
-  randomValues(): number[] {
-    return Array.from({ length: 12 }, () =>
-      Math.floor(Math.random() * 9000) + 1000
-    );
+        // Mappa id filiale -> indirizzo completo
+        const filialiMap: { [id: number]: string } = {};
+        filiali.forEach(f => {
+          filialiMap[f.id_filiale] = `${f.indirizzo}, ${f.comune}`;
+        });
+
+        this.pagamentoService.GetUtiliMensili(year).subscribe({
+          next: (response) => {
+            const dati = response.data;
+            if (!dati) {
+              this.rows = [];
+              return;
+            }
+
+            // Inizializza struttura dati: per ogni filiale un array di 12 zeri
+            const grouped: { [filialeId: number]: number[] } = {};
+            filiali.forEach(f => {
+              grouped[f.id_filiale] = Array(12).fill(0);
+            });
+
+            // Per ogni pagamento: trova indice mese e assegna importo
+            dati.forEach(pagamento => {
+              const monthIndex = this.months.indexOf(pagamento.data);
+              if (monthIndex === -1) {
+                console.warn(`Mese non riconosciuto: ${pagamento.data}`);
+                return;
+              }
+
+              // Assicurati che il filiale esista nel grouped
+              if (!grouped[pagamento.filiale]) {
+                grouped[pagamento.filiale] = Array(12).fill(0);
+              }
+
+              grouped[pagamento.filiale][monthIndex] = pagamento.importo;
+            });
+
+            // Trasforma in array per la tabella
+            this.rows = Object.entries(grouped).map(([filialeIdStr, values]) => {
+              const filialeId = +filialeIdStr;
+              return {
+                address: filialiMap[filialeId] ?? `Filiale ${filialeId}`,
+                values
+              };
+            });
+          },
+          error: (err) => {
+            console.error('Errore durante il recupero dei pagamenti:', err);
+            this.rows = [];
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Errore durante il recupero delle filiali:', err);
+        this.rows = [];
+      }
+    });
   }
 
   getRowTotal(row: { values: number[] }): number {
@@ -81,14 +135,12 @@ export class VisualizzaUtiliPage implements OnInit {
   }
 
   getColumnTotal(index: number): number {
-    if (!this.rows.length) return 0;
     return this.rows.reduce((acc, row) => acc + row.values[index], 0);
   }
 
   getGrandTotal(): number {
-    if (!this.rows.length) return 0;
     return this.rows
-      .flatMap((row) => row.values)
+      .flatMap(row => row.values)
       .reduce((acc, val) => acc + val, 0);
   }
 
@@ -99,36 +151,29 @@ export class VisualizzaUtiliPage implements OnInit {
   exportExcel() {
     const dataForExcel = [];
 
-    // Header
     const headerRow = ['INDIRIZZO FILIALE', ...this.months, 'TOTALE'];
     dataForExcel.push(headerRow);
 
-    // Dati righe
-    this.rows.forEach((row) => {
+    this.rows.forEach(row => {
       const total = this.getRowTotal(row);
       dataForExcel.push([
         row.address,
-        ...row.values.map((v) => this.formatItalianNumber(v)),
+        ...row.values.map(v => this.formatItalianNumber(v)),
         this.formatItalianNumber(total),
       ]);
     });
 
-    // Totali colonne
     const totalColumns = this.months.map((_, i) => this.getColumnTotal(i));
     const grandTotal = this.getGrandTotal();
     dataForExcel.push([
       'TOTALE',
-      ...totalColumns.map((v) => this.formatItalianNumber(v)),
+      ...totalColumns.map(v => this.formatItalianNumber(v)),
       this.formatItalianNumber(grandTotal),
     ]);
 
-    // Crea foglio e file
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataForExcel);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Utili');
-
-    // Salva file
     XLSX.writeFile(wb, `utili_${this.selectedYear ?? 'anno'}.xlsx`);
-    
   }
 }

@@ -1,4 +1,5 @@
 export interface PagamentoMensile {
-    mese: string;
-    importo: number;
+	data: string;
+	importo: number;
+	filiale: number;
 }
