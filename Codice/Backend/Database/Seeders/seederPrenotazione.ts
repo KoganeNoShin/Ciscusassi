@@ -22,7 +22,7 @@ export async function generatePrenotazione(count: number): Promise<string> {
 			let numero_persone: number = faker.number.int({ min: 1, max: 8 });
 			let ref_cliente_prenotazione = faker.number.int({ min: 0, max: 2 }) > 0 ? faker.helpers.arrayElement(clienti) : null;
 			let ref_torretta = faker.helpers.arrayElement(idTorrette);
-			let data_ora_prenotazione = faker.date.past({years: 5});
+			let data_ora_prenotazione = faker.date.past({years: 3});
 			let otp = faker.string.alphanumeric({ length: 6 });
 
 			try {

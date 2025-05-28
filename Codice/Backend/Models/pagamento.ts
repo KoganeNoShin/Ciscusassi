@@ -99,7 +99,7 @@ export class Pagamento {
 						return reject(err);
 					}
 					if (!rows || rows.length === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun pagamento trovato per l'anno ${year}`);
+						console.warn(`⚠️ [DB WARNING] Nessun pagamento ordine trovato per l'anno ${year}`);
 						return resolve([]);
 					}
 					resolve(rows);
@@ -115,7 +115,9 @@ export class Pagamento {
 			const end = `${year}-12-31 23:59:59`;
 
 			db.all(
-				'SELECT p.importo AS importo, p.data_ora_pagamento as data, a.ref_filiale AS filiale FROM pagamenti p INNER JOIN asporti as a ON p.id_pagamento = a.ref_pagamento WHERE p.data_ora_pagamento BETWEEN ? AND ?',
+				`SELECT p.importo AS importo, p.data_ora_pagamento as data, a.ref_filiale AS filiale FROM pagamenti p 
+				INNER JOIN asporti as a ON p.id_pagamento = a.ref_pagamento 
+				WHERE p.data_ora_pagamento BETWEEN ? AND ?`,
 				[start, end],
 				(err: Error | null, rows: PagamentoMensile[]) => {
 					if (err) {
@@ -123,7 +125,7 @@ export class Pagamento {
 						return reject(err);
 					}
 					if (!rows || rows.length === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun pagamento trovato per l'anno ${year}`);
+						console.warn(`⚠️ [DB WARNING] Nessun pagamento asporto trovato per l'anno ${year}`);
 						return resolve([]);
 					}
 					resolve(rows);

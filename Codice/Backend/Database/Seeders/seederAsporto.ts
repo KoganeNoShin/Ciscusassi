@@ -21,41 +21,62 @@ export async function generateAsporto(count: number): Promise<string> {
 		if (!filiali || filiali.length === 0) throw new Error("Nessuna filiale trovata");
 		const idFiliali = filiali.map((f) => f.id_filiale);
 
-		for (let i = 0; i < count; i++) {
-			const indirizzo = faker.location.street() + ' ' + faker.location.secondaryAddress();
-			const data_ora_consegna = faker.date.anytime().toISOString();
-			const ref_cliente = faker.helpers.arrayElement(idClienti);
+		for(let a = 2023; a <= 2025; a++) {
+			for(let m = 0; m < 12; m++) {
+				for (let i = 0; i < count; i++) {
+					let data_ora_consegna: string;
+					if(a < 2025) {
+						data_ora_consegna = new Date(a, m, faker.number.int({ min: 1, max: 28 }),
+						faker.number.int({ min: 0, max: 23 }),
+						faker.number.int({ min: 0, max: 59 }),
+						faker.number.int({ min: 0, max: 59 })
+						).toISOString();
+					}
+					else {
+						data_ora_consegna = new Date(a, 
+						faker.number.int({ min: 1, max: 6}), 
+						faker.number.int({ min: 1, max: 28 }),
+						faker.number.int({ min: 0, max: 23 }),
+						faker.number.int({ min: 0, max: 59 }),
+						faker.number.int({ min: 0, max: 59 })
+						).toISOString();
+					}
 
-			const importo = faker.number.float({ min: 8, max: 50, fractionDigits: 2 });
-			const data_ora_pagamento = faker.date.recent().toISOString();
-			const ref_pagamento = await pagamento.create({ importo, data_ora_pagamento });
+					const indirizzo = faker.location.street() + ' ' + faker.location.secondaryAddress();
+					const ref_cliente = faker.helpers.arrayElement(idClienti);
 
-			if (!ref_pagamento) {
-				throw new Error("Errore durante la creazione del pagamento");
-			}
+					const importo = faker.number.float({ min: 8, max: 50, fractionDigits: 2 });
+					const data_ora_pagamento = data_ora_consegna;
+					const ref_pagamento = await pagamento.create({ importo, data_ora_pagamento });
 
-			const ref_filiale = faker.helpers.arrayElement(idFiliali);
+					if (!ref_pagamento) {
+						throw new Error("Errore durante la creazione del pagamento");
+					}
 
-			try {
-				const id_asporto = await asporto.create({
-					indirizzo,
-					data_ora_consegna,
-					ref_cliente,
-					ref_pagamento,
-					ref_filiale,
-				});
+					const ref_filiale = faker.helpers.arrayElement(idFiliali);
 
-				console.log(`🏍️  Abbiamo consegnato d'asporto in via ${indirizzo} ed in data ${data_ora_consegna}!`);
+					try {
+						const id_asporto = await asporto.create({
+							indirizzo,
+							data_ora_consegna,
+							ref_cliente,
+							ref_pagamento,
+							ref_filiale,
+						});
 
-				const nProdotti = faker.number.int({ min: 3, max: 8 });
-				for (let j = 0; j < nProdotti; j++) {
-					const ref_prodotto = faker.helpers.arrayElement(idProdotti);
-					await aspProd.create({ ref_asporto: id_asporto, ref_prodotto});
-					console.log(`🛍️  Prodotto ${ref_prodotto} associato all'asporto ${id_asporto}`);
-				}
-			} catch (err) {
-				console.error(`🔫 In via ${indirizzo} abita un pazzo, quindi non abbiamo consegnato d'asporto! Causa di spavento: ${err}`);
-				throw err;
+						console.log(`🏍️  Abbiamo consegnato d'asporto in via ${indirizzo} ed in data ${data_ora_consegna}!`);
+
+						const nProdotti = faker.number.int({ min: 3, max: 8 });
+						for (let j = 0; j < nProdotti; j++) {
+							const ref_prodotto = faker.helpers.arrayElement(idProdotti);
+							await aspProd.create({ ref_asporto: id_asporto, ref_prodotto});
+							console.log(`🛍️  Prodotto ${ref_prodotto} associato all'asporto ${id_asporto}`);
+						}
+					} catch (err) {
+						console.error(`🔫 In via ${indirizzo} abita un pazzo, quindi non abbiamo consegnato d'asporto! Causa di spavento: ${err}`);
+						throw err;
+					}
+				} 
 			}
 		}
 
