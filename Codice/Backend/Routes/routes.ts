@@ -53,7 +53,7 @@ router.delete('/deleteFiliale/:id',
 	FilialeController.deleteFiliale);
 
 // Route per i Pagamenti
-router.get('/pagamenti/:year', PagamentoController.getPagamentiByYear);
+//router.get('/pagamenti/:year', PagamentoController.getPagamentiByYear);
 
 // Route per gli Ordini
 router.get('/ordini', OrdineController.getAllOrdini);
