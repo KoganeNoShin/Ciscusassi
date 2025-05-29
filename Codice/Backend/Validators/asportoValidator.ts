@@ -1,7 +1,7 @@
 import { body, validationResult } from 'express-validator'
+import { Request, Response, NextFunction } from 'express';
 import Cliente from '../Models/cliente';
 import Prodotto from '../Models/prodotto';
-import { Request, Response, NextFunction } from 'express';
 import Filiale from '../Models/filiale';
 
 const addAsportoValidator = [
@@ -37,7 +37,7 @@ const addAsportoValidator = [
 
     body('importo')
         .notEmpty().withMessage('L\'importo è obbligatorio')
-        .isFloat({ min: 0.01 }).withMessage('Importo non valido, deve essere un numero intero positivo'),
+        .isFloat({ min: 0.01 }).withMessage('Importo non valido, deve essere un numero positivo'),
     
     body('data_ora_pagamento')
         .notEmpty().withMessage('La data di pagamento è obbligatoria')

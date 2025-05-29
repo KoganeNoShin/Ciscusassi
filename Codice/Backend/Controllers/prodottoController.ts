@@ -10,7 +10,11 @@ class ProdottoController {
 			const newProdotto: ProdottoInput = { nome, descrizione, costo, immagine, categoria};
 			const id = await ProdottoService.addProdotto(newProdotto);
 
-			res.status(201).json({ success: true, data: id });
+			if(id) res.status(201).json({ success: true, data: req.body });
+            else res.status(400).json({
+                    success: false,
+					message: 'Errore durante l\'aggiunta del prodotto',
+			});
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({

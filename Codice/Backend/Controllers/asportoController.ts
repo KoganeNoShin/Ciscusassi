@@ -13,7 +13,7 @@ class AsportoController {
             else res.status(400).json({
                     success: false,
 					message: 'Errore durante l\'aggiunta dell\'asporto',
-				});
+			});
         } catch (err) {
             console.error(err);
             res.status(500).json({
