@@ -7,8 +7,7 @@ class FilialeController {
 			const filiale = await FilialeService.addFiliale(req.body);
 
 			if (filiale) res.json({ success: true, data: filiale });
-			else
-				res.status(400).json({
+			else res.status(400).json({ 
 					success: false,
 					message: 'Errore durante l\'aggiunta della filiale',
 				});

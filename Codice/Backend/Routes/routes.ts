@@ -6,15 +6,20 @@ import AuthValidator from '../Validators/authValidator';
 import ProdottoController from '../Controllers/prodottoController';
 import FilialeController from '../Controllers/filialeController';
 import ImpiegatoController from '../Controllers/impiegatoController';
-import OrdineController from '../Controllers/ordineController';
-import OrdineProdottoController from '../Controllers/ord_prodController';
 import authMiddleware from '../Middleware/authMiddleware';
 import roleMiddleware from '../Middleware/roleMiddleware';
 import AuthController from '../Controllers/authController';
 import AsportoController from '../Controllers/asportoController';
 import PagamentoController from '../Controllers/pagamentoController';
+import asportoValidator from '../Validators/asportoValidator';
 
 const router = express.Router();
+
+// Route per Asporto
+router.post('/addAsporto',
+	asportoValidator.addAsportoValidator,
+	asportoValidator.validate, 
+	AsportoController.addAsporto);
 
 // Route per i Prodotti
 router.get('/piattoDelGiorno', ProdottoController.getProdottoDelGiorno);
@@ -54,25 +59,6 @@ router.delete('/deleteFiliale/:id',
 
 // Route per i Pagamenti
 router.get('/pagamenti/:year', PagamentoController.getPagamentiByYear);
-
-// Route per gli Ordini
-router.get('/ordini', OrdineController.getAllOrdini);
-router.get('/ordine/:id', OrdineController.getOrdineById);
-router.post('/addOrdine', OrdineController.addOrdine);
-router.put('/updateOrdine/:id', OrdineController.updateOrdine);
-router.delete('/deleteOrdine/:id', OrdineController.deleteOrdine);
-
-// Route per gli Ordini e Prodotti
-router.get('/ordiniProdotti', OrdineProdottoController.getAllOrdini);
-router.get('/ordiniProdotti/:id', OrdineProdottoController.getById);
-router.get('/ordiniProdotti/ref_ordine/:ref_ordine', OrdineProdottoController.getByRefOrdine);
-router.post('/addOrdineProdotto', OrdineProdottoController.addOrdineProdotto);
-router.put('/deleteOrdineProdotto/:id', OrdineProdottoController.deleteOrdineProdotto);
-router.put('/romana/:id', OrdineProdottoController.cambiaRomana);
-router.put('/cambiaStato/:id', OrdineProdottoController.cambioStato);
-
-// Route per Asporto
-router.post('/addAsporto', AsportoController.addAsporto);
 
 // Route per i Impiegati
 router.post('/addImpiegato',

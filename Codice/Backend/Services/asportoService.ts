@@ -1,37 +1,40 @@
+import AspProd, { AspProdInput } from "../Models/asp_prod";
 import Asporto, { AsportoInput } from "../Models/asporto";
 import Cliente from "../Models/cliente";
-import Pagamento from "../Models/pagamento";
+import Pagamento, { PagamentoInput } from "../Models/pagamento";
+
+export interface AsportoData {
+    indirizzo: string,
+    data_ora_consegna: string,
+    ref_cliente: number,
+    ref_filiale: number,
+    importo: number,
+    data_ora_pagamento: string,
+    prodotti: number[]
+}
 
 class AsportoService {
-    private static async validate(input: AsportoInput): Promise<void> {
-        if (!input.indirizzo || input.indirizzo.trim() === '') {
-            throw new Error('L\'indirizzo non può essere vuoto.');
+    static async addAsporto(data: AsportoData): Promise<number> {
+        const pagamentoData = {importo: data.importo, data_ora_pagamento: data.data_ora_pagamento} as PagamentoInput;
+        const id_pagamento = await Pagamento.create(pagamentoData);
+        if(!id_pagamento) {
+            throw new Error("Creazione del pagamento fallita.");
         }
 
-        const timestamp = Date.parse(input.data_ora_consegna);
-        if (isNaN(timestamp)) {
-            throw new Error('La data di consegna non è valida.');
-        }
-        const dataConsegna = new Date(timestamp);
-        const adesso = new Date();
-        if (dataConsegna.getTime() < adesso.getTime()) {
-            throw new Error('La data di consegna deve essere nel futuro.');
+        const asportoData = {indirizzo: data.indirizzo, data_ora_consegna: data.data_ora_consegna, ref_cliente: data.ref_cliente, ref_pagamento: id_pagamento, ref_filiale: data.ref_filiale} as AsportoInput;
+        const id_asporto = await Asporto.create(asportoData);
+        if(!id_asporto) {
+            throw new Error("Creazione dell'asporto fallia.")
         }
 
-        const cliente = await Cliente.findByNumeroCarta(input.ref_cliente);
-        if(!cliente) {
-            throw new Error(`Cliente con ID ${input.ref_cliente} non esiste.`);
+        for(const p of data.prodotti) {
+            const asp_prod = {ref_asporto: id_asporto, ref_prodotto: p} as AspProdInput;
+            const id_AspProd = await AspProd.create(asp_prod);
+            if(!id_AspProd) {
+                throw new Error(`Aggiunta del prodotto ${p} fallita.`)
+            }
         }
-
-        const pagamento = await Pagamento.getByID(input.ref_pagamento);
-        if(!pagamento) {
-            throw new Error(`Pagamento con ID ${input.ref_pagamento} non esiste.`);
-        }
-    }
-
-    static async addAsporto(data: AsportoInput): Promise<number> {
-        await this.validate(data);
-        return await Asporto.create(data);
+        return id_asporto;
     }
 }
 
