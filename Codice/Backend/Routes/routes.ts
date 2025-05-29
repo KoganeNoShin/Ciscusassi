@@ -13,6 +13,7 @@ import AsportoController from '../Controllers/asportoController';
 import PagamentoController from '../Controllers/pagamentoController';
 import asportoValidator from '../Validators/asportoValidator';
 import prodottoValidator from '../Validators/prodottoValidator';
+import filialeValidator from '../Validators/filialeValidator';
 
 const router = express.Router();
 
@@ -25,11 +26,15 @@ router.post('/addAsporto',
 
 // Route per le Filiali
 router.get('/filiali', FilialeController.getAllFiliali);
-router.post('/addFiliale', 
+router.post('/addFiliale',
+	filialeValidator.validate,
+	filialeValidator.addFilialeValidator, 
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	FilialeController.addFiliale);
 router.put('/updateFiliale/:id',
+	filialeValidator.validate,
+	filialeValidator.addFilialeValidator, 
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	FilialeController.updateFiliale);
