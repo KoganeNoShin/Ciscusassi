@@ -1,10 +1,11 @@
 export interface AsportoInput {
-	indirizzo: string;
-	data_ora_consegna: string;
-	ref_cliente: number;
-	importo: number;
-	data_ora_pagamento: string;
-	prodotti: number[];
+	indirizzo: string,
+    data_ora_consegna: string,
+    ref_cliente: number,
+    ref_filiale: number,
+    importo: number,
+    data_ora_pagamento: string,
+    prodotti: number[]
 }
 
 export interface AsportoRecord extends AsportoInput {
