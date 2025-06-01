@@ -18,75 +18,111 @@ import filialeValidator from '../Validators/filialeValidator';
 const router = express.Router();
 
 // Route per Asporto
-router.post('/addAsporto',
+router.post(
+	'/addAsporto',
 	asportoValidator.addAsportoValidator,
 	asportoValidator.validate,
 	authMiddleware,
-	AsportoController.addAsporto);
+	AsportoController.addAsporto
+);
 
 // Route per le Filiali
 router.get('/filiali', FilialeController.getAllFiliali);
-router.post('/addFiliale',
+
+router.post(
+	'/addFiliale',
 	filialeValidator.validate,
-	filialeValidator.addFilialeValidator, 
+	filialeValidator.addFilialeValidator,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	FilialeController.addFiliale);
-router.put('/updateFiliale/:id',
+	FilialeController.addFiliale
+);
+
+router.put(
+	'/updateFiliale/:id',
 	filialeValidator.validate,
-	filialeValidator.addFilialeValidator, 
+	filialeValidator.addFilialeValidator,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	FilialeController.updateFiliale);
-router.delete('/deleteFiliale/:id',
+	FilialeController.updateFiliale
+);
+
+router.delete(
+	'/deleteFiliale/:id',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	FilialeController.deleteFiliale);
+	FilialeController.deleteFiliale
+);
 
 // Route per i Impiegati
-router.post('/addImpiegato',
+router.post(
+	'/addImpiegato',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	ImpiegatoController.addImpiegato);
-router.put('/updateImpiegato/:matricola',
+	ImpiegatoController.addImpiegato
+);
+
+router.put(
+	'/updateImpiegato/:matricola',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	ImpiegatoController.updateImpiegato);
-router.delete('/deleteImpiegato/:matricola',
+	ImpiegatoController.updateImpiegato
+);
+
+router.delete(
+	'/deleteImpiegato/:matricola',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	ImpiegatoController.deleteImpiegato);
-router.get('/impiegati/:id',
+	ImpiegatoController.deleteImpiegato
+);
+
+router.get(
+	'/impiegati/:id',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	ImpiegatoController.getAllImpiegati);
+	ImpiegatoController.getAllImpiegati
+);
 
 // Route per i Pagamenti
-router.get('/pagamenti/:year', 
+router.get(
+	'/pagamenti/:year',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	PagamentoController.getPagamentiByYear);
+	PagamentoController.getPagamentiByYear
+);
 
 // Route per i Prodotti
 router.get('/piattoDelGiorno', ProdottoController.getProdottoDelGiorno);
+
 router.get('/prodotti', ProdottoController.getAllProdotti);
-router.post('/addProdotto',
+
+router.post(
+	'/addProdotto',
 	prodottoValidator.addProdottoValidator,
 	prodottoValidator.validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	ProdottoController.addProdotto);
-router.put('/updateProdotto/:id',
+	ProdottoController.addProdotto
+);
+
+router.put(
+	'/updateProdotto/:id',
 	prodottoValidator.addProdottoValidator,
 	prodottoValidator.validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	ProdottoController.updateProdotto);
-router.delete('/deleteProdotto/:id',
+	ProdottoController.updateProdotto
+);
+
+router.delete(
+	'/deleteProdotto/:id',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	ProdottoController.deleteProdotto);
-router.put('/chargePiattoDelGiorno/:id',
+	ProdottoController.deleteProdotto
+);
+
+router.put(
+	'/chargePiattoDelGiorno/:id',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	ProdottoController.chargePiattoDelGiorno
