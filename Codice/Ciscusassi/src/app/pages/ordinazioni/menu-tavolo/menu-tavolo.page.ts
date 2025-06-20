@@ -23,7 +23,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 	styleUrls: ['./menu-tavolo.page.scss'],
 	standalone: true,
 	imports: [
-    RouterModule,
+		RouterModule,
 		IonButton,
 		IonContent,
 		CommonModule,
@@ -62,9 +62,9 @@ export class MenuTavoloPage implements OnInit {
 			});
 			await toast.present();
 		} else {
-      //INSERISCI CHIAMATA AL DB
-      this.servizioCarrello.svuotaCarrello();
-      this.totale = 0;
+			//INSERISCI CHIAMATA AL DB
+			this.servizioCarrello.svuotaCarrello();
+			this.totale = 0;
 			const toast = await this.toastController.create({
 				message:
 					'Ordine inviato con successo, usa il pulsante "VISUALIZZA ORDINI" per visualizzare lo stato dei tuoi ordini',
@@ -73,10 +73,29 @@ export class MenuTavoloPage implements OnInit {
 				color: 'success',
 			});
 			await toast.present();
-      
 		}
 	}
 
+	async visualizzaOrdini() {
+		// Controlla se ci sono prodotti nel db ordinati ------------------
+		this.prodottiNelCarrello = this.servizioCarrello.getProdotti();
+		this.totale = parseFloat(
+			this.prodottiNelCarrello
+				.reduce((acc, prodotto) => acc + prodotto.costo, 0)
+				.toFixed(2)
+		);
+		if (this.totale == 0) {
+			const toast = await this.toastController.create({
+				message: 'Non hai ancora effettuato ordini',
+				duration: 3000,
+				position: 'bottom',
+				color: 'warning',
+			});
+			await toast.present();
+		} else {
+			this.router.navigate(['/visualizza-ordini']);
+		}
+	}
 	ngOnInit() {
 		this.nomeUtente = this.servizioAutenticazione.getUsername();
 	}
