@@ -26,6 +26,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { AsportoService } from 'src/app/core/services/asporto.service';
 import { AsportoInput } from 'src/app/core/interfaces/Asporto';
 import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.service';
+import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 
 @Component({
 	selector: 'app-pagamento-asporto',
@@ -49,6 +50,7 @@ import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.ser
 })
 export class PagamentoAsportoPage implements OnInit {
 	prodottiNelCarrello: ProdottoRecord[] = [];
+	filialePiuVicino: FilialeRecord | null = null;
 	totale: number = 0;
 
 	nuovoAsporto: AsportoInput = {
@@ -58,6 +60,7 @@ export class PagamentoAsportoPage implements OnInit {
 		importo: 0,
 		data_ora_pagamento: '',
 		prodotti: [],
+		ref_filiale: 1,
 	};
 
 	indirizzo: string = '';
@@ -73,7 +76,11 @@ export class PagamentoAsportoPage implements OnInit {
 
 	ngOnInit() {
 		this.prodottiNelCarrello = this.servizioCarrello.getProdotti();
-		this.totale = parseFloat(this.prodottiNelCarrello.reduce((acc, prodotto) => acc + prodotto.costo, 0).toFixed(2));
+		this.totale = parseFloat(
+			this.prodottiNelCarrello
+				.reduce((acc, prodotto) => acc + prodotto.costo, 0)
+				.toFixed(2)
+		);
 		this.indirizzo = this.filialeAsportoService.indirizzoUtente ?? '';
 		this.tempo = this.filialeAsportoService.travelTimeMinutes ?? 0;
 
@@ -104,6 +111,10 @@ export class PagamentoAsportoPage implements OnInit {
 			(prodotto) => prodotto.id_prodotto
 		);
 		this.nuovoAsporto.importo = this.totale;
+		const closestFiliale = this.filialeAsportoService.closestFiliale;
+		this.nuovoAsporto.ref_filiale = closestFiliale
+			? closestFiliale.id_filiale
+			: 0;
 
 		this.servizioAsporto.addProdotto(this.nuovoAsporto).subscribe({
 			next: () => {
