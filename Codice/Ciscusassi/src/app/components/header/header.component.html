@@ -16,7 +16,7 @@
 		<ion-buttons slot="start">
 			<ion-button [routerLink]="['/menu']"> MENU </ion-button>
 			<ion-button [routerLink]="['/ristoranti']"> RISTORANTI </ion-button>
-			<ion-button [routerLink]="['/ordina-ora']"> ORDINA ORA </ion-button>
+			<ion-button (click)="svuotaCarrello()" [routerLink]="['/ordina-ora']"> ORDINA ORA </ion-button>
 			<ion-button [routerLink]="['/prenota']"> PRENOTA </ion-button>
 		</ion-buttons>
 		<ion-buttons slot="end">

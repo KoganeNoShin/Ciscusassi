@@ -210,7 +210,19 @@ export const routes: Routes = [
 			import(
 				'./pages/cameriere/visualizza-tavoli/visualizza-tavoli.page'
 			).then((m) => m.VisualizzaTavoliPage),
-	},
+	},  {
+    path: 'pagamento-tavolo',
+    loadComponent: () => import('./pages/ordinazioni/pagamento-tavolo/pagamento-tavolo.page').then( m => m.PagamentoTavoloPage)
+  },
+  {
+    path: 'pagamento-carta',
+    loadComponent: () => import('./pages/ordinazioni/pagamento-carta/pagamento-carta.page').then( m => m.PagamentoCartaPage)
+  },
+  {
+    path: 'pagamento-cassa',
+    loadComponent: () => import('./pages/ordinazioni/pagamento-cassa/pagamento-cassa.page').then( m => m.PagamentoCassaPage)
+  },
+
 ];
 
 export const AppRoutingModule = provideRouter(routes);

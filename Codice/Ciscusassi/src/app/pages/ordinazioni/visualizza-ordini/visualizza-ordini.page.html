@@ -34,6 +34,6 @@
 
 	<div class="button-group">
 		<ion-button [routerLink]="['/menu-tavolo']" style="--background: var(--ion-color-verdechiaro);" >CONTINUA A ORDINARE</ion-button>
-		<ion-button style="--background: var(--ion-color-rosso);">TERMINA SERVIZIO</ion-button>
+		<ion-button (click)="terminaServizio()" style="--background: var(--ion-color-rosso);">TERMINA SERVIZIO</ion-button>
 	</div>
 </ion-content>

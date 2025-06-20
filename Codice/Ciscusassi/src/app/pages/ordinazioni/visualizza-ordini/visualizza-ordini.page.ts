@@ -10,7 +10,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 
 @Component({
@@ -19,7 +19,7 @@ import { RouterModule } from '@angular/router';
 	styleUrls: ['./visualizza-ordini.page.scss'],
 	standalone: true,
 	imports: [
-    RouterModule,
+		RouterModule,
 		IonButton,
 		IonContent,
 		CommonModule,
@@ -29,11 +29,17 @@ import { RouterModule } from '@angular/router';
 export class VisualizzaOrdiniPage implements OnInit {
 	prodotti: ProdottoRecord[] = [];
 
-	constructor(private servizioCarrello: CarrelloService) {
+	constructor(private servizioCarrello: CarrelloService, private router: Router) {
 		servizioCarrello.prodotti$.subscribe((prodotti) => {
 			this.prodotti = prodotti;
 		});
 	}
   
+	terminaServizio(){
+		//implemetare la logica per controllare se tutti i prodotti sono stati consegnati
+		//altrimenti mostrare un messaggio di errore tramite toast
+		this.router.navigate(['/home']);
+	}
+
 	ngOnInit() {}
 }

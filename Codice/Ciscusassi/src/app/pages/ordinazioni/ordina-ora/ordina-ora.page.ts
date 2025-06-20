@@ -9,7 +9,6 @@ import {
 	IonCol,
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
-import { HeroComponent } from 'src/app/components/hero/hero.component';
 
 @Component({
 	selector: 'app-ordina-ora',

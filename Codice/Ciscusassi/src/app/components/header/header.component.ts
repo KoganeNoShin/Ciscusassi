@@ -10,7 +10,7 @@ import {
 
 import { addIcons } from 'ionicons';
 import { personCircle } from 'ionicons/icons';
-
+import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
@@ -34,12 +34,20 @@ export class HeaderComponent implements OnInit {
 	role: string = '';
 	avatar: string = '';
 
-	constructor(private authService: AuthenticationService) {
+	constructor(
+		private authService: AuthenticationService,
+		private servizioCarrello: CarrelloService
+	) {
 		addIcons({ personCircle });
 	}
 
 	changeLanguage() {
 		this.isItalian = !this.isItalian;
+	}
+
+	svuotaCarrello() {
+		console.log('svuoto il carrello');
+		this.servizioCarrello.svuotaCarrello();
 	}
 
 	ngOnInit() {

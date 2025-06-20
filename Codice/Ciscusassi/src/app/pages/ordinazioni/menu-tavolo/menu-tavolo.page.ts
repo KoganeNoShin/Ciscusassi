@@ -77,7 +77,7 @@ export class MenuTavoloPage implements OnInit {
 	}
 
 	async visualizzaOrdini() {
-		// Controlla se ci sono prodotti nel db ordinati ------------------
+		// Controlla se ci sono prodotti nel db ordinati NON GUARDARE IL CARRELLO------------------
 		this.prodottiNelCarrello = this.servizioCarrello.getProdotti();
 		this.totale = parseFloat(
 			this.prodottiNelCarrello
