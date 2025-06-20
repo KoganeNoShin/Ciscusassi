@@ -137,16 +137,16 @@ export const routes: Routes = [
 	{
 		path: 'menu-tavolo',
 		loadComponent: () =>
-			import(
-				'./pages/ordinazioni/menu-tavolo/menu-tavolo.page'
-			).then((m) => m.MenuTavoloPage),
+			import('./pages/ordinazioni/menu-tavolo/menu-tavolo.page').then(
+				(m) => m.MenuTavoloPage
+			),
 	},
 	{
 		path: 'menu-asporto',
 		loadComponent: () =>
-			import(
-				'./pages/ordinazioni/menu-asporto/menu-asporto.page'
-			).then((m) => m.MenuAsportoPage),
+			import('./pages/ordinazioni/menu-asporto/menu-asporto.page').then(
+				(m) => m.MenuAsportoPage
+			),
 	},
 	{
 		path: 'pagamento-asporto',
@@ -196,11 +196,21 @@ export const routes: Routes = [
 			import('./pages/account/cambia-email/cambia-email.page').then(
 				(m) => m.CambiaEmailPage
 			),
-	},  {
-    path: 'visualizza-ordini',
-    loadComponent: () => import('./pages/ordinazioni/visualizza-ordini/visualizza-ordini.page').then( m => m.VisualizzaOrdiniPage)
-  },
-
+	},
+	{
+		path: 'visualizza-ordini',
+		loadComponent: () =>
+			import(
+				'./pages/ordinazioni/visualizza-ordini/visualizza-ordini.page'
+			).then((m) => m.VisualizzaOrdiniPage),
+	},
+	{
+		path: 'visualizza-tavoli',
+		loadComponent: () =>
+			import(
+				'./pages/cameriere/visualizza-tavoli/visualizza-tavoli.page'
+			).then((m) => m.VisualizzaTavoliPage),
+	},
 ];
 
 export const AppRoutingModule = provideRouter(routes);

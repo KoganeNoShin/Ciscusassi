@@ -1,0 +1,66 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>VISUALIZZA TAVOLI</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="custom-content">
+
+  <h1 class="titolo-pagina">VISUALIZZA TAVOLI</h1>
+
+  <!-- Descrizione della legenda -->
+  <ion-card class="descrizione-legenda">
+    <ion-card-content>
+      <ion-text color="dark">
+        <p>
+          <strong>Legenda:</strong><br />
+          🔴 <strong>Rosso</strong>: Non in lavorazione<br />
+          🟡 <strong>Giallo</strong>: In lavorazione<br />
+          🔵 <strong>Blu chiaro</strong>: In consegna<br />
+          🟢 <strong>Verde</strong>: Consegnato<br />
+          ⚪ <strong>Bianco</strong>: Senza ordini
+        </p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Legenda grafica -->
+  <ion-grid class="legend">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="auto" *ngFor="let voce of legenda">
+        <div class="legend-item">
+          <div class="dot" [ngClass]="voce.stato"></div>
+          <span>{{ voce.label }}</span>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Tavoli -->
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="6" size-md="4" *ngFor="let tavolo of tavoli">
+        <div class="tavolo-wrapper">
+          <div class="circle" [ngClass]="tavolo.stato">
+            {{ tavolo.numero }}
+          </div>
+          <div class="table-info" *ngIf="tavolo.nome">
+            <div class="nome">{{ tavolo.nome }}</div>
+            <div class="orario">{{ tavolo.orario }}</div>
+            <div class="persone">{{ tavolo.persone }} persone</div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Pulsante + -->
+      <ion-col size="6" size-md="4">
+        <div class="tavolo-wrapper add">
+          <div class="circle add-btn" (click)="add()">
+            +
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
