@@ -38,7 +38,7 @@ export class VisualizzaOrdiniPage implements OnInit {
 	terminaServizio(){
 		//implemetare la logica per controllare se tutti i prodotti sono stati consegnati
 		//altrimenti mostrare un messaggio di errore tramite toast
-		this.router.navigate(['/home']);
+		this.router.navigate(['/pagamento-tavolo']);
 	}
 
 	ngOnInit() {}

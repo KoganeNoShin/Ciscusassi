@@ -1,13 +1,30 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>pagamento-carta</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content fullscreen color="light" class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-align-items-center ion-justify-content-center">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">pagamento-carta</ion-title>
-    </ion-toolbar>
-  </ion-header>
+      <!-- Colonna sinistra: form -->
+      <ion-col size="12" size-md="6" class="form-col">
+        <ion-card class="address-card">
+          <h1>PAGAMENTO EFFETTUATO</h1>
+
+          <ion-card-content>
+            <p>
+              Grazie per averci scelto!
+            </p>
+
+
+            <!-- Bottone finale -->
+            <ion-button  fill="solid" shape="round">SCARICA RICEVUTA
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <!-- Colonna destra: immagine -->
+      <ion-col size="12" size-md="6" class="image-col">
+        <ion-img src="/assets/illustrations/PagamentoCarta.png"></ion-img>
+      </ion-col>
+
+      
+    </ion-row>
+  </ion-grid>
 </ion-content>

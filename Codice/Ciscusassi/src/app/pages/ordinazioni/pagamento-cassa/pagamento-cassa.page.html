@@ -1,13 +1,33 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>pagamento-cassa</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content fullscreen color="light" class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-align-items-center ion-justify-content-center">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">pagamento-cassa</ion-title>
-    </ion-toolbar>
-  </ion-header>
+      <!-- Colonna sinistra: form -->
+      <ion-col size="12" size-md="6" class="form-col">
+        <ion-card class="address-card">
+          <h1>PAGAMENTO ALLA CASSA</h1>
+
+          
+            <p>
+              Dovrai pagare
+            </p>
+            <h1>{{totale}}€</h1>
+             <p>
+             Numero Tavolo
+            </p>
+            <h1>{{numeroTavolo}}€</h1>
+
+            <ion-img class="codiceBarre" [src]="'https://bwipjs-api.metafloor.com/?bcid=code128&text=' + codice"></ion-img>
+
+          
+        </ion-card>
+      </ion-col>
+      <!-- Colonna destra: immagine -->
+      <ion-col size="12" size-md="6" class="image-col">
+        <ion-img class="illustrazione" src="/assets/illustrations/PagamentoCarta.png"></ion-img>
+      </ion-col>
+
+      
+    </ion-row>
+  </ion-grid>
 </ion-content>
