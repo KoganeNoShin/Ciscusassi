@@ -50,22 +50,10 @@ ion-content.custom-content {
       color: #222;
     }
 
-    .in-consegna {
-      background-color: #397888;
-    }
-
-    .consegnato {
-      background-color: #388e3c;
-    }
-
-    .attesa {
-      background-color: #b23430;
-    }
-
-    .preparazione {
-      background-color: #ff8c1a;
-    }
-
+    .in-consegna { background-color: #397888; }
+    .consegnato { background-color: #388e3c; }
+    .attesa { background-color: #b23430; }
+    .preparazione { background-color: #ff8c1a; }
     .senza-ordini {
       background-color: #ffffff;
       border: 1px solid #aaa;
@@ -92,21 +80,10 @@ ion-content.custom-content {
     color: white;
   }
 
-  .in-consegna {
-    background-color: #397888;
-  }
-
-  .consegnato {
-    background-color: #388e3c;
-  }
-
-  .attesa {
-    background-color: #b23430;
-  }
-
-  .preparazione {
-    background-color: #ff8c1a;
-  }
+  .in-consegna { background-color: #397888; }
+  .consegnato { background-color: #388e3c; }
+  .attesa { background-color: #b23430; }
+  .preparazione { background-color: #ff8c1a; }
 
   .senza-ordini {
     background-color: #ffffff;
@@ -132,6 +109,16 @@ ion-content.custom-content {
   }
 }
 
+/* Effetto click visivo */
+.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+.clickable:hover .circle {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 /* Pulsante aggiunta tavolo */
 .add .circle {
   border: 2px dashed #000;
@@ -141,12 +128,11 @@ ion-content.custom-content {
   font-size: 36px;
   transition: background-color 0.2s ease-in-out;
 }
-
 .add .circle:hover {
   background-color: #eee;
 }
 
-/* POPUP MODAL */
+/* MODAL POPUP */
 .popup-container {
   padding: 24px;
   background-color: #fff;
@@ -180,8 +166,8 @@ ion-content.custom-content {
       font-size: 18px;
       cursor: pointer;
       transition: background-color 0.2s ease-in-out;
-      color: #222; /* testo sempre visibile */
-      background-color: transparent; /* default */
+      color: #222;
+      background-color: transparent;
     }
 
     .cerchio.selected {
@@ -190,9 +176,8 @@ ion-content.custom-content {
       border-color: #388e3c;
     }
 
-    /* Evidenzia cerchio corrispondente al valore input manuale */
     .cerchio.match-input:not(.selected) {
-      background-color: #a3d2a1; /* verde chiaro */
+      background-color: #a3d2a1;
       color: #222;
       border-color: #6caf61;
     }

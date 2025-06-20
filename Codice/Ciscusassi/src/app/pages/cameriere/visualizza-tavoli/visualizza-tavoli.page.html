@@ -19,7 +19,9 @@
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <ion-col size="6" size-md="4" *ngFor="let tavolo of tavoli">
-        <div class="tavolo-wrapper">
+        <div class="tavolo-wrapper"
+             [class.clickable]="isCliccabile(tavolo)"
+             (click)="handleClick(tavolo)">
           <div class="circle" [ngClass]="tavolo.stato">{{ tavolo.numero }}</div>
           <div *ngIf="tavolo.stato === 'senza-ordini'" class="table-info white-info">
             <div class="nome">{{ tavolo.nome }}</div>

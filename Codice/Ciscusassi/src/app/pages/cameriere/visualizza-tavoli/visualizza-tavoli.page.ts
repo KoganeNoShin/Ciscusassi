@@ -10,7 +10,8 @@ import {
   IonRow,
   IonCol,
   IonButton,
-  IonModal
+  IonModal,
+  ToastController
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -50,14 +51,11 @@ export class VisualizzaTavoliPage implements OnInit {
   ];
 
   showPopup = false;
-
   personePossibili = [1, 2, 3, 4, 5, 6, 7];
-
   personeSelezionate: number | null = null;
-
   inputManuale: number | null = null;
 
-  constructor() {}
+  constructor(private toastController: ToastController) {}
 
   ngOnInit(): void {}
 
@@ -65,25 +63,20 @@ export class VisualizzaTavoliPage implements OnInit {
     this.showPopup = true;
   }
 
-  // Quando clicchi un cerchio:
   selezionaPersone(n: number) {
     this.personeSelezionate = n;
-    this.inputManuale = n;  // sincronizza input con selezione cerchio
+    this.inputManuale = n;
   }
 
-  // Quando l'utente scrive nell'input:
   onInputChange() {
     if (this.inputManuale !== null && this.personePossibili.includes(this.inputManuale)) {
-      // Evidenzia il cerchio corrispondente ma non selezionato tramite click
       this.personeSelezionate = null;
     } else {
-      // Se valore non presente, nessun cerchio evidenziato
       this.personeSelezionate = null;
     }
   }
 
   conferma() {
-    // Usa il valore dell'input, se valido
     const persone = this.inputManuale;
 
     if (!persone || persone < 1) {
@@ -101,6 +94,7 @@ export class VisualizzaTavoliPage implements OnInit {
     };
 
     this.tavoli.push(nuovoTavolo);
+    this.presentToast(`Aggiunto Tavolo #${nuovoNumero} con ${persone} persone`);
     this.showPopup = false;
     this.resetPopup();
   }
@@ -118,5 +112,35 @@ export class VisualizzaTavoliPage implements OnInit {
   generaIdUnivoco(): number {
     const idsEsistenti = this.tavoli.map(t => t.numero);
     return Math.max(...idsEsistenti, 0) + 1;
+  }
+
+  /**
+   * Verifica se un tavolo è cliccabile in base al suo stato.
+   */
+  isCliccabile(tavolo: any): boolean {
+    return tavolo.stato !== 'senza-ordini';
+  }
+
+  /**
+   * Gestisce il click su un tavolo, solo se è cliccabile.
+   */
+  handleClick(tavolo: any) {
+    if (this.isCliccabile(tavolo)) {
+      console.log('Hai cliccato sul tavolo:', tavolo);
+      // Qui puoi aprire una pagina di dettaglio, mostrare un popup, ecc.
+    }
+  }
+
+  /**
+   * Mostra un messaggio toast.
+   */
+  async presentToast(messaggio: string) {
+    const toast = await this.toastController.create({
+      message: messaggio,
+      duration: 2000,
+      position: 'bottom',
+      color: 'success'
+    });
+    toast.present();
   }
 }
