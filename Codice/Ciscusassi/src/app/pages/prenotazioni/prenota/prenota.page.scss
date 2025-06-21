@@ -1,0 +1,142 @@
+.map-div {
+	background-color: var(--ion-color-senape);
+	padding: 2rem 1rem;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.barra-ricerca {
+	background-color: var(--ion-color-bianco);
+	border-radius: 12px;
+	height: 6vh;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+	margin-bottom: 1rem;
+	color: #000;
+}
+
+img {
+	width: 100%;
+	border-radius: 12px;
+	position: relative;
+	left: -10%;
+	top: 0;
+}
+
+.map-div h1 {
+	font-family: 'LucidaCalligraphy', cursive;
+	font-size: 2.5rem;
+	color: white;
+	text-align: left;
+	margin-bottom: 0.5rem;
+}
+
+.map-div p {
+	font-size: 1.2rem;
+	color: white;
+	text-align: left;
+	margin-bottom: 1.5rem;
+}
+
+/* Griglia centrale */
+ion-grid {
+	width: 100%;
+	max-width: 1200px;
+}
+
+/* Colonna lista filiali */
+.filiali-list {
+	min-height: 50vh;
+	max-height: 50vh;
+	overflow-y: auto;
+}
+
+.filiali-list::-webkit-scrollbar {
+	display: none;
+}
+
+ion-row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+
+/* Bottone/box singola filiale collassabile */
+.filiale {
+	display: flex;
+	flex-direction: column;
+	--background: var(--ion-color-verdechiaro);
+	border-radius: 12px; /* Uguale all'immagine */
+	padding: 0.3rem 0.75rem; /* Spaziatura bilanciata e compatta */
+	color: white;
+	font-family: 'Segoe UI', sans-serif;
+	transition: all 0.3s ease;
+	font-size: 0.75rem; /* Più piccolo */
+	line-height: 1.2;
+}
+
+.filiale-header,
+h2 {
+	margin: 0;
+	font-family: 'LucidaCalligraphy', cursive;
+	color: #fff;
+	text-align: left;
+	justify-content: left;
+	font-size: 0.95rem;
+}
+
+.filiale-header ion-icon {
+	font-size: 1.1rem; /* Più piccolo per armonia */
+	transition: transform 0.3s ease;
+}
+
+/* Contenuto collassabile */
+.filiale-content {
+	max-height: 0;
+	overflow: hidden;
+	padding: 0 16px;
+	transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+.filiale-content p {
+	margin: 4px 0;
+	color: #fff;
+	font-size: 0.75rem;
+}
+
+ion-input {
+	--background: white;
+	border-radius: 12px;
+	padding-left: 1rem;
+	font-size: 1rem;
+	height: 44px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+ion-item.search-input {
+	--background: transparent;
+	padding: 0;
+	margin-bottom: 12px;
+	box-shadow: none;
+}
+
+.map-card {
+	height: 58.5vh;
+	border-radius: 12px;
+	background-color: var(--ion-color-bianco);
+	overflow: hidden;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.map-card-content {
+	height: 70vh;
+}
+
+h2,
+p {
+	color: var(--ion-color-bianco);
+	margin: 0.5em 0;
+}
+
