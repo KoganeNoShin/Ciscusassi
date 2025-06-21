@@ -2,180 +2,172 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
-	IonGrid,
-	IonRow,
-	IonCol,
-	IonButton,
-	IonModal,
-	ToastController,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonButton,
+  IonModal,
+  ToastController,
 } from '@ionic/angular/standalone';
 
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
+
 @Component({
-	selector: 'app-visualizza-tavoli',
-	templateUrl: './visualizza-tavoli-cameriere.page.html',
-	styleUrls: ['./visualizza-tavoli-cameriere.page.scss'],
-	standalone: true,
-	imports: [
-		IonContent,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
-		IonGrid,
-		IonRow,
-		IonCol,
-		IonButton,
-		IonModal,
-		CommonModule,
-		FormsModule,
-	],
+  selector: 'app-visualizza-tavoli',
+  templateUrl: './visualizza-tavoli-cameriere.page.html',
+  styleUrls: ['./visualizza-tavoli-cameriere.page.scss'],
+  standalone: true,
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonButton,
+    IonModal,
+    CommonModule,
+    FormsModule,
+  ],
 })
 export class VisualizzaTavoliCamerierePage implements OnInit {
-	tavoli = [
-		{
-			numero: 1,
-			nome: 'Susino',
-			orario: '20-22',
-			persone: 4,
-			stato: 'in-consegna',
-		},
-		{
-			numero: 2,
-			nome: 'Gaetaní',
-			orario: '19-21',
-			persone: 8,
-			stato: 'consegnato',
-		},
-		{
-			numero: 3,
-			nome: 'Luna',
-			orario: '19-20',
-			persone: 6,
-			stato: 'attesa',
-		},
-		{
-			numero: 4,
-			nome: 'Bianco1',
-			orario: '22-23',
-			persone: 3,
-			stato: 'senza-ordini',
-		},
-		{
-			numero: 5,
-			nome: 'Bianco2',
-			orario: '20-21',
-			persone: 2,
-			stato: 'senza-ordini',
-		},
-	];
+  tavoli: Array<{
+    numero: number;
+    nome: string;
+    orario: string;
+    persone: number;
+    stato: string;
+  }> = [];
 
-	legenda = [
-		{ stato: 'in-consegna', label: 'IN CONSEGNA' },
-		{ stato: 'consegnato', label: 'CONSEGNATO' },
-		{ stato: 'attesa', label: 'NON IN LAVORAZIONE' },
-		{ stato: 'preparazione', label: 'IN LAVORAZIONE' },
-		{ stato: 'senza-ordini', label: 'SENZA ORDINI' },
-	];
+  legenda = [
+    { stato: 'in-consegna', label: 'IN CONSEGNA' },
+    { stato: 'consegnato', label: 'CONSEGNATO' },
+    { stato: 'attesa', label: 'NON IN LAVORAZIONE' },
+    { stato: 'preparazione', label: 'IN LAVORAZIONE' },
+    { stato: 'senza-ordini', label: 'SENZA ORDINI' },
+  ];
 
-	showPopup = false;
-	personePossibili = [1, 2, 3, 4, 5, 6, 7];
-	personeSelezionate: number | null = null;
-	inputManuale: number | null = null;
+  showPopup = false;
+  personePossibili = [1, 2, 3, 4, 5, 6, 7];
+  personeSelezionate: number | null = null;
+  inputManuale: number | null = null;
 
-	constructor(private toastController: ToastController) {}
+  constructor(
+    private toastController: ToastController,
+    private authService: AuthenticationService,
+    private prenotazioneService: PrenotazioneService
+  ) {}
 
-	ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadTavoli();
+  }
 
-	add() {
-		this.showPopup = true;
-	}
+  async loadTavoli() {
+    const filiale = this.authService.getFiliale();
+    console.log('Filiale corrente:', filiale);
 
-	selezionaPersone(n: number) {
-		this.personeSelezionate = n;
-		this.inputManuale = n;
-	}
+    this.prenotazioneService.getPrenotazioniDelGiorno().subscribe({
+      next: (response) => {
+        console.log('Response API:', response);
 
-	onInputChange() {
-		if (
-			this.inputManuale !== null &&
-			this.personePossibili.includes(this.inputManuale)
-		) {
-			this.personeSelezionate = null;
-		} else {
-			this.personeSelezionate = null;
-		}
-	}
+        if (response.success && response.data?.length) {
+          // Rimuovo il filtro su ref_torretta perché non è correlato alla filiale
+          const prenotazioniFiltrate = response.data;
 
-	conferma() {
-		const persone = this.inputManuale;
+          this.tavoli = prenotazioniFiltrate.map((p) => ({
+            numero: p.id_prenotazione,
+            nome: `Tavolo ${p.id_prenotazione}`,
+            orario: this.formattaOrario(p.data_ora_prenotazione),
+            persone: p.numero_persone,
+            stato: 'attesa', // Puoi aggiungere logica personalizzata qui
+          }));
 
-		if (!persone || persone < 1) {
-			alert('Inserisci un numero valido di persone');
-			return;
-		}
+          console.log('Tavoli caricati:', this.tavoli);
+        } else {
+          console.error('Errore caricamento prenotazioni:', response.message);
+          this.tavoli = [];
+        }
+      },
+      error: (err) => {
+        console.error('Errore API prenotazioni:', err);
+        this.tavoli = [];
+      },
+    });
+  }
 
-		const nuovoNumero = this.generaIdUnivoco();
-		const nuovoTavolo = {
-			numero: nuovoNumero,
-			nome: `Tavolo ${nuovoNumero}`,
-			orario: '--:--',
-			persone,
-			stato: 'senza-ordini',
-		};
+  formattaOrario(dataOra: string): string {
+    const data = new Date(dataOra);
+    const ora = data.getHours().toString().padStart(2, '0');
+    const minuti = data.getMinutes().toString().padStart(2, '0');
+    return `${ora}:${minuti}`;
+  }
 
-		this.tavoli.push(nuovoTavolo);
-		this.presentToast(
-			`Aggiunto Tavolo #${nuovoNumero} con ${persone} persone`
-		);
-		this.showPopup = false;
-		this.resetPopup();
-	}
+  add() {
+    this.showPopup = true;
+  }
 
-	annulla() {
-		this.showPopup = false;
-		this.resetPopup();
-	}
+  selezionaPersone(n: number) {
+    this.personeSelezionate = n;
+    this.inputManuale = n;
+  }
 
-	resetPopup() {
-		this.personeSelezionate = null;
-		this.inputManuale = null;
-	}
+  onInputChange() {
+    if (
+      this.inputManuale !== null &&
+      this.personePossibili.includes(this.inputManuale)
+    ) {
+      this.personeSelezionate = null;
+    } else {
+      this.personeSelezionate = null;
+    }
+  }
 
-	generaIdUnivoco(): number {
-		const idsEsistenti = this.tavoli.map((t) => t.numero);
-		return Math.max(...idsEsistenti, 0) + 1;
-	}
+  conferma() {
+    const persone = this.inputManuale;
 
-	/**
-	 * Verifica se un tavolo è cliccabile in base al suo stato.
-	 */
-	isCliccabile(tavolo: any): boolean {
-		return tavolo.stato !== 'senza-ordini';
-	}
+    if (!persone || persone < 1) {
+      alert('Inserisci un numero valido di persone');
+      return;
+    }
 
-	/**
-	 * Gestisce il click su un tavolo, solo se è cliccabile.
-	 */
-	handleClick(tavolo: any) {
-		if (this.isCliccabile(tavolo)) {
-			console.log('Hai cliccato sul tavolo:', tavolo);
-			// Qui puoi aprire una pagina di dettaglio, mostrare un popup, ecc.
-		}
-	}
+    this.presentToast(`Aggiunto Tavolo con ${persone} persone`);
+    this.showPopup = false;
+    this.resetPopup();
+  }
 
-	/**
-	 * Mostra un messaggio toast.
-	 */
-	async presentToast(messaggio: string) {
-		const toast = await this.toastController.create({
-			message: messaggio,
-			duration: 2000,
-			position: 'bottom',
-			color: 'success',
-		});
-		toast.present();
-	}
+  annulla() {
+    this.showPopup = false;
+    this.resetPopup();
+  }
+
+  resetPopup() {
+    this.personeSelezionate = null;
+    this.inputManuale = null;
+  }
+
+  isCliccabile(tavolo: any): boolean {
+    return tavolo.stato !== 'senza-ordini';
+  }
+
+  handleClick(tavolo: any) {
+    if (this.isCliccabile(tavolo)) {
+      console.log('Hai cliccato sul tavolo:', tavolo);
+    }
+  }
+
+  async presentToast(messaggio: string) {
+    const toast = await this.toastController.create({
+      message: messaggio,
+      duration: 2000,
+      position: 'bottom',
+      color: 'success',
+    });
+    toast.present();
+  }
 }
