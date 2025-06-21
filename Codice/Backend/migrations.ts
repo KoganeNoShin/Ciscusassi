@@ -56,8 +56,8 @@ async function seedDB() {
 	await generateFiliale();
 	await generateUtentiFissi();
 	await generateProdotto();
-	await generateAsporto(200);
-	await generatePrenotazione(90);
+	await generateAsporto(10);
+	await generatePrenotazione(10);
 }
 
 async function run() {

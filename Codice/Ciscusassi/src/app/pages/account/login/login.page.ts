@@ -69,13 +69,15 @@ export class LoginPage implements OnInit {
 		console.log(response);
 
 		if (response.success && response.data) {
-			const { token, ruolo, username, avatar } = response.data;
+			const { token, ruolo, username, avatar, id_filiale } =
+				response.data;
 
 			Promise.all([
 				this.authenticationService.setToken(token),
 				this.authenticationService.setRole(ruolo),
 				this.authenticationService.setUsername(username),
 				this.authenticationService.setAvatar(avatar),
+				this.authenticationService.setFiliale(id_filiale),
 			])
 				.then(() => this.navigation.navigateRoot('/home'))
 				.catch((err) => {

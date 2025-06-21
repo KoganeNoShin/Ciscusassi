@@ -207,11 +207,12 @@ export const routes: Routes = [
 			).then((m) => m.VisualizzaOrdiniPage),
 	},
 	{
-		path: 'visualizza-tavoli',
+		path: 'visualizza-tavoli-cameriere',
 		loadComponent: () =>
 			import(
-				'./pages/cameriere/visualizza-tavoli/visualizza-tavoli.page'
-			).then((m) => m.VisualizzaTavoliPage),
+				'./pages/cameriere/visualizza-tavoli-cameriere/visualizza-tavoli-cameriere.page'
+			).then((m) => m.VisualizzaTavoliCamerierePage),
+		canActivate: [authGuard(['cameriere'])],
 	},
 	{
 		path: 'pagamento-tavolo',
@@ -254,6 +255,7 @@ export const routes: Routes = [
 			import(
 				'./pages/chef/visualizza-tavoli-chef/visualizza-tavoli-chef.page'
 			).then((m) => m.VisualizzaTavoliChefPage),
+		canActivate: [authGuard(['chef'])],
 	},
 ];
 

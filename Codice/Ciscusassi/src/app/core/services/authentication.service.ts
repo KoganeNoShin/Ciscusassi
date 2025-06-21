@@ -29,6 +29,9 @@ export class AuthenticationService {
 	private avatarSubject = new BehaviorSubject<string>('');
 	avatar$ = this.avatarSubject.asObservable();
 
+	private filialeSubject = new BehaviorSubject<number>(-1);
+	filiale$ = this.filialeSubject.asObservable();
+
 	constructor(
 		private http: HttpClient,
 		private storage: Storage
@@ -61,6 +64,7 @@ export class AuthenticationService {
 			this.loadUsername(),
 			this.loadRole(),
 			this.loadAvatar(),
+			this.loadFiliale(),
 		]);
 	}
 
@@ -77,6 +81,7 @@ export class AuthenticationService {
 				this.clearRole(),
 				this.clearUsername(),
 				this.clearAvatar(),
+				this.clearFiliale(),
 			]);
 		} catch (err) {
 			console.error('Errore durante il logout:', err);
@@ -110,6 +115,12 @@ export class AuthenticationService {
 		console.log(avatar);
 	}
 
+	async loadFiliale(): Promise<void> {
+		const filiale = await this.storage.get('auth-filiale');
+		this.filialeSubject.next(filiale ?? -1);
+		console.log(filiale);
+	}
+
 	// ----- SETTERS ------
 
 	async setToken(token: string): Promise<void> {
@@ -132,6 +143,13 @@ export class AuthenticationService {
 		this.avatarSubject.next(avatar);
 	}
 
+	async setFiliale(filiale: number | undefined): Promise<void> {
+		if (filiale != undefined) {
+			await this.storage.set('auth-filiale', filiale);
+			this.filialeSubject.next(filiale);
+		}
+	}
+
 	// ----- GETTERS ------
 
 	getToken(): string {
@@ -148,6 +166,10 @@ export class AuthenticationService {
 
 	getAvatar(): string {
 		return this.avatarSubject.getValue();
+	}
+
+	getFiliale(): number {
+		return this.filialeSubject.getValue();
 	}
 
 	// ----- CLEARERS ------
@@ -170,5 +192,10 @@ export class AuthenticationService {
 	async clearAvatar(): Promise<void> {
 		await this.storage.remove('auth-avatar');
 		this.avatarSubject.next('');
+	}
+
+	async clearFiliale(): Promise<void> {
+		await this.storage.remove('auth-filiale');
+		this.filialeSubject.next(-1);
 	}
 }

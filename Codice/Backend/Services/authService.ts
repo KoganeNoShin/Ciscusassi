@@ -72,6 +72,7 @@ class AuthService {
 					| 'amministratore',
 				username: `${impiegato.nome} ${impiegato.cognome}`,
 				avatar: impiegato.foto,
+				id_filiale: impiegato.ref_filiale,
 			};
 
 			return loginRecord;

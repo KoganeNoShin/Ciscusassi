@@ -3,6 +3,8 @@ import cliente from '../../Models/cliente';
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
 
+const password = 'QuestaPasswordEMoltoSicura!';
+
 async function getBase64(imageUrl: string): Promise<string> {
 	try {
 		// Scarica l'immagine
@@ -36,7 +38,6 @@ async function generateCliente(count: number): Promise<string> {
 				lastName: cognome,
 			});
 			let data_nascita = faker.date.birthdate().toISOString();
-			let password = 'QuestaPasswordEMoltoSicura!';
 			let punti = faker.number.int({ min: 0, max: 1000000 });
 			let imageBase64 = await getBase64(
 				faker.image.personPortrait({ sex: sex, size: 512 })
