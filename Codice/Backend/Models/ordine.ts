@@ -26,7 +26,7 @@ export class Ordine {
 
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO ordini (username_ordinante, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?)',
+				'INSERT INTO ordini (username_ordinante, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?)',
 				[
 					username_ordinante,
 					ref_prenotazione,
