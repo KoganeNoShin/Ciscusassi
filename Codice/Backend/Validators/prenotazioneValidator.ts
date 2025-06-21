@@ -45,7 +45,7 @@ const prenotazioneInputLocoValidator = [
 
   body('otp')
     .optional({ nullable: true })
-    .isLength({ min: 4, max: 6 }).withMessage('L\'OTP deve essere una stringa di 4-6 caratteri'),
+    .isLength({ min: 6, max: 6 }).withMessage('L\'OTP deve essere una stringa di 4-6 caratteri'),
 
   body('ref_torretta')
   .optional({ nullable: true })

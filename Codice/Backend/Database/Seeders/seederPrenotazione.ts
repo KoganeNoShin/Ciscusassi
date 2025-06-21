@@ -30,13 +30,22 @@ export async function generatePrenotazione(count: number): Promise<string> {
 			let otp = faker.string.alphanumeric({ length: 6 });
 
 			try {
-				id_prenotazione = await prenotazione.create({
-					numero_persone: numero_persone,
-					ref_cliente: ref_cliente_prenotazione?.numero_carta,
-					ref_torretta: ref_torretta,
-					data_ora_prenotazione: data_ora_prenotazione.toISOString(),
-					otp: otp,
-				});
+				if (ref_cliente_prenotazione === null) {
+					id_prenotazione = await prenotazione.createLocale({
+						numero_persone,
+						ref_cliente: null,
+						ref_torretta,
+						otp,
+						data_ora_prenotazione: data_ora_prenotazione.toISOString(),
+					});
+				} else {
+					id_prenotazione = await prenotazione.create({
+						numero_persone,
+						ref_cliente: ref_cliente_prenotazione.numero_carta,
+						data_ora_prenotazione: data_ora_prenotazione.toISOString(),
+					});
+				}
+
 				console.log(
 					`📆  Aggiunta la prenotazione di ${numero_persone} persone giorno ${data_ora_prenotazione}. Gli è stata assegnata la torretta ${ref_torretta} ed è stata ${ref_cliente_prenotazione == null ? 'creata in loco.' : `creata online dall'utente ${ref_cliente_prenotazione.nome}.`}`
 				);
