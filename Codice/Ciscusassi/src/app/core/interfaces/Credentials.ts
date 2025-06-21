@@ -1,5 +1,5 @@
 export interface Credentials {
-	emailOMatricola: string;
+	email: string;
 	password: string;
 }
 
@@ -8,4 +8,5 @@ export interface LoginRecord {
 	ruolo: 'cliente' | 'chef' | 'cameriere' | 'amministratore';
 	username: string;
 	avatar: string;
+	id_filiale?: number;
 }

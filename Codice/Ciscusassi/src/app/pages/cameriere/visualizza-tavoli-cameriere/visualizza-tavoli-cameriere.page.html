@@ -1,0 +1,90 @@
+<ion-header [translucent]="true">
+	<ion-toolbar>
+		<ion-title>VISUALIZZA TAVOLI</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="custom-content">
+	<h1 class="titolo-pagina">VISUALIZZA TAVOLI</h1>
+
+	<!-- Legenda -->
+	<div class="legend-styled">
+		<div class="legend-item" *ngFor="let voce of legenda">
+			<div class="dot" [ngClass]="voce.stato"></div>
+			<span class="label">{{ voce.label }}</span>
+		</div>
+	</div>
+
+	<!-- Tavoli -->
+	<ion-grid>
+		<ion-row class="ion-justify-content-center">
+			<ion-col size="6" size-md="4" *ngFor="let tavolo of tavoli">
+				<div
+					class="tavolo-wrapper"
+					[class.clickable]="isCliccabile(tavolo)"
+					(click)="handleClick(tavolo)"
+				>
+					<div class="circle" [ngClass]="tavolo.stato">
+						{{ tavolo.numero }}
+					</div>
+					<div
+						*ngIf="tavolo.stato === 'senza-ordini'"
+						class="table-info white-info"
+					>
+						<div class="nome">{{ tavolo.nome }}</div>
+						<div class="orario">{{ tavolo.orario }}</div>
+						<div class="persone">{{ tavolo.persone }} persone</div>
+					</div>
+				</div>
+			</ion-col>
+
+			<!-- Bottone aggiungi tavolo -->
+			<ion-col size="6" size-md="4">
+				<div class="tavolo-wrapper add">
+					<div class="circle add-btn" (click)="add()">+</div>
+				</div>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+	<!-- MODAL / POPUP -->
+	<ion-modal
+		[isOpen]="showPopup"
+		(didDismiss)="resetPopup()"
+		[backdropDismiss]="false"
+	>
+		<ng-template>
+			<div class="popup-container">
+				<h2>QUANTE PERSONE SI DEVONO SEDERE?</h2>
+
+				<div class="scelte">
+					<div
+						*ngFor="let n of personePossibili"
+						(click)="selezionaPersone(n)"
+						[class.selected]="n === personeSelezionate"
+						[class.match-input]="inputManuale === n"
+						class="cerchio"
+					>
+						{{ n }}
+					</div>
+				</div>
+
+				<div class="popup-footer">
+					<input
+						type="number"
+						placeholder="Inserisci in quanti sarete..."
+						[(ngModel)]="inputManuale"
+						(input)="onInputChange()"
+						min="1"
+					/>
+					<ion-button color="success" expand="block" (click)="conferma()"
+						>CONFERMA</ion-button
+					>
+					<ion-button color="danger" expand="block" (click)="annulla()"
+						>ESCI</ion-button
+					>
+				</div>
+			</div>
+		</ng-template>
+	</ion-modal>
+</ion-content>
