@@ -57,7 +57,11 @@ export class PrenotaPage implements OnInit {
 	searchFiliale: string = '';
 	filialiFiltrate: any[] = [];
 
-	constructor(private filialeService: FilialeService, private router:Router, private prenotazioneService: PrenotazioneService) {}
+	constructor(
+		private filialeService: FilialeService,
+		private router: Router,
+		private prenotazioneService: PrenotazioneService
+	) {}
 
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
 		console.log(response);
@@ -93,7 +97,7 @@ export class PrenotaPage implements OnInit {
 		);
 	}
 
-	salvaFiliale(id_filiale: number){
+	salvaFiliale(id_filiale: number) {
 		this.prenotazioneService.setFilialeId(id_filiale);
 		console.log('Hai scelto la filiale', id_filiale);
 		this.router.navigate(['/numero-persone']);
