@@ -19,8 +19,7 @@ export async function generatePrenotazione(count: number): Promise<string> {
 
 		for (let i = 0; i < count; i++) {
 			let id_prenotazione: number;
-
-			let numero_persone: number = faker.number.int({ min: 1, max: 8 });
+			let numero_persone = faker.number.int({ min: 1, max: 8 });
 			let ref_cliente_prenotazione =
 				faker.number.int({ min: 0, max: 2 }) > 0
 					? faker.helpers.arrayElement(clienti)
@@ -30,29 +29,27 @@ export async function generatePrenotazione(count: number): Promise<string> {
 			let otp = faker.string.alphanumeric({ length: 6 });
 
 			try {
-				if (ref_cliente_prenotazione === null) {
-					id_prenotazione = await prenotazione.createLocale({
-						numero_persone,
-						ref_cliente: null,
-						ref_torretta,
-						otp,
-						data_ora_prenotazione: data_ora_prenotazione.toISOString(),
-					});
-				} else {
+				if (ref_cliente_prenotazione) {
 					id_prenotazione = await prenotazione.create({
 						numero_persone,
-						ref_cliente: ref_cliente_prenotazione.numero_carta,
 						data_ora_prenotazione: data_ora_prenotazione.toISOString(),
+						ref_cliente: ref_cliente_prenotazione.numero_carta,
+					});
+				} else {
+					id_prenotazione = await prenotazione.createLocale({
+						numero_persone,
+						data_ora_prenotazione: data_ora_prenotazione.toISOString(),
+						ref_cliente: null,
+						otp,
+						ref_torretta,
 					});
 				}
 
 				console.log(
-					`📆  Aggiunta la prenotazione di ${numero_persone} persone giorno ${data_ora_prenotazione}. Gli è stata assegnata la torretta ${ref_torretta} ed è stata ${ref_cliente_prenotazione == null ? 'creata in loco.' : `creata online dall'utente ${ref_cliente_prenotazione.nome}.`}`
+					`📆  Prenotazione di ${numero_persone} persone per il ${data_ora_prenotazione.toISOString()} con torretta ${ref_torretta} ${ref_cliente_prenotazione ? `online da ${ref_cliente_prenotazione.nome}` : 'in loco'}`
 				);
 			} catch (err) {
-				console.log(
-					`❌ Impossibile aggiungere la prenotazione in giorno ${data_ora_prenotazione}. Motivo: ${err}`
-				);
+				console.error(`❌ Errore inserimento prenotazione: ${err}`);
 				throw err;
 			}
 
@@ -64,17 +61,16 @@ export async function generatePrenotazione(count: number): Promise<string> {
 				clienti
 			);
 		}
+
 		return '📆 Prenotazioni generate con successo';
 	} catch (err) {
-		console.error(
-			`❌ Errore durante la generazione delle prenotazioni: ${err}`
-		);
+		console.error(`❌ Errore globale: ${err}`);
 		throw err;
 	}
 }
 
 async function generateOrdini(
-	ref_cliente_prenotazione: ClienteRecord | null,
+	ref_cliente: ClienteRecord | null,
 	id_prenotazione: number,
 	data_ora_prenotazione: Date,
 	numero_persone: number,
@@ -82,114 +78,40 @@ async function generateOrdini(
 ): Promise<void> {
 	let id_ordine: number;
 
-	if (ref_cliente_prenotazione == null) {
-		for (
-			let j = 0;
-			j < faker.number.int({ min: 1, max: numero_persone });
-			j++
-		) {
-			let nome = faker.person.firstName();
-			let cognome = faker.person.lastName();
+	const creaOrdine = async (
+		username: string,
+		ref_cliente_val: number | null
+	) => {
+		id_ordine = await ordine.create({
+			username_ordinante: username,
+			ref_prenotazione: id_prenotazione,
+			ref_pagamento: null,
+			ref_cliente: ref_cliente_val,
+		});
+		await ordine.addPagamento(
+			await generateOrdProd(id_ordine, data_ora_prenotazione),
+			id_ordine
+		);
+		console.log(`🛎️  Ordine creato per ${username} (prenotazione ${id_prenotazione})`);
+	};
 
-			try {
-				id_ordine = await ordine.create({
-					data_ora_ordinazione: data_ora_prenotazione.toISOString(),
-					username_ordinante: `${nome}.${cognome}`,
-					ref_prenotazione: id_prenotazione,
-					ref_pagamento: null,
-					ref_cliente: null,
-				});
-				console.log(
-					`🛎️  Inserito un ordine per conto di ${nome} ${cognome}, in prenotazione ${id_prenotazione}!`
-				);
-				await ordine.addPagamento(
-					await generateOrdProd(id_ordine, data_ora_prenotazione),
-					id_ordine
-				);
-			} catch (err) {
-				console.error(
-					`❌ Errore durante l'inserimento dell'ordine per ${nome} ${cognome}: ${err}`
-				);
-				throw err;
-			}
+	if (ref_cliente == null) {
+		for (let j = 0; j < faker.number.int({ min: 1, max: numero_persone }); j++) {
+			const nome = faker.person.firstName();
+			const cognome = faker.person.lastName();
+			await creaOrdine(`${nome}.${cognome}`, null);
 		}
 	} else {
-		try {
-			id_ordine = await ordine.create({
-				data_ora_ordinazione: data_ora_prenotazione.toISOString(),
-				username_ordinante: `${ref_cliente_prenotazione.nome}.${ref_cliente_prenotazione.cognome}`,
-				ref_prenotazione: id_prenotazione,
-				ref_pagamento: null,
-				ref_cliente: ref_cliente_prenotazione.numero_carta,
-			});
-			await ordine.addPagamento(
-				await generateOrdProd(id_ordine, data_ora_prenotazione),
-				id_ordine
-			);
-			console.log(
-				`🛎️  Inserito un ordine per conto di ${ref_cliente_prenotazione.nome} ${ref_cliente_prenotazione.cognome}, in prenotazione ${id_prenotazione}!`
-			);
-		} catch (err) {
-			console.error(
-				`❌ Errore durante l'inserimento dell'ordine per ${ref_cliente_prenotazione.nome} ${ref_cliente_prenotazione.cognome}: ${err}`
-			);
-			throw err;
-		}
+		await creaOrdine(`${ref_cliente.nome}.${ref_cliente.cognome}`, ref_cliente.numero_carta);
 
-		for (
-			let j = 1;
-			j < faker.number.int({ min: 1, max: numero_persone });
-			j++
-		) {
-			if (faker.number.int({ min: 0, max: 2 }) == 0) {
-				let nome = faker.person.firstName();
-				let cognome = faker.person.lastName();
-				try {
-					id_ordine = await ordine.create({
-						data_ora_ordinazione:
-							data_ora_prenotazione.toISOString(),
-						username_ordinante: `${nome}.${cognome}`,
-						ref_prenotazione: id_prenotazione,
-						ref_pagamento: null,
-						ref_cliente: null,
-					});
-					await ordine.addPagamento(
-						await generateOrdProd(id_ordine, data_ora_prenotazione),
-						id_ordine
-					);
-					console.log(
-						`🛎️  Inserito un ordine per conto di ${nome} ${cognome}, in prenotazione ${id_prenotazione}!`
-					);
-				} catch (err) {
-					console.error(
-						`❌ Errore durante l'inserimento dell'ordine per ${nome} ${cognome}: ${err}`
-					);
-					throw err;
-				}
+		for (let j = 1; j < faker.number.int({ min: 1, max: numero_persone }); j++) {
+			if (faker.number.int({ min: 0, max: 2 }) === 0) {
+				const nome = faker.person.firstName();
+				const cognome = faker.person.lastName();
+				await creaOrdine(`${nome}.${cognome}`, null);
 			} else {
-				let ref_cliente = faker.helpers.arrayElement(clienti);
-				try {
-					id_ordine = await ordine.create({
-						data_ora_ordinazione:
-							data_ora_prenotazione.toISOString(),
-						username_ordinante: `${ref_cliente.nome}.${ref_cliente.cognome}`,
-						ref_prenotazione: id_prenotazione,
-						ref_pagamento: null,
-						ref_cliente: ref_cliente.numero_carta,
-					});
-					await ordine.addPagamento(
-						await generateOrdProd(id_ordine, data_ora_prenotazione),
-						id_ordine
-					);
-					console.log(
-						`🛎️  Inserito un ordine per conto di ${ref_cliente.nome} ${ref_cliente.cognome}, in prenotazione ${id_prenotazione}!`
-					);
-				} catch (err) {
-					console.error(
-						`❌ Errore durante l'inserimento dell'ordine per ${ref_cliente.nome} ${ref_cliente.cognome}: ${err}`
-					);
-					throw err;
-				}
+				const altroCliente = faker.helpers.arrayElement(clienti);
+				await creaOrdine(`${altroCliente.nome}.${altroCliente.cognome}`, altroCliente.numero_carta);
 			}
 		}
 	}
@@ -197,58 +119,45 @@ async function generateOrdini(
 
 async function generateOrdProd(
 	id_ordine: number,
-	data_ora_ordinazione: Date
+	data_ora_base: Date
 ): Promise<number> {
-	let id_pagamento: number;
-	let prodotti = await prodotto.getAll();
-	if (!prodotti || prodotti.length === 0)
-		throw new Error('Nessun prodotto trovato');
+	const prodotti = await prodotto.getAll();
+	if (!prodotti || prodotti.length === 0) throw new Error('Nessun prodotto trovato');
 
-	let numProdotti = faker.number.int({ min: 3, max: 8 });
+	const numProdotti = faker.number.int({ min: 3, max: 8 });
+	let importo = 0;
+	let data_ora = new Date(data_ora_base);
 
-	let importo: number = 0;
+	for (let i = 0; i < numProdotti; i++) {
+		const prod = faker.helpers.arrayElement(prodotti);
+		importo += prod.costo;
 
-	for (let j = 0; j < numProdotti; j++) {
-		let prodotto = faker.helpers.arrayElement(prodotti);
-		let is_romana = false;
-		let stato = 'CONSEGNATO';
-		importo += prodotto.costo;
-		data_ora_ordinazione = new Date(
-			data_ora_ordinazione.getTime() + 60 * 60 * 1000
-		);
+		data_ora = new Date(data_ora.getTime() + 60 * 60 * 1000); // +1 ora per ogni prodotto
 
 		try {
 			await ord_prod.create({
 				ref_ordine: id_ordine,
-				ref_prodotto: prodotto.id_prodotto,
-				is_romana: is_romana,
-				stato: stato,
+				ref_prodotto: prod.id_prodotto,
+				is_romana: false,
+				stato: 'CONSEGNATO',
 			});
-			console.log(
-				`🧾 Prodotto ${prodotto.nome} aggiunto all'ordine ${id_ordine}`
-			);
+			console.log(`🧾 Prodotto ${prod.nome} aggiunto all’ordine ${id_ordine}`);
 		} catch (err) {
-			console.error(
-				`❌ Errore nell'aggiunta di prodotto ${prodotto.nome} a ordine ${id_ordine}:`,
-				err
-			);
+			console.error(`❌ Errore su prodotto ${prod.nome}:`, err);
 			throw err;
 		}
 	}
 
 	try {
-		id_pagamento = await pagamento.create({
-			importo: importo,
-			data_ora_pagamento: data_ora_ordinazione.toISOString(),
+		const id_pagamento = await pagamento.create({
+			importo,
+			data_ora_pagamento: data_ora.toISOString(),
 		});
+		return id_pagamento;
 	} catch (err) {
-		console.error(
-			`❌ Errore durante l'inserimento del pagamento per l'ordine ${id_ordine}: ${err}`
-		);
+		console.error(`❌ Errore creazione pagamento ordine ${id_ordine}:`, err);
 		throw err;
 	}
-
-	return id_pagamento;
 }
 
 export default generatePrenotazione;

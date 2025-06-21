@@ -154,6 +154,29 @@ export class Prenotazione {
 			);
 		});
 	}
+
+	// Recupera prenotazioni del giorno
+	static async getPrenotazioniDelGiorno(): Promise<PrenotazioneRecord[]> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				`SELECT p.*
+				FROM prenotazioni p
+				JOIN ordini o ON p.id_prenotazione = o.ref_prenotazione
+				WHERE o.ref_pagamento IS NOT NULL
+				AND DATE(p.data_ora_prenotazione) = DATE('now')`,
+				[],
+				(err: Error | null, rows: PrenotazioneRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT del giorno:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovato del giorno');
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
 }
 
 

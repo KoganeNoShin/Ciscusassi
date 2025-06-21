@@ -63,6 +63,15 @@ class PrenotazioneService {
             throw error;
         }
     }
+
+    static async getPrenotazioniByData(): Promise<PrenotazioneRecord[] | null> {
+        try {
+            return await Prenotazione.getPrenotazioniDelGiorno();
+        } catch (error) {
+            console.error('❌ [PrenotazioneService] Errore durante il recupero delle prenotazioni per data:', error);
+            throw error;
+        }
+    }
 }
 
 export default PrenotazioneService;

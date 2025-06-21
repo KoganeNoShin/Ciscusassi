@@ -5,7 +5,6 @@ import { RunResult } from 'sqlite3';
 // Definiamo il modello di un Ordine
 export interface OrdineInput {
 	username_ordinante: string;
-	data_ora_ordinazione: string;
 	ref_prenotazione: number;
 	ref_cliente: number | null;
 	ref_pagamento: number | null;
@@ -20,7 +19,6 @@ export class Ordine {
 	static async create(data: OrdineInput): Promise<number> {
 		const {
 			username_ordinante,
-			data_ora_ordinazione,
 			ref_prenotazione,
 			ref_cliente,
 			ref_pagamento,
@@ -28,10 +26,9 @@ export class Ordine {
 
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO ordini (username_ordinante, data_ora_ordinazione, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?)',
+				'INSERT INTO ordini (username_ordinante, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?)',
 				[
 					username_ordinante,
-					data_ora_ordinazione,
 					ref_prenotazione,
 					ref_cliente,
 					ref_pagamento,
@@ -91,7 +88,6 @@ export class Ordine {
 				'INSERT INTO ordini username_ordinante, data_ora_ordinazione, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?)',
 				[
 					id.username_ordinante,
-					id.data_ora_ordinazione,
 					id.ref_prenotazione,
 					id.ref_cliente,
 					id.ref_pagamento,
@@ -111,7 +107,6 @@ export class Ordine {
 				'UPDATE ordini SET username_ordinante = ?, data_ora_ordinazione = ?, ref_prenotazione = ?, ref_cliente = ?, ref_pagamento = ? WHERE id_ordine = ?',
 				[
 					data.username_ordinante,
-					data.data_ora_ordinazione,
 					data.ref_prenotazione,
 					data.ref_cliente,
 					data.ref_pagamento,

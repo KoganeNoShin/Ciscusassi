@@ -126,6 +126,25 @@ class PrenotazioneController {
             });
         }
     }
+
+    static async getPrenotazioniByData(req: Request, res: Response): Promise<void> {
+        try {
+            const prenotazioni = await PrenotazioneService.getPrenotazioniByData();
+
+            if (prenotazioni) res.json({ success: true, data: prenotazioni });
+            else res.status(404).json({
+                success: false,
+                message: 'Nessuna prenotazione trovata per la data di oggi',
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                success: false,
+                message: 'Errore interno del server',
+                error: (err instanceof Error ? err.message : String(err))
+            });
+        }
+    }
 }
 
 export default PrenotazioneController;
