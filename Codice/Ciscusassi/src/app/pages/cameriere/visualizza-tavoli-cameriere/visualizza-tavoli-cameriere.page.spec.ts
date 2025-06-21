@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { VisualizzaTavoliPage } from './visualizza-tavoli-cameriere.page';
+import { VisualizzaTavoliCamerierePage } from './visualizza-tavoli-cameriere.page';
 
 describe('VisualizzaTavoliPage', () => {
-	let component: VisualizzaTavoliPage;
-	let fixture: ComponentFixture<VisualizzaTavoliPage>;
+	let component: VisualizzaTavoliCamerierePage;
+	let fixture: ComponentFixture<VisualizzaTavoliCamerierePage>;
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(VisualizzaTavoliPage);
+		fixture = TestBed.createComponent(VisualizzaTavoliCamerierePage);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
