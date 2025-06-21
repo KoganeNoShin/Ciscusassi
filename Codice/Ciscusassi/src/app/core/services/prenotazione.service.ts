@@ -3,7 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
-import { PrenotazioneInput, PrenotazioneInputLoco, PrenotazioneRecord } from '../interfaces/Prenotazione';
+import {
+  PrenotazioneInput,
+  PrenotazioneInputLoco,
+  PrenotazioneRecord
+} from '../interfaces/Prenotazione';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +15,15 @@ import { PrenotazioneInput, PrenotazioneInputLoco, PrenotazioneRecord } from '..
 export class PrenotazioneService {
   private apiURL = environment.apiURL;
 
+  // Dati locali temporanei
+  private filialeId: number = 0;
+  private numeroPosti: number = 0;
+  private dataPrenotazione: string = '';
+  private oraPrenotazione: string = '';
+
   constructor(private http: HttpClient) {}
+
+  // --------- Metodi HTTP ---------
 
   getAllPrenotazioni(): Observable<ApiResponse<PrenotazioneRecord[]>> {
     return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni`);
@@ -47,5 +59,39 @@ export class PrenotazioneService {
 
   eliminaPrenotazione(id: number): Observable<ApiResponse<any>> {
     return this.http.delete<ApiResponse<any>>(`${this.apiURL}/eliminaPrenotazione/${id}`);
+  }
+
+  // --------- Get/Set locali ---------
+
+  setFilialeId(id: number): void {
+    this.filialeId = id;
+  }
+
+  setNumeroPosti(numero: number): void {
+    this.numeroPosti = numero;
+  }
+
+  setDataPrenotazione(data: string): void {
+    this.dataPrenotazione = data;
+  }
+
+  setOraPrenotazione(ora: string): void {
+    this.oraPrenotazione = ora;
+  }
+
+  getFilialeId(): number {
+    return this.filialeId;
+  }
+
+  getNumeroPosti(): number {
+    return this.numeroPosti;
+  }
+
+  getDataPrenotazione(): string {
+    return this.dataPrenotazione;
+  }
+
+  getOraPrenotazione(): string {
+    return this.oraPrenotazione;
   }
 }
