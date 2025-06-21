@@ -13,6 +13,8 @@ import {
 	IonList,
 	IonAvatar,
 	IonLabel,
+	IonButton,
+	IonCard,
 } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 import { LeafletMapComponent } from 'src/app/components/leaflet-map/leaflet-map.component';
@@ -27,6 +29,8 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 	styleUrls: ['./prenota.page.scss'],
 	standalone: true,
 	imports: [
+		IonCard,
+		IonButton,
 		IonAvatar,
 		IonList,
 		IonLabel,
@@ -44,6 +48,7 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 		FormsModule,
 		HeroComponent,
 		LeafletMapComponent,
+		IonButton,
 	],
 })
 export class PrenotaPage implements OnInit {

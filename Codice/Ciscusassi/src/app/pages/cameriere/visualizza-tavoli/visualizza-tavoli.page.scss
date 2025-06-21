@@ -50,10 +50,22 @@ ion-content.custom-content {
       color: #222;
     }
 
-    .in-consegna { background-color: #397888; }
-    .consegnato { background-color: #388e3c; }
-    .attesa { background-color: #b23430; }
-    .preparazione { background-color: #ff8c1a; }
+    .in-consegna {
+      background-color: #397888;
+    }
+
+    .consegnato {
+      background-color: #388e3c;
+    }
+
+    .attesa {
+      background-color: #b23430;
+    }
+
+    .preparazione {
+      background-color: #ff8c1a;
+    }
+
     .senza-ordini {
       background-color: #ffffff;
       border: 1px solid #aaa;
@@ -80,10 +92,21 @@ ion-content.custom-content {
     color: white;
   }
 
-  .in-consegna { background-color: #397888; }
-  .consegnato { background-color: #388e3c; }
-  .attesa { background-color: #b23430; }
-  .preparazione { background-color: #ff8c1a; }
+  .in-consegna {
+    background-color: #397888;
+  }
+
+  .consegnato {
+    background-color: #388e3c;
+  }
+
+  .attesa {
+    background-color: #b23430;
+  }
+
+  .preparazione {
+    background-color: #ff8c1a;
+  }
 
   .senza-ordini {
     background-color: #ffffff;
@@ -132,12 +155,32 @@ ion-content.custom-content {
   background-color: #eee;
 }
 
-/* MODAL POPUP */
+/* =======================
+   MODALE POPUP STILIZZATA
+========================== */
+
+/* Rimuove sfondo nero */
+ion-modal::part(backdrop) {
+  background: rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(1px);
+}
+ion-modal::part(content) {
+  background: transparent !important;
+  box-shadow: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenuto interno della modale */
 .popup-container {
   padding: 24px;
   background-color: #fff;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
+  width: 90vw;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 
   h2 {
     font-size: 20px;
@@ -187,13 +230,15 @@ ion-content.custom-content {
     }
   }
 
-  input[type="number"] {
+  input[type='number'] {
     width: 100%;
     padding: 10px;
     font-size: 16px;
     margin-bottom: 16px;
     border-radius: 6px;
     border: 1px solid #ccc;
+    background-color: #333;
+    color: #fff;
   }
 
   .popup-footer ion-button {
