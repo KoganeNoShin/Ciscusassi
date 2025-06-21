@@ -6,8 +6,17 @@
 	font-size: 0.8rem;
 }
 
-p {
+a {
 	color: var(--ion-color-bianco);
+	text-decoration: none;
+}
+
+a:hover {
+	filter: brightness(80%);
+}
+
+a:active {
+	filter: brightness(60%);
 }
 
 #leftDiv {
