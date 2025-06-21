@@ -138,7 +138,7 @@ router.get('/prenotazione/:id', PrenotazioneController.getPrenotazioneById);
 router.get('/prenotazioni/cliente/:clienteId', PrenotazioneController.getPrenotazioniByCliente);
 
 router.get('/prenotazioni/oggi', 
-	PrenotazioneController.getPrenotazioniByData,
+	PrenotazioneController.getPrenotazioniDelGiorno,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere'])
 );

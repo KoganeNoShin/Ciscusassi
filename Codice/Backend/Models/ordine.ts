@@ -13,28 +13,18 @@ export interface OrdineRecord extends OrdineInput {
 	id_ordine: number;
 }
 
-// Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 export class Ordine {
-	// definisco il metodo per creare un nuovo utente
+	// Creazione di un nuovo Ordine
 	static async create(data: OrdineInput): Promise<number> {
-		const {
-			username_ordinante,
-			ref_prenotazione,
-			ref_cliente,
-			ref_pagamento,
-		} = data;
-
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO ordini (username_ordinante, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?)',
-				[
-					username_ordinante,
-					ref_prenotazione,
-					ref_cliente,
-					ref_pagamento,
-				],
+				[data.username_ordinante, data.ref_prenotazione, data.ref_cliente, data.ref_pagamento],
 				function (err) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						reject(err);
+					}
 					else resolve(this.lastID);
 				}
 			);
@@ -47,73 +37,40 @@ export class Ordine {
 				'UPDATE ordini SET ref_pagamento = ? WHERE id_ordine = ?',
 				[ref_pagamento, id_ordine],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						console.error('🧾 Query params:', id_ordine);
+						reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun ordine aggiornato con ID ${id_ordine}`);
+						return reject(new Error(`Nessun ordine trovato con ID ${id_ordine}`));
+					}
 					else resolve();
 				}
 			);
 		});
 	}
 
-	// definiamo il metodo per ritornare tutti gli ordini
-	static async findAll(): Promise<OrdineRecord[]> {
-		return new Promise((resolve, reject) => {
-			db.all(
-				'SELECT * FROM ordini',
-				(err: Error | null, rows: OrdineRecord[]) => {
-					if (err) reject(err);
-					else resolve(rows);
-				}
-			);
-		});
-	}
-
-	// ricerca per id
-	static async findById(id: number): Promise<OrdineRecord> {
-		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT * FROM pagamenti WHERE id_pagamento = ?',
-				[id],
-				(err: Error | null, row: OrdineRecord) => {
-					if (err) reject(err);
-					else resolve(row);
-				}
-			);
-		});
-	}
-
-	// Aggiunta Ordine
-	static async addOrdine(id: OrdineInput): Promise<number> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'INSERT INTO ordini username_ordinante, data_ora_ordinazione, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?, ?)',
-				[
-					id.username_ordinante,
-					id.ref_prenotazione,
-					id.ref_cliente,
-					id.ref_pagamento,
-				],
-				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve(this.lastID);
-				}
-			);
-		})
-	}
+	
 
 	// Modifica Ordine
-	static async updateOrdine(data: OrdineInput, id: number): Promise<void> {
+	static async updateOrdine(data: OrdineRecord): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE ordini SET username_ordinante = ?, data_ora_ordinazione = ?, ref_prenotazione = ?, ref_cliente = ?, ref_pagamento = ? WHERE id_ordine = ?',
-				[
-					data.username_ordinante,
-					data.ref_prenotazione,
-					data.ref_cliente,
-					data.ref_pagamento,
-					id,
-				],
+				[data.username_ordinante, data.ref_prenotazione, data.ref_cliente, data.ref_pagamento,
+				data.id_ordine],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						console.error('🧾 Query params:', data.id_ordine);
+						reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun ordine aggiornato con ID ${data.id_ordine}`);
+						return reject(new Error(`Nessun ordine trovato con ID ${data.id_ordine}`));
+					}
 					else resolve();
 				}
 			);
@@ -127,8 +84,91 @@ export class Ordine {
 				'DELETE FROM ordini WHERE id_ordine = ?',
 				[id],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
+						console.error('🧾 Query params:', id);
+						reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun ordine eliminato con ID ${id}`);
+						return reject(new Error(`Nessun ordine trovato con ID ${id}`));
+					}
 					else resolve();
+				}
+			);
+		});
+	}
+
+	// Selezione di tutti gli Ordini
+	static async getAll(): Promise<OrdineRecord[]> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM ordini',
+				(err: Error | null, rows: OrdineRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessun ordine trovato');
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
+
+	// Selezione di un Ordine per ID
+	static async getById(id: number): Promise<OrdineRecord | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT * FROM pagamenti WHERE id_pagamento = ?',
+				[id],
+				(err: Error | null, row: OrdineRecord) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.log('⚠️ [DB WARNING] Nessun Ordine trovato');
+						resolve(null);
+					} else resolve(row);
+				}
+			);
+		});
+	}
+
+	// Selezione di Ordini per Cliente
+	static async getByCliente(clienteId: number): Promise<OrdineRecord[] | null> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM ordini WHERE ref_cliente = ?',
+				[clienteId],
+				(err: Error | null, rows: OrdineRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessun ordine trovato per il cliente');
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
+
+	// Selezione di Ordini per Prenotazione
+	static async getByPrenotazione(prenotazioneId: number): Promise<OrdineRecord[] | null> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM ordini WHERE ref_prenotazione = ?',
+				[prenotazioneId],
+				(err: Error | null, rows: OrdineRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessun ordine trovato per la prenotazione');
+						resolve([]);
+					} else resolve(rows);
 				}
 			);
 		});

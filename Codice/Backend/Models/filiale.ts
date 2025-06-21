@@ -48,8 +48,8 @@ export class Filiale {
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun prodotto aggiornato con ID ${data.id_filiale}`);
-						return reject(new Error(`Nessun prodotto trovato con ID ${data.id_filiale}`));
+						console.warn(`⚠️ [DB WARNING] Nessuna filiale aggiornato con ID ${data.id_filiale}`);
+						return reject(new Error(`Nessuna filiale trovata con ID ${data.id_filiale}`));
 					}
 					else resolve();
 				}

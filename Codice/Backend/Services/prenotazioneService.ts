@@ -64,7 +64,7 @@ class PrenotazioneService {
         }
     }
 
-    static async getPrenotazioniByData(): Promise<PrenotazioneRecord[] | null> {
+    static async getPrenotazioniDelGiorno(): Promise<PrenotazioneRecord[] | null> {
         try {
             return await Prenotazione.getPrenotazioniDelGiorno();
         } catch (error) {
