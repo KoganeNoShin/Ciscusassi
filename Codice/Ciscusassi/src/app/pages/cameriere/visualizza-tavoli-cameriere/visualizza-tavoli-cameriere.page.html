@@ -48,7 +48,11 @@
 	</ion-grid>
 
 	<!-- MODAL / POPUP -->
-	<ion-modal [isOpen]="showPopup" (didDismiss)="resetPopup()">
+	<ion-modal
+		[isOpen]="showPopup"
+		(didDismiss)="resetPopup()"
+		[backdropDismiss]="false"
+	>
 		<ng-template>
 			<div class="popup-container">
 				<h2>QUANTE PERSONE SI DEVONO SEDERE?</h2>
@@ -73,16 +77,10 @@
 						(input)="onInputChange()"
 						min="1"
 					/>
-					<ion-button
-						color="success"
-						expand="block"
-						(click)="conferma()"
+					<ion-button color="success" expand="block" (click)="conferma()"
 						>CONFERMA</ion-button
 					>
-					<ion-button
-						color="danger"
-						expand="block"
-						(click)="annulla()"
+					<ion-button color="danger" expand="block" (click)="annulla()"
 						>ESCI</ion-button
 					>
 				</div>
