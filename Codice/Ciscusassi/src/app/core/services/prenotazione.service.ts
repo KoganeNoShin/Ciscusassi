@@ -1,38 +1,51 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { ApiResponse } from '../interfaces/ApiResponse';
+import { PrenotazioneInput, PrenotazioneInputLoco, PrenotazioneRecord } from '../interfaces/Prenotazione';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrenotazioneService {
-  filialeId: number = 0;
-  numeroPosti: number = 0;
-  dataPrenotazione: string = '';
-  oraPrenotazione: string = '';
+  private apiURL = environment.apiURL;
 
-  constructor() { }
+  constructor(private http: HttpClient) {}
 
-  setFilialeId(id: number): void {
-    this.filialeId = id;
+  getAllPrenotazioni(): Observable<ApiResponse<PrenotazioneRecord[]>> {
+    return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni`);
   }
-  setNumeroPosti(numero: number): void {
-    this.numeroPosti = numero;
+
+  getPrenotazioneById(id: number): Observable<ApiResponse<PrenotazioneRecord>> {
+    return this.http.get<ApiResponse<PrenotazioneRecord>>(`${this.apiURL}/prenotazione/${id}`);
   }
-  setDataPrenotazione(data: string): void {
-    this.dataPrenotazione = data;
+
+  getPrenotazioniByCliente(clienteId: number): Observable<ApiResponse<PrenotazioneRecord[]>> {
+    return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni/cliente/${clienteId}`);
   }
-  setOraPrenotazione(ora: string): void {
-    this.oraPrenotazione = ora;
+
+  getPrenotazioniDelGiorno(): Observable<ApiResponse<PrenotazioneRecord[]>> {
+    return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni/oggi`);
   }
-  getFilialeId(): number {
-    return this.filialeId;
+
+  getTavoliInUso(): Observable<any> {
+    return this.http.get(`${this.apiURL}/tavoli-in-uso`);
   }
-  getNumeroPosti(): number {
-    return this.numeroPosti;
+
+  prenota(data: PrenotazioneInput): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiURL}/prenota`, data);
   }
-  getDataPrenotazione(): string {
-    return this.dataPrenotazione;
+
+  prenotaLoco(data: PrenotazioneInputLoco): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiURL}/prenotaLoco`, data);
   }
-  getOraPrenotazione(): string {
-    return this.oraPrenotazione;
+
+  modificaPrenotazione(data: PrenotazioneRecord): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.apiURL}/modificaPrenotazione`, data);
+  }
+
+  eliminaPrenotazione(id: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiURL}/eliminaPrenotazione/${id}`);
   }
 }
