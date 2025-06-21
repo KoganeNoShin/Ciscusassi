@@ -248,6 +248,13 @@ export const routes: Routes = [
 				'./pages/prenotazioni/scelta-giorno/scelta-giorno.page'
 			).then((m) => m.SceltaGiornoPage),
 	},
+	{
+		path: 'visualizza-tavoli-chef',
+		loadComponent: () =>
+			import(
+				'./pages/chef/visualizza-tavoli-chef/visualizza-tavoli-chef.page'
+			).then((m) => m.VisualizzaTavoliChefPage),
+	},
 ];
 
 export const AppRoutingModule = provideRouter(routes);
