@@ -22,6 +22,8 @@ import { LeafletMapComponent } from 'src/app/components/leaflet-map/leaflet-map.
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { Router, RouterModule } from '@angular/router';
+import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 
 @Component({
 	selector: 'app-prenota',
@@ -29,20 +31,16 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 	styleUrls: ['./prenota.page.scss'],
 	standalone: true,
 	imports: [
+		RouterModule,
 		IonCard,
 		IonButton,
-		IonAvatar,
-		IonList,
 		IonLabel,
-		IonAvatar,
-		IonList,
 		IonCol,
 		IonRow,
 		IonGrid,
 		IonItem,
 		IonInput,
 		IonSpinner,
-		IonCardContent,
 		IonContent,
 		CommonModule,
 		FormsModule,
@@ -59,7 +57,7 @@ export class PrenotaPage implements OnInit {
 	searchFiliale: string = '';
 	filialiFiltrate: any[] = [];
 
-	constructor(private filialeService: FilialeService) {}
+	constructor(private filialeService: FilialeService, private router:Router, private prenotazioneService: PrenotazioneService) {}
 
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
 		console.log(response);
@@ -93,5 +91,11 @@ export class PrenotaPage implements OnInit {
 		this.filialiFiltrate = this.filiali.filter((filiale) =>
 			filiale.indirizzo.toLowerCase().includes(term)
 		);
+	}
+
+	salvaFiliale(id_filiale: number){
+		this.prenotazioneService.setFilialeId(id_filiale);
+		console.log('Hai scelto la filiale', id_filiale);
+		this.router.navigate(['/numero-persone']);
 	}
 }
