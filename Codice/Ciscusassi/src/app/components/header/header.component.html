@@ -16,14 +16,29 @@
 		<ion-buttons slot="start">
 			<ion-button [routerLink]="['/menu']"> MENU </ion-button>
 			<ion-button [routerLink]="['/ristoranti']"> RISTORANTI </ion-button>
-			<ion-button (click)="svuotaCarrello()" [routerLink]="['/ordina-ora']"> ORDINA ORA </ion-button>
+			<ion-button
+				(click)="svuotaCarrello()"
+				[routerLink]="['/ordina-ora']"
+			>
+				ORDINA ORA
+			</ion-button>
 			<ion-button [routerLink]="['/prenota']"> PRENOTA </ion-button>
 		</ion-buttons>
 		<ion-buttons slot="end">
 			@if (role != '' && role != 'cliente') {
-				<ion-button [routerLink]="['/amministrazione']">
-					AMMINISTRAZIONE
-				</ion-button>
+				@if (role == 'amministratore') {
+					<ion-button [routerLink]="['/amministrazione']">
+						AMMINISTRAZIONE
+					</ion-button>
+				} @else if (role == 'chef') {
+					<ion-button [routerLink]="['/chef']">
+						PANNELLO CHEF
+					</ion-button>
+				} @else if (role == 'cameriere') {
+					<ion-button [routerLink]="['/cameriere']">
+						PANNELLO CAMERIERE
+					</ion-button>
+				}
 			}
 
 			<ion-button (click)="changeLanguage()">

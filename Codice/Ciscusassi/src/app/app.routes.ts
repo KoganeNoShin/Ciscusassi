@@ -35,7 +35,9 @@ export const routes: Routes = [
 	{
 		path: 'prenota',
 		loadComponent: () =>
-			import('./pages/prenotazioni/prenota/prenota.page').then((m) => m.PrenotaPage),
+			import('./pages/prenotazioni/prenota/prenota.page').then(
+				(m) => m.PrenotaPage
+			),
 	},
 	{
 		path: 'amministrazione',
@@ -211,27 +213,41 @@ export const routes: Routes = [
 				'./pages/cameriere/visualizza-tavoli/visualizza-tavoli.page'
 			).then((m) => m.VisualizzaTavoliPage),
 	},
-  {
-    path: 'pagamento-tavolo',
-    loadComponent: () => import('./pages/ordinazioni/pagamento-tavolo/pagamento-tavolo.page').then( m => m.PagamentoTavoloPage)
-  },
-  {
-    path: 'pagamento-carta',
-    loadComponent: () => import('./pages/ordinazioni/pagamento-carta/pagamento-carta.page').then( m => m.PagamentoCartaPage)
-  },
-  {
-    path: 'pagamento-cassa',
-    loadComponent: () => import('./pages/ordinazioni/pagamento-cassa/pagamento-cassa.page').then( m => m.PagamentoCassaPage)
-  },  {
-    path: 'numero-persone',
-    loadComponent: () => import('./pages/prenotazioni/numero-persone/numero-persone.page').then( m => m.NumeroPersonePage)
-  },
-  {
-    path: 'scelta-giorno',
-    loadComponent: () => import('./pages/prenotazioni/scelta-giorno/scelta-giorno.page').then( m => m.SceltaGiornoPage)
-  },
-
-
+	{
+		path: 'pagamento-tavolo',
+		loadComponent: () =>
+			import(
+				'./pages/ordinazioni/pagamento-tavolo/pagamento-tavolo.page'
+			).then((m) => m.PagamentoTavoloPage),
+	},
+	{
+		path: 'pagamento-carta',
+		loadComponent: () =>
+			import(
+				'./pages/ordinazioni/pagamento-carta/pagamento-carta.page'
+			).then((m) => m.PagamentoCartaPage),
+	},
+	{
+		path: 'pagamento-cassa',
+		loadComponent: () =>
+			import(
+				'./pages/ordinazioni/pagamento-cassa/pagamento-cassa.page'
+			).then((m) => m.PagamentoCassaPage),
+	},
+	{
+		path: 'numero-persone',
+		loadComponent: () =>
+			import(
+				'./pages/prenotazioni/numero-persone/numero-persone.page'
+			).then((m) => m.NumeroPersonePage),
+	},
+	{
+		path: 'scelta-giorno',
+		loadComponent: () =>
+			import(
+				'./pages/prenotazioni/scelta-giorno/scelta-giorno.page'
+			).then((m) => m.SceltaGiornoPage),
+	},
 ];
 
 export const AppRoutingModule = provideRouter(routes);

@@ -26,7 +26,7 @@ class ClienteController {
 		const token = req.headers.authorization?.replace('Bearer ', '');
 
 		if (!token) {
-			res.status(401).json({
+			res.status(403).json({
 				success: false,
 				message: 'Token mancante',
 			});
@@ -36,7 +36,7 @@ class ClienteController {
 			const punti = await Cliente.getPoints(token!);
 			res.json({ success: true, data: punti });
 		} catch (error) {
-			res.status(401).json({
+			res.status(403).json({
 				success: false,
 				message: (error as Error).message,
 			});

@@ -13,27 +13,11 @@ interface ProdottoJson {
 	immagine: string;
 }
 
-// Funzione per leggere il file JSON
-async function readProdottiFromFile(): Promise<ProdottoJson[]> {
-	const filePath = path.join(__dirname, 'prodotti.json');
-
-	try {
-		const data = fs.readFileSync(filePath, 'utf8');
-		const prodotti = JSON.parse(data);
-		return prodotti;
-	} catch (error) {
-		console.error(
-			"Errore durante la lettura del file 'prodotti.json':",
-			error
-		);
-		throw error;
-	}
-}
+import prodottiJson from './prodotti.json';
+const prodotti: ProdottoJson[] = prodottiJson as ProdottoJson[];
 
 export async function generateProdotto(): Promise<string> {
 	try {
-		let prodotti = await readProdottiFromFile();
-
 		for (let i = 0; i < prodotti.length; i++) {
 			let nome = prodotti[i].nome;
 			let descrizione = prodotti[i].descrizione;
@@ -51,7 +35,7 @@ export async function generateProdotto(): Promise<string> {
 					descrizione: descrizione,
 					costo: costo,
 					immagine: immagine,
-					categoria: categoria
+					categoria: categoria,
 				});
 				console.log(
 					`🍝 Piatto ${nome} di categoria ${categoria} al prezzo di ${costo}€ è stato aggiunto!'}`
@@ -65,9 +49,11 @@ export async function generateProdotto(): Promise<string> {
 		}
 		try {
 			await prodotto.attivaPiattoDelGiorno(1);
-			`🍝 Piatto del giorno è stato aggiunto!'}`
+			`🍝 Piatto del giorno è stato aggiunto!'}`;
 		} catch (err) {
-			console.log(`♻️ Piatto del giorno è andato a male! Causa di andata a male: ${err}`);
+			console.log(
+				`♻️ Piatto del giorno è andato a male! Causa di andata a male: ${err}`
+			);
 			throw err;
 		}
 

@@ -8,7 +8,8 @@
 		"skipLibCheck": true,
 		"strict": true,
 		"rootDir": "./",
-		"outDir": "./dist"
+		"outDir": "./dist",
+		"resolveJsonModule": true
 	},
 	"include": ["./**/*.ts", "Database/Seeders/seederAsporto.js"], // include tutti i file TS nel progetto
 	"exclude": ["node_modules", "dist"]
