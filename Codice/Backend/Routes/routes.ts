@@ -145,8 +145,8 @@ router.get('/prenotazioni/oggi',
 
 router.get('/tavoli-in-uso', 
 	PrenotazioneController.getTavoliInUso,
-	//authMiddleware,
-	//roleMiddleware(['amministratore', 'cameriere'])
+	authMiddleware,
+	roleMiddleware(['amministratore', 'cameriere'])
 );
 
 router.post(
