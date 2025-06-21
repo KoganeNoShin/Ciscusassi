@@ -14,6 +14,8 @@ import PagamentoController from '../Controllers/pagamentoController';
 import asportoValidator from '../Validators/asportoValidator';
 import prodottoValidator from '../Validators/prodottoValidator';
 import filialeValidator from '../Validators/filialeValidator';
+import PrenotazioneController from '../Controllers/prenotazioneController';
+import prenotazioneValidator from '../Validators/prenotazioneValidator';
 
 const router = express.Router();
 
@@ -127,6 +129,46 @@ router.put(
 	roleMiddleware(['amministratore']),
 	ProdottoController.chargePiattoDelGiorno
 );
+
+// Route per i Prenotazioni
+router.get('/prenotazioni', PrenotazioneController.getAllPrenotazioni);
+
+router.get('/prenotazione/:id', PrenotazioneController.getPrenotazioneById);
+
+router.get('/prenotazioni/cliente/:clienteId', PrenotazioneController.getPrenotazioniByCliente);
+
+router.post(
+	'/prenota',
+	prenotazioneValidator.prenotazioneInputValidator,
+	prenotazioneValidator.validate,
+	authMiddleware,
+	PrenotazioneController.prenota
+);
+
+router.post(
+	'/prenotaLoco',
+	prenotazioneValidator.prenotazioneInputLocoValidator,
+	prenotazioneValidator.validate,
+	authMiddleware,
+	roleMiddleware(['amministratore', 'cameriere']),
+	PrenotazioneController.prenotaLoco
+);
+
+router.put(
+	'/modificaPrenotazione',
+	prenotazioneValidator.prenotazioneUpdateValidator,
+	prenotazioneValidator.validate,
+	authMiddleware,
+	PrenotazioneController.modificaPrenotazione
+);
+
+router.delete(
+	'/eliminaPrenotazione/:id',
+	authMiddleware,
+	PrenotazioneController.eliminaPrenotazione
+);
+
+
 
 /* ESEMPIO DI COME PROTEGGERE LE ROTTE 
 router.post(

@@ -10,7 +10,7 @@ class PrenotazioneService {
         }
     }
 
-    static async prenotaLocale(data: PrenotazioneInputLoco): Promise<number> {
+    static async prenotaLoco(data: PrenotazioneInputLoco): Promise<number> {
         try {
             return await Prenotazione.createLocale(data);
         } catch (error) {
