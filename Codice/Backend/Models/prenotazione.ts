@@ -177,6 +177,27 @@ export class Prenotazione {
 			);
 		});
 	}
+
+	static async getPrenotazioniAttualiEFuture(): Promise<PrenotazioneRecord[]> {
+	return new Promise((resolve, reject) => {
+		db.all(
+			`
+			SELECT * FROM prenotazioni
+			WHERE DATE(data_ora_prenotazione) >= DATE('now')
+			`,
+			[],
+			(err: Error | null, rows: PrenotazioneRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT future:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovata');
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
 }
 
 

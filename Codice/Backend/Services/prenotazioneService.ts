@@ -72,6 +72,28 @@ class PrenotazioneService {
             throw error;
         }
     }
+
+    static calcolaTavoliRichiesti(numeroPersone: number): number {
+	    if (numeroPersone <= 0) return 0;
+	    return Math.ceil((numeroPersone - 2) / 2);
+    }
+
+    static async calcolaTavoliInUso(): Promise<Record<string, number>> {
+		const prenotazioni = await Prenotazione.getPrenotazioniAttualiEFuture();
+		const tavoliPerOrario: Record<string, number> = {};
+
+		for (const p of prenotazioni) {
+			const timestamp = p.data_ora_prenotazione;
+			const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
+
+			if (!tavoliPerOrario[timestamp]) {
+				tavoliPerOrario[timestamp] = 0;
+			}
+			tavoliPerOrario[timestamp] += tavoli;
+		}
+
+		return tavoliPerOrario;
+	}
 }
 
 export default PrenotazioneService;

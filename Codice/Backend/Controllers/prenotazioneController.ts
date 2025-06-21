@@ -145,6 +145,16 @@ class PrenotazioneController {
             });
         }
     }
+
+	static async getTavoliInUso(req: Request, res: Response) {
+		try {
+			const tavoli = await PrenotazioneService.calcolaTavoliInUso();
+			res.status(200).json(tavoli);
+		} catch (error) {
+			console.error('❌ Errore durante il calcolo dei tavoli:', error);
+			res.status(500).json({ message: 'Errore durante il calcolo dei tavoli in uso' });
+		}
+	}
 }
 
 export default PrenotazioneController;
