@@ -23,10 +23,7 @@ class FilialeController {
 
 	static async updateFiliale(req: Request, res: Response): Promise<void> {
 		try {
-			const filiale = await FilialeService.updateFiliale(
-				req.body,
-				parseInt(req.params.id)
-			);
+			const filiale = await FilialeService.updateFiliale(req.body);
 
 			res.json({ success: true, data: filiale });
 		} catch (err) {

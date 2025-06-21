@@ -25,7 +25,7 @@ const addProdottoValidator = [
             }
             return true;
         })
-]
+];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req);
@@ -36,4 +36,7 @@ const validate = (req: Request, res: Response, next: NextFunction): void => {
     next();
 };
 
-export default {validate, addProdottoValidator}
+export default {
+    validate,
+    addProdottoValidator
+}

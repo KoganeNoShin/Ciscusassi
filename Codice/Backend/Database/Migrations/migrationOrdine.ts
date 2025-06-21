@@ -8,8 +8,7 @@ export function createIfDoesntExists(): Promise<string> {
 		db.serialize(() => {
 			db.run(
 				`CREATE TABLE IF NOT EXISTS ${nomeTabella} (
-                id_ordine INTEGER PRIMARY KEY AUTOINCREMENT,            
-                data_ora_ordinazione TEXT NOT NULL,
+                id_ordine INTEGER PRIMARY KEY AUTOINCREMENT,
                 username_ordinante TEXT NOT NULL,
                 ref_pagamento INTEGER NULLABLE,
                 ref_cliente INTEGER NULLABLE,

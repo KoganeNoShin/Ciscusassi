@@ -11,9 +11,9 @@ export function createIfDoesntExists(): Promise<string> {
                 id_prenotazione INTEGER PRIMARY KEY AUTOINCREMENT,
                 numero_persone INTEGER NOT NULL DEFAULT 1,   
                 data_ora_prenotazione TEXT NOT NULL,
-                otp TEXT NOT NULL,
+                otp TEXT NULLABLE,
                 ref_cliente INTEGER NULLABLE,
-                ref_torretta INTEGER NOT NULL,                            
+                ref_torretta INTEGER NULLABLE,                            
                 FOREIGN KEY (ref_cliente) REFERENCES clienti (numero_carta),
                 FOREIGN KEY (ref_torretta) REFERENCES torrette (id_torretta)
             )`,

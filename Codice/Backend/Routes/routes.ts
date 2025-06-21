@@ -32,7 +32,7 @@ router.get('/filiali', FilialeController.getAllFiliali);
 router.post(
 	'/addFiliale',
 	filialeValidator.validate,
-	filialeValidator.addFilialeValidator,
+	filialeValidator.updateFilialeValidator,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	FilialeController.addFiliale
