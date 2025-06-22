@@ -85,36 +85,6 @@ export const prenotazioneInputValidator = [
 ];
 
 export const prenotazioneInputLocoValidator = [
-	// numero_persone
-	body('numero_persone')
-		.notEmpty().withMessage('Il numero di persone è obbligatorio!')
-		.isInt({ min: 1 }).withMessage('Il numero di persone deve essere un intero positivo')
-		.bail()
-		.custom(async (numeroPersone, { req }) => {
-			const data = req.body.data_ora_prenotazione;
-			const filialeId = req.body.ref_filiale;
-
-			if (!data || !filialeId) {
-				throw new Error('Data e filiale sono obbligatorie per controllare i tavoli disponibili');
-			}
-
-			const filiale = await Filiale.getById(Number(filialeId));
-			if (!filiale) throw new Error('Filiale non trovata');
-
-			const tavoliTotali = filiale.num_tavoli;
-			const tavoliInUso = await PrenotazioneService.calcolaTavoliInUso(filiale.id_filiale);
-			const tavoliOccupati = tavoliInUso[data] ?? 0;
-
-			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(Number(numeroPersone));
-
-			if (tavoliOccupati + tavoliRichiesti > tavoliTotali) {
-				const disponibili = tavoliTotali - tavoliOccupati;
-				throw new Error(`Non ci sono abbastanza tavoli disponibili in quell'orario. Tavoli disponibili: ${disponibili}`);
-			}
-
-			return true;
-		}),
-
 	// data_ora_prenotazione
 	body('data_ora_prenotazione')
 		.notEmpty().withMessage('La data e ora della prenotazione è obbligatoria!')
@@ -158,6 +128,36 @@ export const prenotazioneInputLocoValidator = [
 		.custom(async (value) => {
 			const esiste = await Filiale.getById(value);
 			if (!esiste) throw new Error('La filiale specificata non esiste');
+			return true;
+		}),
+
+	// numero_persone
+	body('numero_persone')
+		.notEmpty().withMessage('Il numero di persone è obbligatorio!')
+		.isInt({ min: 1 }).withMessage('Il numero di persone deve essere un intero positivo')
+		.bail()
+		.custom(async (numeroPersone, { req }) => {
+			const data = req.body.data_ora_prenotazione;
+			const filialeId = req.body.ref_filiale;
+
+			if (!data || !filialeId) {
+				throw new Error('Data e filiale sono obbligatorie per controllare i tavoli disponibili');
+			}
+
+			const filiale = await Filiale.getById(Number(filialeId));
+			if (!filiale) throw new Error('Filiale non trovata');
+
+			const tavoliTotali = filiale.num_tavoli;
+			const tavoliInUso = await PrenotazioneService.calcolaTavoliInUso(filiale.id_filiale);
+			const tavoliOccupati = tavoliInUso[data] ?? 0;
+
+			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(Number(numeroPersone));
+
+			if (tavoliOccupati + tavoliRichiesti > tavoliTotali) {
+				const disponibili = tavoliTotali - tavoliOccupati;
+				throw new Error(`Non ci sono abbastanza tavoli disponibili in quell'orario. Tavoli disponibili: ${disponibili}`);
+			}
+
 			return true;
 		}),
 ];

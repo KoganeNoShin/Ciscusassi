@@ -153,14 +153,17 @@ export class Prenotazione {
 
 	// Recupera prenotazioni del giorno
 	static async getPrenotazioniDelGiornoFiliale(id_filiale: number): Promise<PrenotazioneRecord[]> {
+		const now = new Date();
+		const localDate = now.toLocaleDateString('sv-SE');
+
 		return new Promise((resolve, reject) => {
 			db.all(`
 				SELECT p.*
 				FROM prenotazioni p
 				JOIN torrette t ON p.ref_torretta = t.id_torretta
-				WHERE DATE(p.data_ora_prenotazione) = DATE('now')
+				WHERE substr(p.data_ora_prenotazione, 1, 10) = ?
 				AND t.ref_filiale = ?`,
-				[id_filiale],
+				[localDate,id_filiale],
 				(err: Error | null, rows: PrenotazioneRecord[]) => {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante SELECT del giorno:', err.message);
@@ -175,25 +178,24 @@ export class Prenotazione {
 	} 
 
 	static async getPrenotazioniAttualiEFuture(id_filiale: number): Promise<PrenotazioneRecord[]> {
-	return new Promise((resolve, reject) => {
-		db.all(
-			`
-			SELECT * FROM prenotazioni
-			JOIN torrette t ON p.ref_torretta = t.id_torretta
-			WHERE DATE(p.data_ora_prenotazione) >= DATE('now')
-			AND t.ref_filiale = ?`,
-			[id_filiale],
-			(err: Error | null, rows: PrenotazioneRecord[]) => {
-					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT future:', err.message);
-						reject(err);
-					} else if (!rows || rows.length === 0) {
-						console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovata');
-						resolve([]);
-					} else resolve(rows);
-				}
-			);
-		});
+		return new Promise((resolve, reject) => {
+			db.all(`
+				SELECT * FROM prenotazioni p
+				JOIN torrette t ON p.ref_torretta = t.id_torretta
+				WHERE DATE(p.data_ora_prenotazione) >= DATE('now')
+				AND t.ref_filiale = ?`,
+				[id_filiale],
+				(err: Error | null, rows: PrenotazioneRecord[]) => {
+						if (err) {
+							console.error('❌ [DB ERROR] Errore durante SELECT future:', err.message);
+							reject(err);
+						} else if (!rows || rows.length === 0) {
+							console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovata');
+							resolve([]);
+						} else resolve(rows);
+					}
+				);
+			});
 	}
 
 	static async confermaPrenotazione(id_prenotazione: number, otp: string): Promise<void> {
