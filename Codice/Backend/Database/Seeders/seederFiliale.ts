@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import immagini from './immaginiFiliali.json';
 
-const password = 'QuestaPasswordEMoltoSicura!';
+const password = 'Pwm30L!';
 
 async function getBase64(imageUrl: string): Promise<string> {
 	try {

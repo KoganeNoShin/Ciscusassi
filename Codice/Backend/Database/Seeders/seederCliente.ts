@@ -3,7 +3,7 @@ import cliente from '../../Models/cliente';
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
 
-const password = 'QuestaPasswordEMoltoSicura!';
+const password = 'Pwm30L!';
 
 async function getBase64(imageUrl: string): Promise<string> {
 	try {
