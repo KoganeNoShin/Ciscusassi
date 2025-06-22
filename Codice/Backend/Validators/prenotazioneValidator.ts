@@ -22,7 +22,7 @@ export const prenotazioneInputValidator = [
 			const adesso = new Date();
 
 			if (dataPrenotazione < adesso) {
-				throw new Error('La data e ora della prenotazione non può essere nel passato');
+				throw new Error(`La data e ora della prenotazione non può essere nel passato (${adesso})`);
 			}
 
 			const ore = dataPrenotazione.getHours().toString().padStart(2, '0');

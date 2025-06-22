@@ -1,0 +1,49 @@
+import OrdProd, { OrdProdRecord } from "../Models/ord_prod";
+import Prodotto, { ProdottoInput } from "../Models/prodotto";
+
+interface OrdProdEstended extends ProdottoInput {
+    id_ord_prod: number;
+    is_romana: boolean;
+    stato: string;
+}
+
+class OrdProdService {
+    static async getProdottiByOrdine(ordineId: number, romana: boolean): Promise<OrdProdEstended[] | null> {
+        try {
+            const ord_prod = await OrdProd.getByOrdineAndRomana(ordineId, romana);
+            if (!ord_prod || ord_prod.length === 0) {
+                return null;
+            }
+
+            const prodotti = await Promise.all(
+                ord_prod.map(async (op) => {
+                    const prodotto = await Prodotto.getByID(op.ref_prodotto);
+                    if (!prodotto) {
+                        throw new Error(`Prodotto con ID ${op.ref_prodotto} non trovato`);
+                    }
+                    return {
+                        ...prodotto,
+                        id_ord_prod: op.id_ord_prod,
+                        is_romana: op.is_romana,
+                        stato: op.stato
+                    } as OrdProdEstended;
+                })
+            );
+            return prodotti;
+        } catch (error) {
+            console.error('❌ [OrdProdService] Errore durante il recupero dei prodotti dell\'ordine:', error);
+            throw error;
+        }
+    }
+
+    static async cambiaStatoProdottoOrdine(idProdotto: number, stato: string): Promise<void> {
+        try {
+            await OrdProd.cambiaStato(idProdotto, stato);
+        } catch (error) {
+            console.error('❌ [OrdProdService] Errore durante il cambio di stato del prodotto dell\'ordine:', error);
+            throw error;
+        }
+    }
+}
+
+export default OrdProdService;

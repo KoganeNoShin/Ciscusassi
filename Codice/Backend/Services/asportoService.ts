@@ -1,6 +1,5 @@
 import AspProd, { AspProdInput } from "../Models/asp_prod";
 import Asporto, { AsportoInput } from "../Models/asporto";
-import Cliente from "../Models/cliente";
 import Pagamento, { PagamentoInput } from "../Models/pagamento";
 
 export interface AsportoData {

@@ -109,20 +109,7 @@ export class OrdProd {
 		});
 	}
 
-	// Modifica stato
-	static async modificaStato(id_ord_prod: number, stato: string): Promise<void> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE ord_prod SET stato = ? WHERE id_ord_prod = ?',
-				[stato, id_ord_prod],
-				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve();
-				}
-			);
-		});
-	}
-
+// ----------------------------------CORRETTO----------------------------------
 	// Selezione di tutti i Prodotti Ordinati per Ordine
 	static async getByOrdine(ref_ordine: number): Promise<OrdProdRecord[] | null> {
 		return new Promise((resolve, reject) => {
@@ -156,6 +143,43 @@ export class OrdProd {
 						console.warn('⚠️ [DB WARNING] Nessun prodotto nell\'ordine trovato');
 						resolve([]);
 					} else resolve(rows);
+				}
+			);
+		});
+	}
+
+	// Selezione dei Prodotti Ordinati per Ordine
+	static async getByOrdineId(id_ordine: number): Promise<OrdProdRecord[] | null> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM ord_prod WHERE ref_ordine = ?',
+				[id_ordine],
+				(err: Error | null, rows: OrdProdRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessun prodotto nell\'ordine trovato');
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
+
+	static async cambiaStato(id_ord_prod: number, nuovoStato: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE ord_prod SET stato = ? WHERE id_ord_prod = ?',
+				[nuovoStato, id_ord_prod],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						reject(err);
+					} else if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun prodotto aggiornato con ID ${id_ord_prod}`);
+						return reject(new Error(`Nessun prodotto trovato con ID ${id_ord_prod}`));
+					} else resolve();
 				}
 			);
 		});
