@@ -13,9 +13,9 @@ import {
   IonModal,
   ToastController,
 } from '@ionic/angular/standalone';
-
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-visualizza-tavoli',
@@ -69,35 +69,52 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
   }
 
   async loadTavoli() {
-    const filiale = this.authService.getFiliale();
-    console.log('Filiale corrente:', filiale);
+    try {
+      const filiale = this.authService.getFiliale();
+      const response = await lastValueFrom(
+        this.prenotazioneService.getPrenotazioniDelGiornoFiliale(filiale)
+      );
 
-    this.prenotazioneService.getPrenotazioniDelGiornoFiliale(filiale).subscribe({
-      next: (response) => {
-        console.log('Response API:', response);
+      if (response.success && response.data?.length) {
+        const prenotazioniFiltrate = response.data;
 
-        if (response.success && response.data?.length) {
-          const prenotazioniFiltrate = response.data;
+        const tavoliCompletati = await Promise.all(
+          prenotazioniFiltrate.map(async (p) => {
+            try {
+              const statoResponse = await lastValueFrom(
+                this.prenotazioneService.getStatoPrenotazione(p.ref_torretta)
+              );
+              const stato = statoResponse?.data ?? 'attesa';
 
-          this.tavoli = prenotazioniFiltrate.map((p) => ({
-            numero: p.id_prenotazione,
-            nome: `Tavolo ${p.id_prenotazione}`,
-            orario: this.formattaOrario(p.data_ora_prenotazione),
-            persone: p.numero_persone,
-            stato: 'attesa', // eventualmente personalizza in base allo stato reale
-          }));
+              return {
+                numero: p.ref_torretta,
+                nome: `Tavolo ${p.id_prenotazione}`,
+                orario: this.formattaOrario(p.data_ora_prenotazione),
+                persone: p.numero_persone,
+                stato: stato,
+              };
+            } catch (err) {
+              console.error(`Errore stato per torretta ${p.ref_torretta}`, err);
+              return {
+                numero: p.ref_torretta,
+                nome: `Tavolo ${p.id_prenotazione}`,
+                orario: this.formattaOrario(p.data_ora_prenotazione),
+                persone: p.numero_persone,
+                stato: 'attesa',
+              };
+            }
+          })
+        );
 
-          console.log('Tavoli caricati:', this.tavoli);
-        } else {
-          console.error('Errore caricamento prenotazioni:', response.message);
-          this.tavoli = [];
-        }
-      },
-      error: (err) => {
-        console.error('Errore API prenotazioni:', err);
+        this.tavoli = tavoliCompletati;
+      } else {
         this.tavoli = [];
-      },
-    });
+        console.warn('Nessuna prenotazione trovata.');
+      }
+    } catch (err) {
+      console.error('Errore caricamento tavoli:', err);
+      this.tavoli = [];
+    }
   }
 
   formattaOrario(dataOra: string): string {
