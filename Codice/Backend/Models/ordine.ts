@@ -31,6 +31,7 @@ export class Ordine {
 		});
 	}
 
+	// Aggiunta di un Pagamento a un Ordine
 	static async addPagamento(ref_pagamento : number, id_ordine: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -52,30 +53,6 @@ export class Ordine {
 		});
 	}
 
-	
-
-	// Modifica Ordine
-	static async updateOrdine(data: OrdineRecord): Promise<void> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE ordini SET username_ordinante = ?, data_ora_ordinazione = ?, ref_prenotazione = ?, ref_cliente = ?, ref_pagamento = ? WHERE id_ordine = ?',
-				[data.username_ordinante, data.ref_prenotazione, data.ref_cliente, data.ref_pagamento,
-				data.id_ordine],
-				function (this: RunResult, err: Error | null) {
-					if (err) {
-						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
-						console.error('🧾 Query params:', data.id_ordine);
-						reject(err);
-					}
-					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun ordine aggiornato con ID ${data.id_ordine}`);
-						return reject(new Error(`Nessun ordine trovato con ID ${data.id_ordine}`));
-					}
-					else resolve();
-				}
-			);
-		});
-	}
 
 	// Elimina Piatto
 	static async deleteOrdine(id: number): Promise<void> {

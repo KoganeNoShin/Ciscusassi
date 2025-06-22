@@ -100,17 +100,14 @@ export const prenotazioneInputLocoValidator = [
 			return true;
 		}),
 
-	// ref_torretta (opzionale, ID valido ed esistente)
-	body('ref_torretta')
-		.isInt({ min: 1 }).withMessage('Il riferimento alla torretta deve essere un ID numerico valido')
+	// ref_filiale
+	body('ref_filiale')
+		.notEmpty().withMessage('La filiale è obbligatoria')
+		.isInt({ min: 1 }).withMessage('ID filiale non valido')
 		.bail()
 		.custom(async (value) => {
-			if (value === null || value === undefined) return true;
-
-			const torrettaEsistente = await Torretta.getById(value);
-			if (!torrettaEsistente) {
-				throw new Error('La torretta specificata non esiste');
-			}
+			const esiste = await Filiale.getById(value);
+			if (!esiste) throw new Error('La filiale specificata non esiste');
 			return true;
 		}),
 ];

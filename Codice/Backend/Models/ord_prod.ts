@@ -14,7 +14,6 @@ export interface OrdProdRecord extends OrdProdInput {
 	id_ord_prod: number;
 }
 
-// Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 export class OrdProd {
 	// definisco il metodo per creare un nuovo utente
 	static async create(data: OrdProdInput): Promise<number> {
@@ -53,20 +52,6 @@ export class OrdProd {
 				(err: Error | null, row: OrdProdRecord) => {
 					if (err) reject(err);
 					else resolve(row);
-				}
-			);
-		});
-	}
-
-	// Ricerca per Ref_Ordine
-	static async findByRefOrdine(ref_ordine: number): Promise<OrdProdRecord[]> {
-		return new Promise((resolve, reject) => {
-			db.all(
-				'SELECT * FROM ord_prod WHERE ref_ordine = ?',
-				[ref_ordine],
-				(err: Error | null, rows: OrdProdRecord[]) => {
-					if (err) reject(err);
-					else resolve(rows);
 				}
 			);
 		});
@@ -133,6 +118,44 @@ export class OrdProd {
 				function (this: RunResult, err: Error | null) {
 					if (err) reject(err);
 					else resolve();
+				}
+			);
+		});
+	}
+
+	// Selezione di tutti i Prodotti Ordinati per Ordine
+	static async getByOrdine(ref_ordine: number): Promise<OrdProdRecord[] | null> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM ord_prod WHERE ref_ordine = ?',
+				[ref_ordine],
+				(err: Error | null, rows: OrdProdRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessun prodotto nell\'ordine trovato');
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
+
+	// Selezione dei Prodotti Ordinati per Ordine e se Romana
+	static async getByOrdineAndRomana(ref_ordine: number, is_romana: boolean): Promise<OrdProdRecord[] | null> {
+		return new Promise((resolve, reject) => {
+			db.all(
+				'SELECT * FROM ord_prod WHERE ref_ordine = ? AND is_romana = ?',
+				[ref_ordine, is_romana],
+				(err: Error | null, rows: OrdProdRecord[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessun prodotto nell\'ordine trovato');
+						resolve([]);
+					} else resolve(rows);
 				}
 			);
 		});

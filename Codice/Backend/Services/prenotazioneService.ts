@@ -38,7 +38,7 @@ class PrenotazioneService {
             const input: PrenotazioneInput = {
                 numero_persone: data.numero_persone,
                 data_ora_prenotazione: data.data_ora_prenotazione,
-                ref_cliente: data.ref_cliente || null,
+                ref_cliente: data.ref_cliente,
                 ref_torretta: torrettaSelezionata
             };
 
@@ -49,22 +49,41 @@ class PrenotazioneService {
         }
     }
 
+    static async prenotaLoco(data: PrenotazioneRequest): Promise<number> {
+        try {
+            // Recupera torrette libere alla data e filiale specificate
+            const torretteLibere = await Torretta.getTorretteLibere(
+                data.ref_filiale,
+                data.data_ora_prenotazione
+            );
+
+            const torrettaSelezionata = torretteLibere.length > 0 ? torretteLibere[0].id_torretta : null;
+
+            if (!torrettaSelezionata) {
+                throw new Error('Nessuna torretta disponibile per questa data/ora');
+            }
+
+            const input: PrenotazioneInput = {
+                numero_persone: data.numero_persone,
+                data_ora_prenotazione: data.data_ora_prenotazione,
+                ref_cliente: data.ref_cliente,
+                ref_torretta: torrettaSelezionata
+            };
+
+            const otp = this.generateOTP();
+            return await Prenotazione.createLocale(input, otp);
+        } catch (error) {
+            console.error('❌ [PrenotazioneService] Errore durante la prenotazione locale:', error);
+            throw error;
+        }
+    }
+
     static async confermaPrenotazione(id_prenotazione: number): Promise<void> {
         try {
             let otp = this.generateOTP();
             await Prenotazione.confermaPrenotazione(id_prenotazione, otp);
         } catch (error) {
             console.error('❌ [PrenotazioneService] Errore durante la conferma della prenotazione:', error);
-            throw error;
-        }
-    }
-
-    static async prenotaLoco(data: PrenotazioneInput): Promise<number> {
-        try {
-            const otp = this.generateOTP();
-            return await Prenotazione.createLocale(data, otp);
-        } catch (error) {
-            console.error('❌ [PrenotazioneService] Errore durante la prenotazione locale:', error);
             throw error;
         }
     }
@@ -167,9 +186,9 @@ class PrenotazioneService {
 		}
 
 		for (const ordine of ordini) {
-			const prodotti = await OrdProd.findByRefOrdine(ordine.id_ordine);
+			const prodotti = await OrdProd.getByOrdine(ordine.id_ordine);
 
-			if (prodotti.length === 0) continue;
+			if (prodotti == null || prodotti.length === 0) continue;
 
 			let hasPreparazione = false;
 			let hasInConsegna = false;
