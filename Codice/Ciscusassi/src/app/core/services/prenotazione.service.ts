@@ -37,9 +37,10 @@ export class PrenotazioneService {
     return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni/cliente/${clienteId}`);
   }
 
-  getPrenotazioniDelGiorno(): Observable<ApiResponse<PrenotazioneRecord[]>> {
-    return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni/oggi`);
+  getPrenotazioniDelGiornoFiliale(filialeId: number): Observable<ApiResponse<PrenotazioneRecord[]>> {
+    return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni/oggi/${filialeId}`);
   }
+
 
   getTavoliInUso(): Observable<any> {
     return this.http.get(`${this.apiURL}/tavoli-in-uso`);

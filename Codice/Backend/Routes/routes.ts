@@ -137,10 +137,13 @@ router.get('/prenotazione/:id', PrenotazioneController.getPrenotazioneById);
 
 router.get('/prenotazioni/cliente/:clienteId', PrenotazioneController.getPrenotazioniByCliente);
 
-router.get('/prenotazioni/oggi', 
-	PrenotazioneController.getPrenotazioniDelGiorno,
+router.get(
+	'/prenotazioni/oggi/:filiale',
 	authMiddleware,
-	roleMiddleware(['amministratore', 'cameriere'])
+	roleMiddleware(['amministratore', 'cameriere']),
+	prenotazioneValidator.getPrenotazioniDelGiornoValidator,
+	prenotazioneValidator.validate,
+	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
 
 router.get('/tavoli-in-uso', 

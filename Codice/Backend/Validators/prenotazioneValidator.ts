@@ -1,8 +1,9 @@
-import { body, validationResult } from 'express-validator'
+import { body, param, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Prenotazione from '../Models/prenotazione';
 import Cliente from '../Models/cliente';
 import Torretta from '../Models/torretta';
+import Filiale from '../Models/filiale';
 
 const prenotazioneInputValidator = [
   body('numero_persone')
@@ -101,6 +102,21 @@ const prenotazioneUpdateValidator = [
   }),
 ];
 
+const getPrenotazioniDelGiornoValidator = [
+	param('filiale')
+		.notEmpty().withMessage('ID filiale obbligatorio')
+		.isInt({ min: 1 }).withMessage('ID filiale deve essere un intero positivo')
+    .bail()
+		.custom(async (value) => {
+			const id = parseInt(value);
+			const filialeEsiste = await Filiale.getById(id);
+			if (!filialeEsiste) {
+				throw new Error('La filiale specificata non esiste');
+			}
+			return true;
+		}),
+];
+
 const validate = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -114,5 +130,6 @@ export default {
     validate,
     prenotazioneInputValidator,
     prenotazioneInputLocoValidator,
-    prenotazioneUpdateValidator
+    prenotazioneUpdateValidator,
+    getPrenotazioniDelGiornoValidator,
 }
