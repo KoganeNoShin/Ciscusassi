@@ -16,6 +16,8 @@ import prodottoValidator from '../Validators/prodottoValidator';
 import filialeValidator from '../Validators/filialeValidator';
 import PrenotazioneController from '../Controllers/prenotazioneController';
 import prenotazioneValidator from '../Validators/prenotazioneValidator';
+import OrdProdController from '../Controllers/ordprodController';
+import ordprodValidator from '../Validators/ordprodValidator';
 
 const router = express.Router();
 
@@ -83,6 +85,24 @@ router.get(
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	ImpiegatoController.getAllImpiegati
+);
+
+// Route per OrdProd
+router.get(
+	'/ordprod/:id',
+	authMiddleware,
+	ordprodValidator.getProdottiByOrdineValidator,
+	ordprodValidator.validate,
+	OrdProdController.getProdottiByOrdine
+);
+
+router.put(
+	'/ordprod/:id/cambiaStato',
+	authMiddleware,
+	roleMiddleware(['amministratore', 'chef', 'cameriere']),
+	ordprodValidator.cambiaStatoProdottoValidator,
+	ordprodValidator.validate,
+	OrdProdController.cambiaStatoProdottoOrdine
 );
 
 // Route per i Pagamenti

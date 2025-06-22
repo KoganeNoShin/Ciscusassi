@@ -10,7 +10,7 @@ class OrdProdController {
                 return;
             }
 
-            const prodotti = await OrdProdService.getProdottiByOrdine(ordineId, req.query.romana === 'true');
+            const prodotti = await OrdProdService.getProdottiByOrdine(ordineId);
             if (prodotti) {
                 res.status(200).json({ success: true, data: prodotti });
             } else {
@@ -21,13 +21,24 @@ class OrdProdController {
             res.status(500).json({ success: false, message: 'Errore interno del server'});
         }
     }
+
+    static async cambiaStatoProdottoOrdine(req: Request, res: Response): Promise<void> {
+        try {
+            const idProdotto = parseInt(req.params.id);
+            const nuovoStato = req.body.stato;
+
+            if (isNaN(idProdotto) || !nuovoStato) {
+                res.status(400).json({ success: false, message: 'ID prodotto o stato non valido' });
+                return;
+            }
+
+            await OrdProdService.cambiaStatoProdottoOrdine(idProdotto, nuovoStato);
+            res.status(200).json({ success: true, message: 'Stato del prodotto aggiornato con successo' });
+        } catch (error) {
+            console.error('❌ [OrdProdController] Errore durante il cambio di stato del prodotto dell\'ordine:', error);
+            res.status(500).json({ success: false, message: 'Errore interno del server' });
+        }
+    }
 }
 
 export default OrdProdController;
-
-
-	
-
-    // static async getProdottiByOrdine(req: Request, res: Response): Promise<void> {
-
-    // static async cambiaStatoProdottoOrdine(req: Request, res: Response): Promise<void> {

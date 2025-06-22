@@ -110,6 +110,25 @@ export class OrdProd {
 	}
 
 // ----------------------------------CORRETTO----------------------------------
+	// Selezione di un Prodotto Ordinato per ID
+	static async getById(id_ord_prod: number): Promise<OrdProdRecord | null>{
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT * FROM ord_prod WHERE id_ord_prod = ?',
+				[id_ord_prod],
+				(err: Error | null, row: OrdProdRecord) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.warn(`⚠️ [DB WARNING] Prodotto con ID ${id_ord_prod} non trovato`);
+						resolve(null);
+					} else resolve(row);
+				}
+			);
+		});
+	}
+
 	// Selezione di tutti i Prodotti Ordinati per Ordine
 	static async getByOrdine(ref_ordine: number): Promise<OrdProdRecord[] | null> {
 		return new Promise((resolve, reject) => {

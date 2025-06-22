@@ -2,7 +2,6 @@ import { body, param, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Prenotazione from '../Models/prenotazione';
 import Cliente from '../Models/cliente';
-import Torretta from '../Models/torretta';
 import Filiale from '../Models/filiale';
 
 const orariValidi = ['12:00', '13:30', '19:30', '21:00'];

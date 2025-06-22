@@ -8,9 +8,9 @@ interface OrdProdEstended extends ProdottoInput {
 }
 
 class OrdProdService {
-    static async getProdottiByOrdine(ordineId: number, romana: boolean): Promise<OrdProdEstended[] | null> {
+    static async getProdottiByOrdine(ordineId: number): Promise<OrdProdEstended[] | null> {
         try {
-            const ord_prod = await OrdProd.getByOrdineAndRomana(ordineId, romana);
+            const ord_prod = await OrdProd.getByOrdine(ordineId);
             if (!ord_prod || ord_prod.length === 0) {
                 return null;
             }
