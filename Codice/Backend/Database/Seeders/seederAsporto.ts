@@ -1,10 +1,9 @@
 import asporto from '../../Models/asporto';
-import cliente from '../../Models/cliente';
-import pagamento from '../../Models/pagamento';
-import prodotto from '../../Models/prodotto';
 import aspProd from '../../Models/asp_prod';
+import pagamento from '../../Models/pagamento';
+import cliente from '../../Models/cliente';
+import prodotto from '../../Models/prodotto';
 import filiale from '../../Models/filiale';
-
 import { faker } from '@faker-js/faker';
 
 export async function generateAsporto(count: number): Promise<string> {
@@ -21,24 +20,23 @@ export async function generateAsporto(count: number): Promise<string> {
 		if (!filiali || filiali.length === 0) throw new Error("Nessuna filiale trovata");
 		const idFiliali = filiali.map((f) => f.id_filiale);
 
-		for(let a = 2023; a <= 2025; a++) {
-			for(let m = 0; m < 12; m++) {
+		for (let a = 2023; a <= 2025; a++) {
+			for (let m = 0; m < 12; m++) {
 				for (let i = 0; i < count; i++) {
 					let data_ora_consegna: string;
-					if(a < 2025) {
+					if (a < 2025) {
 						data_ora_consegna = new Date(a, m, faker.number.int({ min: 1, max: 28 }),
-						faker.number.int({ min: 0, max: 23 }),
-						faker.number.int({ min: 0, max: 59 }),
-						faker.number.int({ min: 0, max: 59 })
+							faker.number.int({ min: 0, max: 23 }),
+							faker.number.int({ min: 0, max: 59 }),
+							faker.number.int({ min: 0, max: 59 })
 						).toISOString();
-					}
-					else {
-						data_ora_consegna = new Date(a, 
-						faker.number.int({ min: 1, max: 6}), 
-						faker.number.int({ min: 1, max: 28 }),
-						faker.number.int({ min: 0, max: 23 }),
-						faker.number.int({ min: 0, max: 59 }),
-						faker.number.int({ min: 0, max: 59 })
+					} else {
+						data_ora_consegna = new Date(a,
+							faker.number.int({ min: 1, max: 6 }),
+							faker.number.int({ min: 1, max: 28 }),
+							faker.number.int({ min: 0, max: 23 }),
+							faker.number.int({ min: 0, max: 59 }),
+							faker.number.int({ min: 0, max: 59 })
 						).toISOString();
 					}
 
@@ -49,9 +47,7 @@ export async function generateAsporto(count: number): Promise<string> {
 					const data_ora_pagamento = data_ora_consegna;
 					const ref_pagamento = await pagamento.create({ importo, data_ora_pagamento });
 
-					if (!ref_pagamento) {
-						throw new Error("Errore durante la creazione del pagamento");
-					}
+					if (!ref_pagamento) throw new Error("Errore durante la creazione del pagamento");
 
 					const ref_filiale = faker.helpers.arrayElement(idFiliali);
 
@@ -67,16 +63,18 @@ export async function generateAsporto(count: number): Promise<string> {
 						console.log(`🏍️  Abbiamo consegnato d'asporto in via ${indirizzo} ed in data ${data_ora_consegna}!`);
 
 						const nProdotti = faker.number.int({ min: 3, max: 8 });
-						for (let j = 0; j < nProdotti; j++) {
+						const prodottiPromises = Array.from({ length: nProdotti }, async () => {
 							const ref_prodotto = faker.helpers.arrayElement(idProdotti);
-							await aspProd.create({ ref_asporto: id_asporto, ref_prodotto});
+							await aspProd.create({ ref_asporto: id_asporto, ref_prodotto });
 							console.log(`🛍️  Prodotto ${ref_prodotto} associato all'asporto ${id_asporto}`);
-						}
+						});
+
+						await Promise.all(prodottiPromises);
 					} catch (err) {
 						console.error(`🔫 In via ${indirizzo} abita un pazzo, quindi non abbiamo consegnato d'asporto! Causa di spavento: ${err}`);
 						throw err;
 					}
-				} 
+				}
 			}
 		}
 
@@ -86,5 +84,6 @@ export async function generateAsporto(count: number): Promise<string> {
 		throw err;
 	}
 }
+
 
 export default generateAsporto;

@@ -52,12 +52,24 @@ async function createTables() {
 }
 
 async function seedDB() {
-	await generateCliente(15);
-	await generateFiliale();
+	// 1. Avvia in parallelo clienti e filiali
+	const [_, __] = await Promise.all([
+		generateCliente(15),
+		generateFiliale()
+	]);
+
+	// 2. Utenti fissi ha bisogno delle filiali già esistenti
 	await generateUtentiFissi();
+
+	// 3. Prodotto può essere fatto a parte
 	await generateProdotto();
-	await generateAsporto(10);
-	await generatePrenotazione(10);
+
+	// 4. Asporto e Prenotazioni possono partire in parallelo, se usano dati già pronti
+	await Promise.all([
+		generateAsporto(200), // Toccalo e ti uccido
+		generatePrenotazione(100)
+	]);
+	console.log('✅ Database seed completato con successo!');
 }
 
 async function run() {
