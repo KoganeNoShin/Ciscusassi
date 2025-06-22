@@ -13,6 +13,6 @@ export interface PrenotazioneRecord extends PrenotazioneInput {
 export interface PrenotazioneRequest {
 	numero_persone: number;
 	data_ora_prenotazione: string;
-	ref_cliente: number;
+	ref_cliente: number | null;
 	ref_filiale: number;
 }

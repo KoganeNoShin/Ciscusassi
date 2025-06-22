@@ -69,7 +69,7 @@ export class PrenotazioneService {
 		return this.http.post<ApiResponse<any>>(`${this.apiURL}/prenota`, data);
 	}
 
-	prenotaLoco(data: PrenotazioneInput): Observable<ApiResponse<any>> {
+	prenotaLoco(data: PrenotazioneRequest): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/prenotaLoco`,
 			data
