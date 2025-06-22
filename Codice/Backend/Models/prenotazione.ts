@@ -172,7 +172,7 @@ export class Prenotazione {
 				}
 			);
 		});
-	}
+	} 
 
 	static async getPrenotazioniAttualiEFuture(): Promise<PrenotazioneRecord[]> {
 	return new Promise((resolve, reject) => {

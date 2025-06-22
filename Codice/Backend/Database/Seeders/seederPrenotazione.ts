@@ -77,8 +77,10 @@ export async function generatePrenotazione(count: number): Promise<string> {
 							id_prenotazione,
 							dataPren,
 							numero_persone,
-							clienti
+							clienti,
+							tipo // <- AGGIUNTO tipo prenotazione
 						);
+
 					} else {
 						console.log(`🕒 Prenotazione futura: nessun ordine per ${id_prenotazione}`);
 					}
@@ -98,7 +100,8 @@ async function generateOrdini(
 	id_prenotazione: number,
 	data_ora_prenotazione: Date,
 	numero_persone: number,
-	clienti: ClienteRecord[]
+	clienti: ClienteRecord[],
+	tipo: 'passato' | 'oggi' | 'futuro' // Aggiunto parametro
 ): Promise<void> {
 	let id_ordine: number;
 
@@ -113,7 +116,7 @@ async function generateOrdini(
 			ref_cliente: ref_cliente_val,
 		});
 		await ordine.addPagamento(
-			await generateOrdProd(id_ordine, data_ora_prenotazione),
+			await generateOrdProd(id_ordine, data_ora_prenotazione, tipo),
 			id_ordine
 		);
 		console.log(`🛎️  Ordine creato per ${username} (prenotazione ${id_prenotazione})`);
@@ -141,9 +144,11 @@ async function generateOrdini(
 	}
 }
 
+
 async function generateOrdProd(
 	id_ordine: number,
-	data_ora_base: Date
+	data_ora_base: Date,
+	tipo: 'passato' | 'oggi' | 'futuro'
 ): Promise<number> {
 	const prodotti = await prodotto.getAll();
 	if (!prodotti || prodotti.length === 0) throw new Error('Nessun prodotto trovato');
@@ -151,20 +156,27 @@ async function generateOrdProd(
 	const numProdotti = faker.number.int({ min: 3, max: 8 });
 	let importo = 0;
 	let data_ora = new Date(data_ora_base);
-	const statiPossibili = ['attesa', 'preparazione', 'in-consegna', 'consegnato'];
 
 	for (let i = 0; i < numProdotti; i++) {
 		const prod = faker.helpers.arrayElement(prodotti);
 		importo += prod.costo;
+		data_ora = new Date(data_ora.getTime() + 60 * 60 * 1000); // +1h
 
-		data_ora = new Date(data_ora.getTime() + 60 * 60 * 1000); // +1 ora per ogni prodotto
+		let stato: string;
+		if (tipo === 'passato') {
+			stato = 'IN CONSEGNA';
+		} else if (tipo === 'oggi') {
+			stato = faker.helpers.arrayElement(['IN CONSEGNA', 'PREPARAZIONE', 'CONSEGNATO']);
+		} else {
+			stato = 'attesa'; // fallback se mai chiamato (ma non verrà)
+		}
 
 		try {
 			await ord_prod.create({
 				ref_ordine: id_ordine,
 				ref_prodotto: prod.id_prodotto,
 				is_romana: false,
-				stato: faker.helpers.arrayElement(statiPossibili),
+				stato,
 			});
 			console.log(`🧾 Prodotto ${prod.nome} aggiunto all’ordine ${id_ordine}`);
 		} catch (err) {
