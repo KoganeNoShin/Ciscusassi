@@ -177,6 +177,46 @@ const getPrenotazioniDelGiornoValidator = [
 		}),
 ];
 
+const comfermaPrenotazioneValidator = [
+	body('id_prenotazione')
+		.notEmpty().withMessage('L\'ID della prenotazione è obbligatorio!')
+		.isInt({ min: 1 }).withMessage('L\'ID della prenotazione deve essere un intero positivo')
+		.bail()
+		.custom(async (id) => {
+			const prenotazione = await Prenotazione.getById(id);
+
+			if (!prenotazione) {
+				throw new Error('Prenotazione non trovata');
+			}
+
+			if (prenotazione.otp) {
+				throw new Error('La prenotazione è già confermata');
+			}
+
+			return true;
+		}),
+];
+
+const GetOTPValidator = [
+	body('id_prenotazione')
+		.notEmpty().withMessage('L\'ID della prenotazione è obbligatorio!')
+		.isInt({ min: 1 }).withMessage('L\'ID della prenotazione deve essere un intero positivo')
+		.bail()
+		.custom(async (id) => {
+			const prenotazione = await Prenotazione.getById(id);
+
+			if (!prenotazione) {
+				throw new Error('Prenotazione non trovata');
+			}
+
+			if (!prenotazione.otp) {
+				throw new Error('La prenotazione non è stata confermata');
+			}
+
+			return true;
+		}),
+];
+
 const validate = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -192,4 +232,6 @@ export default {
     prenotazioneInputLocoValidator,
     prenotazioneUpdateValidator,
     getPrenotazioniDelGiornoValidator,
+    comfermaPrenotazioneValidator,
+    GetOTPValidator
 }

@@ -196,6 +196,44 @@ export class Prenotazione {
 			);
 		});
 	}
+
+	static async confermaPrenotazione(id_prenotazione: number, otp: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE prenotazioni SET otp = ? WHERE id_prenotazione = ?',
+				[otp, id_prenotazione],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante conferma prenotazione:', err.message);
+						reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessuna prenotazione aggiornata con ID ${id_prenotazione}`);
+						return reject(new Error(`Nessuna prenotazione trovata con ID ${id_prenotazione}`));
+					}
+					else resolve();
+				}
+			);
+		});
+	}
+
+	static async getOTPById(id_prenotazione: number): Promise<string | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT otp FROM prenotazioni WHERE id_prenotazione = ?',
+				[id_prenotazione],
+				(err: Error | null, row: { otp: string | null } | undefined) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT OTP:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.warn(`⚠️ [DB WARNING] Nessuna prenotazione trovata con ID ${id_prenotazione}`);
+						resolve(null);
+					} else resolve(row.otp);
+				}
+			);
+		});
+	}
 }
 
 

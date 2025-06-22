@@ -152,6 +152,13 @@ router.get('/tavoli-in-uso',
 	roleMiddleware(['amministratore', 'cameriere'])
 );
 
+router.get(
+	'/prenotazioni/:id/otp',
+	prenotazioneValidator.GetOTPValidator,
+	prenotazioneValidator.validate,
+	PrenotazioneController.getOTPById
+);
+
 router.post(
 	'/prenota',
 	prenotazioneValidator.prenotazioneInputValidator,
@@ -181,6 +188,15 @@ router.delete(
 	'/eliminaPrenotazione/:id',
 	authMiddleware,
 	PrenotazioneController.eliminaPrenotazione
+);
+
+router.post(
+	'/prenotazioni/conferma',
+	prenotazioneValidator.comfermaPrenotazioneValidator,
+	prenotazioneValidator.validate,
+	authMiddleware,
+	roleMiddleware(['amministratore', 'cameriere']),
+	PrenotazioneController.confermaPrenotazione
 );
 
 

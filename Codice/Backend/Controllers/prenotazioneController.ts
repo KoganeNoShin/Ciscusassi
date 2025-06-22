@@ -40,6 +40,26 @@ class PrenotazioneController {
         }
     }
 
+    static async confermaPrenotazione(req: Request, res: Response): Promise<void> {
+        try {
+            const id_prenotazione = parseInt(req.body.id_prenotazione);
+            await PrenotazioneService.confermaPrenotazione(id_prenotazione);
+
+            res.json({
+                success: true,
+                message: 'Prenotazione confermata con successo'
+            });
+        } catch (err) {
+            console.error('❌ Errore in confermaPrenotazione:', err);
+            res.status(500).json({
+                success: false,
+                message: 'Errore interno del server',
+                error: err instanceof Error ? err.message : String(err),
+            });
+        }
+    }
+
+
     static async modificaPrenotazione(req: Request, res: Response): Promise<void> {
         try {
             const id_prenotazione = parseInt(req.body.id_prenotazione);
@@ -63,6 +83,25 @@ class PrenotazioneController {
             await PrenotazioneService.eliminaPrenotazione(parseInt(req.params.id));
 
             res.json({ success: true, message: 'Prenotazione eliminata con successo' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                success: false,
+                message: 'Errore interno del server',
+                error: (err instanceof Error ? err.message : String(err))
+            });
+        }
+    }
+
+    static async getOTPById(req: Request, res: Response): Promise<void> {
+        try {
+            const otp = await PrenotazioneService.getOTPById(parseInt(req.params.id));
+
+            if (otp) res.json({ success: true, data: otp });
+            else res.status(404).json({
+                success: false,
+                message: 'Prenotazione non trovata o OTP non disponibile',
+            });
         } catch (err) {
             console.error(err);
             res.status(500).json({

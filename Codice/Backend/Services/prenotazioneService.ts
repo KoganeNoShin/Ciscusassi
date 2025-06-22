@@ -20,33 +20,42 @@ class PrenotazioneService {
     }
 
     static async prenota(data: PrenotazioneRequest): Promise<number> {
-	try {
-		// Recupera torrette libere alla data e filiale specificate
-		const torretteLibere = await Torretta.getTorretteLibere(
-			data.ref_filiale,
-			data.data_ora_prenotazione
-		);
+        try {
+            // Recupera torrette libere alla data e filiale specificate
+            const torretteLibere = await Torretta.getTorretteLibere(
+                data.ref_filiale,
+                data.data_ora_prenotazione
+            );
 
-		const torrettaSelezionata = torretteLibere.length > 0 ? torretteLibere[0].id_torretta : null;
+            const torrettaSelezionata = torretteLibere.length > 0 ? torretteLibere[0].id_torretta : null;
 
-		if (!torrettaSelezionata) {
-			throw new Error('Nessuna torretta disponibile per questa data/ora');
-		}
+            if (!torrettaSelezionata) {
+                throw new Error('Nessuna torretta disponibile per questa data/ora');
+            }
 
-		const input: PrenotazioneInput = {
-			numero_persone: data.numero_persone,
-			data_ora_prenotazione: data.data_ora_prenotazione,
-			ref_cliente: data.ref_cliente || null,
-			ref_torretta: torrettaSelezionata
-		};
+            const input: PrenotazioneInput = {
+                numero_persone: data.numero_persone,
+                data_ora_prenotazione: data.data_ora_prenotazione,
+                ref_cliente: data.ref_cliente || null,
+                ref_torretta: torrettaSelezionata
+            };
 
-		return await Prenotazione.create(input);
-	} catch (error) {
-		console.error('❌ [PrenotazioneService] Errore durante la prenotazione:', error);
-		throw error;
-	}
-}
+            return await Prenotazione.create(input);
+        } catch (error) {
+            console.error('❌ [PrenotazioneService] Errore durante la prenotazione:', error);
+            throw error;
+        }
+    }
 
+    static async confermaPrenotazione(id_prenotazione: number): Promise<void> {
+        try {
+            let otp = this.generateOTP();
+            await Prenotazione.confermaPrenotazione(id_prenotazione, otp);
+        } catch (error) {
+            console.error('❌ [PrenotazioneService] Errore durante la conferma della prenotazione:', error);
+            throw error;
+        }
+    }
 
     static async prenotaLoco(data: PrenotazioneInput): Promise<number> {
         try {
@@ -72,6 +81,19 @@ class PrenotazioneService {
             return await Prenotazione.delete(id);
         } catch (error) {
             console.error('❌ [PrenotazioneService] Errore durante l\'eliminazione della prenotazione:', error);
+            throw error;
+        }
+    }
+
+    static async getOTPById(id: number): Promise<string | null> {
+        try {
+            const prenotazione = await Prenotazione.getById(id);
+            if (prenotazione) {
+                return prenotazione.otp || null;
+            }
+            return null;
+        } catch (error) {
+            console.error('❌ [PrenotazioneService] Errore durante il recupero dell\'OTP:', error);
             throw error;
         }
     }
