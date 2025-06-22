@@ -7,6 +7,19 @@
 <ion-content [fullscreen]="true" class="custom-content">
   <h1 class="titolo-pagina">VISUALIZZA TAVOLI</h1>
 
+  <!-- Chips filtro -->
+  <div class="filtro-chip-container">
+    <ion-chip (click)="filtroStato = 'tutti'" [class.activated]="filtroStato === 'tutti'">
+      <ion-label>Tutti</ion-label>
+    </ion-chip>
+    <ion-chip (click)="filtroStato = 'in-lavorazione'" [class.activated]="filtroStato === 'in-lavorazione'">
+      <ion-label>In lavorazione</ion-label>
+    </ion-chip>
+    <ion-chip (click)="filtroStato = 'non-in-lavorazione'" [class.activated]="filtroStato === 'non-in-lavorazione'">
+      <ion-label>Non in lavorazione</ion-label>
+    </ion-chip>
+  </div>
+
   <!-- Legenda -->
   <div class="legend-styled">
     <div class="legend-item" *ngFor="let voce of legenda">
@@ -18,10 +31,12 @@
   <!-- Tavoli -->
   <ion-grid>
     <ion-row class="ion-justify-content-center">
-      <ion-col size="6" size-md="4" *ngFor="let tavolo of tavoli">
-        <div class="tavolo-wrapper"
-             [class.clickable]="isCliccabile(tavolo)"
-             (click)="handleClick(tavolo)">
+      <ion-col size="6" size-md="4" *ngFor="let tavolo of tavoliFiltrati">
+        <div
+          class="tavolo-wrapper"
+          [class.clickable]="isCliccabile(tavolo)"
+          (click)="handleClick(tavolo)"
+        >
           <div class="circle" [ngClass]="tavolo.stato">{{ tavolo.numero }}</div>
           <div *ngIf="tavolo.stato === 'senza-ordini'" class="table-info white-info">
             <div class="nome">{{ tavolo.nome }}</div>

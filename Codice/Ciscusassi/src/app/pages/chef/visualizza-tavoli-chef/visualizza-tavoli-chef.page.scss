@@ -73,6 +73,35 @@ ion-content.custom-content {
   }
 }
 
+/* Chips filtro */
+.filtro-chip-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+ion-chip {
+  cursor: pointer;
+  --background: #e0e0e0;
+  --color: #222;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 0 12px;
+  height: 36px;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 18px;
+  user-select: none;
+}
+
+ion-chip.activated {
+  --background: #388e3c;
+  --color: #fff;
+  box-shadow: 0 0 8px rgba(56, 142, 60, 0.7);
+}
+
 /* Tavoli */
 .tavolo-wrapper {
   text-align: center;
