@@ -157,10 +157,8 @@ export class Prenotazione {
 			db.all(`
 				SELECT p.*
 				FROM prenotazioni p
-				JOIN ordini o ON p.id_prenotazione = o.ref_prenotazione
 				JOIN torrette t ON p.ref_torretta = t.id_torretta
-				WHERE o.ref_pagamento IS NOT NULL
-				AND DATE(p.data_ora_prenotazione) = DATE('now')
+				WHERE DATE(p.data_ora_prenotazione) = DATE('now')
 				AND t.ref_filiale = ?`,
 				[id_filiale],
 				(err: Error | null, rows: PrenotazioneRecord[]) => {
@@ -168,7 +166,7 @@ export class Prenotazione {
 						console.error('❌ [DB ERROR] Errore durante SELECT del giorno:', err.message);
 						reject(err);
 					} else if (!rows || rows.length === 0) {
-						console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovato del giorno');
+						console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovato del giorno per la filiale:', id_filiale);
 						resolve([]);
 					} else resolve(rows);
 				}

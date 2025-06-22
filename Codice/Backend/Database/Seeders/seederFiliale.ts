@@ -154,7 +154,7 @@ export async function generateFiliale(): Promise<string> {
 			// --- TORRETTE ---
 			for (let j = 0; j < num_tavoli; j++) {
 				try {
-					await torretta.create({ ref_filiale: i });
+					await torretta.create({ ref_filiale: id_filiale });
 					console.log(
 						`🏰 Torretta aggiunta alla filiale in via ${vieFiliali[i]}!`
 					);

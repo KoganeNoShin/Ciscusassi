@@ -171,7 +171,7 @@ class PrenotazioneController {
 
     static async getPrenotazioniDelGiornoFiliale(req: Request, res: Response): Promise<void> {
         try {
-            const prenotazioni = await PrenotazioneService.getPrenotazioniDelGiornoFiliale(parseInt(req.params.clienteId));
+            const prenotazioni = await PrenotazioneService.getPrenotazioniDelGiornoFiliale(parseInt(req.params.filiale));
 
             if (prenotazioni) res.json({ success: true, data: prenotazioni });
             else res.status(404).json({

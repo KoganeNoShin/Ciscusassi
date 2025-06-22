@@ -7,72 +7,83 @@ import ord_prod from '../../Models/ord_prod';
 import pagamento from '../../Models/pagamento';
 
 import { faker } from '@faker-js/faker';
+import Filiale from '../../Models/filiale';
 
 export async function generatePrenotazione(count: number): Promise<string> {
 	try {
-		const torrette = await torretta.getAll();
-		const idTorrette = torrette.map((t) => t.id_torretta);
-
+		const filiali = await Filiale.getAll();
 		const clienti: ClienteRecord[] | null = await cliente.findAll();
-		if (!clienti || clienti.length === 0)
-			throw new Error('Nessun cliente trovato');
+		if (!clienti || clienti.length === 0) throw new Error('Nessun cliente trovato');
 
-		for (let i = 0; i < count; i++) {
-			let id_prenotazione: number;
-			const numero_persone = faker.number.int({ min: 1, max: 8 });
-			const ref_cliente_prenotazione =
-				faker.number.int({ min: 0, max: 2 }) > 0
-					? faker.helpers.arrayElement(clienti)
-					: null;
-			const ref_torretta = faker.helpers.arrayElement(idTorrette);
-			const otp = faker.string.alphanumeric({ length: 6 });
+		const perTipo = {
+			passato: Math.max(0, count - 20),
+			oggi: Math.min(10, count),
+			futuro: Math.min(10, count - 10),
+		};
 
-			// 50% passate, 25% oggi, 25% future
-			const oggiAlle1330 = new Date();
-			oggiAlle1330.setHours(13, 30, 0, 0);
+		const getDataPrenotazione = (tipo: keyof typeof perTipo): Date => {
+			if (tipo === 'oggi') {
+				const d = new Date();
+				d.setHours(13, 30, 0, 0);
+				return d;
+			} else if (tipo === 'futuro') {
+				return faker.date.soon({ days: 5 });
+			} else {
+				return faker.date.past({ years: 2 });
+			}
+		};
 
-			const data_ora_prenotazione = faker.helpers.arrayElement([
-				faker.date.past({ years: 2 }),
-				oggiAlle1330,
-				faker.date.soon({ days: 5 }),
-			]);
+		for (const filialeScelta of filiali) {
+			for (const tipo of Object.keys(perTipo) as (keyof typeof perTipo)[]) {
+				for (let i = 0; i < perTipo[tipo]; i++) {
+					const dataPren = getDataPrenotazione(tipo);
+					const torretteLibere = await torretta.getTorretteLibere(filialeScelta.id_filiale, dataPren.toISOString());
 
+					if (torretteLibere.length === 0) {
+						console.warn(`⚠️ Nessuna torretta libera per ${filialeScelta.indirizzo} alle ${dataPren.toISOString()}`);
+						continue;
+					}
 
-			try {
-				if (ref_cliente_prenotazione) {
-					id_prenotazione = await prenotazione.create({
-						numero_persone,
-						data_ora_prenotazione: data_ora_prenotazione.toISOString(),
-						ref_cliente: ref_cliente_prenotazione.numero_carta,
-						ref_torretta,
-					});
-				} else {
-					id_prenotazione = await prenotazione.createLocale(
-						{
+					const numero_persone = faker.number.int({ min: 1, max: 8 });
+					const ref_cliente_prenotazione = faker.number.int({ min: 0, max: 2 }) > 0
+						? faker.helpers.arrayElement(clienti)
+						: null;
+					const ref_torretta = faker.helpers.arrayElement(torretteLibere).id_torretta;
+					const otp = faker.string.alphanumeric({ length: 6 });
+
+					let id_prenotazione: number;
+
+					if (ref_cliente_prenotazione) {
+						id_prenotazione = await prenotazione.create({
 							numero_persone,
-							data_ora_prenotazione: data_ora_prenotazione.toISOString(),
+							data_ora_prenotazione: dataPren.toISOString(),
+							ref_cliente: ref_cliente_prenotazione.numero_carta,
+							ref_torretta,
+						});
+					} else {
+						id_prenotazione = await prenotazione.createLocale({
+							numero_persone,
+							data_ora_prenotazione: dataPren.toISOString(),
 							ref_cliente: null,
 							ref_torretta,
-						},
-						otp
-					);
+						}, otp);
+					}
+
+					console.log(`Prenotazione ${tipo} - ${id_prenotazione} per ${numero_persone} persone (${ref_torretta})`);
+
+					if (tipo !== 'futuro') {
+						await generateOrdini(
+							ref_cliente_prenotazione,
+							id_prenotazione,
+							dataPren,
+							numero_persone,
+							clienti
+						);
+					} else {
+						console.log(`🕒 Prenotazione futura: nessun ordine per ${id_prenotazione}`);
+					}
 				}
-
-				console.log(
-					`Prenotazione di ${numero_persone} persone per il ${data_ora_prenotazione.toISOString()} con torretta ${ref_torretta} ${ref_cliente_prenotazione ? `online da ${ref_cliente_prenotazione.nome}` : 'in loco'}`
-				);
-			} catch (err) {
-				console.error(`Errore inserimento prenotazione: ${err}`);
-				throw err;
 			}
-
-			await generateOrdini(
-				ref_cliente_prenotazione,
-				id_prenotazione,
-				data_ora_prenotazione,
-				numero_persone,
-				clienti
-			);
 		}
 
 		return 'Prenotazioni generate con successo';
@@ -81,7 +92,6 @@ export async function generatePrenotazione(count: number): Promise<string> {
 		throw err;
 	}
 }
-
 
 async function generateOrdini(
 	ref_cliente: ClienteRecord | null,
