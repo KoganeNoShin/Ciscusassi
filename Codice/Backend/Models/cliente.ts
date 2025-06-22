@@ -11,7 +11,7 @@ export interface ClienteCredentials {
 	password: string;
 }
 
-// Definiamo il modello del nostro utente
+// Definiamo il modello del nostro Cliente
 export interface ClienteData extends ClienteCredentials {
 	nome: string;
 	cognome: string;
@@ -24,26 +24,9 @@ export interface ClienteRecord extends ClienteData {
 	punti: number;
 }
 
-// Interagisce direttamente con il database per le operazioni CRUD sugli utenti
+
 class Cliente {
-	static async updateToken(numeroCarta: number): Promise<string> {
-		const token = crypto.randomBytes(64).toString('hex'); // 128 caratteri random
-
-		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
-				[token, numeroCarta],
-				function (this: RunResult, err: Error) {
-					if (err) return reject(err);
-					resolve(token);
-				}
-			);
-		});
-	}
-
-	// definisco il metodo per creare un nuovo utente
 	static async create(data: ClienteData): Promise<number> {
-		// Definiamo i campi come quelli presi dal data passato come parametro
 		const { nome, cognome, data_nascita, email, password, image } = data;
 
 		const salt = await bcrypt.genSalt(10);
@@ -60,6 +43,24 @@ class Cliente {
 			);
 		});
 	}
+
+	static async updateToken(numeroCarta: number): Promise<string> {
+		const token = crypto.randomBytes(64).toString('hex'); // 128 caratteri random
+
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
+				[token, numeroCarta],
+				function (this: RunResult, err: Error) {
+					if (err) return reject(err);
+					resolve(token);
+				}
+			);
+		});
+	}
+
+	// definisco il metodo per creare un nuovo utente
+	
 
 	// definiamo il metodo per ritornare tutti i clienti
 	static async findAll(): Promise<ClienteRecord[] | null> {

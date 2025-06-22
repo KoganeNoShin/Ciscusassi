@@ -47,10 +47,13 @@ export class PrenotazioneService {
 		);
 	}
 
-  getPrenotazioniDelGiornoFiliale(filialeId: number): Observable<ApiResponse<PrenotazioneRecord[]>> {
-    return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni/oggi/${filialeId}`);
-  }
+	getPrenotazioniDelGiornoFiliale(filialeId: number): Observable<ApiResponse<PrenotazioneRecord[]>> {
+		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(`${this.apiURL}/prenotazioni/oggi/${filialeId}`);
+	}
 
+	getStatoPrenotazione(id: number) {
+		return this.http.get<{ success: boolean, data: string }>(`${this.apiURL}/prenotazioni/${id}/stato`);
+	}
 
 	getTavoliInUso(): Observable<any> {
 		return this.http.get(`${this.apiURL}/tavoli-in-uso`);

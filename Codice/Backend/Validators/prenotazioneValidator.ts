@@ -217,6 +217,20 @@ const GetOTPValidator = [
 		}),
 ];
 
+const statoPrenotazioneValidator = [
+  param('id')
+    .notEmpty().withMessage('L\'ID della prenotazione è obbligatorio')
+    .isInt({ min: 1 }).withMessage('L\'ID della prenotazione deve essere un numero intero positivo')
+    .bail()
+    .custom(async (id) => {
+      const prenotazioni = await Prenotazione.getById(parseInt(id));
+      if (!prenotazioni) {
+        throw new Error(`Nessuna prenotazione trovata con ID ${id}`);
+      }
+      return true;
+    })
+];
+
 const validate = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -233,5 +247,6 @@ export default {
     prenotazioneUpdateValidator,
     getPrenotazioniDelGiornoValidator,
     comfermaPrenotazioneValidator,
-    GetOTPValidator
+    GetOTPValidator,
+	statoPrenotazioneValidator
 }

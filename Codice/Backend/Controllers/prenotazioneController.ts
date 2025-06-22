@@ -197,6 +197,22 @@ class PrenotazioneController {
 			res.status(500).json({ message: 'Errore durante il calcolo dei tavoli in uso' });
 		}
 	}
+
+    static async getStatoPrenotazione(req: Request, res: Response): Promise<void> {
+        try {
+            const id_prenotazione = parseInt(req.params.id);
+            const stato = await PrenotazioneService.getStatoPrenotazione(id_prenotazione);
+
+            res.json({ success: true, data: stato });
+        } catch (err) {
+            console.error('❌ Errore in getStatoPrenotazione:', err);
+            res.status(500).json({
+                success: false,
+                message: 'Errore interno del server',
+                error: (err instanceof Error ? err.message : String(err))
+            });
+        }
+    }
 }
 
 export default PrenotazioneController;

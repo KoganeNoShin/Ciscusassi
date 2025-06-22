@@ -159,6 +159,13 @@ router.get(
 	PrenotazioneController.getOTPById
 );
 
+router.get(
+  '/prenotazioni/:id/stato',
+  prenotazioneValidator.statoPrenotazioneValidator,
+  prenotazioneValidator.validate,
+  PrenotazioneController.getStatoPrenotazione
+);
+
 router.post(
 	'/prenota',
 	prenotazioneValidator.prenotazioneInputValidator,

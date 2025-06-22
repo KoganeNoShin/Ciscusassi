@@ -1,3 +1,5 @@
+import OrdProd from "../Models/ord_prod";
+import Ordine from "../Models/ordine";
 import Prenotazione, { PrenotazioneInput, PrenotazioneRecord } from "../Models/prenotazione";
 import Torretta, { TorrettaRecord } from "../Models/torretta";
 
@@ -155,6 +157,44 @@ class PrenotazioneService {
 
 		return tavoliPerOrario;
 	}
+
+    static async getStatoPrenotazione(id_prenotazione: number): Promise<string> {
+	try {
+		const ordini = await Ordine.getByPrenotazione(id_prenotazione);
+
+		if (!ordini || ordini.length === 0) {
+			return 'SENZA ORDINI';
+		}
+
+		for (const ordine of ordini) {
+			const prodotti = await OrdProd.findByRefOrdine(ordine.id_ordine);
+
+			if (prodotti.length === 0) continue;
+
+			let hasPreparazione = false;
+			let hasInConsegna = false;
+			let allConsegnati = true;
+
+			for (const p of prodotti) {
+				if (p.stato === 'IN CONSEGNA') hasInConsegna = true;
+				else if (p.stato === 'PREPARAZIONE') hasPreparazione = true;
+				else if (p.stato !== 'CONSEGNATO') allConsegnati = false;
+
+				// Early exit per priorità
+				if (hasInConsegna) return 'IN CONSEGNA';
+			}
+
+			if (hasPreparazione) return 'PREPARAZIONE';
+			if (allConsegnati) return 'CONSEGNATO';
+		}
+
+		return 'NON IN LAVORAZIONE';
+	} catch (err) {
+		console.error(`❌ Errore nel recuperare lo stato della prenotazione ${id_prenotazione}:`, err);
+		throw err;
+	}
+}
+
 }
 
 export default PrenotazioneService;

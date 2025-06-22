@@ -1,7 +1,6 @@
 // importo il db
 import db from '../db';
 import { RunResult } from 'sqlite3';
-import { AsportoRecord } from './asporto';
 
 // Definiamo il modello di un Prodotto Ordinato
 export interface OrdProdInput {

@@ -151,6 +151,7 @@ async function generateOrdProd(
 	const numProdotti = faker.number.int({ min: 3, max: 8 });
 	let importo = 0;
 	let data_ora = new Date(data_ora_base);
+	const statiPossibili = ['attesa', 'preparazione', 'in-consegna', 'consegnato'];
 
 	for (let i = 0; i < numProdotti; i++) {
 		const prod = faker.helpers.arrayElement(prodotti);
@@ -163,7 +164,7 @@ async function generateOrdProd(
 				ref_ordine: id_ordine,
 				ref_prodotto: prod.id_prodotto,
 				is_romana: false,
-				stato: 'CONSEGNATO',
+				stato: faker.helpers.arrayElement(statiPossibili),
 			});
 			console.log(`🧾 Prodotto ${prod.nome} aggiunto all’ordine ${id_ordine}`);
 		} catch (err) {
