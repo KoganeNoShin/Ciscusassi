@@ -110,7 +110,7 @@ ion-content.custom-content {
 }
 
 .tavolo-wrapper .circle.senza-ordini {
-	background-color:  #aaa;
+	background-color: #aaa;
 	border: 2px dashed #aaa;
 	color: #000 !important;
 }
@@ -234,17 +234,22 @@ ion-modal::part(content) {
 	background-color: #ddd;
 }
 
-.popup-container input[type='number'] {
+/* Input fields (numero + nome) */
+.popup-container input[type='number'],
+.popup-container input[type='text'] {
 	width: 100%;
 	padding: 10px;
 	font-size: 16px;
 	margin-bottom: 16px;
 	border-radius: 6px;
 	border: 1px solid #ccc;
-	background-color: #333;
-	color: #fff;
+	background-color: #fff;
+	color: #000;
+	font-family: 'Georgia', serif;
+	font-style: italic;
 }
 
+/* Pulsanti */
 .popup-container .popup-footer ion-button {
 	margin-bottom: 8px;
 }

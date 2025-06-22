@@ -3,7 +3,6 @@ import filiale from '../../Models/filiale';
 import fs from 'fs';
 import path from 'path';
 
-
 function getBase64FromFile(localPath: string): string {
 	const fullPath = path.resolve(__dirname, localPath); // path assoluto
 	const imageBuffer = fs.readFileSync(fullPath);
@@ -13,7 +12,8 @@ function getBase64FromFile(localPath: string): string {
 export async function generateUtentiFissi(): Promise<string> {
 	try {
 		const filiali = await filiale.getAll();
-		if (!filiali || filiali.length === 0) throw new Error("Nessuna filiale trovata");
+		if (!filiali || filiali.length === 0)
+			throw new Error('Nessuna filiale trovata');
 		const password = 'Pwm30L!';
 
 		const utentiFissi = [
@@ -68,12 +68,17 @@ export async function generateUtentiFissi(): Promise<string> {
 				data_nascita: utente.data_nascita,
 				ref_filiale: utente.ref_filiale,
 			});
-			console.log(`✅ ${utente.nome} ${utente.cognome} (${utente.ruolo}) aggiunto con successo.`);
+			console.log(
+				`✅ ${utente.nome} ${utente.cognome} (${utente.ruolo}) aggiunto con successo.`
+			);
 		}
 
 		return '✅ Utenti fissi generati con successo!';
 	} catch (err) {
-		console.error('❌ Errore durante la generazione degli utenti fissi:', err);
+		console.error(
+			'❌ Errore durante la generazione degli utenti fissi:',
+			err
+		);
 		throw err;
 	}
 }

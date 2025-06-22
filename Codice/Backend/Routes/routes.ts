@@ -135,18 +135,22 @@ router.get('/prenotazioni', PrenotazioneController.getAllPrenotazioni);
 
 router.get('/prenotazione/:id', PrenotazioneController.getPrenotazioneById);
 
-router.get('/prenotazioni/cliente/:clienteId', PrenotazioneController.getPrenotazioniByCliente);
+router.get(
+	'/prenotazioni/cliente/:clienteId',
+	PrenotazioneController.getPrenotazioniByCliente
+);
 
 router.get(
 	'/prenotazioni/oggi/:filiale',
 	authMiddleware,
-	roleMiddleware(['amministratore', 'cameriere']),
+	roleMiddleware(['amministratore', 'cameriere', 'chef']),
 	prenotazioneValidator.getPrenotazioniDelGiornoValidator,
 	prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
 
-router.get('/tavoli-in-uso', 
+router.get(
+	'/tavoli-in-uso',
 	PrenotazioneController.getTavoliInUso,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere'])
@@ -160,10 +164,10 @@ router.get(
 );
 
 router.get(
-  '/prenotazioni/:id/stato',
-  prenotazioneValidator.statoPrenotazioneValidator,
-  prenotazioneValidator.validate,
-  PrenotazioneController.getStatoPrenotazione
+	'/prenotazioni/:id/stato',
+	prenotazioneValidator.statoPrenotazioneValidator,
+	prenotazioneValidator.validate,
+	PrenotazioneController.getStatoPrenotazione
 );
 
 router.post(
@@ -205,8 +209,6 @@ router.post(
 	roleMiddleware(['amministratore', 'cameriere']),
 	PrenotazioneController.confermaPrenotazione
 );
-
-
 
 /* ESEMPIO DI COME PROTEGGERE LE ROTTE 
 router.post(
