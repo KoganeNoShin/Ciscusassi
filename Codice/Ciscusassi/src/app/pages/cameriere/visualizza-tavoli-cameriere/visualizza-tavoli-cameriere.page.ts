@@ -72,12 +72,11 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
     const filiale = this.authService.getFiliale();
     console.log('Filiale corrente:', filiale);
 
-    this.prenotazioneService.getPrenotazioniDelGiorno().subscribe({
+    this.prenotazioneService.getPrenotazioniDelGiornoFiliale(filiale).subscribe({
       next: (response) => {
         console.log('Response API:', response);
 
         if (response.success && response.data?.length) {
-          // Rimuovo il filtro su ref_torretta perché non è correlato alla filiale
           const prenotazioniFiltrate = response.data;
 
           this.tavoli = prenotazioniFiltrate.map((p) => ({
@@ -85,7 +84,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
             nome: `Tavolo ${p.id_prenotazione}`,
             orario: this.formattaOrario(p.data_ora_prenotazione),
             persone: p.numero_persone,
-            stato: 'attesa', // Puoi aggiungere logica personalizzata qui
+            stato: 'attesa', // eventualmente personalizza in base allo stato reale
           }));
 
           console.log('Tavoli caricati:', this.tavoli);
