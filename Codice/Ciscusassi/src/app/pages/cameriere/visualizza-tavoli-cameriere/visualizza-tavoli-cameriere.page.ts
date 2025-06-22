@@ -12,6 +12,7 @@ import {
   IonButton,
   IonModal,
   ToastController,
+  IonChip,
 } from '@ionic/angular/standalone';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
@@ -32,6 +33,7 @@ import { lastValueFrom } from 'rxjs';
     IonCol,
     IonButton,
     IonModal,
+    IonChip,
     CommonModule,
     FormsModule,
   ],
@@ -45,6 +47,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
     stato: string;
   }> = [];
 
+  tavoliFiltrati: typeof this.tavoli = [];
+
   legenda = [
     { stato: 'in-consegna', label: 'IN CONSEGNA' },
     { stato: 'consegnato', label: 'CONSEGNATO' },
@@ -52,6 +56,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
     { stato: 'preparazione', label: 'IN LAVORAZIONE' },
     { stato: 'senza-ordini', label: 'SENZA ORDINI' },
   ];
+
+  selectedFilter: string | null = null;
 
   showPopup = false;
   personePossibili = [1, 2, 3, 4, 5, 6, 7];
@@ -107,13 +113,16 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
         );
 
         this.tavoli = tavoliCompletati;
+        this.applicaFiltro(); // Applica filtro iniziale (nessuno)
       } else {
         this.tavoli = [];
+        this.tavoliFiltrati = [];
         console.warn('Nessuna prenotazione trovata.');
       }
     } catch (err) {
       console.error('Errore caricamento tavoli:', err);
       this.tavoli = [];
+      this.tavoliFiltrati = [];
     }
   }
 
@@ -185,5 +194,20 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
       color: 'success',
     });
     toast.present();
+  }
+
+  filtraPerStato(stato: string | null) {
+    this.selectedFilter = stato;
+    this.applicaFiltro();
+  }
+
+  applicaFiltro() {
+    if (!this.selectedFilter) {
+      this.tavoliFiltrati = [...this.tavoli];
+    } else {
+      this.tavoliFiltrati = this.tavoli.filter(
+        (t) => t.stato === this.selectedFilter
+      );
+    }
   }
 }

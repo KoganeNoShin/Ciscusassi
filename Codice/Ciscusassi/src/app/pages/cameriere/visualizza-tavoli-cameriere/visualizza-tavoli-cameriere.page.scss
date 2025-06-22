@@ -90,7 +90,7 @@ ion-content.custom-content {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: white;
+	color: black;
 }
 
 .tavolo-wrapper .circle.in-consegna {
@@ -110,7 +110,7 @@ ion-content.custom-content {
 }
 
 .tavolo-wrapper .circle.senza-ordini {
-	background-color: #ffffff;
+	background-color:  #aaa;
 	border: 2px dashed #aaa;
 	color: #000 !important;
 }

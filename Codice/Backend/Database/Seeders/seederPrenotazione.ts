@@ -13,7 +13,8 @@ export async function generatePrenotazione(count: number): Promise<string> {
 	try {
 		const filiali = await Filiale.getAll();
 		const clienti: ClienteRecord[] | null = await cliente.findAll();
-		if (!clienti || clienti.length === 0) throw new Error('Nessun cliente trovato');
+		if (!clienti || clienti.length === 0)
+			throw new Error('Nessun cliente trovato');
 
 		const perTipo = {
 			passato: Math.max(0, count - 20),
@@ -34,21 +35,30 @@ export async function generatePrenotazione(count: number): Promise<string> {
 		};
 
 		for (const filialeScelta of filiali) {
-			for (const tipo of Object.keys(perTipo) as (keyof typeof perTipo)[]) {
+			for (const tipo of Object.keys(
+				perTipo
+			) as (keyof typeof perTipo)[]) {
 				for (let i = 0; i < perTipo[tipo]; i++) {
 					const dataPren = getDataPrenotazione(tipo);
-					const torretteLibere = await torretta.getTorretteLibere(filialeScelta.id_filiale, dataPren.toISOString());
+					const torretteLibere = await torretta.getTorretteLibere(
+						filialeScelta.id_filiale,
+						dataPren.toISOString()
+					);
 
 					if (torretteLibere.length === 0) {
-						console.warn(`⚠️ Nessuna torretta libera per ${filialeScelta.indirizzo} alle ${dataPren.toISOString()}`);
+						console.warn(
+							`⚠️ Nessuna torretta libera per ${filialeScelta.indirizzo} alle ${dataPren.toISOString()}`
+						);
 						continue;
 					}
 
 					const numero_persone = faker.number.int({ min: 1, max: 8 });
-					const ref_cliente_prenotazione = faker.number.int({ min: 0, max: 2 }) > 0
-						? faker.helpers.arrayElement(clienti)
-						: null;
-					const ref_torretta = faker.helpers.arrayElement(torretteLibere).id_torretta;
+					const ref_cliente_prenotazione =
+						faker.number.int({ min: 0, max: 2 }) > 0
+							? faker.helpers.arrayElement(clienti)
+							: null;
+					const ref_torretta =
+						faker.helpers.arrayElement(torretteLibere).id_torretta;
 					const otp = faker.string.alphanumeric({ length: 6 });
 
 					let id_prenotazione: number;
@@ -61,15 +71,20 @@ export async function generatePrenotazione(count: number): Promise<string> {
 							ref_torretta,
 						});
 					} else {
-						id_prenotazione = await prenotazione.createLocale({
-							numero_persone,
-							data_ora_prenotazione: dataPren.toISOString(),
-							ref_cliente: null,
-							ref_torretta,
-						}, otp);
+						id_prenotazione = await prenotazione.createLocale(
+							{
+								numero_persone,
+								data_ora_prenotazione: dataPren.toISOString(),
+								ref_cliente: null,
+								ref_torretta,
+							},
+							otp
+						);
 					}
 
-					console.log(`Prenotazione ${tipo} - ${id_prenotazione} per ${numero_persone} persone (${ref_torretta})`);
+					console.log(
+						`Prenotazione ${tipo} - ${id_prenotazione} per ${numero_persone} persone (${ref_torretta})`
+					);
 
 					if (tipo !== 'futuro') {
 						await generateOrdini(
@@ -80,9 +95,10 @@ export async function generatePrenotazione(count: number): Promise<string> {
 							clienti,
 							tipo // <- AGGIUNTO tipo prenotazione
 						);
-
 					} else {
-						console.log(`🕒 Prenotazione futura: nessun ordine per ${id_prenotazione}`);
+						console.log(
+							`🕒 Prenotazione futura: nessun ordine per ${id_prenotazione}`
+						);
 					}
 				}
 			}
@@ -119,31 +135,46 @@ async function generateOrdini(
 			await generateOrdProd(id_ordine, data_ora_prenotazione, tipo),
 			id_ordine
 		);
-		console.log(`🛎️  Ordine creato per ${username} (prenotazione ${id_prenotazione})`);
+		console.log(
+			`🛎️  Ordine creato per ${username} (prenotazione ${id_prenotazione})`
+		);
 	};
 
 	if (ref_cliente == null) {
-		for (let j = 0; j < faker.number.int({ min: 1, max: numero_persone }); j++) {
+		for (
+			let j = 0;
+			j < faker.number.int({ min: 1, max: numero_persone });
+			j++
+		) {
 			const nome = faker.person.firstName();
 			const cognome = faker.person.lastName();
 			await creaOrdine(`${nome}.${cognome}`, null);
 		}
 	} else {
-		await creaOrdine(`${ref_cliente.nome}.${ref_cliente.cognome}`, ref_cliente.numero_carta);
+		await creaOrdine(
+			`${ref_cliente.nome}.${ref_cliente.cognome}`,
+			ref_cliente.numero_carta
+		);
 
-		for (let j = 1; j < faker.number.int({ min: 1, max: numero_persone }); j++) {
+		for (
+			let j = 1;
+			j < faker.number.int({ min: 1, max: numero_persone });
+			j++
+		) {
 			if (faker.number.int({ min: 0, max: 2 }) === 0) {
 				const nome = faker.person.firstName();
 				const cognome = faker.person.lastName();
 				await creaOrdine(`${nome}.${cognome}`, null);
 			} else {
 				const altroCliente = faker.helpers.arrayElement(clienti);
-				await creaOrdine(`${altroCliente.nome}.${altroCliente.cognome}`, altroCliente.numero_carta);
+				await creaOrdine(
+					`${altroCliente.nome}.${altroCliente.cognome}`,
+					altroCliente.numero_carta
+				);
 			}
 		}
 	}
 }
-
 
 async function generateOrdProd(
 	id_ordine: number,
@@ -151,7 +182,8 @@ async function generateOrdProd(
 	tipo: 'passato' | 'oggi' | 'futuro'
 ): Promise<number> {
 	const prodotti = await prodotto.getAll();
-	if (!prodotti || prodotti.length === 0) throw new Error('Nessun prodotto trovato');
+	if (!prodotti || prodotti.length === 0)
+		throw new Error('Nessun prodotto trovato');
 
 	const numProdotti = faker.number.int({ min: 3, max: 8 });
 	let importo = 0;
@@ -164,9 +196,13 @@ async function generateOrdProd(
 
 		let stato: string;
 		if (tipo === 'passato') {
-			stato = 'in consegna';
+			stato = 'in-consegna';
 		} else if (tipo === 'oggi') {
-			stato = faker.helpers.arrayElement(['in-consegna', 'preparazione', 'consegnato']);
+			stato = faker.helpers.arrayElement([
+				'in-consegna',
+				'preparazione',
+				'consegnato',
+			]);
 		} else {
 			stato = 'attesa'; // fallback se mai chiamato (ma non verrà)
 		}
@@ -178,7 +214,9 @@ async function generateOrdProd(
 				is_romana: false,
 				stato,
 			});
-			console.log(`🧾 Prodotto ${prod.nome} aggiunto all’ordine ${id_ordine}`);
+			console.log(
+				`🧾 Prodotto ${prod.nome} aggiunto all’ordine ${id_ordine}`
+			);
 		} catch (err) {
 			console.error(`❌ Errore su prodotto ${prod.nome}:`, err);
 			throw err;
@@ -192,7 +230,10 @@ async function generateOrdProd(
 		});
 		return id_pagamento;
 	} catch (err) {
-		console.error(`❌ Errore creazione pagamento ordine ${id_ordine}:`, err);
+		console.error(
+			`❌ Errore creazione pagamento ordine ${id_ordine}:`,
+			err
+		);
 		throw err;
 	}
 }
