@@ -52,8 +52,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
   legenda = [
     { stato: 'in-consegna', label: 'IN CONSEGNA' },
     { stato: 'consegnato', label: 'CONSEGNATO' },
-    { stato: 'attesa', label: 'NON IN LAVORAZIONE' },
-    { stato: 'preparazione', label: 'IN LAVORAZIONE' },
+    { stato: 'non-in-lavorazione', label: 'NON IN LAVORAZIONE' },
+    { stato: 'in-lavorazione', label: 'IN LAVORAZIONE' },
     { stato: 'senza-ordini', label: 'SENZA ORDINI' },
   ];
 
