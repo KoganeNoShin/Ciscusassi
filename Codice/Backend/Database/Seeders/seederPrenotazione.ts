@@ -164,9 +164,9 @@ async function generateOrdProd(
 
 		let stato: string;
 		if (tipo === 'passato') {
-			stato = 'IN CONSEGNA';
+			stato = 'in consegna';
 		} else if (tipo === 'oggi') {
-			stato = faker.helpers.arrayElement(['IN CONSEGNA', 'PREPARAZIONE', 'CONSEGNATO']);
+			stato = faker.helpers.arrayElement(['in-consegna', 'preparazione', 'consegnato']);
 		} else {
 			stato = 'attesa'; // fallback se mai chiamato (ma non verrà)
 		}

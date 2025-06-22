@@ -163,7 +163,7 @@ class PrenotazioneService {
 		const ordini = await Ordine.getByPrenotazione(id_prenotazione);
 
 		if (!ordini || ordini.length === 0) {
-			return 'SENZA ORDINI';
+			return 'senza-ordini';
 		}
 
 		for (const ordine of ordini) {
@@ -176,19 +176,19 @@ class PrenotazioneService {
 			let allConsegnati = true;
 
 			for (const p of prodotti) {
-				if (p.stato === 'IN CONSEGNA') hasInConsegna = true;
-				else if (p.stato === 'PREPARAZIONE') hasPreparazione = true;
-				else if (p.stato !== 'CONSEGNATO') allConsegnati = false;
+				if (p.stato === 'in-consegna') hasInConsegna = true;
+				else if (p.stato === 'preparazione') hasPreparazione = true;
+				else if (p.stato !== 'consegnato') allConsegnati = false;
 
 				// Early exit per priorità
-				if (hasInConsegna) return 'IN CONSEGNA';
+				if (hasInConsegna) return 'in-consegna';
 			}
 
-			if (hasPreparazione) return 'PREPARAZIONE';
-			if (allConsegnati) return 'CONSEGNATO';
+			if (hasPreparazione) return 'preparazione';
+			if (allConsegnati) return 'consegnato';
 		}
 
-		return 'NON IN LAVORAZIONE';
+		return 'non-in-lavorazione';
 	} catch (err) {
 		console.error(`❌ Errore nel recuperare lo stato della prenotazione ${id_prenotazione}:`, err);
 		throw err;
