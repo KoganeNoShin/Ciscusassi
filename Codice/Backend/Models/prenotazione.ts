@@ -174,14 +174,15 @@ export class Prenotazione {
 		});
 	} 
 
-	static async getPrenotazioniAttualiEFuture(): Promise<PrenotazioneRecord[]> {
+	static async getPrenotazioniAttualiEFuture(id_filiale: number): Promise<PrenotazioneRecord[]> {
 	return new Promise((resolve, reject) => {
 		db.all(
 			`
 			SELECT * FROM prenotazioni
-			WHERE DATE(data_ora_prenotazione) >= DATE('now')
-			`,
-			[],
+			JOIN torrette t ON p.ref_torretta = t.id_torretta
+			WHERE DATE(p.data_ora_prenotazione) >= DATE('now')
+			AND t.ref_filiale = ?`,
+			[id_filiale],
 			(err: Error | null, rows: PrenotazioneRecord[]) => {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante SELECT future:', err.message);

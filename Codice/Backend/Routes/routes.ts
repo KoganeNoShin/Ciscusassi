@@ -164,7 +164,7 @@ router.get(
 	'/prenotazioni/oggi/:filiale',
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere', 'chef']),
-	prenotazioneValidator.getPrenotazioniDelGiornoValidator,
+	prenotazioneValidator.getPrenotazioniFilialeValidator,
 	prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );

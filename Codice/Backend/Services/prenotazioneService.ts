@@ -160,8 +160,8 @@ class PrenotazioneService {
 	    return Math.ceil((numeroPersone - 2) / 2);
     }
 
-    static async calcolaTavoliInUso(): Promise<Record<string, number>> {
-		const prenotazioni = await Prenotazione.getPrenotazioniAttualiEFuture();
+    static async calcolaTavoliInUso(id_filiale: number): Promise<Record<string, number>> {
+		const prenotazioni = await Prenotazione.getPrenotazioniAttualiEFuture(id_filiale);
 		const tavoliPerOrario: Record<string, number> = {};
 
 		for (const p of prenotazioni) {

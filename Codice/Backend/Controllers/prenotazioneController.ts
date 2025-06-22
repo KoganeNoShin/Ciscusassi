@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import PrenotazioneService from '../Services/prenotazioneService';
+import { parse } from 'path';
 
 class PrenotazioneController {
     static async prenota(req: Request, res: Response): Promise<void> {
@@ -190,7 +191,7 @@ class PrenotazioneController {
 
 	static async getTavoliInUso(req: Request, res: Response) {
 		try {
-			const tavoli = await PrenotazioneService.calcolaTavoliInUso();
+			const tavoli = await PrenotazioneService.calcolaTavoliInUso(parseInt(req.params.filiale));
 			res.status(200).json(tavoli);
 		} catch (error) {
 			console.error('❌ Errore durante il calcolo dei tavoli:', error);
