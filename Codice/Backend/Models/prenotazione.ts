@@ -1,22 +1,18 @@
 // importo il db
 import db from '../db';
 import { RunResult } from 'sqlite3';
-import { AsportoRecord } from './asporto';
 
 // Definiamo il modello di un Prenotazione
 export interface PrenotazioneInput {
 	numero_persone: number;
 	data_ora_prenotazione: string;
 	ref_cliente: number | null;
+	ref_torretta: number;
 }
 
-export interface PrenotazioneInputLoco extends PrenotazioneInput {
-	otp: string | null;
-	ref_torretta: number | null;
-}
-
-export interface PrenotazioneRecord extends PrenotazioneInputLoco {
+export interface PrenotazioneRecord extends PrenotazioneInput {
 	id_prenotazione: number;
+	otp: string | null;
 }
 
 export class Prenotazione {
@@ -24,8 +20,8 @@ export class Prenotazione {
 	static async create(data: PrenotazioneInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO prenotazioni (numero_persone, data_ora_prenotazione, ref_cliente) VALUES (?, ?, ?)',
-				[data.numero_persone, data.data_ora_prenotazione, data.ref_cliente],
+				'INSERT INTO prenotazioni (numero_persone, data_ora_prenotazione, ref_cliente, ref_torretta) VALUES (?, ?, ?, ?)',
+				[data.numero_persone, data.data_ora_prenotazione, data.ref_cliente, data.ref_torretta],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
@@ -38,11 +34,11 @@ export class Prenotazione {
 	}
 
 	// Creazione di una nuova prenotazione in loco
-	static async createLocale(data: PrenotazioneInputLoco): Promise<number> {
+	static async createLocale(data: PrenotazioneInput, otp: string): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO prenotazioni (numero_persone, data_ora_prenotazione, ref_cliente, otp, ref_torretta) VALUES (?, ?, ?, ?, ?)',
-				[data.numero_persone, data.data_ora_prenotazione, data.ref_cliente, data.otp, data.ref_torretta],
+				[data.numero_persone, data.data_ora_prenotazione, data.ref_cliente, otp, data.ref_torretta],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
@@ -55,21 +51,21 @@ export class Prenotazione {
 	}
 
 	// Modifica Prenotazione
-	static async update(data: PrenotazioneRecord): Promise<void> {
+	static async update(id_prenotazione: number, numero_persone: number, data_ora_prenotazione: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'UPDATE prenotazioni SET numero_persone = ?, data_ora_prenotazione = ?, otp = ?, ref_cliente = ?, ref_torretta = ? WHERE id_prenotazione = ?',
-				[data.numero_persone, data.data_ora_prenotazione, data.otp, data.ref_cliente, data.ref_torretta, 
-				data.id_prenotazione],
+				'UPDATE prenotazioni SET numero_persone = ?, data_ora_prenotazione = ? WHERE id_prenotazione = ?',
+				[numero_persone, data_ora_prenotazione, 
+				id_prenotazione],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
-						console.error('🧾 Query params:', data.id_prenotazione);
+						console.error('🧾 Query params:', id_prenotazione);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessuna prenotazione aggiornata con ID ${data.id_prenotazione}`);
-						return reject(new Error(`Nessuna prenotazione trovata con ID ${data.id_prenotazione}`));
+						console.warn(`⚠️ [DB WARNING] Nessuna prenotazione aggiornata con ID ${id_prenotazione}`);
+						return reject(new Error(`Nessuna prenotazione trovata con ID ${id_prenotazione}`));
 					}
 					else resolve();
 				}

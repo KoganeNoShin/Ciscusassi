@@ -42,7 +42,10 @@ class PrenotazioneController {
 
     static async modificaPrenotazione(req: Request, res: Response): Promise<void> {
         try {
-            const prenotazione = await PrenotazioneService.modificaPrenotazione(req.body);
+            const id_prenotazione = parseInt(req.body.id_prenotazione);
+            const numero_persone = req.body.numero_persone;
+            const data_ora_prenotazione = req.body.data_ora_prenotazione;
+            const prenotazione = await PrenotazioneService.modificaPrenotazione(id_prenotazione, numero_persone, data_ora_prenotazione);
 
             res.json({ success: true, data: prenotazione });
         } catch (err) {

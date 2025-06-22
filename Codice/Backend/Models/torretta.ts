@@ -10,50 +10,87 @@ export interface TorrettaRecord extends TorrettaInput {
 	id_torretta: number;
 }
 
-// Interagisce direttamente con il database per le operazioni CRUD sugli utenti
 export class Torretta {
-	// definisco il metodo per creare un nuovo utente
+	// Creazione di una nuova Torretta
 	static async create(data: TorrettaInput): Promise<number> {
-		const { ref_filiale } = data;
-
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO torrette (ref_filiale) VALUES (?)',
-				[ref_filiale],
+				[data.ref_filiale],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						reject(err);
+					}
 					else resolve(this.lastID);
 				}
 			);
 		});
 	}
 
-	// definiamo il metodo per ritornare tutte le torrette
-	static async findAll(): Promise<TorrettaRecord[]> {
+	// Recupera tutte le torrette
+	static async getAll(): Promise<TorrettaRecord[]> {
 		return new Promise((resolve, reject) => {
 			db.all(
 				'SELECT * FROM torrette',
 				(err: Error | null, rows: TorrettaRecord[]) => {
-					if (err) reject(err);
-					else resolve(rows);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessuna torretta trovata');
+						resolve([]);
+					} else resolve(rows);
 				}
 			);
 		});
 	}
 
-	// ricerca per id
-	static async findById(id: number): Promise<TorrettaRecord> {
+	// Recupera torretta per ID
+	static async getById(id: number): Promise<TorrettaRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT * FROM torrette WHERE id_torretta = ?',
 				[id],
 				(err: Error | null, row: TorrettaRecord) => {
-					if (err) reject(err);
-					else resolve(row);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.warn(`⚠️ [DB WARNING] Nessuna torretta trovata con ID ${id}`);
+						resolve(null);
+					} else resolve(row);
 				}
 			);
 		});
 	}
+
+	// Recupera torrette libere
+	static async getTorretteLibere(filialeId: number, dataOra: string): Promise<TorrettaRecord[]> {
+	return new Promise((resolve, reject) => {
+		db.all(`
+			SELECT t.*
+			FROM torrette t
+			WHERE t.ref_filiale = ?
+			  AND t.id_torretta NOT IN (
+				SELECT p.ref_torretta
+				FROM prenotazioni p
+				WHERE p.data_ora_prenotazione = ?
+			  )`,
+			[filialeId, dataOra],
+			(err: Error | null, rows: TorrettaRecord[]) => {
+				if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn('⚠️ [DB WARNING] Nessuna torretta libera trovata');
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
+
 }
 
 export default Torretta;

@@ -13,7 +13,7 @@ export function createIfDoesntExists(): Promise<string> {
                 data_ora_prenotazione TEXT NOT NULL,
                 otp TEXT NULLABLE,
                 ref_cliente INTEGER NULLABLE,
-                ref_torretta INTEGER NULLABLE,                            
+                ref_torretta INTEGER NOT NULL,                            
                 FOREIGN KEY (ref_cliente) REFERENCES clienti (numero_carta),
                 FOREIGN KEY (ref_torretta) REFERENCES torrette (id_torretta)
             )`,

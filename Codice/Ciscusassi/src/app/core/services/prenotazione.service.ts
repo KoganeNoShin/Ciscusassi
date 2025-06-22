@@ -5,8 +5,8 @@ import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
 import {
 	PrenotazioneInput,
-	PrenotazioneInputLoco,
 	PrenotazioneRecord,
+	PrenotazioneRequest,
 } from '../interfaces/Prenotazione';
 
 @Injectable({
@@ -56,11 +56,11 @@ export class PrenotazioneService {
 		return this.http.get(`${this.apiURL}/tavoli-in-uso`);
 	}
 
-	prenota(data: PrenotazioneInput): Observable<ApiResponse<any>> {
+	prenota(data: PrenotazioneRequest): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(`${this.apiURL}/prenota`, data);
 	}
 
-	prenotaLoco(data: PrenotazioneInputLoco): Observable<ApiResponse<any>> {
+	prenotaLoco(data: PrenotazioneInput): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/prenotaLoco`,
 			data
