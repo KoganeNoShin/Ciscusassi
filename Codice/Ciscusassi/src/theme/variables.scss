@@ -196,3 +196,26 @@
 	--ion-color-shade: var(--ion-color-bianconeve-shade);
 	--ion-color-tint: var(--ion-color-bianconeve-tint);
 }
+
+// ✅ Colori mappa
+$custom-colors: (
+	'rosso': var(--ion-color-rosso),
+	'arancione': var(--ion-color-arancione),
+	'verdescuro': var(--ion-color-verdescuro),
+	'verdechiaro': var(--ion-color-verdechiaro),
+	'senape': var(--ion-color-senape),
+	'salmone': var(--ion-color-salmone),
+	'celeste': var(--ion-color-celeste),
+	'bianco': var(--ion-color-bianco),
+	'bianconeve': var(--ion-color-bianconeve),
+);
+
+// ✅ Genera classi solo per `color:`
+@each $name, $value in $custom-colors {
+	.text-color-#{$name} {
+		color: $value !important;
+	}
+	.bg-color-#{$name} {
+		background-color: $value !important;
+	}
+}

@@ -36,6 +36,8 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+@import './theme/variables.scss';
+
 @font-face {
 	font-family: 'JacquesFrancoisShadow';
 	src: url('/assets/fonts/JacquesFrancoisShadow-Regular.ttf')
@@ -58,58 +60,74 @@
 	font-style: normal;
 }
 
-/* Campo del form: background bianco e angoli arrotondati */
-ion-input {
-	--background: white !important;
-	--padding-start: 1rem !important;
-	--padding-end: 1rem !important;
-	--border-radius: 10px !important;
-	font-size: 1rem !important;
-	color: #333 !important;
-}
-
-/* Bordo evidenza al focus (opzionale) */
-ion-input:focus,
-ion-input.ion-focus {
-	outline: dotted !important;
-	border: 20px solid #cdd15b !important; /* cambia colore se desideri */
-}
-
 /* Rimuove eventuali bordi da ion-item e imposta sfondo trasparente */
-ion-item {
-	--background: transparent !important;
+.campoForm {
+	--background: var(--ion-color-bianco) !important;
+	--padding-start: 25 !important;
+	--padding-end: 25 !important;
 	--inner-border-width: 0 !important;
-	--padding-start: 0 !important;
-	--padding-end: 0 !important;
+	color: black;
+	border-radius: 20px;
+	margin-bottom: 25px;
 }
 
-ion-label {
-	color: black !important;
+.campoForm > ion-input {
+	margin-left: 25px;
 }
 
-ion-item.ion-focused ion-label {
-	margin-bottom: 20px !important;
-	color: black !important;
-}
-
+/* TITOLI: JacquesFrancoisShadow */
 h1 {
 	font-family: 'JacquesFrancoisShadow', sans-serif;
-	font-size: 3rem;
+	font-size: clamp(2.5rem, 5vw, 3rem);
 	color: var(--ion-color-primary-contrast);
 }
 
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
+h2 {
 	font-family: 'LucidaCalligraphy', sans-serif;
+	font-size: clamp(1.4rem, 2.8vw, 2rem);
 	color: var(--ion-color-primary-contrast);
+}
+
+h3 {
+	font-family: 'LucidaCalligraphy', sans-serif;
+	font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+	color: var(--ion-color-primary-contrast);
+}
+
+h4 {
+	font-family: 'LucidaCalligraphy', sans-serif;
+	font-size: clamp(1.1rem, 2vw, 1.5rem);
+	color: var(--ion-color-primary-contrast);
+}
+
+h5 {
+	font-family: 'LucidaCalligraphy', sans-serif;
+	font-size: clamp(1rem, 1.8vw, 1.3rem);
+	color: var(--ion-color-primary-contrast);
+}
+
+h6 {
+	font-family: 'LucidaCalligraphy', sans-serif;
+	font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+	color: var(--ion-color-primary-contrast);
+}
+
+/* TESTO: LucidaCalligraphy */
+p,
+a,
+ion-label,
+ion-text {
+	font-family: 'LucidaCalligraphy', sans-serif;
+	font-size: clamp(0.6rem, 1vw, 1rem);
+	color: var(--ion-color-primary-contrast);
+}
+
+a {
+	text-decoration: none;
 }
 
 ion-button {
 	font-family: 'Isocpeur-Regular', sans-serif;
-	font-size: 1.2rem;
+	font-size: clamp(1rem, 1.3vw, 1.2rem);
 	color: var(--ion-color-bianco);
 }

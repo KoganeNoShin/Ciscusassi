@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import {
+	IonApp,
+	IonMenuToggle,
+	IonRouterOutlet,
+} from '@ionic/angular/standalone';
 
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { FooterComponent } from 'src/app/components/footer/footer.component';
@@ -11,11 +15,50 @@ import { Title } from '@angular/platform-browser';
 import { filter } from 'rxjs/operators';
 
 import { Router, NavigationEnd } from '@angular/router';
+import { RouterModule } from '@angular/router';
+
+import {
+	IonContent,
+	IonList,
+	IonTitle,
+	IonItem,
+	IonMenu,
+	IonHeader,
+	IonToolbar,
+	IonIcon,
+	IonLabel,
+} from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+import {
+	home,
+	newspaper,
+	location,
+	restaurant,
+	calendar,
+} from 'ionicons/icons';
 
 @Component({
 	selector: 'app-root',
 	templateUrl: 'app.component.html',
-	imports: [IonApp, IonRouterOutlet, HeaderComponent, FooterComponent],
+	styleUrls: ['./app.component.scss'],
+	imports: [
+		IonApp,
+		IonRouterOutlet,
+		RouterModule,
+		HeaderComponent,
+		FooterComponent,
+		IonMenu,
+		IonTitle,
+		IonContent,
+		IonList,
+		IonItem,
+		IonHeader,
+		IonToolbar,
+		IonMenuToggle,
+		IonIcon,
+		IonLabel,
+	],
 })
 export class AppComponent {
 	constructor(
@@ -35,6 +78,7 @@ export class AppComponent {
 					: 'App';
 				this.titleService.setTitle('Ciscusassi - ' + capitalized);
 			});
+		addIcons({ home, newspaper, location, restaurant, calendar });
 	}
 
 	async initStorage() {

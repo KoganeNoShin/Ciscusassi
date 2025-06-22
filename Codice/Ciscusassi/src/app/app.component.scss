@@ -1,3 +1,25 @@
-#italianFlag {
-	background-image: url('/assets/Italiano.png');
+/* Cursore pointer per item del menu */
+.menu-item {
+	--background: transparent;
+	background-color: transparent !important;
+	color: var(--ion-color-light) !important;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
+	cursor: pointer;
+
+	&:hover {
+		background-color: var(--ion-color-arancione) !important;
+		color: var(--ion-color-light) !important;
+	}
+
+	ion-icon,
+	ion-label {
+		color: inherit !important;
+		transition: color 0.15s ease;
+	}
+}
+
+.bg-color-transparent {
+	background-color: transparent;
 }

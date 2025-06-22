@@ -1,8 +1,75 @@
 <ion-app>
 	<app-header></app-header>
 
+	<ion-menu
+		contentId="main-content"
+		side="start"
+		menuId="main"
+		class="ion-hide-md-up"
+	>
+		<ion-header>
+			<ion-toolbar color="rosso">
+				<ion-title>Pagine disponibili</ion-title>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content color="verdescuro">
+			<ion-list class="bg-color-transparent" lines="none">
+				<ion-menu-toggle>
+					<ion-item [routerLink]="['/']" class="menu-item">
+						<ion-icon
+							aria-hidden="true"
+							name="home"
+							slot="start"
+						></ion-icon>
+						<ion-label>HOME</ion-label></ion-item
+					>
+				</ion-menu-toggle>
+				<ion-menu-toggle>
+					<ion-item [routerLink]="['/menu']" class="menu-item">
+						<ion-icon
+							aria-hidden="true"
+							name="newspaper"
+							slot="start"
+						></ion-icon>
+						<ion-label>MENU</ion-label></ion-item
+					>
+				</ion-menu-toggle>
+				<ion-menu-toggle>
+					<ion-item [routerLink]="['/ristoranti']" class="menu-item">
+						<ion-icon
+							aria-hidden="true"
+							name="location"
+							slot="start"
+						></ion-icon>
+						<ion-label>RISTORANTI</ion-label></ion-item
+					>
+				</ion-menu-toggle>
+				<ion-menu-toggle>
+					<ion-item [routerLink]="['/ordina-ora']" class="menu-item">
+						<ion-icon
+							aria-hidden="true"
+							name="restaurant"
+							slot="start"
+						></ion-icon>
+						<ion-label>ORDINA ORA</ion-label></ion-item
+					>
+				</ion-menu-toggle>
+				<ion-menu-toggle>
+					<ion-item [routerLink]="['/prenota']" class="menu-item">
+						<ion-icon
+							aria-hidden="true"
+							name="calendar"
+							slot="start"
+						></ion-icon>
+						<ion-label>PRENOTA</ion-label></ion-item
+					>
+				</ion-menu-toggle>
+			</ion-list>
+		</ion-content>
+	</ion-menu>
+
 	<!-- #TODO: parlare con cruciata delle animazioni in stuttering -->
-	<ion-router-outlet [animated]="false"></ion-router-outlet>
+	<ion-router-outlet id="main-content" [animated]="false"></ion-router-outlet>
 
 	<app-footer></app-footer>
 </ion-app>

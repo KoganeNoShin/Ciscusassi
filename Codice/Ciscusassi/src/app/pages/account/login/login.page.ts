@@ -12,6 +12,7 @@ import {
 	IonLabel,
 	IonItem,
 	IonSpinner,
+	IonInputPasswordToggle,
 } from '@ionic/angular/standalone';
 
 import {
@@ -38,7 +39,6 @@ import { NavController } from '@ionic/angular';
 	imports: [
 		IonSpinner,
 		IonItem,
-		IonLabel,
 		IonButton,
 		IonText,
 		IonCard,
@@ -51,6 +51,7 @@ import { NavController } from '@ionic/angular';
 		FormsModule,
 		ReactiveFormsModule,
 		IonInput,
+		IonInputPasswordToggle,
 	],
 })
 export class LoginPage implements OnInit {
@@ -100,7 +101,15 @@ export class LoginPage implements OnInit {
 	ngOnInit() {
 		this.formLogin = this.fb.group({
 			email: ['', [Validators.required, Validators.email]],
-			password: ['', [Validators.required, Validators.minLength(6)]],
+			password: [
+				'',
+				[
+					Validators.required,
+					Validators.pattern(
+						'^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:\'",.<>/?]).+$'
+					),
+				],
+			],
 		});
 	}
 

@@ -1,55 +1,77 @@
 <ion-content [fullscreen]="true" color="light">
-	<ion-grid fixed>
+	<ion-grid
+		fixed
+		class="ion-align-items-center ion-justify-content-center"
+		style="height: 100vh; display: flex; width: 100vw"
+	>
 		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<ion-col size="6">
+			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
 				<ion-img
 					[src]="'/assets/illustrations/TizioChiave.png'"
 				></ion-img>
 			</ion-col>
-			<ion-col size="6">
-				<ion-card>
+
+			<ion-col size="12" sizeXl="6" class="ion-padding-start">
+				<ion-card
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center bg-color-verdechiaro"
+				>
 					<ion-text>
-						<h1 class="title">LOGIN</h1>
+						<h1 class="title text-color-bianco">LOGIN</h1>
 					</ion-text>
 
 					@if (error) {
-					<p class="errorMsg">{{errorMsg}}</p>
+					<p class="errorMsg">{{ errorMsg }}</p>
 					}
 
 					<form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
-						<ion-item>
-							<ion-label position="floating">Email </ion-label>
+						<ion-item class="campoForm ion-padding-horizontal">
 							<ion-input
 								formControlName="email"
 								type="email"
+								label="Email"
+								color="rosso"
+								placeholder="Inserisci la tua email"
 							></ion-input>
 						</ion-item>
 
-						<ion-item>
-							<ion-label position="floating">Password</ion-label>
+						<ion-item class="campoForm ion-padding-horizontal">
 							<ion-input
 								type="password"
+								label="Password"
 								formControlName="password"
-							></ion-input>
+								color="rosso"
+								placeholder="Inserisci la tua password"
+							>
+								<ion-input-password-toggle
+									slot="end"
+									color="rosso"
+								></ion-input-password-toggle>
+							</ion-input>
 						</ion-item>
 
 						<ion-button
-							expand="block"
-							type="submit"
+							size="default"
+							fill="solid"
 							shape="round"
 							color="arancione"
+							expand="block"
+							type="submit"
+							class="ion-padding-horizontal"
 							[disabled]="formLogin.invalid || loading"
 						>
-							@if(!loading) { LOGIN } @else {
+							@if (!loading) { LOGIN } @else {
 							<ion-spinner name="bubbles"></ion-spinner>
-
 							}
 						</ion-button>
 
 						<ion-text class="forgot-text">
-							<p>
+							<p class="text-color-bianco">
 								Hai dimenticato la password?
-								<a href="/recupero-password">Recuperala!</a>
+								<a
+									routerLink="/recupero-password"
+									class="text-color-arancione"
+									><b>Recuperala!</b></a
+								>
 							</p>
 						</ion-text>
 					</form>

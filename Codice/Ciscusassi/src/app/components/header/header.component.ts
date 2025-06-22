@@ -6,6 +6,7 @@ import {
 	IonButtons,
 	IonButton,
 	IonAvatar,
+	IonMenuButton,
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -26,6 +27,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 		IonToolbar,
 		IonButtons,
 		IonButton,
+		IonMenuButton,
 	],
 	standalone: true,
 })
