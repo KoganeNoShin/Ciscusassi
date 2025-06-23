@@ -174,7 +174,6 @@ router.get(
 router.get(
 	'/tavoli-in-uso/:filiale',
 	authMiddleware,
-	roleMiddleware(['amministratore', 'cameriere']),
 	PrenotazioneController.getTavoliInUso,
 );
 
