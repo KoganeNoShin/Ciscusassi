@@ -127,44 +127,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				ruolo: 'Cameriere',
 				fotoUrl: './LucaGaetani.jpg',
 				ref_filiale: filiali[0].id_filiale,
-			},
-			// Clienti
-			{
-				nome: 'Diego',
-				cognome: 'Corona',
-				email: 'diego.corona@community.unipa.it',
-				data_nascita: '2003-07-09',
-				ruolo: 'Cliente',
-				fotoUrl: './DiegoCorona.jpg',
-				ref_filiale: filiali[3].id_filiale,
-			},
-			{
-				nome: 'Daniele Orazio',
-				cognome: 'Susino',
-				email: 'danieleorazio.susino@community.unipa.it',
-				data_nascita: '1985-03-10',
-				ruolo: 'Cliente',
-				fotoUrl: './DanieleOrazioSusino.jpg',
-				ref_filiale: filiali[2].id_filiale,
-			},
-			{
-				nome: 'Leonardo Giovanni',
-				cognome: 'Caiezza',
-				email: 'leonardogiovanni.caiezza@community.unipa.it',
-				data_nascita: '1992-07-20',
-				ruolo: 'Cliente',
-				fotoUrl: './LeonardoGiovanniCaiezza.jpg',
-				ref_filiale: filiali[1].id_filiale,
-			},
-			{
-				nome: 'Luca',
-				cognome: 'Gaetani',
-				email: 'luca.gaetani@community.unipa.it',
-				data_nascita: '1996-11-15',
-				ruolo: 'Cliente',
-				fotoUrl: './LucaGaetani.jpg',
-				ref_filiale: filiali[0].id_filiale,
-			},
+			}
 		];
 
 		for (const utente of utentiFissi) {

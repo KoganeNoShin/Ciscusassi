@@ -15,6 +15,13 @@ export interface PrenotazioneRecord extends PrenotazioneInput {
 	otp: string | null;
 }
 
+export interface PrenotazioneWithUtente extends PrenotazioneRecord {
+	utente: {
+		nome: string;
+		cognome: string;
+	};
+}
+
 export class Prenotazione {
 	// Creazione di una nuova prenotazione online
 	static async create(data: PrenotazioneInput): Promise<number> {
@@ -152,15 +159,27 @@ export class Prenotazione {
 	}
 
 	// Recupera prenotazioni del giorno per filiale
-	static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneRecord[]> {
+	static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneWithUtente[]> {
 		return new Promise((resolve, reject) => {
 			db.all(`
-				SELECT * FROM prenotazioni p
-				JOIN torrette t ON p.ref_torretta = t.id_torretta
-				WHERE DATE(p.data_ora_prenotazione) = ?
-				AND t.ref_filiale = ?`,
-				[data, id_filiale],
-				(err: Error | null, rows: PrenotazioneRecord[]) => {
+            SELECT 
+				p.id_prenotazione, 
+				p.numero_persone, 
+				p.data_ora_prenotazione,
+				p.ref_torretta,
+				c.nome, 
+				c.cognome
+			FROM 
+				prenotazioni p
+			JOIN 
+				torrette t ON p.ref_torretta = t.id_torretta
+			LEFT JOIN 
+				clienti c ON p.ref_cliente = c.numero_carta
+			WHERE 
+				DATE(p.data_ora_prenotazione) = ?
+				AND t.ref_filiale = ?
+			`,[data, id_filiale],
+				(err: Error | null, rows: PrenotazioneWithUtente[]) => {
 						if (err) {
 							console.error('❌ [DB ERROR] Errore durante SELECT future:', err.message);
 							reject(err);

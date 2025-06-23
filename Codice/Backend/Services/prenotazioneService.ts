@@ -178,7 +178,7 @@ class PrenotazioneService {
 
     static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneRecord[] | null> {
         try {
-            const dataFormattata = this.dataToFormattedString(data);
+            const dataFormattata = format(new Date(data), 'yyyy-MM-dd', { locale: it });
             return await Prenotazione.getPrenotazioniDataAndFiliale(id_filiale, dataFormattata);
         } catch (error) {
             console.error('❌ [PrenotazioneService] Errore durante il recupero delle prenotazioni per data:', error);
