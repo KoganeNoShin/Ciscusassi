@@ -1,4 +1,3 @@
-import { parse } from "path";
 import OrdProd from "../Models/ord_prod";
 import Ordine from "../Models/ordine";
 import Prenotazione, { PrenotazioneInput, PrenotazioneRecord } from "../Models/prenotazione";
@@ -31,7 +30,11 @@ class PrenotazioneService {
 
     static dataToFormattedString(data: string): string {
         if (!data) return '';
-        const dataFormattata = format(data, 'yyyy-MM-dd HH:mm:ss', { locale: it });
+        const parsedDate = new Date(data);
+        if (isNaN(parsedDate.getTime())) {
+            throw new Error('Formato data non valido ' + data);
+        }
+        const dataFormattata = format(parsedDate, 'yyyy-MM-dd HH:mm:ss', { locale: it });
         return dataFormattata;
     }
 
