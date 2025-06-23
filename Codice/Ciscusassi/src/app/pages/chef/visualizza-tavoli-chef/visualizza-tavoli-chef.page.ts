@@ -90,7 +90,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
           prenotazioniFiltrate.map(async (p) => {
             try {
               const statoResponse = await lastValueFrom(
-                this.prenotazioneService.getStatoPrenotazione(p.ref_torretta)
+                this.prenotazioneService.getStatoPrenotazione(p.id_prenotazione)
               );
               const stato = statoResponse?.data ?? 'in-lavorazione';
 

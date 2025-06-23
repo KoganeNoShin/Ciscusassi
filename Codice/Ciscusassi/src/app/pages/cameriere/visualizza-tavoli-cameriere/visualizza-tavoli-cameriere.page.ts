@@ -60,7 +60,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
     { stato: 'non-in-lavorazione', label: 'NON IN LAVORAZIONE' },
     { stato: 'in-lavorazione', label: 'IN LAVORAZIONE' },
     { stato: 'senza-ordini', label: 'SENZA ORDINI' },
-    { stato: 'attesa-arrivo', label: 'ATTESA ARRIVO' }, // ho messo spazio per leggibilità
+    { stato: 'attesa-arrivo', label: 'ATTESA ARRIVO' },
   ];
 
   selectedFilter: string | null = null;
@@ -111,13 +111,13 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
           prenotazioniFiltrate.map(async (p) => {
             try {
               const statoResponse = await lastValueFrom(
-                this.prenotazioneService.getStatoPrenotazione(p.ref_torretta)
+                this.prenotazioneService.getStatoPrenotazione(p.id_prenotazione)
               );
               const stato = statoResponse?.data ?? 'attesa';
 
               return {
-                numero: p.ref_torretta,
-                nome: `Tavolo ${p.id_prenotazione}`,
+                numero: p.id_prenotazione,
+                nome: `Torretta: ${p.ref_torretta}`,
                 orario: this.formattaOrario(p.data_ora_prenotazione),
                 persone: p.numero_persone,
                 stato: stato,
@@ -278,17 +278,32 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
       this.showConfermaArrivoPopup = true;
     } else if (this.isCliccabile(tavolo)) {
       console.log('Hai cliccato sul tavolo:', tavolo);
-      // Potresti aggiungere altre azioni qui, tipo aprire dettagli o modificare
+      // Altre azioni possibili
     }
   }
 
   async confermaArrivo() {
     if (!this.tavoloDaConfermare) return;
 
-    // Qui va la chiamata API per confermare l'arrivo (non implementata)
-    this.presentToast(
-      `Arrivo cliente confermato per tavolo ${this.tavoloDaConfermare.numero}`
-    );
+    try {
+      // Usa il servizio per confermare la prenotazione passando l'id (numero)
+      const response = await lastValueFrom(
+        this.prenotazioneService.confermaPrenotazione(this.tavoloDaConfermare.numero)
+      );
+
+      if (response.success) {
+        this.presentToast(
+          `Arrivo cliente confermato per tavolo ${this.tavoloDaConfermare.numero}`
+        );
+      } else {
+        this.presentToast(
+          `Errore nella conferma arrivo per tavolo ${this.tavoloDaConfermare.numero}`
+        );
+      }
+    } catch (error) {
+      console.error('Errore conferma arrivo:', error);
+      this.presentToast('Errore durante la conferma arrivo');
+    }
 
     this.showConfermaArrivoPopup = false;
     this.tavoloDaConfermare = null;
