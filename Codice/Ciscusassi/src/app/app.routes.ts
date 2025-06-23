@@ -31,6 +31,7 @@ export const routes: Routes = [
 			import('./pages/ordinazioni/ordina-ora/ordina-ora.page').then(
 				(m) => m.OrdinaOraPage
 			),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'prenota',
@@ -38,6 +39,7 @@ export const routes: Routes = [
 			import('./pages/prenotazioni/prenota/prenota.page').then(
 				(m) => m.PrenotaPage
 			),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'amministrazione',
