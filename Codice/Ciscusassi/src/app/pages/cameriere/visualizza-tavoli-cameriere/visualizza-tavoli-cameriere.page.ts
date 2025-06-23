@@ -198,7 +198,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
       }
     } catch (err) {
       console.error('Errore durante la prenotazione:', err);
-      this.presentToast('Errore durante la prenotazione');
+      this.presentToast('Errore, non ci sono abbastanza tavoli disponibili');
     }
 
     this.showPopup = false;
