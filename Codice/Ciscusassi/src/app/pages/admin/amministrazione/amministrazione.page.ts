@@ -30,7 +30,6 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 		IonCol,
 		IonImg,
 		IonCard,
-		IonText,
 		IonButton,
 		CommonModule,
 		FormsModule,
