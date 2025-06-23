@@ -3,13 +3,13 @@
 ========================== */
 
 ion-content {
-  --overflow: hidden;
+	--overflow: hidden;
 }
 
 @media (max-width: 767px) {
-  ion-content {
-    --overflow: auto;
-  }
+	ion-content {
+		--overflow: auto;
+	}
 }
 
 /* ==========================
@@ -17,18 +17,18 @@ ion-content {
 ========================== */
 
 ion-grid {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
 }
 
 @media (max-width: 767px) {
-  ion-grid {
-    padding: 1rem;
-  }
+	ion-grid {
+		padding: 1rem;
+	}
 }
 
 /* ==========================
@@ -36,22 +36,22 @@ ion-grid {
 ========================== */
 
 ion-col {
-  --ion-grid-column-padding: 5rem;
+	--ion-grid-column-padding: 5rem;
 }
 
 @media (max-width: 767px) {
-  ion-col.image-col {
-    display: none !important;
-  }
+	ion-col.image-col {
+		display: none !important;
+	}
 
-  ion-col.form-col {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 1rem !important;
-  }
+	ion-col.form-col {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100% !important;
+		max-width: 100% !important;
+		padding: 0 1rem !important;
+	}
 }
 
 /* ==========================
@@ -59,41 +59,41 @@ ion-col {
 ========================== */
 
 ion-card {
-  background-color: var(--ion-color-aracionechiaro);
-  padding: 5rem 0;
-  height: 65vh;
-  gap: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  box-sizing: border-box;
+	background-color: var(--ion-color-salmone);
+	padding: 5rem 0;
+	height: 65vh;
+	gap: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	box-sizing: border-box;
 }
 
 ion-card.address-card {
-  padding: 5rem 4rem;
-  box-sizing: border-box;
+	padding: 5rem 4rem;
+	box-sizing: border-box;
 }
 
 ion-card.address-card p,
 ion-card.address-card ion-text p,
 ion-card.address-card h1 {
-  margin: 0 1rem;
+	margin: 0 1rem;
 }
 
 @media (max-width: 767px) {
-  ion-card.address-card {
-    width: 98vw;
-    max-width: 98vw;
-    min-height: 70vh;
-    padding: 3rem 2rem;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+	ion-card.address-card {
+		width: 98vw;
+		max-width: 98vw;
+		min-height: 70vh;
+		padding: 3rem 2rem;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
 }
 
 /* ==========================
@@ -101,9 +101,9 @@ ion-card.address-card h1 {
 ========================== */
 
 ion-img {
-  padding-left: 10vh;
-  width: 90vh;
-  height: auto;
+	padding-left: 10vh;
+	width: 90vh;
+	height: auto;
 }
 
 /* ==========================
@@ -111,8 +111,8 @@ ion-img {
 ========================== */
 
 ion-button {
-  width: 60%;
-  padding-top: 1vh;
+	padding-top: 1vh;
+  width: 100%;
 }
 
 /* ==========================
@@ -120,40 +120,40 @@ ion-button {
 ========================== */
 
 h1 {
-  font-family: 'LucidaCalligraphy';
-  font-style: italic;
-  font-size: 2rem;
-  margin: 0 0 0.5rem;
-  padding-bottom: -1vh; /* Evitare padding negativo se non necessario */
+	font-family: 'LucidaCalligraphy';
+	font-style: italic;
+	font-size: 2rem;
+	margin: 0 0 0.5rem;
+	padding-bottom: -1vh; /* Evitare padding negativo se non necessario */
 }
 
 p {
-  padding: 1vh 0;
-  font-size: 1rem;
+	padding: 1vh 0;
+	font-size: 1rem;
 }
 
 @media (max-width: 767px) {
-  p,
-  ion-text p {
-    padding: 0 1.5rem;
-    box-sizing: border-box;
-  }
+	p,
+	ion-text p {
+		padding: 0 1.5rem;
+		box-sizing: border-box;
+	}
 }
 
 ion-text {
-  max-width: 80%;
+	max-width: 80%;
 }
 
 ion-input {
-  text-align: left;
-  max-width: 90%;
-  margin: 0 auto;
+	text-align: left;
+	max-width: 90%;
+	margin: 0 auto;
 }
 
 ion-list {
-  max-width: 90%;
-  margin: 0 auto;
-  position: relative;
+	max-width: 90%;
+	margin: 0 auto;
+	position: relative;
 }
 
 /* ==========================
@@ -161,48 +161,48 @@ ion-list {
 ========================== */
 
 .autocomplete-wrapper {
-  position: relative; /* per posizionamento assoluto della lista interna */
+	position: relative; /* per posizionamento assoluto della lista interna */
 
-  ion-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    padding: 4px 0;
-    max-height: 300px;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-  }
+	ion-list {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+		background: #fff;
+		border-radius: 12px;
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+		padding: 4px 0;
+		max-height: 300px;
+		overflow-y: auto;
+		scroll-behavior: smooth;
+	}
 }
 
 ion-list ion-item,
 .autocomplete-wrapper ion-list ion-item {
-  --padding-start: 16px;
-  --inner-padding-end: 16px;
-  --background: transparent;
-  --color: #333;
-  font-size: 15px;
-  transition: background 0.2s ease;
-  border-radius: 0;
+	--padding-start: 16px;
+	--inner-padding-end: 16px;
+	--background: transparent;
+	--color: #333;
+	font-size: 15px;
+	transition: background 0.2s ease;
+	border-radius: 0;
 }
 
 ion-list ion-item:hover,
 .autocomplete-wrapper ion-list ion-item:hover {
-  --background: #f0f0f0;
+	--background: #f0f0f0;
 }
 
 ion-list ion-item:first-child,
 .autocomplete-wrapper ion-list ion-item:first-child {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
 }
 
 ion-list ion-item:last-child,
 .autocomplete-wrapper ion-list ion-item:last-child {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+	border-bottom-left-radius: 12px;
+	border-bottom-right-radius: 12px;
 }

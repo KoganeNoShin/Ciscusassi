@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular/standalone';
 import {
 	IonContent,
 	IonSpinner,
 	IonButton,
 } from '@ionic/angular/standalone';
-import { HeroComponent } from '../../../components/hero/hero.component';
 
 @Component({
 	selector: 'app-numero-persone',
@@ -31,30 +30,19 @@ export class NumeroPersonePage implements OnInit {
 	inputManuale: number | null = null;
 
 	constructor(
-		private route: ActivatedRoute,
 		private prenotazioneService: PrenotazioneService,
 		private filialeService: FilialeService,
-    private router:Router
-	) {
-		console.log('Costruttore chiamato');
-		// Inizializzo idFiliale qui, anche se sarà aggiornato dopo su cambio params
-		this.idFiliale = this.prenotazioneService.getFilialeId();
-		console.log('idFiliale ottenuto nel costruttore:', this.idFiliale);
-	}
+    	private router:Router,
+		private toastController: ToastController
+	) {	}
 
 	ngOnInit(): void {
-		console.log('ngOnInit chiamato');
-
 		this.personeSelezionate = null;
 		this.inputManuale = null;
-    this.prenotazioneService.setNumeroPosti(0);
-
-		// Sottoscrivo ai parametri di rotta per gestire anche navigazioni che non ricreano il componente
-		this.route.params.subscribe((params) => {
-			console.log('Parametri di rotta cambiati:', params);
-			this.idFiliale = this.prenotazioneService.getFilialeId();
-			this.loadFiliale();
-		});
+		this.prenotazioneService.setNumeroPosti(-1);
+		const id = this.prenotazioneService.getFilialeId();
+		this.idFiliale = id;
+		this.loadFiliale();
 	}
 
 	private loadFiliale() {
@@ -81,7 +69,6 @@ export class NumeroPersonePage implements OnInit {
 			if (filiale) {
 				this.filiale = filiale;
 				this.error = false;
-				console.log('Filiale trovata:', filiale);
 			} else {
 				console.error('Filiale non trovata con id:', this.idFiliale);
 				this.error = true;
@@ -122,9 +109,22 @@ export class NumeroPersonePage implements OnInit {
 		}
 	}
 
-  salvaPersone(numeroPersone: number){
-    this.prenotazioneService.setNumeroPosti(numeroPersone);
-    console.log('Hai scelto il numero di persone:', numeroPersone);
-    this.router.navigate(['/scelta-giorno']);
+  salvaPersone(numeroPersone: number, numeroPersoneSelezionate: number | null) {
+	if (numeroPersone < 1 && (numeroPersoneSelezionate === null || numeroPersoneSelezionate < 1)) {
+	  this.toastController.create({
+		message: 'Il numero di persone deve essere maggiore di 0',
+		duration: 2000,
+		position: 'bottom',
+		color: 'danger',
+	  }).then(toast => toast.present());
+	  return;
+	} else {
+		if (numeroPersoneSelezionate !== null) {
+			numeroPersone = numeroPersoneSelezionate;
+		}
+		this.prenotazioneService.setNumeroPosti(numeroPersone);
+		console.log('Hai scelto il numero di persone:', numeroPersone);
+		this.router.navigate(['/scelta-giorno']);
+	}
   }
 }
