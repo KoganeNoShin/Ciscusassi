@@ -22,6 +22,12 @@ export interface PrenotazioneWithUtente extends PrenotazioneRecord {
 	};
 }
 
+export interface PrenotazioneWithFiliale extends PrenotazioneRecord {
+	id_filiale: number;
+	indirizzo: string;
+	comune: string;
+}
+
 export class Prenotazione {
 	// Creazione di una nuova prenotazione online
 	static async create(data: PrenotazioneInput): Promise<number> {
@@ -140,12 +146,29 @@ export class Prenotazione {
 	}
 
 	// Recupera prenotazioni per cliente
-	static async getByCliente(ref_cliente: number): Promise<PrenotazioneRecord[]> {
+	static async getByCliente(ref_cliente: number): Promise<PrenotazioneWithFiliale[]> {
 		return new Promise((resolve, reject) => {
-			db.all(
-				'SELECT * FROM prenotazioni WHERE ref_cliente = ?',
-				[ref_cliente],
-				(err: Error | null, rows: PrenotazioneRecord[]) => {
+			db.all(`
+				SELECT 
+					p.id_prenotazione, 
+					p.numero_persone, 
+					p.data_ora_prenotazione, 
+					p.ref_cliente, 
+					p.ref_torretta, 
+					p.otp, 
+					f.id_filiale, 
+					f.indirizzo, 
+					f.comune
+				FROM 
+					prenotazioni p
+				JOIN 
+					torrette t ON p.ref_torretta = t.id_torretta
+				JOIN 
+					filiali f ON t.ref_filiale = f.id_filiale
+				WHERE 
+					p.ref_cliente = ?
+				`,[ref_cliente],
+				(err: Error | null, rows: PrenotazioneWithFiliale[]) => {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);

@@ -158,7 +158,7 @@ router.get('/prenotazione/:id', PrenotazioneController.getPrenotazioneById);
 
 router.get(
 	'/prenotazioni/cliente/:clienteId',
-	authMiddleware,
+	//authMiddleware,
 	prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniByCliente
 );
