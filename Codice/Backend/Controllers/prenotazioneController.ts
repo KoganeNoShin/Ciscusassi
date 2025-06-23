@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import PrenotazioneService from '../Services/prenotazioneService';
 import { parse } from 'path';
+import { da } from 'date-fns/locale';
 
 class PrenotazioneController {
     static async prenota(req: Request, res: Response): Promise<void> {
@@ -172,15 +173,29 @@ class PrenotazioneController {
 
     static async getPrenotazioniDelGiornoFiliale(req: Request, res: Response): Promise<void> {
         try {
-            const prenotazioni = await PrenotazioneService.getPrenotazioniDelGiornoFiliale(parseInt(req.params.filiale));
+            const { data } = req.query;
+            let dataFormattata: string;
+            // Se non è presente, usiamo la data corrente
+            if(!data) {
+                dataFormattata = PrenotazioneService.dataToFormattedString((new Date()).toString());
+            }
+            else {
+                dataFormattata = PrenotazioneService.dataToFormattedString(data as string);
+            }
 
-            if (prenotazioni) res.json({ success: true, data: prenotazioni });
-            else res.status(404).json({
-                success: false,
-                message: 'Nessuna prenotazione trovata per la data di oggi',
-            });
+            // Recupera le prenotazioni per la filiale e la data
+            const prenotazioni = await PrenotazioneService.getPrenotazioniDataAndFiliale(parseInt(req.params.filiale), dataFormattata);
+
+            if (prenotazioni && prenotazioni.length > 0) {
+                res.json({ success: true, data: prenotazioni });
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: 'Nessuna prenotazione trovata per la data specificata'
+                });
+            }
         } catch (err) {
-            console.error(err);
+            console.error('❌ Errore durante il recupero delle prenotazioni del giorno:', err);
             res.status(500).json({
                 success: false,
                 message: 'Errore interno del server',
@@ -189,9 +204,20 @@ class PrenotazioneController {
         }
     }
 
+
 	static async getTavoliInUso(req: Request, res: Response) {
 		try {
-			const tavoli = await PrenotazioneService.calcolaTavoliInUso(parseInt(req.params.filiale));
+            const { data } = req.query;
+            let dataFormattata: string;
+            // Se non è presente, usiamo la data corrente
+            if(!data) {
+                dataFormattata = PrenotazioneService.dataToFormattedString((new Date()).toString());
+            }
+            else {
+                dataFormattata = PrenotazioneService.dataToFormattedString(data as string);
+            }
+
+			const tavoli = await PrenotazioneService.calcolaTavoliInUso(parseInt(req.params.filiale), dataFormattata);
 			res.status(200).json(tavoli);
 		} catch (error) {
 			console.error('❌ Errore durante il calcolo dei tavoli:', error);

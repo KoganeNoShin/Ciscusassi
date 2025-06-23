@@ -161,16 +161,16 @@ router.get(
 );
 
 router.get(
-	'/prenotazioni/oggi/:filiale',
-	//authMiddleware,
-	//roleMiddleware(['amministratore', 'cameriere', 'chef']),
+	'/prenotazioni/:filiale',
+	authMiddleware,
+	roleMiddleware(['amministratore', 'cameriere', 'chef']),
 	prenotazioneValidator.getPrenotazioniFilialeValidator,
 	prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
 
 router.get(
-	'/tavoli-in-uso',
+	'/tavoli-in-uso/:filiale',
 	PrenotazioneController.getTavoliInUso,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere'])

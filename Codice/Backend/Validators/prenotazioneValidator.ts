@@ -14,7 +14,7 @@ export const prenotazioneInputValidator = [
 		.isInt({ min: 1 }).withMessage('Il numero di persone deve essere un intero positivo')
 		.bail()
 		.custom(async (numeroPersone, { req }) => {
-			const data = req.body.data_ora_prenotazione;
+			const data = PrenotazioneService.dataToFormattedString(req.body.data_ora_prenotazione);
 			const filialeId = req.body.ref_filiale;
 
 			if (!data || !filialeId) {
@@ -25,7 +25,7 @@ export const prenotazioneInputValidator = [
 			if (!filiale) throw new Error('Filiale non trovata');
 
 			const tavoliTotali = filiale.num_tavoli;
-			const tavoliInUso = await PrenotazioneService.calcolaTavoliInUso(filiale.id_filiale);
+			const tavoliInUso = await PrenotazioneService.calcolaTavoliInUso(filiale.id_filiale, data);
 			const tavoliOccupati = tavoliInUso[data] ?? 0;
 
 			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(Number(numeroPersone));
@@ -137,7 +137,7 @@ export const prenotazioneInputLocoValidator = [
 		.isInt({ min: 1 }).withMessage('Il numero di persone deve essere un intero positivo')
 		.bail()
 		.custom(async (numeroPersone, { req }) => {
-			const data = req.body.data_ora_prenotazione;
+			const data = PrenotazioneService.dataToFormattedString(req.body.data_ora_prenotazione);
 			const filialeId = req.body.ref_filiale;
 
 			if (!data || !filialeId) {
@@ -148,7 +148,7 @@ export const prenotazioneInputLocoValidator = [
 			if (!filiale) throw new Error('Filiale non trovata');
 
 			const tavoliTotali = filiale.num_tavoli;
-			const tavoliInUso = await PrenotazioneService.calcolaTavoliInUso(filiale.id_filiale);
+			const tavoliInUso = await PrenotazioneService.calcolaTavoliInUso(filiale.id_filiale, data);
 			const tavoliOccupati = tavoliInUso[data] ?? 0;
 
 			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(Number(numeroPersone));

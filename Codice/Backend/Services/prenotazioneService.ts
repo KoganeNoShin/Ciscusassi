@@ -1,7 +1,9 @@
 import OrdProd from "../Models/ord_prod";
 import Ordine from "../Models/ordine";
 import Prenotazione, { PrenotazioneInput, PrenotazioneRecord } from "../Models/prenotazione";
-import Torretta, { TorrettaRecord } from "../Models/torretta";
+import Torretta from "../Models/torretta";
+import { format } from 'date-fns';
+import { it } from "date-fns/locale";
 
 export interface PrenotazioneRequest {
 	numero_persone: number;
@@ -21,6 +23,17 @@ class PrenotazioneService {
         return otp;
     }
 
+    static calcolaTavoliRichiesti(numeroPersone: number): number {
+	    if (numeroPersone <= 0) return 0;
+	    return Math.ceil((numeroPersone - 2) / 2);
+    }
+
+    static dataToFormattedString(data: string): string {
+        if (!data) return '';
+        const dataFormattata = format(new Date(data), 'yyyy-MM-dd HH:mm:ss', { locale: it });
+        return dataFormattata;
+    }
+
     static async prenota(data: PrenotazioneRequest): Promise<number> {
         try {
             // Recupera torrette libere alla data e filiale specificate
@@ -33,6 +46,10 @@ class PrenotazioneService {
 
             if (!torrettaSelezionata) {
                 throw new Error('Nessuna torretta disponibile per questa data/ora');
+            }
+
+            if (data.data_ora_prenotazione) {
+                const dataFormattata = this.dataToFormattedString(data.data_ora_prenotazione);
             }
 
             const input: PrenotazioneInput = {
@@ -63,6 +80,10 @@ class PrenotazioneService {
                 throw new Error('Nessuna torretta disponibile per questa data/ora');
             }
 
+            if (data.data_ora_prenotazione) {
+                const dataFormattata = this.dataToFormattedString(data.data_ora_prenotazione);
+            }
+
             const input: PrenotazioneInput = {
                 numero_persone: data.numero_persone,
                 data_ora_prenotazione: data.data_ora_prenotazione,
@@ -90,6 +111,9 @@ class PrenotazioneService {
 
     static async modificaPrenotazione(id_prenotazione: number, numero_persone: number, data_ora_prenotazione: string): Promise<void> {
         try {
+            if (data_ora_prenotazione) {
+                const dataFormattata = this.dataToFormattedString(data_ora_prenotazione);
+            }
             return await Prenotazione.update(id_prenotazione, numero_persone, data_ora_prenotazione);
         } catch (error) {
             console.error('❌ [PrenotazioneService] Errore durante la modifica della prenotazione:', error);
@@ -146,33 +170,34 @@ class PrenotazioneService {
         }
     }
 
-    static async getPrenotazioniDelGiornoFiliale(id_filiale: number): Promise<PrenotazioneRecord[] | null> {
+    static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneRecord[] | null> {
         try {
-            return await Prenotazione.getPrenotazioniDelGiornoFiliale(id_filiale);
+            const dataFormattata = this.dataToFormattedString(data);
+            return await Prenotazione.getPrenotazioniDataAndFiliale(id_filiale, dataFormattata);
         } catch (error) {
             console.error('❌ [PrenotazioneService] Errore durante il recupero delle prenotazioni per data:', error);
             throw error;
         }
     }
 
-    static calcolaTavoliRichiesti(numeroPersone: number): number {
-	    if (numeroPersone <= 0) return 0;
-	    return Math.ceil((numeroPersone - 2) / 2);
-    }
+    static async calcolaTavoliInUso(id_filiale: number, data: string): Promise<Record<string, number>> {
+        const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
+        const tavoliPerOrario: Record<string, number> = {};
+        const dataFormattata = format(new Date(data), 'yyyy-MM-dd', { locale: it });
 
-    static async calcolaTavoliInUso(id_filiale: number): Promise<Record<string, number>> {
-		const prenotazioni = await Prenotazione.getPrenotazioniAttualiEFuture(id_filiale);
-		const tavoliPerOrario: Record<string, number> = {};
+        for (const orario of orariValidi) {
+            const timestamp = `${dataFormattata} ${orario}`;
+            const prenotazioni = await Prenotazione.getPrenotazioniDataAndFiliale(id_filiale, dataFormattata);    
 
-		for (const p of prenotazioni) {
-			const timestamp = p.data_ora_prenotazione;
-			const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
+            for (const p of prenotazioni) {
+                const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
 
-			if (!tavoliPerOrario[timestamp]) {
-				tavoliPerOrario[timestamp] = 0;
-			}
-			tavoliPerOrario[timestamp] += tavoli;
-		}
+                if (!tavoliPerOrario[timestamp]) {
+                    tavoliPerOrario[timestamp] = 0;
+                }
+                tavoliPerOrario[timestamp] += tavoli;
+            }
+        }
 
 		return tavoliPerOrario;
 	}
