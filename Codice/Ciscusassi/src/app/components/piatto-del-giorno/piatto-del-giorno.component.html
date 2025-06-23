@@ -7,7 +7,7 @@
 		<ion-spinner name="bubbles"></ion-spinner>
 	} @else {
 		@if (!error) {
-			<h1>PIATTO DEL GIORNO</h1>
+			<h1 class="text-color-bianco">PIATTO DEL GIORNO</h1>
 			<div id="plate">
 				<img
 					[src]="piatto!.immagine"
@@ -15,17 +15,21 @@
 					class="immagine-rotante"
 				/>
 				<div id="plateInfo">
-					<h2>{{ piatto!.nome }} - {{ piatto!.costo }} €</h2>
-					<h3>{{ piatto!.descrizione }}</h3>
+					<h2 class="text-color-bianco">
+						{{ piatto!.nome }} - {{ piatto!.costo }} €
+					</h2>
+					<h5 class="text-color-bianco">{{ piatto!.descrizione }}</h5>
 				</div>
 			</div>
-			<p>
+			<p class="text-color-bianco">
 				* Acquistando il piatto del giorno hai diritto a 10 pt fedeltà
 				bonus.
 			</p>
 		} @else {
-			<h1>ERRORE</h1>
-			<h3>C'è stato un errore durante il caricamento. Riprova!</h3>
+			<h1 class="text-color-bianco">ERRORE</h1>
+			<h3 class="text-color-bianco">
+				C'è stato un errore durante il caricamento. Riprova!
+			</h3>
 		}
 	}
 </div>
