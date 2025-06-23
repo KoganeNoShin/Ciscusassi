@@ -31,11 +31,7 @@ class PrenotazioneService {
 
     static dataToFormattedString(data: string): string {
         if (!data) return '';
-        const parsedDate = Date.parse(data);
-        if (isNaN(parsedDate)) {
-            throw new Error('Formato data non valido');
-        }
-        const dataFormattata = format(parsedDate, 'yyyy-MM-dd HH:mm:ss', { locale: it });
+        const dataFormattata = format(data, 'yyyy-MM-dd HH:mm:ss', { locale: it });
         return dataFormattata;
     }
 
