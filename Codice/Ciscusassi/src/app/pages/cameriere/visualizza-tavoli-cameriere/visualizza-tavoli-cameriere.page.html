@@ -136,12 +136,12 @@
     <ng-template>
       <div class="popup-container">
         <h2>Confermi l'arrivo del cliente?</h2>
-        <p>Tavolo: {{ tavoloDaConfermare?.numero }}</p>
+        <p>Numero prenotazione: {{ tavoloDaConfermare?.numero }}</p>
         <ion-button color="success" expand="block" (click)="confermaArrivo()">
-          Sì, conferma
+          Conferma
         </ion-button>
         <ion-button color="medium" expand="block" (click)="chiudiPopupArrivo()">
-          Annulla
+          Indietro
         </ion-button>
       </div>
     </ng-template>
