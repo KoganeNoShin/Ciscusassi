@@ -2,6 +2,7 @@ import impiegato from '../../Models/impiegato';
 import filiale from '../../Models/filiale';
 import fs from 'fs';
 import path from 'path';
+import Cliente from '../../Models/cliente';
 
 function getBase64FromFile(localPath: string): string {
 	const fullPath = path.resolve(__dirname, localPath); // path assoluto
@@ -145,6 +146,62 @@ export async function generateUtentiFissi(): Promise<string> {
 			});
 			console.log(
 				`✅ ${utente.nome} ${utente.cognome} (${utente.ruolo}) aggiunto con successo.`
+			);
+		}
+
+		const ClientiFissi = [
+			// Amministratori
+			{
+				nome: 'Diego',
+				cognome: 'Corona',
+				email: 'diego.corona@community.unipa.it',
+				data_nascita: '2003-07-09',
+				ruolo: 'Amministratore',
+				fotoUrl: './DiegoCorona.jpg',
+				ref_filiale: filiali[3].id_filiale,
+			},
+			{
+				nome: 'Daniele Orazio',
+				cognome: 'Susino',
+				email: 'danieleorazio.susino@community.unipa.it',
+				data_nascita: '1985-03-10',
+				ruolo: 'Amministratore',
+				fotoUrl: './DanieleOrazioSusino.jpg',
+				ref_filiale: filiali[2].id_filiale,
+			},
+			{
+				nome: 'Leonardo Giovanni',
+				cognome: 'Caiezza',
+				email: 'leonardogiovanni.caiezza@community.unipa.it',
+				data_nascita: '1992-07-20',
+				ruolo: 'Amministratore',
+				fotoUrl: './LeonardoGiovanniCaiezza.jpg',
+				ref_filiale: filiali[1].id_filiale,
+			},
+			{
+				nome: 'Luca',
+				cognome: 'Gaetani',
+				email: 'luca.gaetani@community.unipa.it',
+				data_nascita: '1996-11-15',
+				ruolo: 'Amministratore',
+				fotoUrl: './LucaGaetani.jpg',
+				ref_filiale: filiali[0].id_filiale,
+			}
+		];
+
+		for(const cliente of ClientiFissi) {
+			const foto = getBase64FromFile(cliente.fotoUrl);
+
+			await Cliente.create({
+				nome: cliente.nome,
+				cognome: cliente.cognome,
+				image: foto,
+				password: password,
+				email: cliente.email,
+				data_nascita: cliente.data_nascita
+			});
+			console.log(
+				`✅ ${cliente.nome} ${cliente.cognome} (${cliente.ruolo}) aggiunto con successo.`
 			);
 		}
 
