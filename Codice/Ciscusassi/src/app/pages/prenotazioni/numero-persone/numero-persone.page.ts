@@ -22,6 +22,7 @@ import {
 })
 export class NumeroPersonePage implements OnInit {
 	filiale: FilialeRecord | null = null;
+	numeroTavoliRichiesti: number = 0;
 	idFiliale: number = 0;
 	loading: boolean = false;
 	error: boolean = false;
@@ -121,6 +122,26 @@ export class NumeroPersonePage implements OnInit {
 	} else {
 		if (numeroPersoneSelezionate !== null) {
 			numeroPersone = numeroPersoneSelezionate;
+		}
+
+		for (let t = 2; t <= numeroPersone; t++) {
+			const postiDisponibili = 2 * t + 2;
+			if (postiDisponibili >= numeroPersone) {
+				this.numeroTavoliRichiesti = t;
+				break;
+			}
+		}
+		
+		console.log('Numero di tavoli richiesti:', this.numeroTavoliRichiesti);
+		console.log('Numero di tavoli disponibili:', this.filiale?.num_tavoli ?? 0);
+		if (this.numeroTavoliRichiesti > (this.filiale?.num_tavoli ?? 0)) {
+			this.toastController.create({
+				message: 'Non ci sono abbastanza tavoli disponibili per il numero di persone selezionato.',
+				duration: 2000,
+				position: 'bottom',
+				color: 'danger',
+			}).then(toast => toast.present());
+			return;
 		}
 		this.prenotazioneService.setNumeroPosti(numeroPersone);
 		console.log('Hai scelto il numero di persone:', numeroPersone);

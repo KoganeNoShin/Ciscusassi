@@ -36,9 +36,14 @@ import {
 })
 export class SceltaGiornoPage implements OnInit {
 	filiale: FilialeRecord | null = null;
+  dataSelezionata: string = '';
 	idFiliale: number = 0;
 	loading: boolean = false;
 	hasError: boolean = false;
+  primaFasciaNonDisponibile: boolean = true;
+  secondaFasciaNonDisponibile: boolean = true;
+  terzaFasciaNonDisponibile: boolean = true;
+  quartaFasciaNonDisponibile: boolean = true;
 	persone: number | null = null;
   noMartediEMaxDueSettimane = (dateString: string): boolean => {
   const d = new Date(dateString);
@@ -108,6 +113,7 @@ export class SceltaGiornoPage implements OnInit {
 		// console.log('Filiale caricata:', this.filiale);
 	}
 	ngOnInit() {
+    this.dataSelezionata
 		const id = this.prenotazioneService.getFilialeId();
 		this.idFiliale = id;
 		this.loadFiliale();
@@ -117,5 +123,18 @@ export class SceltaGiornoPage implements OnInit {
 		// console.log('Numero persone caricato:', this.persone);
 	}
 
+  alCambioData(){
+    /*
+		this.prenotazioneService.getTavoliInUso().subscribe({
+			next: (response) => {
+				if (response.success) {
+					console.log('Tavoli in uso:', response.data);
+				} else {
+					console.error('Errore nel recupero dei tavoli in uso:', response.message);
+				}
+			}
+		});
+    */
 
+	}
 }
