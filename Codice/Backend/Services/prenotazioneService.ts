@@ -8,7 +8,7 @@ import { it } from "date-fns/locale";
 export interface PrenotazioneRequest {
 	numero_persone: number;
 	data_ora_prenotazione: string;
-	ref_cliente: number;
+	ref_cliente: number | null;
 	ref_filiale: number;
 }
 
@@ -30,7 +30,11 @@ class PrenotazioneService {
 
     static dataToFormattedString(data: string): string {
         if (!data) return '';
-        const dataFormattata = format(new Date(data), 'yyyy-MM-dd HH:mm:ss', { locale: it });
+        const parsedDate = new Date(data);
+        if (isNaN(parsedDate.getTime())) {
+            throw new Error('Formato data non valido');
+        }
+        const dataFormattata = format(parsedDate, 'yyyy-MM-dd HH:mm:ss', { locale: it });
         return dataFormattata;
     }
 
@@ -47,14 +51,14 @@ class PrenotazioneService {
             if (!torrettaSelezionata) {
                 throw new Error('Nessuna torretta disponibile per questa data/ora');
             }
-
+            let dataFormattata = '';
             if (data.data_ora_prenotazione) {
-                const dataFormattata = this.dataToFormattedString(data.data_ora_prenotazione);
+                dataFormattata = this.dataToFormattedString(data.data_ora_prenotazione);
             }
 
             const input: PrenotazioneInput = {
                 numero_persone: data.numero_persone,
-                data_ora_prenotazione: data.data_ora_prenotazione,
+                data_ora_prenotazione: dataFormattata,
                 ref_cliente: data.ref_cliente,
                 ref_torretta: torrettaSelezionata
             };
@@ -80,13 +84,14 @@ class PrenotazioneService {
                 throw new Error('Nessuna torretta disponibile per questa data/ora');
             }
 
+            let dataFormattata = '';
             if (data.data_ora_prenotazione) {
-                const dataFormattata = this.dataToFormattedString(data.data_ora_prenotazione);
+                dataFormattata = this.dataToFormattedString(data.data_ora_prenotazione);
             }
 
             const input: PrenotazioneInput = {
                 numero_persone: data.numero_persone,
-                data_ora_prenotazione: data.data_ora_prenotazione,
+                data_ora_prenotazione: dataFormattata,
                 ref_cliente: data.ref_cliente,
                 ref_torretta: torrettaSelezionata
             };
@@ -111,10 +116,11 @@ class PrenotazioneService {
 
     static async modificaPrenotazione(id_prenotazione: number, numero_persone: number, data_ora_prenotazione: string): Promise<void> {
         try {
+            let dataFormattata = '';
             if (data_ora_prenotazione) {
-                const dataFormattata = this.dataToFormattedString(data_ora_prenotazione);
+                dataFormattata = this.dataToFormattedString(data_ora_prenotazione);
             }
-            return await Prenotazione.update(id_prenotazione, numero_persone, data_ora_prenotazione);
+            return await Prenotazione.update(id_prenotazione, numero_persone, dataFormattata);
         } catch (error) {
             console.error('❌ [PrenotazioneService] Errore durante la modifica della prenotazione:', error);
             throw error;

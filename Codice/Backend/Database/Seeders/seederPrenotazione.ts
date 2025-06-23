@@ -8,6 +8,7 @@ import pagamento from '../../Models/pagamento';
 
 import { faker } from '@faker-js/faker';
 import Filiale from '../../Models/filiale';
+import PrenotazioneService from '../../Services/prenotazioneService';
 
 export async function generatePrenotazione(count: number): Promise<string> {
 	try {
@@ -64,21 +65,20 @@ export async function generatePrenotazione(count: number): Promise<string> {
 					let id_prenotazione: number;
 
 					if (ref_cliente_prenotazione) {
-						id_prenotazione = await prenotazione.create({
+						id_prenotazione = await PrenotazioneService.prenotaLoco({
 							numero_persone,
-							data_ora_prenotazione: dataPren.toISOString(),
+							data_ora_prenotazione: dataPren.toString(),
 							ref_cliente: ref_cliente_prenotazione.numero_carta,
-							ref_torretta,
+							ref_filiale: filialeScelta.id_filiale,
 						});
 					} else {
-						id_prenotazione = await prenotazione.createLocale(
+						id_prenotazione = await PrenotazioneService.prenotaLoco(
 							{
 								numero_persone,
-								data_ora_prenotazione: dataPren.toISOString(),
+								data_ora_prenotazione: dataPren.toString(),
 								ref_cliente: null,
-								ref_torretta,
-							},
-							otp
+								ref_filiale: filialeScelta.id_filiale,
+							}
 						);
 					}
 
