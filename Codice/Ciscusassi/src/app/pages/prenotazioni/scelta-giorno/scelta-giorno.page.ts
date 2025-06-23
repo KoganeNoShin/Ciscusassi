@@ -6,6 +6,7 @@ import { PrenotazioneService } from 'src/app/core/services/prenotazione.service'
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { take } from 'rxjs/operators';
+import { PrenotazioneRequest } from 'src/app/core/interfaces/Prenotazione';
 import {
   IonContent,
   IonSpinner,
@@ -43,6 +44,12 @@ export class SceltaGiornoPage implements OnInit {
   terzaFasciaNonDisponibile: boolean = true;
   quartaFasciaNonDisponibile: boolean = true;
   persone: number | null = null;
+  prenotazione: PrenotazioneRequest = {
+    numero_persone: 0,
+    data_ora_prenotazione: '',
+    ref_cliente: null,
+    ref_filiale: 0,
+  };
 
   constructor(
     private prenotazioneService: PrenotazioneService,
@@ -212,6 +219,34 @@ export class SceltaGiornoPage implements OnInit {
         },
         error: (err) => {
           console.error('Errore HTTP nella richiesta tavoliInUso:', err);
+        },
+      });
+  }
+
+  confermaPrenotazione(ora: string) {
+    this.prenotazione.numero_persone = this.persone || 0;
+    this.prenotazione.data_ora_prenotazione = `${this.dataSelezionata} ${ora}`;
+    this.prenotazione.ref_filiale = this.idFiliale;
+    this.prenotazione.ref_cliente = 1; 
+    console.log('Prenotazione effettuata:', this.prenotazione);
+    this.prenotazioneService
+      .prenota(this.prenotazione)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          console.log('Risposta prenotazione:', response);
+          if (response.success) {
+            alert('Prenotazione effettuata con successo!');
+          } else {
+            alert(
+              'Errore durante la prenotazione: ' +
+                (response.message || 'Errore sconosciuto')
+            );
+          }
+        },
+        error: (err) => {
+          console.error('Errore nella richiesta di prenotazione:', err);
+          alert('Errore durante la prenotazione. Riprova più tardi.');
         },
       });
   }

@@ -99,18 +99,22 @@ export class PrenotazioneService {
 			`${this.apiURL}/eliminaPrenotazione/${id}`
 		);
 	}
-tavoliInUso(id_filiale: number, data: string): Observable<ApiResponse<any>>{
-	return this.http.get<{ [fascia: string]: number }>(
-		`${this.apiURL}/tavoli-in-uso/${id_filiale}?data=${data}`
-	).pipe(
-		// Wrap the response in an ApiResponse object
-		map(data => ({
-			success: true,
-			data
-		}))
-	);
-}
-
+	tavoliInUso(
+		id_filiale: number,
+		data: string
+	): Observable<ApiResponse<any>> {
+		return this.http
+			.get<{
+				[fascia: string]: number;
+			}>(`${this.apiURL}/tavoli-in-uso/${id_filiale}?data=${data}`)
+			.pipe(
+				// Wrap the response in an ApiResponse object
+				map((data) => ({
+					success: true,
+					data,
+				}))
+			);
+	}
 
 	// --------- Get/Set locali ---------
 

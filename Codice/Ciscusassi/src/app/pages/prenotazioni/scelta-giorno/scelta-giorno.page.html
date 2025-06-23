@@ -14,10 +14,10 @@
 				<ion-datetime [(ngModel)]="dataSelezionata" (ngModelChange)="alCambioData()" presentation="date" color="senape" [isDateEnabled]="noMartediEMaxDueSettimane"></ion-datetime>
 			</ion-col>
 			<ion-col size="3" class="time-buttons">
-				<ion-button [disabled]="primaFasciaNonDisponibile">12:00-13:30</ion-button>
-				<ion-button [disabled]="secondaFasciaNonDisponibile">13:30-15:00</ion-button>
-				<ion-button [disabled]="terzaFasciaNonDisponibile">19:30-21:00</ion-button>
-				<ion-button [disabled]="quartaFasciaNonDisponibile">21:00-22:30</ion-button>
+				<ion-button (click)="confermaPrenotazione('12:00')" [disabled]="primaFasciaNonDisponibile">12:00-13:30</ion-button>
+				<ion-button (click)="confermaPrenotazione('13:30')" [disabled]="secondaFasciaNonDisponibile">13:30-15:00</ion-button>
+				<ion-button (click)="confermaPrenotazione('19:30')" [disabled]="terzaFasciaNonDisponibile">19:30-21:00</ion-button>
+				<ion-button (click)="confermaPrenotazione('21:00')" [disabled]="quartaFasciaNonDisponibile">21:00-22:30</ion-button>
 			</ion-col>
 		</ion-row>
 	</div>
