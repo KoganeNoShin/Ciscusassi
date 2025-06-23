@@ -40,9 +40,10 @@
     Non ci sono prenotazioni
   </div>
 
-  <!-- Tavoli -->
-  <ion-grid *ngIf="tavoliFiltrati.length > 0">
+  <!-- Tavoli e Bottone Aggiungi -->
+  <ion-grid>
     <ion-row class="ion-justify-content-center">
+      <!-- Tavoli -->
       <ion-col size="6" size-md="4" *ngFor="let tavolo of tavoliFiltrati">
         <div
           class="tavolo-wrapper"
@@ -64,7 +65,7 @@
         </div>
       </ion-col>
 
-      <!-- Bottone aggiungi tavolo -->
+      <!-- Bottone aggiungi tavolo SEMPRE visibile -->
       <ion-col size="6" size-md="4">
         <div class="tavolo-wrapper add">
           <div class="circle add-btn" (click)="add()">+</div>
