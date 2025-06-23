@@ -18,6 +18,7 @@ import PrenotazioneController from '../Controllers/prenotazioneController';
 import prenotazioneValidator from '../Validators/prenotazioneValidator';
 import OrdProdController from '../Controllers/ordprodController';
 import ordprodValidator from '../Validators/ordprodValidator';
+import TorrettaController from '../Controllers/torrettaController';
 
 const router = express.Router();
 
@@ -230,6 +231,13 @@ router.post(
 	roleMiddleware(['amministratore', 'cameriere']),
 	PrenotazioneController.confermaPrenotazione
 );
+
+// Route per le torrette
+router.get(
+	'/torrette/:id_torretta',
+	TorrettaController.getTorrettaByID
+);
+
 
 /* ESEMPIO DI COME PROTEGGERE LE ROTTE 
 router.post(
