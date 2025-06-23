@@ -179,6 +179,10 @@ class PrenotazioneService {
 
     static async getStatoPrenotazione(id_prenotazione: number): Promise<string> {
 	try {
+        const otp = await Prenotazione.getOTPById(id_prenotazione);
+        if (!otp) {
+            return 'attesa-arrivo';
+        }
 		const ordini = await Ordine.getByPrenotazione(id_prenotazione);
 
 		if (!ordini || ordini.length === 0) {
