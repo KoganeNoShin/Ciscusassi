@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -43,7 +43,7 @@ import { PrenotazioneRequest } from 'src/app/core/interfaces/Prenotazione';
     IonLabel,
   ],
 })
-export class VisualizzaTavoliCamerierePage implements OnInit {
+export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
   tavoli: Array<{
     numero: number;
     nome: string;
@@ -70,6 +70,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
   inputManuale: number | null = null;
   refClienteInput: string = '';
 
+  private intervalId: any;
+
   constructor(
     private toastController: ToastController,
     private authService: AuthenticationService,
@@ -78,6 +80,17 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
 
   ngOnInit(): void {
     this.loadTavoli();
+
+    // Avvia polling ogni 30 secondi
+    this.intervalId = setInterval(() => {
+      this.loadTavoli();
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   async loadTavoli() {
@@ -170,7 +183,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
 
     const filialeId = this.authService.getFiliale();
 
-    // Se il campo ref_cliente è pieno, prova a parsarlo
     if (this.refClienteInput.trim() !== '') {
       const parsed = parseInt(this.refClienteInput.trim(), 10);
       if (!isNaN(parsed)) {
@@ -184,7 +196,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
     const prenotazione: PrenotazioneRequest = {
       numero_persone: persone,
       data_ora_prenotazione: this.getLocalIsoString(),
-      ref_cliente: refCliente, // può essere null
+      ref_cliente: refCliente,
       ref_filiale: filialeId,
     };
 
@@ -205,42 +217,37 @@ export class VisualizzaTavoliCamerierePage implements OnInit {
     this.resetPopup();
   }
 
- getLocalIsoString(): string {
-  const orariValidi = ["12:00", "13:30", "19:30", "21:00"];
-  const now = new Date();
+  getLocalIsoString(): string {
+    const orariValidi = ["12:00", "13:30", "19:30", "21:00"];
+    const now = new Date();
 
-  // Costruisci le Date oggi per gli orari disponibili
-  const oggiOrari = orariValidi.map((orario) => {
-    const [hh, mm] = orario.split(":").map(Number);
-    const data = new Date();
-    data.setHours(hh, mm, 0, 0);
-    return data;
-  });
+    const oggiOrari = orariValidi.map((orario) => {
+      const [hh, mm] = orario.split(":").map(Number);
+      const data = new Date();
+      data.setHours(hh, mm, 0, 0);
+      return data;
+    });
 
-  // Filtro: solo orari futuri rispetto a `now`
-  const futuri = oggiOrari.filter((d) => d.getTime() > now.getTime());
+    const futuri = oggiOrari.filter((d) => d.getTime() > now.getTime());
 
-  let orarioSelezionato: Date;
+    let orarioSelezionato: Date;
 
-  if (futuri.length > 0) {
-    // Prendo il primo orario futuro disponibile
-    orarioSelezionato = futuri[0];
-  } else {
-    // Se nessun orario futuro oggi, prendo il primo di domani
-    const [hh, mm] = orariValidi[0].split(":").map(Number);
-    orarioSelezionato = new Date();
-    orarioSelezionato.setDate(orarioSelezionato.getDate() + 1);
-    orarioSelezionato.setHours(hh, mm, 0, 0);
+    if (futuri.length > 0) {
+      orarioSelezionato = futuri[0];
+    } else {
+      const [hh, mm] = orariValidi[0].split(":").map(Number);
+      orarioSelezionato = new Date();
+      orarioSelezionato.setDate(orarioSelezionato.getDate() + 1);
+      orarioSelezionato.setHours(hh, mm, 0, 0);
+    }
+
+    const offsetMs = orarioSelezionato.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(orarioSelezionato.getTime() - offsetMs)
+      .toISOString()
+      .slice(0, -1);
+
+    return localISOTime;
   }
-
-  // Rimuovo il fuso orario (timezone offset)
-  const offsetMs = orarioSelezionato.getTimezoneOffset() * 60000;
-  const localISOTime = new Date(orarioSelezionato.getTime() - offsetMs)
-    .toISOString()
-    .slice(0, -1);
-
-  return localISOTime;
-}
 
   annulla() {
     this.showPopup = false;

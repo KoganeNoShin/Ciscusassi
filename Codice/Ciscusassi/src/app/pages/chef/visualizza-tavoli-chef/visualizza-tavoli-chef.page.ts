@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'; // Aggiunto OnDestroy
 import { CommonModule } from '@angular/common';
 import {
   IonContent,
@@ -34,7 +34,7 @@ import { lastValueFrom } from 'rxjs';
     IonLabel,
   ],
 })
-export class VisualizzaTavoliChefPage implements OnInit {
+export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
   tavoli: Array<{
     numero: number;
     nome: string;
@@ -50,8 +50,9 @@ export class VisualizzaTavoliChefPage implements OnInit {
     { stato: 'non-in-lavorazione', label: 'NON IN LAVORAZIONE' },
   ];
 
-  // Aggiungo filtro "tutti" come default
   selectedFilter: string = 'tutti';
+
+  private intervalloAggiornamento: any; // Timer per auto-refresh
 
   constructor(
     private toastController: ToastController,
@@ -61,6 +62,18 @@ export class VisualizzaTavoliChefPage implements OnInit {
 
   ngOnInit(): void {
     this.loadTavoli();
+
+    // Auto-refresh ogni 30 secondi
+    this.intervalloAggiornamento = setInterval(() => {
+      this.loadTavoli();
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    // Pulisci l'intervallo per evitare memory leak
+    if (this.intervalloAggiornamento) {
+      clearInterval(this.intervalloAggiornamento);
+    }
   }
 
   async loadTavoli() {
@@ -143,12 +156,10 @@ export class VisualizzaTavoliChefPage implements OnInit {
 
   applicaFiltro() {
     if (this.selectedFilter === 'tutti') {
-      // Mostra sia 'in-lavorazione' che 'non-in-lavorazione'
       this.tavoliFiltrati = this.tavoli.filter(
         (t) => t.stato === 'in-lavorazione' || t.stato === 'non-in-lavorazione'
       );
     } else {
-      // Mostra solo tavoli con stato selezionato
       this.tavoliFiltrati = this.tavoli.filter((t) => t.stato === this.selectedFilter);
     }
   }
