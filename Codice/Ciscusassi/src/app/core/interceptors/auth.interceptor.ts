@@ -4,20 +4,26 @@ import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 	const authService = inject(AuthenticationService);
 	const router = inject(Router);
 
+	// Variabile che ci permette di inserire il token negli header solo
+	// se stiamo facendo una richiesta verso il nostro backend, in modo
+	// da prevenire errori CORS ad esempio dalle API di TOM TOM
+	const isApiRequest = req.url.startsWith(environment.apiURL);
 	const token = authService.getToken();
 
-	const authReq = token
-		? req.clone({
-				setHeaders: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
-		: req;
+	const authReq =
+		isApiRequest && token
+			? req.clone({
+					setHeaders: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
+			: req;
 
 	return next(authReq).pipe(
 		catchError((err) => {

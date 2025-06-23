@@ -1,8 +1,14 @@
+ion-grid {
+	height: 100vh;
+	display: flex;
+	width: 100vw;
+}
+
 ion-card {
 	gap: 2rem;
 	display: flex;
 	flex-direction: column;
-	height: 60vh;
+	height: 80vh;
 }
 
 .errorMsg {
