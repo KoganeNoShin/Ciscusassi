@@ -28,7 +28,7 @@
             min="1"
           />
       </div>
-      <ion-button (click)="salvaPersone(this.personeSelezionate ?? 1)">CONFERMA</ion-button>
+      <ion-button (click)="salvaPersone(this.personeSelezionate ?? -1, this.inputManuale ?? -1)">CONFERMA</ion-button>
     }
   </div>
 </ion-content>

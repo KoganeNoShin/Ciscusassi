@@ -87,6 +87,7 @@ export class PrenotaPage implements OnInit {
 				this.error = true;
 			},
 		});
+		this.prenotazioneService.svuotaPrenotazione();
 	}
 
 	filtroFiliali() {

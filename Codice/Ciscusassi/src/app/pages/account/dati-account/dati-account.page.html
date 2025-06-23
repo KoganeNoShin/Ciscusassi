@@ -1,20 +1,28 @@
 <ion-content [fullscreen]="true" color="light">
-	<ion-grid fixed>
+	<ion-grid
+		fixed
+		class="ion-align-items-center ion-justify-content-center master-ion-grid"
+	>
 		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<ion-col size="6">
+			<!-- Immagine a sinistra solo su XL+ -->
+			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
 				<ion-img
 					[src]="'/assets/illustrations/TizioChiave.png'"
 				></ion-img>
 			</ion-col>
-			<ion-col size="6" class="account-card">
-				<ion-card class="card-container">
-					<h1 class="titolo">DATI ACCOUNT</h1>
+
+			<!-- Contenuto -->
+			<ion-col size="12" sizeXl="6">
+				<ion-card
+					class="ion-padding ion-text-center ion-align-items-center ion-justify-content-center bg-color-verdechiaro card-container"
+				>
+					<h1 class="titolo text-color-bianco">DATI ACCOUNT</h1>
 
 					@if (error) {
-					<p>{{ errorMsg }}</p>
+					<p class="text-color-rosso">{{ errorMsg }}</p>
 					}
 
-					<ion-card class="card-profilo">
+					<ion-card class="card-profilo bg-color-bianco">
 						<ion-card-content class="card-flex">
 							<div>
 								<ion-avatar class="avatar-centro">
@@ -34,32 +42,57 @@
 					</ion-card>
 
 					<!-- Bottoni -->
-					<ion-button
-						expand="block"
-						color="arancione"
-						[routerLink]="['/cambia-password']"
+					<ion-grid
+						class="ion-padding-top ion-justify-content-center"
 					>
-						CAMBIA PASSWORD
-					</ion-button>
-					<ion-button
-						expand="block"
-						color="arancione"
-						[routerLink]="['/cambia-email']"
-					>
-						CAMBIA EMAIL
-					</ion-button>
-					<ion-button
-						expand="block"
-						color="rosso"
-						(click)="deleteAccount()"
-					>
-						ELIMINA ACCOUNT
-					</ion-button>
-					<ion-button expand="block" color="rosso" (click)="logout()">
-						@if (loadingLogout) {
-						<ion-spinner name="bubbles"></ion-spinner>
-						} @else { LOGOUT }
-					</ion-button>
+						<ion-row class="ion-justify-content-center" responsive>
+							<ion-col
+								size="6"
+								sizeMd="12"
+								class="ion-justify-content-center ion-align-items-center"
+							>
+								<ion-button
+									color="arancione"
+									shape="round"
+									[routerLink]="['/cambia-password']"
+								>
+									CAMBIA PASSWORD
+								</ion-button>
+							</ion-col>
+
+							<ion-col size="6" sizeMd="12">
+								<ion-button
+									color="arancione"
+									shape="round"
+									[routerLink]="['/cambia-email']"
+								>
+									CAMBIA EMAIL
+								</ion-button>
+							</ion-col>
+
+							<ion-col size="6" sizeMd="12">
+								<ion-button
+									color="rosso"
+									shape="round"
+									(click)="deleteAccount()"
+								>
+									ELIMINA ACCOUNT
+								</ion-button>
+							</ion-col>
+
+							<ion-col size="6" sizeMd="12">
+								<ion-button
+									color="rosso"
+									shape="round"
+									(click)="logout()"
+								>
+									@if (loadingLogout) {
+									<ion-spinner name="bubbles"></ion-spinner>
+									} @else { LOGOUT }
+								</ion-button>
+							</ion-col>
+						</ion-row>
+					</ion-grid>
 				</ion-card>
 			</ion-col>
 		</ion-row>

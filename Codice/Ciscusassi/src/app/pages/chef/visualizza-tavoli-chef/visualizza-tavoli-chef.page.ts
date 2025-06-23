@@ -1,167 +1,174 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'; // Aggiunto OnDestroy
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import {
-	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
-	IonGrid,
-	IonRow,
-	IonCol,
-	ToastController,
-	IonChip,
-	IonLabel,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonChip,
+  ToastController,
+  IonLabel,
 } from '@ionic/angular/standalone';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
-	selector: 'app-visualizza-tavoli-chef',
-	templateUrl: './visualizza-tavoli-chef.page.html',
-	styleUrls: ['./visualizza-tavoli-chef.page.scss'],
-	standalone: true,
-	imports: [
-		IonContent,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
-		IonGrid,
-		IonRow,
-		IonCol,
-		IonChip,
-		IonLabel,
-		CommonModule,
-		FormsModule,
-	],
+  selector: 'app-visualizza-tavoli-chef',
+  templateUrl: './visualizza-tavoli-chef.page.html',
+  styleUrls: ['./visualizza-tavoli-chef.page.scss'],
+  standalone: true,
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonChip,
+    CommonModule,
+    IonLabel,
+  ],
 })
-export class VisualizzaTavoliChefPage implements OnInit {
-	tavoli: Array<{
-		numero: number;
-		nome: string;
-		orario: string;
-		persone: number;
-		stato: string;
-	}> = [];
+export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
+  tavoli: Array<{
+    numero: number;
+    nome: string;
+    orario: string;
+    persone: number;
+    stato: string;
+  }> = [];
 
-	filtroStato: 'tutti' | 'in-lavorazione' | 'non-in-lavorazione' = 'tutti';
+  tavoliFiltrati: typeof this.tavoli = [];
 
-	legenda = [
-		{ stato: 'non-in-lavorazione', label: 'NON IN LAVORAZIONE' },
-		{ stato: 'in-lavorazione', label: 'IN LAVORAZIONE' },
-	];
+  legenda = [
+    { stato: 'in-lavorazione', label: 'IN LAVORAZIONE' },
+    { stato: 'non-in-lavorazione', label: 'NON IN LAVORAZIONE' },
+  ];
 
-	constructor(
-		private toastController: ToastController,
-		private authService: AuthenticationService,
-		private prenotazioneService: PrenotazioneService
-	) {}
+  selectedFilter: string = 'tutti';
 
-	ngOnInit(): void {
-		this.loadTavoli();
-	}
+  private intervalloAggiornamento: any; // Timer per auto-refresh
 
-	async loadTavoli() {
-		try {
-			const filiale = this.authService.getFiliale();
-			const response = await lastValueFrom(
-				this.prenotazioneService.getPrenotazioniDelGiornoFiliale(
-					filiale
-				)
-			);
+  constructor(
+    private toastController: ToastController,
+    private authService: AuthenticationService,
+    private prenotazioneService: PrenotazioneService
+  ) {}
 
-			if (response.success && response.data?.length) {
-				const prenotazioniFiltrate = response.data;
+  ngOnInit(): void {
+    this.loadTavoli();
 
-				const tavoliCompletati = await Promise.all(
-					prenotazioniFiltrate.map(async (p) => {
-						try {
-							const statoResponse = await lastValueFrom(
-								this.prenotazioneService.getStatoPrenotazione(
-									p.ref_torretta
-								)
-							);
-							const stato = statoResponse?.data ?? 'attesa';
+    // Auto-refresh ogni 30 secondi
+    this.intervalloAggiornamento = setInterval(() => {
+      this.loadTavoli();
+    }, 30000);
+  }
 
-							return {
-								numero: p.ref_torretta,
-								nome: `Tavolo ${p.id_prenotazione}`,
-								orario: this.formattaOrario(
-									p.data_ora_prenotazione
-								),
-								persone: p.numero_persone,
-								stato: stato,
-							};
-						} catch (err) {
-							console.error(
-								`Errore stato per torretta ${p.ref_torretta}`,
-								err
-							);
-							return {
-								numero: p.ref_torretta,
-								nome: `Tavolo ${p.id_prenotazione}`,
-								orario: this.formattaOrario(
-									p.data_ora_prenotazione
-								),
-								persone: p.numero_persone,
-								stato: 'attesa',
-							};
-						}
-					})
-				);
+  ngOnDestroy(): void {
+    // Pulisci l'intervallo per evitare memory leak
+    if (this.intervalloAggiornamento) {
+      clearInterval(this.intervalloAggiornamento);
+    }
+  }
 
-				// Mantieni tutti i tavoli (il filtro lo fa il getter)
-				this.tavoli = tavoliCompletati;
-			} else {
-				this.tavoli = [];
-				console.warn('Nessuna prenotazione trovata.');
-			}
-		} catch (err) {
-			console.error('Errore caricamento tavoli:', err);
-			this.tavoli = [];
-		}
-	}
+  async loadTavoli() {
+    try {
+      const filiale = this.authService.getFiliale();
+      const response = await lastValueFrom(
+        this.prenotazioneService.getPrenotazioniDelGiornoFiliale(filiale)
+      );
 
-	formattaOrario(dataOra: string): string {
-		const data = new Date(dataOra);
-		const ora = data.getHours().toString().padStart(2, '0');
-		const minuti = data.getMinutes().toString().padStart(2, '0');
-		return `${ora}:${minuti}`;
-	}
+      if (response.success && response.data?.length) {
+        const prenotazioniFiltrate = response.data;
 
-	isCliccabile(tavolo: any): boolean {
-		return tavolo.stato !== 'senza-ordini';
-	}
+        const tavoliCompletati = await Promise.all(
+          prenotazioniFiltrate.map(async (p) => {
+            try {
+              const statoResponse = await lastValueFrom(
+                this.prenotazioneService.getStatoPrenotazione(p.ref_torretta)
+              );
+              const stato = statoResponse?.data ?? 'in-lavorazione';
 
-	handleClick(tavolo: any) {
-		if (this.isCliccabile(tavolo)) {
-			console.log('Hai cliccato sul tavolo:', tavolo);
-			// Azione specifica per lo chef può essere inserita qui
-		}
-	}
+              return {
+                numero: p.ref_torretta,
+                nome: `Tavolo ${p.id_prenotazione}`,
+                orario: this.formattaOrario(p.data_ora_prenotazione),
+                persone: p.numero_persone,
+                stato: stato,
+              };
+            } catch (err) {
+              console.error(`Errore stato per torretta ${p.ref_torretta}`, err);
+              return {
+                numero: p.ref_torretta,
+                nome: `Tavolo ${p.id_prenotazione}`,
+                orario: this.formattaOrario(p.data_ora_prenotazione),
+                persone: p.numero_persone,
+                stato: 'in-lavorazione',
+              };
+            }
+          })
+        );
 
-	async presentToast(messaggio: string) {
-		const toast = await this.toastController.create({
-			message: messaggio,
-			duration: 2000,
-			position: 'bottom',
-			color: 'success',
-		});
-		toast.present();
-	}
+        this.tavoli = tavoliCompletati;
+        this.applicaFiltro();
+      } else {
+        this.tavoli = [];
+        this.tavoliFiltrati = [];
+        console.warn('Nessuna prenotazione trovata.');
+      }
+    } catch (err: any) {
+      console.error('Errore caricamento tavoli:', err);
+      const messaggio = err?.error?.message || 'Errore durante il caricamento';
+      this.presentToast(messaggio, 'danger');
+      this.tavoli = [];
+      this.tavoliFiltrati = [];
+    }
+  }
 
-	get tavoliFiltrati() {
-		if (this.filtroStato === 'tutti') {
-			// Mostra solo tavoli in lavorazione o non in lavorazione
-			return this.tavoli.filter(
-				(tavolo) =>
-					tavolo.stato === 'in-lavorazione' ||
-					tavolo.stato === 'non-in-lavorazione'
-			);
-		}
-		return this.tavoli.filter(
-			(tavolo) => tavolo.stato === this.filtroStato
-		);
-	}
+  formattaOrario(dataOra: string): string {
+    const data = new Date(dataOra);
+    const ora = data.getHours().toString().padStart(2, '0');
+    const minuti = data.getMinutes().toString().padStart(2, '0');
+    return `${ora}:${minuti}`;
+  }
+
+  async presentToast(messaggio: string, colore: 'success' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message: messaggio,
+      duration: 2000,
+      position: 'bottom',
+      color: colore,
+    });
+    toast.present();
+  }
+
+  filtraPerStato(stato: string | null) {
+    if (stato) {
+      this.selectedFilter = stato;
+      this.applicaFiltro();
+    }
+  }
+
+  applicaFiltro() {
+    if (this.selectedFilter === 'tutti') {
+      this.tavoliFiltrati = this.tavoli.filter(
+        (t) => t.stato === 'in-lavorazione' || t.stato === 'non-in-lavorazione'
+      );
+    } else {
+      this.tavoliFiltrati = this.tavoli.filter((t) => t.stato === this.selectedFilter);
+    }
+  }
+
+  isCliccabile(tavolo: any): boolean {
+    return true;
+  }
+
+  handleClick(tavolo: any) {
+    console.log('Hai cliccato sul tavolo:', tavolo);
+  }
 }

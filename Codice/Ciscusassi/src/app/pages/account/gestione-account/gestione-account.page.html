@@ -1,16 +1,22 @@
 <ion-content [fullscreen]="true" color="light">
-	<ion-grid fixed>
+	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
 		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<ion-col size="6">
+			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
 				<ion-img
 					[src]="'/assets/illustrations/TizioChiave.png'"
 				></ion-img>
 			</ion-col>
-			<ion-col size="6">
-				<ion-card>
+
+			<ion-col size="12" sizeXl="6" class="ion-padding-start">
+				<ion-card
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center bg-color-verdechiaro"
+				>
 					<ion-text color="light">
-						<h1>GESTIONE ACCOUNT</h1>
+						<h1 class="title text-color-bianco">
+							GESTIONE ACCOUNT
+						</h1>
 					</ion-text>
+
 					<ion-button
 						size="default"
 						fill="solid"
@@ -20,17 +26,21 @@
 					>
 						ACCEDI
 					</ion-button>
+
 					<ion-button
 						size="default"
 						fill="solid"
 						shape="round"
 						color="arancione"
+						[routerLink]="['/signin']"
 					>
 						REGISTRATI
 					</ion-button>
+
 					<ion-text color="light">
-						<p>Oppure</p>
+						<h5 class="text-color-bianco">Oppure</h5>
 					</ion-text>
+
 					<ion-button
 						size="default"
 						fill="solid"
