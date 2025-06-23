@@ -24,20 +24,6 @@ img {
   top: 0;
 }
 
-.map-div h1 {
-  font-family: 'LucidaCalligraphy', cursive;
-  font-size: 2.5rem;
-  color: white;
-  text-align: left;
-  margin-bottom: 0.5rem;
-}
-
-.map-div p {
-  font-size: 1.2rem;
-  color: white;
-  text-align: left;
-  margin-bottom: 1.5rem;
-}
 
 /* Griglia centrale */
 ion-grid {
@@ -138,4 +124,65 @@ h2,
 p {
   color: var(--ion-color-bianco);
   margin: 0.5em 0;
+}
+
+/* Stile card prenotazione (solo quando già esiste una prenotazione) */
+.prenotazione-card {
+  background-color: var(--ion-color-verdechiaro);
+  color: white;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  width: fit-content;
+  min-width: 320px;
+  max-width: 380px;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.prenotazione-card ion-item {
+  --background: transparent;
+  --color: white;
+  font-size: 0.9rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.prenotazione-card ion-icon {
+  font-size: 1.1rem;
+  color: white;
+}
+
+.prenotazione-card ion-label {
+  color: white;
+}
+
+.prenotazione-card small {
+  display: block;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+  color: #f2f2f2;
+}
+
+.prenotazione-card ion-button {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+h1 {
+  font-family: 'LucidaCalligraphy', cursive;
+  font-size: 2.5rem;
+  color: white;
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+
+ p {
+  font-size: 1.2rem;
+  color: white;
+  text-align: left;
+  margin-bottom: 1.5rem;
 }

@@ -58,7 +58,7 @@ export class PrenotaPage implements OnInit {
 	searchFiliale: string = '';
 
 	prenotazioni: PrenotazioneRecord[] = [];
-
+	FilialePrenotazione: FilialeRecord | null = null;
 	constructor(
 		private filialeService: FilialeService,
 		private router: Router,

@@ -14,8 +14,8 @@
 
 	<div class="map-div">
 		@if (prenotazioni.length > 0) {
-			<h1 class="map-div h1">PRENOTA UN TAVOLO</h1>
-			<p class="map-div p">Hai già una prenotazione!</p>
+			<h1>PRENOTA UN TAVOLO</h1>
+			<p>Hai già una prenotazione!</p>
 
 			@for (prenotazione of prenotazioni; track prenotazione.id_prenotazione) {
 				<ion-card class="prenotazione-card">
@@ -32,16 +32,6 @@
 					<ion-item>
 						<ion-icon name="people-outline" slot="start"></ion-icon>
 						<ion-label>{{ prenotazione?.numero_persone }} posti</ion-label>
-					</ion-item>
-
-					<ion-item>
-						<ion-icon name="key-outline" slot="start"></ion-icon>
-						<ion-label>OTP: {{ prenotazione?.otp || 'N/A' }}</ion-label>
-					</ion-item>
-
-					<ion-item>
-						<ion-icon name="restaurant-outline" slot="start"></ion-icon>
-						<ion-label>ID Torretta: {{ prenotazione?.ref_torretta }}</ion-label>
 					</ion-item>
 
 					<ion-button
