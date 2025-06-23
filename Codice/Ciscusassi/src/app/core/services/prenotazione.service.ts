@@ -76,6 +76,14 @@ export class PrenotazioneService {
 		);
 	}
 
+	confermaPrenotazione(id: number): Observable<ApiResponse<any>> {
+		return this.http.post<ApiResponse<any>>(
+			`${this.apiURL}/prenotazioni/conferma`,
+			{ id_prenotazione: id }
+		);
+	}
+
+
 	modificaPrenotazione(
 		data: PrenotazioneRecord
 	): Observable<ApiResponse<any>> {
