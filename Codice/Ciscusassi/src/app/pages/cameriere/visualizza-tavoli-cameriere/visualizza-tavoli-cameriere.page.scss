@@ -73,6 +73,11 @@ ion-content.custom-content {
 	border: 1px solid #aaa;
 }
 
+.legend-styled .legend-item .attesa-arrivo {
+	background-color: pink;
+	border: 1px solid #aaa;
+}
+
 /* Tavoli */
 .tavolo-wrapper {
 	text-align: center;
@@ -107,6 +112,9 @@ ion-content.custom-content {
 
 .tavolo-wrapper .circle.in-lavorazione {
 	background-color: #ff8c1a;
+}
+.tavolo-wrapper .circle.attesa-arrivo {
+	background-color: pink;
 }
 
 .tavolo-wrapper .circle.senza-ordini {

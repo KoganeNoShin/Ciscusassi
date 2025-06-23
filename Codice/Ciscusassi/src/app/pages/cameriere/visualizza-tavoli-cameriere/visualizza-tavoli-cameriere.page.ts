@@ -60,6 +60,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
     { stato: 'non-in-lavorazione', label: 'NON IN LAVORAZIONE' },
     { stato: 'in-lavorazione', label: 'IN LAVORAZIONE' },
     { stato: 'senza-ordini', label: 'SENZA ORDINI' },
+    { stato: 'attesa-arrivo', label: 'ATTESA ARRIVO' }, // ho messo spazio per leggibilità
   ];
 
   selectedFilter: string | null = null;
@@ -69,6 +70,10 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
   personeSelezionate: number | null = null;
   inputManuale: number | null = null;
   refClienteInput: string = '';
+
+  // Modale conferma arrivo
+  showConfermaArrivoPopup = false;
+  tavoloDaConfermare: any = null;
 
   private intervalId: any;
 
@@ -81,7 +86,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadTavoli();
 
-    // Avvia polling ogni 30 secondi
     this.intervalId = setInterval(() => {
       this.loadTavoli();
     }, 30000);
@@ -154,6 +158,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
   add() {
     this.showPopup = true;
+    this.resetPopup();
   }
 
   selezionaPersone(n: number) {
@@ -166,14 +171,14 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
       this.inputManuale !== null &&
       this.personePossibili.includes(this.inputManuale)
     ) {
-      this.personeSelezionate = null;
+      this.personeSelezionate = this.inputManuale;
     } else {
       this.personeSelezionate = null;
     }
   }
 
   async conferma() {
-    const persone = this.inputManuale;
+    const persone = this.personeSelezionate ?? this.inputManuale;
     let refCliente: number | null = null;
 
     if (!persone || persone < 1) {
@@ -201,10 +206,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
     };
 
     try {
-      const result = await lastValueFrom(this.prenotazioneService.prenotaLoco(prenotazione));
+      const result = await lastValueFrom(
+        this.prenotazioneService.prenotaLoco(prenotazione)
+      );
       if (result.success) {
         this.presentToast('Prenotazione creata con successo');
-        this.loadTavoli();
+        await this.loadTavoli();
       } else {
         this.presentToast('Errore nella creazione della prenotazione');
       }
@@ -218,11 +225,11 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
   }
 
   getLocalIsoString(): string {
-    const orariValidi = ["12:00", "13:30", "19:30", "21:00"];
+    const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
     const now = new Date();
 
     const oggiOrari = orariValidi.map((orario) => {
-      const [hh, mm] = orario.split(":").map(Number);
+      const [hh, mm] = orario.split(':').map(Number);
       const data = new Date();
       data.setHours(hh, mm, 0, 0);
       return data;
@@ -235,7 +242,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
     if (futuri.length > 0) {
       orarioSelezionato = futuri[0];
     } else {
-      const [hh, mm] = orariValidi[0].split(":").map(Number);
+      const [hh, mm] = orariValidi[0].split(':').map(Number);
       orarioSelezionato = new Date();
       orarioSelezionato.setDate(orarioSelezionato.getDate() + 1);
       orarioSelezionato.setHours(hh, mm, 0, 0);
@@ -261,13 +268,37 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
   }
 
   isCliccabile(tavolo: any): boolean {
+    // Tavoli cliccabili sono tutti tranne 'senza-ordini' e 'attesa-arrivo'
     return tavolo.stato !== 'senza-ordini';
   }
 
   handleClick(tavolo: any) {
-    if (this.isCliccabile(tavolo)) {
+    if (tavolo.stato === 'attesa-arrivo') {
+      this.tavoloDaConfermare = tavolo;
+      this.showConfermaArrivoPopup = true;
+    } else if (this.isCliccabile(tavolo)) {
       console.log('Hai cliccato sul tavolo:', tavolo);
+      // Potresti aggiungere altre azioni qui, tipo aprire dettagli o modificare
     }
+  }
+
+  async confermaArrivo() {
+    if (!this.tavoloDaConfermare) return;
+
+    // Qui va la chiamata API per confermare l'arrivo (non implementata)
+    this.presentToast(
+      `Arrivo cliente confermato per tavolo ${this.tavoloDaConfermare.numero}`
+    );
+
+    this.showConfermaArrivoPopup = false;
+    this.tavoloDaConfermare = null;
+
+    await this.loadTavoli();
+  }
+
+  chiudiPopupArrivo() {
+    this.showConfermaArrivoPopup = false;
+    this.tavoloDaConfermare = null;
   }
 
   async presentToast(messaggio: string) {
@@ -277,7 +308,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
       position: 'bottom',
       color: 'success',
     });
-    toast.present();
+    await toast.present();
   }
 
   filtraPerStato(stato: string | null) {
@@ -289,7 +320,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
     if (!this.selectedFilter) {
       this.tavoliFiltrati = [...this.tavoli];
     } else {
-      this.tavoliFiltrati = this.tavoli.filter((t) => t.stato === this.selectedFilter);
+      this.tavoliFiltrati = this.tavoli.filter(
+        (t) => t.stato === this.selectedFilter
+      );
     }
   }
 }

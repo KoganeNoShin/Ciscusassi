@@ -74,7 +74,7 @@
     </ion-row>
   </ion-grid>
 
-  <!-- MODAL / POPUP -->
+  <!-- MODALE PER SCEGLIERE QUANTE PERSONE -->
   <ion-modal
     [isOpen]="showPopup"
     (didDismiss)="resetPopup()"
@@ -115,20 +115,34 @@
             style="margin-top: 10px"
           />
 
-          <ion-button
-            color="success"
-            expand="block"
-            (click)="conferma()"
-            >CONFERMA</ion-button
-          >
+          <ion-button color="success" expand="block" (click)="conferma()">
+            CONFERMA
+          </ion-button>
 
-          <ion-button
-            color="danger"
-            expand="block"
-            (click)="annulla()"
-            >ESCI</ion-button
-          >
+          <ion-button color="danger" expand="block" (click)="annulla()">
+            ESCI
+          </ion-button>
         </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <!-- MODALE CONFERMA ARRIVO CLIENTE -->
+  <ion-modal
+    [isOpen]="showConfermaArrivoPopup"
+    (didDismiss)="chiudiPopupArrivo()"
+    [backdropDismiss]="false"
+  >
+    <ng-template>
+      <div class="popup-container">
+        <h2>Confermi l'arrivo del cliente?</h2>
+        <p>Tavolo: {{ tavoloDaConfermare?.numero }}</p>
+        <ion-button color="success" expand="block" (click)="confermaArrivo()">
+          Sì, conferma
+        </ion-button>
+        <ion-button color="medium" expand="block" (click)="chiudiPopupArrivo()">
+          Annulla
+        </ion-button>
       </div>
     </ng-template>
   </ion-modal>
