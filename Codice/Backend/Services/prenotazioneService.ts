@@ -228,14 +228,14 @@ class PrenotazioneService {
 
 			for (const p of prodotti) {
 				if (p.stato === 'in-consegna') hasInConsegna = true;
-				else if (p.stato === 'preparazione') hasPreparazione = true;
+				else if (p.stato === 'in-lavorazione') hasPreparazione = true;
 				else if (p.stato !== 'consegnato') allConsegnati = false;
 
 				// Early exit per priorità
 				if (hasInConsegna) return 'in-consegna';
 			}
 
-			if (hasPreparazione) return 'preparazione';
+			if (hasPreparazione) return 'in-lavorazione';
 			if (allConsegnati) return 'consegnato';
 		}
 
