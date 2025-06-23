@@ -9,13 +9,27 @@
 
   <!-- Chips filtro -->
   <div class="filtro-chip-container">
-    <ion-chip (click)="filtroStato = 'tutti'" [class.activated]="filtroStato === 'tutti'">
+    <ion-chip
+      [outline]="selectedFilter !== 'tutti'"
+      [color]="selectedFilter === 'tutti' ? 'primary' : 'medium'"
+      (click)="filtraPerStato('tutti')"
+    >
       <ion-label>Tutti</ion-label>
     </ion-chip>
-    <ion-chip (click)="filtroStato = 'in-lavorazione'" [class.activated]="filtroStato === 'in-lavorazione'">
+
+    <ion-chip
+      [outline]="selectedFilter !== 'in-lavorazione'"
+      [color]="selectedFilter === 'in-lavorazione' ? 'primary' : 'medium'"
+      (click)="filtraPerStato('in-lavorazione')"
+    >
       <ion-label>In lavorazione</ion-label>
     </ion-chip>
-    <ion-chip (click)="filtroStato = 'non-in-lavorazione'" [class.activated]="filtroStato === 'non-in-lavorazione'">
+
+    <ion-chip
+      [outline]="selectedFilter !== 'non-in-lavorazione'"
+      [color]="selectedFilter === 'non-in-lavorazione' ? 'primary' : 'medium'"
+      (click)="filtraPerStato('non-in-lavorazione')"
+    >
       <ion-label>Non in lavorazione</ion-label>
     </ion-chip>
   </div>
@@ -28,8 +42,13 @@
     </div>
   </div>
 
+  <!-- Messaggio se non ci sono prenotazioni -->
+  <div *ngIf="tavoliFiltrati.length === 0" class="no-prenotazioni">
+    Non ci sono prenotazioni
+  </div>
+
   <!-- Tavoli -->
-  <ion-grid>
+  <ion-grid *ngIf="tavoliFiltrati.length > 0">
     <ion-row class="ion-justify-content-center">
       <ion-col size="6" size-md="4" *ngFor="let tavolo of tavoliFiltrati">
         <div
@@ -38,7 +57,7 @@
           (click)="handleClick(tavolo)"
         >
           <div class="circle" [ngClass]="tavolo.stato">{{ tavolo.numero }}</div>
-          <div *ngIf="tavolo.stato === 'senza-ordini'" class="table-info white-info">
+          <div class="table-info white-info">
             <div class="nome">{{ tavolo.nome }}</div>
             <div class="orario">{{ tavolo.orario }}</div>
             <div class="persone">{{ tavolo.persone }} persone</div>
