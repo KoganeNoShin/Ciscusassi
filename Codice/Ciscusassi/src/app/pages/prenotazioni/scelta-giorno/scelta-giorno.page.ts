@@ -227,7 +227,7 @@ export class SceltaGiornoPage implements OnInit {
     this.prenotazione.numero_persone = this.persone || 0;
     this.prenotazione.data_ora_prenotazione = `${this.dataSelezionata} ${ora}`;
     this.prenotazione.ref_filiale = this.idFiliale;
-    this.prenotazione.ref_cliente = 18; 
+    this.prenotazione.ref_cliente = 1; 
     console.log('Prenotazione effettuata:', this.prenotazione);
     this.prenotazioneService
       .prenota(this.prenotazione)

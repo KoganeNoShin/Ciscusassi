@@ -90,7 +90,7 @@ export class PrenotaPage implements OnInit {
 	}
 
 	private caricaPrenotazioniCliente(): void {
-		const idCliente = 18; // ID cliente fisso per ora
+		const idCliente = 1; // ID cliente fisso per ora
 		this.prenotazioneService.getPrenotazioniByCliente(idCliente).subscribe({
 			next: (res) => {
 				if (res.success && res.data) {
