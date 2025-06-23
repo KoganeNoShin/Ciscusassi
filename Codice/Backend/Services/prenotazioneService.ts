@@ -194,13 +194,10 @@ class PrenotazioneService {
         for (const orario of orariValidi) {
             const timestamp = `${dataFormattata} ${orario}`;
             const prenotazioni = await Prenotazione.getPrenotazioniDataAndFiliale(id_filiale, dataFormattata);    
-
+            tavoliPerOrario[timestamp] = 0;
             for (const p of prenotazioni) {
                 const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
 
-                if (!tavoliPerOrario[timestamp]) {
-                    tavoliPerOrario[timestamp] = 0;
-                }
                 tavoliPerOrario[timestamp] += tavoli;
             }
         }

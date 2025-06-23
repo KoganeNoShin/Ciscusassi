@@ -173,7 +173,7 @@ router.get(
 
 router.get(
 	'/tavoli-in-uso/:filiale',
-	authMiddleware,
+	//authMiddleware,
 	PrenotazioneController.getTavoliInUso,
 );
 
