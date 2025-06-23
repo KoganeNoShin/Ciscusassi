@@ -52,6 +52,34 @@ img {
 	height: 250px;
 }
 
+@media (max-width: 1024px) {
+	img {
+		width: 50%; /* L'immagine sarà più grande su schermi lg */
+		max-width: 50%;
+		height: auto;
+	}
+}
+
+@media (max-width: 576px) {
+	.plate,
+	.plate_giorno {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.plateInfo {
+		width: 100%;
+	}
+}
+
+@media (min-width: 1024px) {
+	img {
+		width: 20%; /* L'immagine sarà più grande su schermi lg */
+		max-width: 20%;
+		height: auto;
+	}
+}
+
 ion-button.aggiungi {
 	--background: var(--ion-color-arancione);
 }

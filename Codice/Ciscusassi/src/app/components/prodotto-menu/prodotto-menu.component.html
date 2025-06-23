@@ -1,43 +1,63 @@
-@if(isPiattoGiorno){
-  <div class="plate_giorno">
-          <img [src]="prodotto.immagine" alt="Immagine del piatto" class="immagine-rotante"/>
-          <div class="plateInfo">
-            <h2>{{ prodotto.nome }} - {{ prodotto.costo }} €</h2>
-            <h3>{{ prodotto.descrizione }}</h3>
-          </div>
-          @if(isOrdinazione){
-            <div class="button-group">
-              <ion-button (click)="aggiungiAlCarrello(prodotto)" class="aggiungi">
-                AGGIUNGI AL CARRELLO
-            </ion-button>
-            <ion-button (click)="rimuoviDalCarrello(prodotto)" class="rimuovi">
-              RIMUOVI DAL CARRELLO
-            </ion-button> 
-            </div>
-            <div>
-              <h2>Qt: {{ quantity }}</h2>
-            </div>           
-          }
-  </div>
+@if (isPiattoGiorno) {
+	<div class="plate_giorno">
+		<img
+			[src]="prodotto.immagine"
+			alt="Immagine del piatto"
+			class="immagine-rotante"
+		/>
+		<div class="plateInfo">
+			<h2>{{ prodotto.nome }} - {{ prodotto.costo }} €</h2>
+			<h3>{{ prodotto.descrizione }}</h3>
+		</div>
+		@if (isOrdinazione) {
+			<div class="button-group">
+				<ion-button
+					(click)="aggiungiAlCarrello(prodotto)"
+					class="aggiungi"
+				>
+					AGGIUNGI AL CARRELLO
+				</ion-button>
+				<ion-button
+					(click)="rimuoviDalCarrello(prodotto)"
+					class="rimuovi"
+				>
+					RIMUOVI DAL CARRELLO
+				</ion-button>
+			</div>
+			<div>
+				<h2>Qt: {{ quantity }}</h2>
+			</div>
+		}
+	</div>
 } @else {
-  <div class="plate">
-          <img [src]="prodotto.immagine" alt="Immagine del piatto" class="immagine-rotante"/>
-          <div class="plateInfo">
-            <h2>{{ prodotto.nome }} - {{ prodotto.costo }} €</h2>
-            <h3>{{ prodotto.descrizione }}</h3>
-          </div>
-          @if(isOrdinazione){
-            <div class="button-group">
-              <ion-button (click)="aggiungiAlCarrello(prodotto)" class="aggiungi">
-                AGGIUNGI AL CARRELLO
-            </ion-button>
-            <ion-button (click)="rimuoviDalCarrello(prodotto)" class="rimuovi">
-              RIMUOVI DAL CARRELLO
-            </ion-button> 
-            </div>
-            <div>
-              <h2>Qt: {{ quantity }}</h2>
-            </div>           
-          }
-  </div>
+	<div class="plate">
+		<img
+			[src]="prodotto.immagine"
+			alt="Immagine del piatto"
+			class="immagine-rotante"
+		/>
+		<div class="plateInfo">
+			<h2>{{ prodotto.nome }} - {{ prodotto.costo }} €</h2>
+			<h3>{{ prodotto.descrizione }}</h3>
+		</div>
+		@if (isOrdinazione) {
+			<div class="button-group">
+				<ion-button
+					(click)="aggiungiAlCarrello(prodotto)"
+					class="aggiungi"
+				>
+					AGGIUNGI AL CARRELLO
+				</ion-button>
+				<ion-button
+					(click)="rimuoviDalCarrello(prodotto)"
+					class="rimuovi"
+				>
+					RIMUOVI DAL CARRELLO
+				</ion-button>
+			</div>
+			<div>
+				<h2>Qt: {{ quantity }}</h2>
+			</div>
+		}
+	</div>
 }

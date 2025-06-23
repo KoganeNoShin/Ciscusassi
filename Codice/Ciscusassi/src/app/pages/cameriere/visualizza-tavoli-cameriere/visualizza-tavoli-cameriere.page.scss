@@ -143,7 +143,9 @@ ion-content.custom-content {
 /* Effetto click visivo */
 .clickable {
 	cursor: pointer;
-	transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+	transition:
+		transform 0.2s ease-in-out,
+		box-shadow 0.2s;
 }
 
 .clickable:hover .circle {
