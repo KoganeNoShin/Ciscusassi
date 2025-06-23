@@ -53,7 +53,7 @@ export class PrenotazioneService {
 		filialeId: number
 	): Observable<ApiResponse<PrenotazioneRecord[]>> {
 		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(
-			`${this.apiURL}/prenotazioni/oggi/${filialeId}`
+			`${this.apiURL}/prenotazioni/${filialeId}`
 		);
 	}
 

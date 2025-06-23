@@ -5,37 +5,41 @@ import { Subscription } from 'rxjs';
 import { IonButton } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-prodotto-menu',
-  templateUrl: './prodotto-menu.component.html',
-  styleUrls: ['./prodotto-menu.component.scss'],
-  standalone: true,
-  imports: [IonButton], 
+	selector: 'app-prodotto-menu',
+	templateUrl: './prodotto-menu.component.html',
+	styleUrls: ['./prodotto-menu.component.scss'],
+	standalone: true,
+	imports: [IonButton],
 })
 export class ProdottoMenuComponent implements OnInit, OnDestroy {
-  @Input() prodotto!: ProdottoRecord;
-  @Input() isPiattoGiorno: boolean = false;
-  @Input() isOrdinazione: boolean = false;
+	@Input() prodotto!: ProdottoRecord;
+	@Input() isPiattoGiorno: boolean = false;
+	@Input() isOrdinazione: boolean = false;
 
-  quantity: number = 0;
-  private carrelloSub!: Subscription;
+	quantity: number = 0;
+	private carrelloSub!: Subscription;
 
-  constructor(private carrelloService: CarrelloService) {}
+	constructor(private carrelloService: CarrelloService) {}
 
-  ngOnInit() {
-    this.carrelloSub = this.carrelloService.prodotti$.subscribe(prodotti => {
-      this.quantity = prodotti.filter(p => p.id_prodotto === this.prodotto.id_prodotto).length;
-    });
-  }
+	ngOnInit() {
+		this.carrelloSub = this.carrelloService.prodotti$.subscribe(
+			(prodotti) => {
+				this.quantity = prodotti.filter(
+					(p) => p.id_prodotto === this.prodotto.id_prodotto
+				).length;
+			}
+		);
+	}
 
-  aggiungiAlCarrello(prodotto: ProdottoRecord) {
-    this.carrelloService.aggiungi(prodotto);
-  }
+	aggiungiAlCarrello(prodotto: ProdottoRecord) {
+		this.carrelloService.aggiungi(prodotto);
+	}
 
-  rimuoviDalCarrello(prodotto: ProdottoRecord) {
-    this.carrelloService.rimuovi(prodotto);
-  }
+	rimuoviDalCarrello(prodotto: ProdottoRecord) {
+		this.carrelloService.rimuovi(prodotto);
+	}
 
-  ngOnDestroy() {
-    if (this.carrelloSub) this.carrelloSub.unsubscribe();
-  }
+	ngOnDestroy() {
+		if (this.carrelloSub) this.carrelloSub.unsubscribe();
+	}
 }
