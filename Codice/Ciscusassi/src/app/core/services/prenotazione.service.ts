@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
 import {
@@ -20,6 +21,7 @@ export class PrenotazioneService {
 	private numeroPosti: number = 0;
 	private dataPrenotazione: string = '';
 	private oraPrenotazione: string = '';
+	private numeroTavoli: number = 0;
 
 	constructor(private http: HttpClient) {}
 
@@ -83,7 +85,6 @@ export class PrenotazioneService {
 		);
 	}
 
-
 	modificaPrenotazione(
 		data: PrenotazioneRecord
 	): Observable<ApiResponse<any>> {
@@ -98,6 +99,18 @@ export class PrenotazioneService {
 			`${this.apiURL}/eliminaPrenotazione/${id}`
 		);
 	}
+tavoliInUso(id_filiale: number, data: string): Observable<ApiResponse<any>>{
+	return this.http.get<{ [fascia: string]: number }>(
+		`${this.apiURL}/tavoli-in-uso/${id_filiale}?data=${data}`
+	).pipe(
+		// Wrap the response in an ApiResponse object
+		map(data => ({
+			success: true,
+			data
+		}))
+	);
+}
+
 
 	// --------- Get/Set locali ---------
 
@@ -107,6 +120,14 @@ export class PrenotazioneService {
 
 	setNumeroPosti(numero: number): void {
 		this.numeroPosti = numero;
+
+		for (let t = 2; t <= this.numeroPosti; t++) {
+			const postiDisponibili = 2 * t + 2;
+			if (postiDisponibili >= this.numeroPosti) {
+				this.numeroTavoli = t;
+				break;
+			}
+		}
 	}
 
 	setDataPrenotazione(data: string): void {
@@ -137,5 +158,9 @@ export class PrenotazioneService {
 		this.numeroPosti = 0;
 		this.dataPrenotazione = '';
 		this.oraPrenotazione = '';
+	}
+
+	getNumeroTavoli(): number {
+		return this.numeroTavoli;
 	}
 }

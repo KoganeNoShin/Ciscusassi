@@ -4,137 +4,215 @@ import { FormsModule } from '@angular/forms';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { FilialeService } from 'src/app/core/services/filiale.service';
-import { Router } from '@angular/router';
-// import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { take } from 'rxjs/operators';
 import {
-	IonContent,
-	IonSpinner,
-	IonDatetime,
-	IonLabel,
-	IonRow,
-	IonCol,
-	IonButton,
+  IonContent,
+  IonSpinner,
+  IonDatetime,
+  IonLabel,
+  IonRow,
+  IonCol,
+  IonButton,
 } from '@ionic/angular/standalone';
 
 @Component({
-	selector: 'app-scelta-giorno',
-	templateUrl: './scelta-giorno.page.html',
-	styleUrls: ['./scelta-giorno.page.scss'],
-	standalone: true,
-	imports: [
-		IonButton,
-		IonCol,
-		IonRow,
-		IonDatetime,
-		IonSpinner,
-		IonContent,
-		CommonModule,
-		FormsModule,
-	],
+  selector: 'app-scelta-giorno',
+  templateUrl: './scelta-giorno.page.html',
+  styleUrls: ['./scelta-giorno.page.scss'],
+  standalone: true,
+  imports: [
+    IonButton,
+    IonCol,
+    IonRow,
+    IonDatetime,
+    IonSpinner,
+    IonContent,
+    CommonModule,
+    FormsModule,
+  ],
 })
 export class SceltaGiornoPage implements OnInit {
-	filiale: FilialeRecord | null = null;
+  filiale: FilialeRecord | null = null;
   dataSelezionata: string = '';
-	idFiliale: number = 0;
-	loading: boolean = false;
-	hasError: boolean = false;
+  idFiliale: number = 0;
+  loading: boolean = false;
+  hasError: boolean = false;
   primaFasciaNonDisponibile: boolean = true;
   secondaFasciaNonDisponibile: boolean = true;
   terzaFasciaNonDisponibile: boolean = true;
   quartaFasciaNonDisponibile: boolean = true;
-	persone: number | null = null;
+  persone: number | null = null;
+
+  constructor(
+    private prenotazioneService: PrenotazioneService,
+    private filialeService: FilialeService
+  ) {}
+
+  ngOnInit() {
+    this.idFiliale = this.prenotazioneService.getFilialeId();
+    console.log('ID filiale caricato:', this.idFiliale);
+
+    this.dataSelezionata = this.formatDateToYYYYMMDD(Date.now());
+
+    if (!this.idFiliale) {
+      console.error('ID filiale non valido!');
+    }
+
+    this.loadFiliale();
+
+    this.persone = this.prenotazioneService.getNumeroPosti();
+    console.log('Numero persone caricato:', this.persone);
+  }
+
+  private loadFiliale() {
+    this.loading = true;
+    this.hasError = false;
+
+    this.filialeService
+      .GetSedi()
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => this.handleResponse(response),
+        error: (err) => {
+          console.error('Errore chiamata GetSedi:', err);
+          this.loading = false;
+          this.hasError = true;
+        },
+      });
+  }
+
+  private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
+    this.loading = false;
+
+    if (response.success && Array.isArray(response.data)) {
+      const filiale = response.data.find(
+        (f) => f.id_filiale === this.idFiliale
+      );
+
+      if (filiale) {
+        this.filiale = filiale;
+        this.hasError = false;
+
+        // Ora che la filiale è caricata, fai i controlli sulla data di oggi
+        this.alCambioData();
+      } else {
+        console.error('Filiale non trovata con id:', this.idFiliale);
+        this.hasError = true;
+      }
+    } else {
+      console.error(
+        'Errore nella risposta GetSedi:',
+        response.message || 'Errore sconosciuto'
+      );
+      this.hasError = true;
+    }
+  }
+
   noMartediEMaxDueSettimane = (dateString: string): boolean => {
-  const d = new Date(dateString);
-  const oggi = new Date();
-  const giorno = d.getUTCDay(); // 0 = domenica, 1 = lunedì, 2 = martedì...
+    const d = new Date(dateString);
+    const oggi = new Date();
+    const giorno = d.getDay(); // giorno della settimana locale
 
-  // Rimuovo ora/min/sec per oggi
-  oggi.setHours(0, 0, 0, 0);
+    oggi.setHours(0, 0, 0, 0);
+    const dueSettimane = new Date(oggi);
+    dueSettimane.setDate(oggi.getDate() + 14);
+    d.setHours(0, 0, 0, 0);
 
-  // Calcola data di fine intervallo (oggi + 14 giorni)
-  const dueSettimane = new Date(oggi);
-  dueSettimane.setDate(oggi.getDate() + 14);
+    return (
+      giorno !== 2 &&
+      d.getTime() >= oggi.getTime() &&
+      d.getTime() <= dueSettimane.getTime()
+    );
+  };
 
-  // Rimuovo ora/min/sec dalla data d
-  d.setHours(0, 0, 0, 0);
+  formatDateToYYYYMMDD(dateInput: string | number): string {
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      console.error('Data non valida:', dateInput);
+      return '';
+    }
 
-  return giorno !== 2 && d.getTime() >= oggi.getTime() && d.getTime() <= dueSettimane.getTime();
-};
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+      date.getDate()
+    )}`;
+  }
 
-	constructor(
-		private prenotazioneService: PrenotazioneService,
-		private filialeService: FilialeService
-	) {}
+  alCambioData() {
+    console.log('Data selezionata (raw):', this.dataSelezionata);
 
-	private loadFiliale() {
-		this.loading = true;
-		this.hasError = false;
-		this.filialeService
-			.GetSedi()
-			.pipe(
-				// Automatically unsubscribe after the first emission
-				take(1)
-			)
-			.subscribe({
-				next: (response) => this.handleResponse(response),
-				error: (err) => {
-					console.error('Errore chiamata GetSedi:', err);
-					this.loading = false;
-					this.hasError = true;
-				},
-			});
-	}
+    if (!this.dataSelezionata) {
+      console.warn('Data non selezionata!');
+      return;
+    }
 
-	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
-		this.loading = false;
+    const dataFormattata = this.formatDateToYYYYMMDD(this.dataSelezionata);
+    this.dataSelezionata = dataFormattata;
 
-		if (response.success && Array.isArray(response.data)) {
-			const filiale = response.data.find(
-				(f) => f.id_filiale === this.idFiliale
-			);
+    if (!this.idFiliale || !this.dataSelezionata) {
+      console.error('Parametri mancanti per tavoliInUso');
+      return;
+    }
 
-			if (filiale) {
-				this.filiale = filiale;
-				this.hasError = false;
-			} else {
-				console.error('Filiale non trovata con id:', this.idFiliale);
-				this.hasError = true;
-			}
-		} else {
-			console.error(
-				'Errore nella risposta:',
-				response.message || 'Errore sconosciuto'
-			);
-			this.hasError = true;
-		}
+    this.primaFasciaNonDisponibile = true;
+    this.secondaFasciaNonDisponibile = true;
+    this.terzaFasciaNonDisponibile = true;
+    this.quartaFasciaNonDisponibile = true;
 
-		// console.log('Filiale caricata:', this.filiale);
-	}
-	ngOnInit() {
-    this.dataSelezionata
-		const id = this.prenotazioneService.getFilialeId();
-		this.idFiliale = id;
-		this.loadFiliale();
+    this.prenotazioneService
+      .tavoliInUso(this.idFiliale, this.dataSelezionata)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          console.log('Risposta tavoliInUso:', response);
 
-		const num = this.prenotazioneService.getNumeroPosti();
-		this.persone = num;
-		// console.log('Numero persone caricato:', this.persone);
-	}
+          const numeroTavoliRichiesti = this.prenotazioneService.getNumeroTavoli();
+          const data = this.dataSelezionata;
 
-  alCambioData(){
-    /*
-		this.prenotazioneService.getTavoliInUso().subscribe({
-			next: (response) => {
-				if (response.success) {
-					console.log('Tavoli in uso:', response.data);
-				} else {
-					console.error('Errore nel recupero dei tavoli in uso:', response.message);
-				}
-			}
-		});
-    */
+          // Supponiamo che il totale tavoli sia salvato nella proprietà 'num_tavoli' di filiale
+          const tavoliTotali = this.filiale?.num_tavoli || 0;
 
-	}
+          const fasceOrarie = [
+            {
+              ora: '12:00',
+              setter: (disponibile: boolean) =>
+                (this.primaFasciaNonDisponibile = !disponibile),
+            },
+            {
+              ora: '13:30',
+              setter: (disponibile: boolean) =>
+                (this.secondaFasciaNonDisponibile = !disponibile),
+            },
+            {
+              ora: '19:30',
+              setter: (disponibile: boolean) =>
+                (this.terzaFasciaNonDisponibile = !disponibile),
+            },
+            {
+              ora: '21:00',
+              setter: (disponibile: boolean) =>
+                (this.quartaFasciaNonDisponibile = !disponibile),
+            },
+          ];
+
+          for (const fascia of fasceOrarie) {
+            const chiave = `${data} ${fascia.ora}`;
+            const tavoliOccupati = response.data?.[chiave] ?? 0;
+            const tavoliDisponibili = tavoliTotali - tavoliOccupati;
+
+            console.log(
+              `Fascia ${fascia.ora}: ${tavoliDisponibili} tavoli disponibili su ${tavoliTotali}`
+            );
+
+            if (tavoliDisponibili >= numeroTavoliRichiesti) {
+              fascia.setter(true); // abilita fascia (disponibile)
+            }
+          }
+        },
+        error: (err) => {
+          console.error('Errore HTTP nella richiesta tavoliInUso:', err);
+        },
+      });
+  }
 }
