@@ -124,4 +124,10 @@ export class PrenotazioneService {
 	getOraPrenotazione(): string {
 		return this.oraPrenotazione;
 	}
+	svuotaPrenotazione(): void {
+		this.filialeId = 0;
+		this.numeroPosti = 0;
+		this.dataPrenotazione = '';
+		this.oraPrenotazione = '';
+	}
 }
