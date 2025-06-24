@@ -331,6 +331,22 @@ class PrenotazioneService {
 			throw err;
 		}
 	}
+
+	static async checkOTP(id_prenotazione: number, otp: string): Promise<boolean> {
+		try {
+			const prenotazione = await Prenotazione.getById(id_prenotazione);
+			if (!prenotazione) {
+				throw new Error('Prenotazione non trovata');
+			}
+			return prenotazione.otp === otp;
+		} catch (error) {
+			console.error(
+				'❌ [PrenotazioneService] Errore durante il controllo dell\'OTP:',
+				error
+			);
+			throw error;
+		}
+	}
 }
 
 export default PrenotazioneService;

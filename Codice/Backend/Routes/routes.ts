@@ -186,6 +186,11 @@ router.get(
 );
 
 router.get(
+	'/prenotazioni/check-otp/:id/:otp',
+	PrenotazioneController.checkOTP,
+);
+
+router.get(
 	'/prenotazioni/:id/stato',
 	prenotazioneValidator.statoPrenotazioneValidator,
 	prenotazioneValidator.validate,
