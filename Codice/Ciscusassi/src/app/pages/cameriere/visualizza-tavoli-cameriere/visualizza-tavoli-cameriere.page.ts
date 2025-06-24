@@ -175,27 +175,22 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		let refCliente: number | null = null;
 
 		if (!persone || persone < 1) {
-			await this.presentToast(
-				'Inserisci un numero valido di persone',
-				'danger'
-			);
+			alert('Inserisci un numero valido di persone');
 			return;
 		}
 
 		if (this.refClienteInput.trim() !== '') {
 			const parsed = parseInt(this.refClienteInput.trim(), 10);
-			if (!isNaN(parsed) && parsed >= 0) {
+			if (!isNaN(parsed)) {
 				refCliente = parsed;
 			} else {
-				await this.presentToast(
-					'Ref Cliente non valido. Deve essere un numero positivo.',
-					'danger'
-				);
+				alert('ref_cliente non valido');
 				return;
 			}
 		}
 
 		const filialeId = this.authService.getFiliale();
+		const dataPrenotazione = new Date(this.getLocalIsoString());
 
 		if (refCliente !== null) {
 			try {
@@ -206,14 +201,17 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 				);
 
 				if (cliResp.success && cliResp.data?.length) {
-					const now = new Date();
-					const hasFutura = cliResp.data.some(
-						(p) => new Date(p.data_ora_prenotazione) > now
-					);
+					const hasStessaPrenotazione = cliResp.data.some((p) => {
+						const dataEsistente = new Date(p.data_ora_prenotazione);
+						return (
+							dataEsistente.getTime() ===
+							dataPrenotazione.getTime()
+						);
+					});
 
-					if (hasFutura) {
+					if (hasStessaPrenotazione) {
 						await this.presentToast(
-							"Il cliente ha già una prenotazione futura. Non è possibile crearne un'altra.",
+							"Il cliente ha già una prenotazione in questo orario. Non è possibile crearne un'altra.",
 							'danger'
 						);
 						this.showPopup = false;
