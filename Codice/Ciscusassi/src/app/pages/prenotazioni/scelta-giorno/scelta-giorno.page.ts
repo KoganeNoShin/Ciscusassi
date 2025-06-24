@@ -60,7 +60,12 @@ export class SceltaGiornoPage implements OnInit {
     this.idFiliale = this.prenotazioneService.getFilialeId();
     console.log('ID filiale caricato:', this.idFiliale);
 
-    this.dataSelezionata = this.formatDateToYYYYMMDD(Date.now());
+    if (new Date(Date.now()).getDay() === 2) {
+      this.dataSelezionata = this.formatDateToYYYYMMDD(Date.now() + 1 * 24 * 60 * 60 * 1000);
+    } else {
+      this.dataSelezionata = this.formatDateToYYYYMMDD(Date.now());
+    }
+    
 
     if (!this.idFiliale) {
       console.error('ID filiale non valido!');
