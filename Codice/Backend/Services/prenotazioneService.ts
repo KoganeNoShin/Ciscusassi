@@ -336,7 +336,16 @@ class PrenotazioneService {
 		try {
 			const prenotazione = await Prenotazione.getByDataETorretta(data_ora_prenotazione, ref_torretta);
 			if (!prenotazione) {
+				console.error('Prenotazione non trovata per i dati forniti: ', data_ora_prenotazione, ref_torretta);
 				throw new Error('Prenotazione non trovata');
+			}
+			if (!prenotazione.otp) {
+				console.error('Prenotazione non ha un OTP associato: ', prenotazione);
+				throw new Error('Prenotazione non ha un OTP associato');
+			}
+			else if (prenotazione.otp !== otp) {
+				console.error('OTP non corrisponde: ', prenotazione.otp, otp);
+				throw new Error('OTP non corrisponde');
 			}
 			return prenotazione.otp === otp;
 		} catch (error) {
