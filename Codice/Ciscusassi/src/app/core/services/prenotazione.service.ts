@@ -42,9 +42,21 @@ export class PrenotazioneService {
 		);
 	}
 
-	checkOtp(id: number, otp: string): Observable<ApiResponse<boolean>> {
-		return this.http.get<ApiResponse<boolean>>(
-			`${this.apiURL}/prenotazioni/check-otp/${id}/${otp}`
+	checkOtp(
+		data_ora_prenotazione: string,
+		ref_torretta: number,
+		otp: string
+	): Observable<ApiResponse<any>> {
+		const body = {
+			data_ora_prenotazione: data_ora_prenotazione,
+			ref_torretta: ref_torretta,
+			otp: otp,
+		};
+
+		return this.http.post<ApiResponse<any>>(
+			`${this.apiURL}/prenotazioni/check-otp`,
+			body,
+			{ headers: { 'Content-Type': 'application/json' } }
 		);
 	}
 

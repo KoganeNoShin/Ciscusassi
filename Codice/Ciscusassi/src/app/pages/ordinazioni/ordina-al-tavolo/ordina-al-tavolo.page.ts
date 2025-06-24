@@ -79,10 +79,11 @@ export class OrdinaAlTavoloPage implements OnInit {
             new Date(a.data_ora_prenotazione).getTime()
         )[0];
 
-        const prenotazioneId = latest.id_prenotazione;
+        const dataOraPrenotazione = latest.data_ora_prenotazione;
+        const refTorretta = latest.ref_torretta;
 
         const otpRes = await firstValueFrom(
-          this.prenotazioneService.checkOtp(prenotazioneId, this.otp)
+          this.prenotazioneService.checkOtp(dataOraPrenotazione, refTorretta, this.otp)
         );
 
         if (otpRes.success && otpRes.data === true) {
