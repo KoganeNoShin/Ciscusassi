@@ -241,6 +241,22 @@ export class SceltaGiornoPage implements OnInit {
 			});
 	}
 
+	// Funzione per verificare se la fascia oraria è passata (solo per oggi)
+	isFasciaPassata(oraFascia: string): boolean {
+		if (!this.dataSelezionata) return false;
+
+		const oggi = this.formatDateToYYYYMMDD(Date.now());
+		if (this.dataSelezionata !== oggi) return false; // controllo solo se è oggi
+
+		const now = new Date();
+
+		const [ora, minuti] = oraFascia.split(':').map(Number);
+		const fasciaDate = new Date();
+		fasciaDate.setHours(ora, minuti, 0, 0);
+
+		return now > fasciaDate;
+	}
+
 	// Ritorna una Promise con le prenotazioni del cliente
 	private caricaPrenotazioniCliente(): Promise<PrenotazioneWithFiliale[]> {
 		const idCliente = 1;
@@ -334,7 +350,7 @@ export class SceltaGiornoPage implements OnInit {
 			});
 	}
 
-  private parseDateTime(dateTimeStr: string): Date | null {
+	private parseDateTime(dateTimeStr: string): Date | null {
 		if (!dateTimeStr) return null;
 
 		const [datePart, timePart] = dateTimeStr.split(" ");
