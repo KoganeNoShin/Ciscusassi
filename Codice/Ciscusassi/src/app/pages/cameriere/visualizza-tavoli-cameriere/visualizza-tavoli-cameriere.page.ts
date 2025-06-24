@@ -13,8 +13,6 @@ import {
 	IonModal,
 	ToastController,
 	IonChip,
-	IonItem,
-	IonLabel,
 } from '@ionic/angular/standalone';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
@@ -49,9 +47,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		persone: number;
 		stato: string;
 	}> = [];
-
 	tavoliFiltrati: typeof this.tavoli = [];
-
 	legenda = [
 		{ stato: 'in-consegna', label: 'IN CONSEGNA' },
 		{ stato: 'consegnato', label: 'CONSEGNATO' },
@@ -62,14 +58,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	];
 
 	selectedFilter: string | null = null;
-
 	showPopup = false;
 	personePossibili = [1, 2, 3, 4, 5, 6, 7];
 	personeSelezionate: number | null = null;
 	inputManuale: number | null = null;
 	refClienteInput: string = '';
 
-	// Modale conferma arrivo
 	showConfermaArrivoPopup = false;
 	tavoloDaConfermare: any = null;
 
@@ -83,10 +77,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.loadTavoli();
-
-		this.intervalId = setInterval(() => {
-			this.loadTavoli();
-		}, 30000);
+		this.intervalId = setInterval(() => this.loadTavoli(), 30000);
 	}
 
 	ngOnDestroy(): void {
@@ -98,25 +89,21 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	async loadTavoli() {
 		try {
 			const filiale = this.authService.getFiliale();
-			const response = await lastValueFrom(
+			const resp = await lastValueFrom(
 				this.prenotazioneService.getPrenotazioniDelGiornoFiliale(
 					filiale
 				)
 			);
 
-			if (response.success && response.data?.length) {
-				const prenotazioniFiltrate = response.data;
-
-				const tavoliCompletati = await Promise.all(
-					prenotazioniFiltrate.map(async (p) => {
+			if (resp.success && resp.data?.length) {
+				const tavoliComp = await Promise.all(
+					resp.data.map(async (p) => {
 						try {
-							const statoResponse = await lastValueFrom(
+							const statoResp = await lastValueFrom(
 								this.prenotazioneService.getStatoPrenotazione(
 									p.id_prenotazione
 								)
 							);
-							const stato = statoResponse?.data ?? 'attesa';
-
 							return {
 								numero: p.id_prenotazione,
 								nome: `Torretta: ${p.ref_torretta}`,
@@ -124,15 +111,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 									p.data_ora_prenotazione
 								),
 								persone: p.numero_persone,
-								stato: stato,
+								stato: statoResp.data ?? 'attesa',
 							};
-						} catch (err) {
-							console.error(
-								`Errore stato per torretta ${p.ref_torretta}`,
-								err
-							);
+						} catch (e) {
+							console.error(e);
 							return {
-								numero: p.ref_torretta,
+								numero: p.id_prenotazione,
 								nome: `Tavolo ${p.id_prenotazione}`,
 								orario: this.formattaOrario(
 									p.data_ora_prenotazione
@@ -144,25 +128,25 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 					})
 				);
 
-				this.tavoli = tavoliCompletati;
+				this.tavoli = tavoliComp;
 				this.applicaFiltro();
 			} else {
 				this.tavoli = [];
 				this.tavoliFiltrati = [];
-				console.warn('Nessuna prenotazione trovata.');
 			}
-		} catch (err) {
-			console.error('Errore caricamento tavoli:', err);
+		} catch (e) {
+			console.error('Errore caricamento tavoli:', e);
 			this.tavoli = [];
 			this.tavoliFiltrati = [];
 		}
 	}
 
 	formattaOrario(dataOra: string): string {
-		const data = new Date(dataOra);
-		const ora = data.getHours().toString().padStart(2, '0');
-		const minuti = data.getMinutes().toString().padStart(2, '0');
-		return `${ora}:${minuti}`;
+		const d = new Date(dataOra);
+		return `${d.getHours().toString().padStart(2, '0')}:${d
+			.getMinutes()
+			.toString()
+			.padStart(2, '0')}`;
 	}
 
 	add() {
@@ -191,23 +175,63 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		let refCliente: number | null = null;
 
 		if (!persone || persone < 1) {
-			alert('Inserisci un numero valido di persone');
+			await this.presentToast(
+				'Inserisci un numero valido di persone',
+				'danger'
+			);
 			return;
 		}
 
-		const filialeId = this.authService.getFiliale();
-
 		if (this.refClienteInput.trim() !== '') {
 			const parsed = parseInt(this.refClienteInput.trim(), 10);
-			if (!isNaN(parsed)) {
+			if (!isNaN(parsed) && parsed >= 0) {
 				refCliente = parsed;
 			} else {
-				alert('ref_cliente non valido');
+				await this.presentToast(
+					'Ref Cliente non valido. Deve essere un numero positivo.',
+					'danger'
+				);
 				return;
 			}
 		}
 
-		const prenotazione: PrenotazioneRequest = {
+		const filialeId = this.authService.getFiliale();
+
+		if (refCliente !== null) {
+			try {
+				const cliResp = await lastValueFrom(
+					this.prenotazioneService.getPrenotazioniByCliente(
+						refCliente
+					)
+				);
+
+				if (cliResp.success && cliResp.data?.length) {
+					const now = new Date();
+					const hasFutura = cliResp.data.some(
+						(p) => new Date(p.data_ora_prenotazione) > now
+					);
+
+					if (hasFutura) {
+						await this.presentToast(
+							"Il cliente ha già una prenotazione futura. Non è possibile crearne un'altra.",
+							'danger'
+						);
+						this.showPopup = false;
+						this.resetPopup();
+						return;
+					}
+				}
+			} catch (e) {
+				console.error('Errore controllo prenotazioni cliente:', e);
+				await this.presentToast(
+					'Errore controllo prenotazioni cliente',
+					'danger'
+				);
+				return;
+			}
+		}
+
+		const pren: PrenotazioneRequest = {
 			numero_persone: persone,
 			data_ora_prenotazione: this.getLocalIsoString(),
 			ref_cliente: refCliente,
@@ -216,18 +240,25 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 		try {
 			const result = await lastValueFrom(
-				this.prenotazioneService.prenotaLoco(prenotazione)
+				this.prenotazioneService.prenotaLoco(pren)
 			);
 			if (result.success) {
-				this.presentToast('Prenotazione creata con successo');
+				await this.presentToast(
+					'Prenotazione creata con successo',
+					'success'
+				);
 				await this.loadTavoli();
 			} else {
-				this.presentToast('Errore nella creazione della prenotazione');
+				await this.presentToast(
+					'Errore nella creazione della prenotazione',
+					'danger'
+				);
 			}
 		} catch (err) {
-			console.error('Errore durante la prenotazione:', err);
-			this.presentToast(
-				'Errore, non ci sono abbastanza tavoli disponibili'
+			console.error(err);
+			await this.presentToast(
+				'Errore, non ci sono abbastanza tavoli disponibili',
+				'danger'
 			);
 		}
 
@@ -238,33 +269,27 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	getLocalIsoString(): string {
 		const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
 		const now = new Date();
+		const futuri = orariValidi
+			.map((h) => {
+				const [hh, mm] = h.split(':').map(Number);
+				const d = new Date();
+				d.setHours(hh, mm, 0, 0);
+				return d;
+			})
+			.filter((d) => d.getTime() > now.getTime());
 
-		const oggiOrari = orariValidi.map((orario) => {
-			const [hh, mm] = orario.split(':').map(Number);
-			const data = new Date();
-			data.setHours(hh, mm, 0, 0);
-			return data;
-		});
+		const scelta = futuri.length
+			? futuri[0]
+			: (() => {
+					const d = new Date();
+					const [hh, mm] = orariValidi[0].split(':').map(Number);
+					d.setDate(d.getDate() + 1);
+					d.setHours(hh, mm, 0, 0);
+					return d;
+				})();
 
-		const futuri = oggiOrari.filter((d) => d.getTime() > now.getTime());
-
-		let orarioSelezionato: Date;
-
-		if (futuri.length > 0) {
-			orarioSelezionato = futuri[0];
-		} else {
-			const [hh, mm] = orariValidi[0].split(':').map(Number);
-			orarioSelezionato = new Date();
-			orarioSelezionato.setDate(orarioSelezionato.getDate() + 1);
-			orarioSelezionato.setHours(hh, mm, 0, 0);
-		}
-
-		const offsetMs = orarioSelezionato.getTimezoneOffset() * 60000;
-		const localISOTime = new Date(orarioSelezionato.getTime() - offsetMs)
-			.toISOString()
-			.slice(0, -1);
-
-		return localISOTime;
+		const offsetMs = scelta.getTimezoneOffset() * 60000;
+		return new Date(scelta.getTime() - offsetMs).toISOString().slice(0, -1);
 	}
 
 	annulla() {
@@ -279,7 +304,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	}
 
 	isCliccabile(tavolo: any): boolean {
-		// Tavoli cliccabili sono tutti tranne 'senza-ordini' e 'attesa-arrivo'
 		return tavolo.stato !== 'senza-ordini';
 	}
 
@@ -289,39 +313,33 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.showConfermaArrivoPopup = true;
 		} else if (this.isCliccabile(tavolo)) {
 			console.log('Hai cliccato sul tavolo:', tavolo);
-			// Altre azioni possibili
 		}
 	}
 
 	async confermaArrivo() {
 		if (!this.tavoloDaConfermare) return;
-
 		try {
-			// Usa il servizio per confermare la prenotazione passando l'id (numero)
-			const response = await lastValueFrom(
+			const resp = await lastValueFrom(
 				this.prenotazioneService.confermaPrenotazione(
 					this.tavoloDaConfermare.numero
 				)
 			);
-
-			if (response.success) {
-				this.presentToast(
-					`Arrivo cliente confermato per tavolo ${this.tavoloDaConfermare.numero}`
-				);
-			} else {
-				this.presentToast(
-					`Errore nella conferma arrivo per tavolo ${this.tavoloDaConfermare.numero}`
-				);
-			}
-		} catch (error) {
-			console.error('Errore conferma arrivo:', error);
-			this.presentToast('Errore durante la conferma arrivo');
+			await this.presentToast(
+				resp.success
+					? `Arrivo cliente confermato per tavolo ${this.tavoloDaConfermare.numero}`
+					: `Errore conferma arrivo`,
+				resp.success ? 'success' : 'danger'
+			);
+			this.showConfermaArrivoPopup = false;
+			this.tavoloDaConfermare = null;
+			await this.loadTavoli();
+		} catch (e) {
+			console.error(e);
+			await this.presentToast(
+				'Errore durante la conferma arrivo',
+				'danger'
+			);
 		}
-
-		this.showConfermaArrivoPopup = false;
-		this.tavoloDaConfermare = null;
-
-		await this.loadTavoli();
 	}
 
 	chiudiPopupArrivo() {
@@ -329,12 +347,15 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		this.tavoloDaConfermare = null;
 	}
 
-	async presentToast(messaggio: string) {
+	async presentToast(
+		messaggio: string,
+		color: 'success' | 'danger' | 'warning' = 'success'
+	) {
 		const toast = await this.toastController.create({
 			message: messaggio,
 			duration: 2000,
 			position: 'bottom',
-			color: 'success',
+			color,
 		});
 		await toast.present();
 	}
@@ -345,12 +366,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	}
 
 	applicaFiltro() {
-		if (!this.selectedFilter) {
-			this.tavoliFiltrati = [...this.tavoli];
-		} else {
-			this.tavoliFiltrati = this.tavoli.filter(
-				(t) => t.stato === this.selectedFilter
-			);
-		}
+		this.tavoliFiltrati = this.selectedFilter
+			? this.tavoli.filter((t) => t.stato === this.selectedFilter)
+			: [...this.tavoli];
 	}
 }
