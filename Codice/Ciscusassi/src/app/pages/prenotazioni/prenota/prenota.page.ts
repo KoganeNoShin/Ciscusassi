@@ -94,13 +94,42 @@ export class PrenotaPage implements OnInit {
 		});
 	}
 
+	// Funzione helper per il parsing corretto del formato "YYYY-MM-DD HH:MM:SS"
+	private parseDateTime(dateTimeStr: string): Date | null {
+		if (!dateTimeStr) return null;
+
+		const [datePart, timePart] = dateTimeStr.split(" ");
+		if (!datePart || !timePart) return null;
+
+		const [year, month, day] = datePart.split("-").map(Number);
+		const [hour, minute, second] = timePart.split(":").map(Number);
+
+		if (
+			isNaN(year) || isNaN(month) || isNaN(day) ||
+			isNaN(hour) || isNaN(minute)
+		) {
+			console.warn("Data malformata:", dateTimeStr);
+			return null;
+		}
+
+		return new Date(year, month - 1, day, hour, minute, second || 0, 0);
+	}
+
 	private caricaPrenotazioniCliente(): void {
 		this.loadingPrenotazioni = true;
 		const idCliente = 1;
+
 		this.prenotazioneService.getPrenotazioniByCliente(idCliente).subscribe({
 			next: (res) => {
 				if (res.success && res.data) {
-					this.prenotazioni = res.data;
+					const now = new Date();
+
+					this.prenotazioni = res.data.filter((prenotazione) => {
+						const parsedDate = this.parseDateTime(prenotazione.data_ora_prenotazione);
+						if (!parsedDate) return false;
+
+						return parsedDate >= now;
+					});
 				} else {
 					this.prenotazioni = [];
 				}
@@ -138,8 +167,22 @@ export class PrenotaPage implements OnInit {
 				},
 				{
 					text: 'Conferma',
-					handler: () => {
-						this.cancellaPrenotazione(id);
+					handler: async () => {
+						if (
+							this.prenotazioni.find(
+								(p) => p.id_prenotazione === id
+							)?.otp == null
+						) {
+							this.cancellaPrenotazione(id);
+						} else {
+							const toast = await this.toastController.create({
+								message: 'Impossibile cancellare la prenotazione perché è ancora associata a un tavolo',
+								duration: 2000,
+								color: 'danger',
+								position: 'bottom',
+							});
+							await toast.present();
+						}
 					},
 					cssClass: 'alert-button-confirm',
 				},
