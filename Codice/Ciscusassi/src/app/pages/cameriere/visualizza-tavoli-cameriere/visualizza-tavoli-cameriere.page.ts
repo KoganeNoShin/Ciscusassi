@@ -171,98 +171,94 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	}
 
 	async conferma() {
-		const persone = this.personeSelezionate ?? this.inputManuale;
-		let refCliente: number | null = null;
+	const persone = this.personeSelezionate ?? this.inputManuale;
+	let refCliente: number | null = null;
 
-		if (!persone || persone < 1) {
-			alert('Inserisci un numero valido di persone');
+	if (!persone || persone < 1) {
+		alert('Inserisci un numero valido di persone');
+		return;
+	}
+
+	if (this.refClienteInput.trim() !== '') {
+		const parsed = parseInt(this.refClienteInput.trim(), 10);
+		if (!isNaN(parsed)) {
+			refCliente = parsed;
+		} else {
+			alert('ref_cliente non valido');
 			return;
 		}
+	}
 
-		if (this.refClienteInput.trim() !== '') {
-			const parsed = parseInt(this.refClienteInput.trim(), 10);
-			if (!isNaN(parsed)) {
-				refCliente = parsed;
-			} else {
-				alert('ref_cliente non valido');
-				return;
-			}
-		}
+	const filialeId = this.authService.getFiliale();
+	const dataPrenotazione = new Date(this.getLocalIsoString());
 
-		const filialeId = this.authService.getFiliale();
-		const dataPrenotazione = new Date(this.getLocalIsoString());
-
-		if (refCliente !== null) {
-			try {
-				const cliResp = await lastValueFrom(
-					this.prenotazioneService.getPrenotazioniByCliente(
-						refCliente
-					)
-				);
-
-				if (cliResp.success && cliResp.data?.length) {
-					const hasStessaPrenotazione = cliResp.data.some((p) => {
-						const dataEsistente = new Date(p.data_ora_prenotazione);
-						return (
-							dataEsistente.getTime() ===
-							dataPrenotazione.getTime()
-						);
-					});
-
-					if (hasStessaPrenotazione) {
-						await this.presentToast(
-							"Il cliente ha già una prenotazione in questo orario. Non è possibile crearne un'altra.",
-							'danger'
-						);
-						this.showPopup = false;
-						this.resetPopup();
-						return;
-					}
-				}
-			} catch (e) {
-				console.error('Errore controllo prenotazioni cliente:', e);
-				await this.presentToast(
-					'Errore controllo prenotazioni cliente',
-					'danger'
-				);
-				return;
-			}
-		}
-
-		const pren: PrenotazioneRequest = {
-			numero_persone: persone,
-			data_ora_prenotazione: this.getLocalIsoString(),
-			ref_cliente: refCliente,
-			ref_filiale: filialeId,
-		};
-
+	if (refCliente !== null) {
 		try {
-			const result = await lastValueFrom(
-				this.prenotazioneService.prenotaLoco(pren)
+			const cliResp = await lastValueFrom(
+				this.prenotazioneService.getPrenotazioniByCliente(refCliente)
 			);
-			if (result.success) {
-				await this.presentToast(
-					'Prenotazione creata con successo',
-					'success'
-				);
-				await this.loadTavoli();
-			} else {
-				await this.presentToast(
-					'Errore nella creazione della prenotazione',
-					'danger'
-				);
+
+			if (cliResp.success && cliResp.data?.length) {
+				const hasPrenotazioneFutura = cliResp.data.some((p) => {
+					const dataEsistente = new Date(p.data_ora_prenotazione);
+					return dataEsistente.getTime() >= dataPrenotazione.getTime();
+				});
+
+				if (hasPrenotazioneFutura) {
+					await this.presentToast(
+						"Il cliente ha già una prenotazione futura. Non è possibile crearne un'altra.",
+						'danger'
+					);
+					this.showPopup = false;
+					this.resetPopup();
+					return;
+				}
 			}
-		} catch (err) {
-			console.error(err);
+		} catch (e) {
+			console.error('Errore controllo prenotazioni cliente:', e);
 			await this.presentToast(
-				'Errore, non ci sono abbastanza tavoli disponibili',
+				'Errore controllo prenotazioni cliente',
+				'danger'
+			);
+			return;
+		}
+	}
+
+	const pren: PrenotazioneRequest = {
+		numero_persone: persone,
+		data_ora_prenotazione: this.getLocalIsoString(),
+		ref_cliente: refCliente,
+		ref_filiale: filialeId,
+	};
+
+	try {
+		const result = await lastValueFrom(
+			this.prenotazioneService.prenotaLoco(pren)
+		);
+		if (result.success) {
+			await this.presentToast(
+				'Prenotazione creata con successo',
+				'success'
+			);
+			await this.loadTavoli();
+		} else {
+			await this.presentToast(
+				'Errore nella creazione della prenotazione',
 				'danger'
 			);
 		}
-
-		this.showPopup = false;
-		this.resetPopup();
+	} catch (err) {
+		console.error(err);
+		await this.presentToast(
+			'Errore, non ci sono abbastanza tavoli disponibili',
+			'danger'
+		);
 	}
+
+	this.showPopup = false;
+	this.resetPopup();
+}
+
 
 	getLocalIsoString(): string {
 		const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
@@ -369,3 +365,4 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			: [...this.tavoli];
 	}
 }
+
