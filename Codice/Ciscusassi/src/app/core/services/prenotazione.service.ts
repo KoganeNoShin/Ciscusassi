@@ -8,6 +8,7 @@ import {
 	PrenotazioneInput,
 	PrenotazioneRecord,
 	PrenotazioneRequest,
+	PrenotazioneWithFiliale,
 } from '../interfaces/Prenotazione';
 
 @Injectable({
@@ -43,8 +44,8 @@ export class PrenotazioneService {
 
 	getPrenotazioniByCliente(
 		clienteId: number
-	): Observable<ApiResponse<PrenotazioneRecord[]>> {
-		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(
+	): Observable<ApiResponse<PrenotazioneWithFiliale[]>> {
+		return this.http.get<ApiResponse<PrenotazioneWithFiliale[]>>(
 			`${this.apiURL}/prenotazioni/cliente/${clienteId}`
 		);
 	}

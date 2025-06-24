@@ -19,28 +19,41 @@
 
 			@for (prenotazione of prenotazioni; track prenotazione.id_prenotazione) {
 				<ion-card class="prenotazione-card">
-					<ion-item>
-						<ion-icon name="calendar-outline" slot="start"></ion-icon>
-						<ion-label>
-							{{ prenotazione?.data_ora_prenotazione | date: 'fullDate' }}
-							<small>
-								{{ prenotazione?.data_ora_prenotazione | date: 'shortTime' }}
-							</small>
-						</ion-label>
-					</ion-item>
+					<ion-row>
 
-					<ion-item>
-						<ion-icon name="people-outline" slot="start"></ion-icon>
+					<ion-col size="9">
+					<div>
+						<ion-icon></ion-icon>
+						<ion-label>{{ prenotazione?.indirizzo }} - {{ prenotazione?.comune }}</ion-label>
+					</div>
+
+					<div>
+						<ion-icon></ion-icon>
+						<ion-label>{{ formattaData(prenotazione?.data_ora_prenotazione ?? '') }}</ion-label>
+					</div>
+
+					@if (prenotazione?.numero_persone == 1){
+					<div>
+						<ion-icon></ion-icon>
+						<ion-label>{{ prenotazione?.numero_persone }} posto</ion-label>
+					</div>
+					} @else {
+					<div>
+						<ion-icon></ion-icon>
 						<ion-label>{{ prenotazione?.numero_persone }} posti</ion-label>
-					</ion-item>
-
+					</div>
+					}	
+					</ion-col>
+					
+					<ion-col size="3">
 					<ion-button
-						color="danger"
-						expand="block"
+						color="rosso"
 						(click)="cancellaPrenotazione(prenotazione?.id_prenotazione!)"
 					>
 						Cancella Prenotazione
 					</ion-button>
+					</ion-col>
+					</ion-row>
 				</ion-card>
 			}
 		} @else {

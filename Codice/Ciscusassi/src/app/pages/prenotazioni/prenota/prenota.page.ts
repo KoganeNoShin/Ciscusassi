@@ -23,7 +23,7 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { Router, RouterModule } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
-import { PrenotazioneRecord } from 'src/app/core/interfaces/Prenotazione';
+import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 
 @Component({
 	selector: 'app-prenota',
@@ -31,23 +31,22 @@ import { PrenotazioneRecord } from 'src/app/core/interfaces/Prenotazione';
 	styleUrls: ['./prenota.page.scss'],
 	standalone: true,
 	imports: [
-		RouterModule,
-		IonCard,
-		IonButton,
-		IonLabel,
-		IonCol,
-		IonRow,
-		IonGrid,
-		IonItem,
-		IonInput,
-		IonSpinner,
-		IonContent,
-		IonIcon,
-		CommonModule,
-		FormsModule,
-		HeroComponent,
-		LeafletMapComponent,
-	],
+    RouterModule,
+    IonCard,
+    IonButton,
+    IonLabel,
+    IonCol,
+    IonRow,
+    IonGrid,
+    IonItem,
+    IonInput,
+    IonContent,
+    IonIcon,
+    CommonModule,
+    FormsModule,
+    HeroComponent,
+    LeafletMapComponent
+],
 })
 export class PrenotaPage implements OnInit {
 	filiali: FilialeRecord[] = [];
@@ -57,7 +56,7 @@ export class PrenotaPage implements OnInit {
 
 	searchFiliale: string = '';
 
-	prenotazioni: PrenotazioneRecord[] = [];
+	prenotazioni: PrenotazioneWithFiliale[] = [];
 	FilialePrenotazione: FilialeRecord | null = null;
 	constructor(
 		private filialeService: FilialeService,
@@ -134,4 +133,18 @@ export class PrenotaPage implements OnInit {
 			},
 		});
 	}
+
+	formattaData(dateInput: string | number): string {
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      console.error('Data non valida:', dateInput);
+      return '';
+    }
+
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${pad(
+      date.getDate()
+    )}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())} - ${pad(
+	  date.getHours())}:${pad(date.getMinutes())}`;
+  }
 }

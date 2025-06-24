@@ -16,3 +16,9 @@ export interface PrenotazioneRequest {
 	ref_cliente: number | null;
 	ref_filiale: number;
 }
+
+export interface PrenotazioneWithFiliale extends PrenotazioneRecord {
+  id_filiale: number;
+  indirizzo: string;
+  comune: string;
+}
