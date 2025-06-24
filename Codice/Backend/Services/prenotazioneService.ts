@@ -332,9 +332,9 @@ class PrenotazioneService {
 		}
 	}
 
-	static async checkOTP(id_prenotazione: number, otp: string): Promise<boolean> {
+	static async checkOTP(data_ora_prenotazione: string, ref_torretta: number, otp: string): Promise<boolean> {
 		try {
-			const prenotazione = await Prenotazione.getById(id_prenotazione);
+			const prenotazione = await Prenotazione.getByDataETorretta(data_ora_prenotazione, ref_torretta);
 			if (!prenotazione) {
 				throw new Error('Prenotazione non trovata');
 			}

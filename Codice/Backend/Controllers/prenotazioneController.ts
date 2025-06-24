@@ -242,21 +242,21 @@ class PrenotazioneController {
     }
 
     static async checkOTP(req: Request, res: Response): Promise<void> {
-        try {
-            const id = parseInt(req.params.id);
-            const otp = req.params.otp;
-            const isValid = await PrenotazioneService.checkOTP(id, otp);
+    try {
+        const { data_ora_prenotazione, ref_torretta, otp } = req.body;
+        const isValid = await PrenotazioneService.checkOTP(data_ora_prenotazione, ref_torretta, otp);
 
-            res.json({ success: true, data: isValid });
-        } catch (err) {
-            console.error('❌ Errore in checkOTP:', err);
-            res.status(500).json({
-                success: false,
-                message: 'Errore interno del server',
-                error: (err instanceof Error ? err.message : String(err))
-            });
-        }
+        res.json({ success: true, data: isValid });
+    } catch (err) {
+        console.error('❌ Errore in checkOTP:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Errore interno del server',
+            error: (err instanceof Error ? err.message : String(err))
+        });
     }
+}
+
 }
 
 export default PrenotazioneController;

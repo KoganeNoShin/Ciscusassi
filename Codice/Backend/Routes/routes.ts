@@ -185,9 +185,9 @@ router.get(
 	PrenotazioneController.getOTPById
 );
 
-router.get(
-	'/prenotazioni/check-otp/:id/:otp',
-	PrenotazioneController.checkOTP,
+router.post(
+    '/prenotazioni/check-otp',
+    PrenotazioneController.checkOTP,
 );
 
 router.get(

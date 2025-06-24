@@ -249,6 +249,24 @@ export class Prenotazione {
 			);
 		});
 	}
+
+	static async getByDataETorretta(data_ora_prenotazione: string, ref_torretta: number): Promise<PrenotazioneRecord | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				'SELECT * FROM prenotazioni WHERE data_ora_prenotazione = ? AND ref_torretta = ?',
+				[data_ora_prenotazione, ref_torretta],
+				(err: Error | null, row: PrenotazioneRecord | undefined) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT per data e torretta:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.warn(`⚠️ [DB WARNING] Nessuna prenotazione trovata per data ${data_ora_prenotazione} e torretta ${ref_torretta}`);
+						resolve(null);
+					} else resolve(row);
+				}
+			);
+		});
+	}
 }
 
 
