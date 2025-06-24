@@ -42,6 +42,12 @@ export class PrenotazioneService {
 		);
 	}
 
+	checkOtp(id: number, otp: string): Observable<ApiResponse<boolean>> {
+		return this.http.get<ApiResponse<boolean>>(
+			`${this.apiURL}/prenotazioni/check-otp/${id}/${otp}`
+		);
+	}
+
 	getPrenotazioniByCliente(
 		clienteId: number
 	): Observable<ApiResponse<PrenotazioneWithFiliale[]>> {

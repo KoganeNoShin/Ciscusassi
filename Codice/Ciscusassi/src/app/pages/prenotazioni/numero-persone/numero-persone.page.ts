@@ -7,11 +7,7 @@ import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular/standalone';
-import {
-	IonContent,
-	IonSpinner,
-	IonButton,
-} from '@ionic/angular/standalone';
+import { IonContent, IonSpinner, IonButton } from '@ionic/angular/standalone';
 
 @Component({
 	selector: 'app-numero-persone',
@@ -29,13 +25,14 @@ export class NumeroPersonePage implements OnInit {
 	personePossibili = [1, 2, 3, 4, 5, 6, 7];
 	personeSelezionate: number | null = null;
 	inputManuale: number | null = null;
+	readonly MAX_PERSONE = 999999;
 
 	constructor(
 		private prenotazioneService: PrenotazioneService,
 		private filialeService: FilialeService,
-    	private router:Router,
+		private router: Router,
 		private toastController: ToastController
-	) {	}
+	) {}
 
 	ngOnInit(): void {
 		this.personeSelezionate = null;
@@ -110,42 +107,64 @@ export class NumeroPersonePage implements OnInit {
 		}
 	}
 
-  salvaPersone(numeroPersone: number, numeroPersoneSelezionate: number | null) {
-	if (numeroPersone < 1 && (numeroPersoneSelezionate === null || numeroPersoneSelezionate < 1)) {
-	  this.toastController.create({
-		message: 'Il numero di persone deve essere maggiore di 0',
-		duration: 2000,
-		position: 'bottom',
-		color: 'danger',
-	  }).then(toast => toast.present());
-	  return;
-	} else {
-		if (numeroPersoneSelezionate !== null) {
-			numeroPersone = numeroPersoneSelezionate;
-		}
-
-		for (let t = 2; t <= numeroPersone; t++) {
-			const postiDisponibili = 2 * t + 2;
-			if (postiDisponibili >= numeroPersone) {
-				this.numeroTavoliRichiesti = t;
-				break;
-			}
-		}
-		
-		console.log('Numero di tavoli richiesti:', this.numeroTavoliRichiesti);
-		console.log('Numero di tavoli disponibili:', this.filiale?.num_tavoli ?? 0);
-		if (this.numeroTavoliRichiesti > (this.filiale?.num_tavoli ?? 0)) {
-			this.toastController.create({
-				message: 'Non ci sono abbastanza tavoli disponibili per il numero di persone selezionato.',
-				duration: 2000,
-				position: 'bottom',
-				color: 'danger',
-			}).then(toast => toast.present());
+	salvaPersone(
+		numeroPersone: number,
+		numeroPersoneSelezionate: number | null
+	) {
+		if (
+			numeroPersone < 1 &&
+			(numeroPersoneSelezionate === null || numeroPersoneSelezionate < 1)
+		) {
+			this.toastController
+				.create({
+					message: 'Il numero di persone deve essere maggiore di 0',
+					duration: 2000,
+					position: 'bottom',
+					color: 'danger',
+				})
+				.then((toast) => toast.present());
 			return;
+		} else {
+			if (
+				numeroPersoneSelezionate !== null &&
+				numeroPersoneSelezionate < this.MAX_PERSONE
+			) {
+				numeroPersone = numeroPersoneSelezionate;
+			} else {
+				numeroPersone = this.MAX_PERSONE;
+			}
+
+			for (let t = 2; t <= numeroPersone; t++) {
+				const postiDisponibili = 2 * t + 2;
+				if (postiDisponibili >= numeroPersone) {
+					this.numeroTavoliRichiesti = t;
+					break;
+				}
+			}
+
+			console.log(
+				'Numero di tavoli richiesti:',
+				this.numeroTavoliRichiesti
+			);
+			console.log(
+				'Numero di tavoli disponibili:',
+				this.filiale?.num_tavoli ?? 0
+			);
+			if (this.numeroTavoliRichiesti > (this.filiale?.num_tavoli ?? 0)) {
+				this.toastController
+					.create({
+						message:
+							'Non ci sono abbastanza tavoli disponibili per il numero di persone selezionato.',
+						duration: 2000,
+						position: 'bottom',
+						color: 'danger',
+					})
+					.then((toast) => toast.present());
+				return;
+			}
+			this.prenotazioneService.setNumeroPosti(numeroPersone);
+			console.log('Hai scelto il numero di persone:', numeroPersone);
+			this.router.navigate(['/scelta-giorno']);
 		}
-		this.prenotazioneService.setNumeroPosti(numeroPersone);
-		console.log('Hai scelto il numero di persone:', numeroPersone);
-		this.router.navigate(['/scelta-giorno']);
 	}
-  }
 }

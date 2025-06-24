@@ -13,7 +13,8 @@ import {
 	IonInput,
 	IonIcon,
 	AlertController,
-	ToastController
+	ToastController,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 import { LeafletMapComponent } from 'src/app/components/leaflet-map/leaflet-map.component';
@@ -31,6 +32,7 @@ import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 	styleUrls: ['./prenota.page.scss'],
 	standalone: true,
 	imports: [
+		IonSpinner,
 		RouterModule,
 		IonCard,
 		IonButton,
@@ -45,17 +47,24 @@ import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 		CommonModule,
 		FormsModule,
 		HeroComponent,
-		LeafletMapComponent
-	]
+		LeafletMapComponent,
+	],
 })
 export class PrenotaPage implements OnInit {
 	filiali: FilialeRecord[] = [];
 	filialiFiltrate: FilialeRecord[] = [];
-	loading: boolean = true;
+	loadingPrenotazioni: boolean = true;
 	error: boolean = false;
 	searchFiliale: string = '';
 	prenotazioni: PrenotazioneWithFiliale[] = [];
 	FilialePrenotazione: FilialeRecord | null = null;
+	loading: boolean = true;
+
+	ionViewWillEnter() {
+		this.caricaFiliali();
+		this.caricaPrenotazioniCliente();
+		this.prenotazioneService.svuotaPrenotazione();
+	}
 
 	constructor(
 		private filialeService: FilialeService,
@@ -65,11 +74,7 @@ export class PrenotaPage implements OnInit {
 		private toastController: ToastController
 	) {}
 
-	ngOnInit(): void {
-		this.caricaFiliali();
-		this.caricaPrenotazioniCliente();
-		this.prenotazioneService.svuotaPrenotazione();
-	}
+	ngOnInit(): void {}
 
 	private caricaFiliali(): void {
 		this.filialeService.GetSedi().subscribe({
@@ -85,11 +90,12 @@ export class PrenotaPage implements OnInit {
 			error: () => {
 				this.error = true;
 				this.loading = false;
-			}
+			},
 		});
 	}
 
 	private caricaPrenotazioniCliente(): void {
+		this.loadingPrenotazioni = true;
 		const idCliente = 1;
 		this.prenotazioneService.getPrenotazioniByCliente(idCliente).subscribe({
 			next: (res) => {
@@ -98,11 +104,13 @@ export class PrenotaPage implements OnInit {
 				} else {
 					this.prenotazioni = [];
 				}
+				this.loadingPrenotazioni = false;
 			},
 			error: (err) => {
 				console.error('Errore nel recupero prenotazioni:', err);
 				this.prenotazioni = [];
-			}
+				this.loadingPrenotazioni = false;
+			},
 		});
 	}
 
@@ -126,17 +134,17 @@ export class PrenotaPage implements OnInit {
 				{
 					text: 'Annulla',
 					role: 'cancel',
-					cssClass: 'alert-button-cancel'
+					cssClass: 'alert-button-cancel',
 				},
 				{
 					text: 'Conferma',
 					handler: () => {
 						this.cancellaPrenotazione(id);
 					},
-					cssClass: 'alert-button-confirm'
-				}
+					cssClass: 'alert-button-confirm',
+				},
 			],
-			cssClass: 'custom-alert'
+			cssClass: 'custom-alert',
 		});
 
 		await alert.present();
@@ -153,7 +161,7 @@ export class PrenotaPage implements OnInit {
 						message: 'Prenotazione cancellata con successo.',
 						duration: 2000,
 						color: 'success',
-						position: 'bottom'
+						position: 'bottom',
 					});
 					await toast.present();
 				}
@@ -164,10 +172,10 @@ export class PrenotaPage implements OnInit {
 					message: 'Errore nella cancellazione della prenotazione.',
 					duration: 2000,
 					color: 'danger',
-					position: 'bottom'
+					position: 'bottom',
 				});
 				await toast.present();
-			}
+			},
 		});
 	}
 
