@@ -57,6 +57,10 @@ export class PrenotaPage implements OnInit {
 	prenotazioni: PrenotazioneWithFiliale[] = [];
 	FilialePrenotazione: FilialeRecord | null = null;
 
+	ionViewWillEnter() {
+	this.caricaPrenotazioniCliente();
+  	}
+
 	constructor(
 		private filialeService: FilialeService,
 		private router: Router,
@@ -67,7 +71,6 @@ export class PrenotaPage implements OnInit {
 
 	ngOnInit(): void {
 		this.caricaFiliali();
-		this.caricaPrenotazioniCliente();
 		this.prenotazioneService.svuotaPrenotazione();
 	}
 

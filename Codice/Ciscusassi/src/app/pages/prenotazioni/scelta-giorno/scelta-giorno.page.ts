@@ -8,6 +8,7 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { take } from 'rxjs/operators';
 import { PrenotazioneRequest } from 'src/app/core/interfaces/Prenotazione';
 import { ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import {
   IonContent,
   IonSpinner,
@@ -55,7 +56,8 @@ export class SceltaGiornoPage implements OnInit {
   constructor(
     private prenotazioneService: PrenotazioneService,
     private filialeService: FilialeService,
-    private toastController: ToastController
+    private toastController: ToastController, 
+    private router : Router
   ) {}
 
   ngOnInit() {
@@ -250,6 +252,7 @@ export class SceltaGiornoPage implements OnInit {
               color: 'success',
             });
             await toast.present();
+            this.router.navigateByUrl('/prenota');
           } else {
             const toast = await this.toastController.create({
               message: 'Errore nella prenotazione',
