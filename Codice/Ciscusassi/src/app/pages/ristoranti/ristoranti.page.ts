@@ -1,6 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonCard, IonCardContent } from '@ionic/angular/standalone';
+import {
+	IonContent,
+	IonCard,
+	IonCardContent,
+	IonText,
+	IonGrid,
+	IonCol,
+	IonImg,
+	IonRow,
+} from '@ionic/angular/standalone';
 
 import { HeroComponent } from '../../components/hero/hero.component';
 import { LeafletMapComponent } from '../../components/leaflet-map/leaflet-map.component';
@@ -11,6 +20,11 @@ import { LeafletMapComponent } from '../../components/leaflet-map/leaflet-map.co
 	styleUrls: ['./ristoranti.page.scss'],
 	standalone: true,
 	imports: [
+		IonRow,
+		IonImg,
+		IonCol,
+		IonGrid,
+		IonText,
 		IonCardContent,
 		IonCard,
 		IonContent,

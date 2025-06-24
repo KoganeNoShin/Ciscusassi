@@ -1,31 +1,3 @@
-#container {
-	text-align: center;
-
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-}
-
-#container strong {
-	font-size: 20px;
-	line-height: 26px;
-}
-
-#container p {
-	font-size: 16px;
-	line-height: 22px;
-
-	color: #8c8c8c;
-
-	margin: 0;
-}
-
-#container a {
-	text-decoration: none;
-}
-
 .content {
 	display: flex;
 	flex-direction: row;
@@ -37,17 +9,22 @@
 
 .map-div {
 	height: 100vh;
-	width: 100vw;
+	width: auto;
 	background-color: #c29637;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	padding-top: 2%;
+}
+
+ion-grid {
+	padding-top: 3%;
 }
 
 .map-card {
-	height: 75%; // o 50vh, o 100% se necessario
-	width: 50%;
+	height: 60vh; // o 50vh, o 100% se necessario
+	width: 100%;
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -64,12 +41,13 @@ ion-card-content {
 	padding: 0;
 }
 
-h1 {
-	font-family: 'LucidaCalligraphy', sans-serif;
-	color: var(--ion-color-bianco);
+ion-text {
+	width: 100%;
 }
 
-p {
-	font-size: 1.5rem;
-	color: var(--ion-color-bianco);
+@media (max-width: 1200px) {
+	.map-card {
+		height: 60vh; // o 50vh, o 100% se necessario
+		width: 100%;
+	}
 }

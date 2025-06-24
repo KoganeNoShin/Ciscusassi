@@ -12,17 +12,34 @@
 	></app-hero>
 
 	<div class="map-div">
-		<h1>TROVACI SULLA MAPPA!</h1>
-		<p>Trova il ristorante più adatto a te!</p>
+		<ion-text class="ion-text-center ion-margin-horizontal">
+			<h1 class="text-color-bianco">TROVACI SULLA MAPPA!</h1>
+		</ion-text>
 
-		<div class="content">
-			<img src="/assets/illustrations/TizioMappa.png" alt="" />
+		<ion-text class="ion-text-center">
+			<h3 class="text-color-bianco ion-margin-horizontal">
+				Trova il ristorante più adatto a te!
+			</h3>
+		</ion-text>
 
-			<ion-card class="map-card">
-				<ion-card-content>
-					<app-leaflet-map></app-leaflet-map>
-				</ion-card-content>
-			</ion-card>
-		</div>
+		<ion-grid
+			fixed
+			class="ion-align-items-center ion-justify-content-center"
+		>
+			<ion-row class="ion-align-items-center ion-justify-content-center">
+				<ion-col size="6" class="ion-hide-xl-down">
+					<ion-img
+						[src]="'/assets/illustrations/TizioMappa.png'"
+					></ion-img>
+				</ion-col>
+				<ion-col size="12" sizeXl="6">
+					<ion-card class="map-card">
+						<ion-card-content>
+							<app-leaflet-map></app-leaflet-map>
+						</ion-card-content>
+					</ion-card>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
 	</div>
 </ion-content>
