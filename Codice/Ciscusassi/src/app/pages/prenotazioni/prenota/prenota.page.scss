@@ -179,3 +179,20 @@ h1 {
   text-align: left;
   margin-bottom: 1.5rem;
 }
+
+/* Alert personalizzato bianco */
+.custom-alert {
+  --background: #ffffff;
+  --ion-text-color: #000000;
+  --ion-color-base: #ffffff;
+  --ion-color-step-950: #000000;
+}
+
+.custom-alert .alert-button-confirm {
+  color: var(--ion-color-danger);
+  font-weight: bold;
+}
+
+.custom-alert .alert-button-cancel {
+  color: var(--ion-color-medium);
+}

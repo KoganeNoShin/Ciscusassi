@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-	IonSpinner,
 	IonContent,
-	IonCardContent,
-	IonInput,
-	IonItem,
-	IonGrid,
-	IonRow,
-	IonCol,
-	IonLabel,
-	IonButton,
 	IonCard,
+	IonButton,
+	IonLabel,
+	IonCol,
+	IonRow,
+	IonGrid,
+	IonItem,
+	IonInput,
 	IonIcon,
+	AlertController,
+	ToastController
 } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 import { LeafletMapComponent } from 'src/app/components/leaflet-map/leaflet-map.component';
@@ -31,37 +31,38 @@ import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 	styleUrls: ['./prenota.page.scss'],
 	standalone: true,
 	imports: [
-    RouterModule,
-    IonCard,
-    IonButton,
-    IonLabel,
-    IonCol,
-    IonRow,
-    IonGrid,
-    IonItem,
-    IonInput,
-    IonContent,
-    IonIcon,
-    CommonModule,
-    FormsModule,
-    HeroComponent,
-    LeafletMapComponent
-],
+		RouterModule,
+		IonCard,
+		IonButton,
+		IonLabel,
+		IonCol,
+		IonRow,
+		IonGrid,
+		IonItem,
+		IonInput,
+		IonContent,
+		IonIcon,
+		CommonModule,
+		FormsModule,
+		HeroComponent,
+		LeafletMapComponent
+	]
 })
 export class PrenotaPage implements OnInit {
 	filiali: FilialeRecord[] = [];
 	filialiFiltrate: FilialeRecord[] = [];
 	loading: boolean = true;
 	error: boolean = false;
-
 	searchFiliale: string = '';
-
 	prenotazioni: PrenotazioneWithFiliale[] = [];
 	FilialePrenotazione: FilialeRecord | null = null;
+
 	constructor(
 		private filialeService: FilialeService,
 		private router: Router,
-		private prenotazioneService: PrenotazioneService
+		private prenotazioneService: PrenotazioneService,
+		private alertController: AlertController,
+		private toastController: ToastController
 	) {}
 
 	ngOnInit(): void {
@@ -84,17 +85,16 @@ export class PrenotaPage implements OnInit {
 			error: () => {
 				this.error = true;
 				this.loading = false;
-			},
+			}
 		});
 	}
 
 	private caricaPrenotazioniCliente(): void {
-		const idCliente = 1; // ID cliente fisso per ora
+		const idCliente = 1;
 		this.prenotazioneService.getPrenotazioniByCliente(idCliente).subscribe({
 			next: (res) => {
 				if (res.success && res.data) {
 					this.prenotazioni = res.data;
-					console.log('Prenotazioni del cliente:', this.prenotazioni);
 				} else {
 					this.prenotazioni = [];
 				}
@@ -102,7 +102,7 @@ export class PrenotaPage implements OnInit {
 			error: (err) => {
 				console.error('Errore nel recupero prenotazioni:', err);
 				this.prenotazioni = [];
-			},
+			}
 		});
 	}
 
@@ -115,36 +115,74 @@ export class PrenotaPage implements OnInit {
 
 	salvaFiliale(id_filiale: number): void {
 		this.prenotazioneService.setFilialeId(id_filiale);
-		console.log('Hai scelto la filiale', id_filiale);
 		this.router.navigate(['/numero-persone']);
 	}
 
-	cancellaPrenotazione(id: number): void {
+	async confermaCancellazione(id: number): Promise<void> {
+		const alert = await this.alertController.create({
+			header: 'Conferma cancellazione',
+			message: 'Sei sicuro di voler cancellare questa prenotazione?',
+			buttons: [
+				{
+					text: 'Annulla',
+					role: 'cancel',
+					cssClass: 'alert-button-cancel'
+				},
+				{
+					text: 'Conferma',
+					handler: () => {
+						this.cancellaPrenotazione(id);
+					},
+					cssClass: 'alert-button-confirm'
+				}
+			],
+			cssClass: 'custom-alert'
+		});
+
+		await alert.present();
+	}
+
+	private async cancellaPrenotazione(id: number): Promise<void> {
 		this.prenotazioneService.eliminaPrenotazione(id).subscribe({
-			next: (res) => {
+			next: async (res) => {
 				if (res.success) {
 					this.prenotazioni = this.prenotazioni.filter(
 						(p) => p.id_prenotazione !== id
 					);
+					const toast = await this.toastController.create({
+						message: 'Prenotazione cancellata con successo.',
+						duration: 2000,
+						color: 'success',
+						position: 'bottom'
+					});
+					await toast.present();
 				}
 			},
-			error: (err) => {
+			error: async (err) => {
 				console.error('Errore nella cancellazione:', err);
-			},
+				const toast = await this.toastController.create({
+					message: 'Errore nella cancellazione della prenotazione.',
+					duration: 2000,
+					color: 'danger',
+					position: 'bottom'
+				});
+				await toast.present();
+			}
 		});
 	}
 
 	formattaData(dateInput: string | number): string {
-    const date = new Date(dateInput);
-    if (isNaN(date.getTime())) {
-      console.error('Data non valida:', dateInput);
-      return '';
-    }
+		const date = new Date(dateInput);
+		if (isNaN(date.getTime())) {
+			console.error('Data non valida:', dateInput);
+			return '';
+		}
 
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${pad(
-      date.getDate()
-    )}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())} - ${pad(
-	  date.getHours())}:${pad(date.getMinutes())}`;
-  }
+		const pad = (n: number) => n.toString().padStart(2, '0');
+		return `${pad(date.getDate())}/${pad(
+			date.getMonth() + 1
+		)}/${pad(date.getFullYear())} - ${pad(date.getHours())}:${pad(
+			date.getMinutes()
+		)}`;
+	}
 }
