@@ -1,38 +1,37 @@
 <ion-content [fullscreen]="true" color="light">
-	<ion-grid fixed>
-		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<ion-col size="6">
-				<ion-card class="contentCard">
-					<ion-text color="light">
-						<h1>INFORMAZIONI DEL TAVOLO</h1>
-					</ion-text>
-					<ion-text color="light">
-						<p>
-							Inserisci l'OTP mostrato sullo schermo della torre
-						</p>
-					</ion-text>
-					<ion-input
-						[(ngModel)]="otp"
-						label="Inserisci l'OTP"
-						label-placement="floating"
-						fill="solid"
-					></ion-input>
-					<ion-button
-						[routerLink]="['/menu-tavolo']"
-						size="default"
-						fill="solid"
-						shape="round"
-						color="rosso"
-					>
-						PROCEDI
-					</ion-button>
-				</ion-card>
-			</ion-col>
-			<ion-col size="6">
-				<ion-img
-					[src]="'/assets/illustrations/OTPTavolo.png'"
-				></ion-img>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+  <ion-grid fixed>
+    <ion-row class="ion-align-items-center ion-justify-content-center">
+      <ion-col size="6">
+        <ion-card class="contentCard">
+          <ion-text color="light">
+            <h1>INFORMAZIONI DEL TAVOLO</h1>
+          </ion-text>
+          <ion-text color="light">
+            <p>Inserisci l'OTP mostrato sullo schermo della torre</p>
+          </ion-text>
+
+          <ion-input
+            [(ngModel)]="otp"
+            label="Inserisci l'OTP"
+            label-placement="floating"
+            fill="solid"
+          ></ion-input>
+
+          <ion-button
+            (click)="onProceedClick()"
+            size="default"
+            fill="solid"
+            shape="round"
+            color="rosso"
+          >
+            PROCEDI
+          </ion-button>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-img src="/assets/illustrations/OTPTavolo.png"></ion-img>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
