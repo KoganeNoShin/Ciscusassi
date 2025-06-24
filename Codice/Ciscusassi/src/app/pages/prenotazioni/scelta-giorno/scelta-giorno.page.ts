@@ -7,6 +7,7 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { take } from 'rxjs/operators';
 import { PrenotazioneRequest } from 'src/app/core/interfaces/Prenotazione';
+import { ToastController } from '@ionic/angular';
 import {
   IonContent,
   IonSpinner,
@@ -53,7 +54,8 @@ export class SceltaGiornoPage implements OnInit {
 
   constructor(
     private prenotazioneService: PrenotazioneService,
-    private filialeService: FilialeService
+    private filialeService: FilialeService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -228,7 +230,7 @@ export class SceltaGiornoPage implements OnInit {
       });
   }
 
-  confermaPrenotazione(ora: string) {
+  async confermaPrenotazione(ora: string) {
     this.prenotazione.numero_persone = this.persone || 0;
     this.prenotazione.data_ora_prenotazione = `${this.dataSelezionata} ${ora}`;
     this.prenotazione.ref_filiale = this.idFiliale;
@@ -238,20 +240,35 @@ export class SceltaGiornoPage implements OnInit {
       .prenota(this.prenotazione)
       .pipe(take(1))
       .subscribe({
-        next: (response) => {
+        next: async (response) => {
           console.log('Risposta prenotazione:', response);
           if (response.success) {
-            alert('Prenotazione effettuata con successo!');
+            const toast = await this.toastController.create({
+              message: 'Prenotazione effettuata con successo',
+              duration: 3000,
+              position: 'bottom',
+              color: 'success',
+            });
+            await toast.present();
           } else {
-            alert(
-              'Errore durante la prenotazione: ' +
-                (response.message || 'Errore sconosciuto')
-            );
+            const toast = await this.toastController.create({
+              message: 'Errore nella prenotazione',
+              duration: 3000,
+              position: 'bottom',
+              color: 'error',
+            });
+            await toast.present();
           }
         },
-        error: (err) => {
+        error: async (err) => {
           console.error('Errore nella richiesta di prenotazione:', err);
-          alert('Errore durante la prenotazione. Riprova più tardi.');
+          const toast = await this.toastController.create({
+              message: 'Errore nella prenotazione',
+              duration: 3000,
+              position: 'bottom',
+              color: 'error',
+            });
+            await toast.present();
         },
       });
   }
