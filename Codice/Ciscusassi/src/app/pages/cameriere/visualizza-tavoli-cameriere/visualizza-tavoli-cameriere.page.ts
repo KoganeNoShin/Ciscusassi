@@ -123,7 +123,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		const eraApertoPrima = this.localeAperto;
 
 		this.localeAperto =
-			isInRange(12, 50, 15, 50) || isInRange(19, 20, 0, 0);
+			isInRange(12, 50, 15, 50) || isInRange(17, 20, 0, 0);
 
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
@@ -252,27 +252,18 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			}
 		}
 
-		// === Logica simile a salvaPersone ===
 		const MAX_PERSONE = 999999;
-		let numeroPersoneFinale = persone;
-
-		if (numeroPersoneFinale > MAX_PERSONE) {
-			numeroPersoneFinale = MAX_PERSONE;
-		}
-
+		let numeroPersoneFinale = Math.min(persone, MAX_PERSONE);
 		let numeroTavoliRichiesti = 0;
 
 		for (let t = 2; t <= numeroPersoneFinale; t++) {
-			const postiDisponibili = 2 * t + 2;
-			if (postiDisponibili >= numeroPersoneFinale) {
+			if (2 * t + 2 >= numeroPersoneFinale) {
 				numeroTavoliRichiesti = t;
 				break;
 			}
 		}
 
-		// Assumiamo che authService.getNumeroTavoli() esista, oppure hardcodiamo un valore
-		const numTavoliDisponibili = 20; // Sostituisci con valore reale se disponibile
-
+		const numTavoliDisponibili = 20;
 		if (numeroTavoliRichiesti > numTavoliDisponibili) {
 			await this.presentToast(
 				'Non ci sono abbastanza tavoli disponibili per il numero di persone selezionato.',
@@ -280,12 +271,10 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			);
 			return;
 		}
-		// === Fine logica salvaPersone ===
 
 		const filialeId = this.authService.getFiliale();
-		const dataPrenotazione = new Date(this.getLocalIsoString());
+		let dataPrenotazione = this.getLocalIsoString();
 
-		// Verifica prenotazioni cliente se refCliente è fornito
 		if (refCliente !== null) {
 			try {
 				const cliResp = await lastValueFrom(
@@ -299,13 +288,13 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 						const dataEsistente = new Date(p.data_ora_prenotazione);
 						return (
 							dataEsistente.getTime() >=
-							dataPrenotazione.getTime()
+							new Date(dataPrenotazione).getTime()
 						);
 					});
 
 					if (hasPrenotazioneFutura) {
 						await this.presentToast(
-							"Il cliente ha già una prenotazione futura. Non è possibile crearne un'altra.",
+							'Il cliente ha già una prenotazione futura.',
 							'danger'
 						);
 						this.showPopup = false;
@@ -323,20 +312,31 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			}
 		}
 
+		// Se non è disponibile nessuna fascia ora, chiedi per la prossima
+		if (dataPrenotazione === '') {
+			const conferma = window.confirm(
+				'Non è disponibile una fascia oraria in questo momento. Vuoi prenotare per la prossima fascia disponibile?'
+			);
+			if (!conferma) {
+				return;
+			}
+			dataPrenotazione = this.getLocalIsoString(true);
+
+			if (dataPrenotazione === '') {
+				await this.presentToast(
+					'Non ci sono fasce disponibili per la prenotazione.',
+					'danger'
+				);
+				return;
+			}
+		}
+
 		const pren: PrenotazioneRequest = {
 			numero_persone: numeroPersoneFinale,
-			data_ora_prenotazione: this.getLocalIsoString(),
+			data_ora_prenotazione: dataPrenotazione,
 			ref_cliente: refCliente,
 			ref_filiale: filialeId,
 		};
-
-		if (pren.data_ora_prenotazione === '') {
-			await this.presentToast(
-				'Non è possibile prenotare in nessuna fascia',
-				'danger'
-			);
-			return;
-		}
 
 		try {
 			const result = await lastValueFrom(
@@ -367,7 +367,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		this.loadTavoli();
 	}
 
-	getLocalIsoString(): string {
+	getLocalIsoString(forceNextFascia: boolean = false): string {
 		const fasce = [
 			{ inizio: '12:00', fine: '13:30' },
 			{ inizio: '13:30', fine: '15:00' },
@@ -384,56 +384,47 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return d;
 		};
 
-		let fasciaDaPrenotare: (typeof fasce)[0] | null = null;
-
 		for (let i = 0; i < fasce.length; i++) {
 			const fascia = fasce[i];
 			const inizioFascia = toDate(fascia.inizio);
 			const fineFascia = toDate(fascia.fine);
 
 			const prossimaFascia = i + 1 < fasce.length ? fasce[i + 1] : null;
-			const inizioProssimaFascia = prossimaFascia
+			const inizioProssima = prossimaFascia
 				? toDate(prossimaFascia.inizio)
 				: null;
 
+			const minutiInizio =
+				(now.getTime() - inizioFascia.getTime()) / 60000;
+
 			const dentroFascia = now >= inizioFascia && now <= fineFascia;
-			const minutiAllaFine =
-				(fineFascia.getTime() - now.getTime()) / 60000;
 
-			// Se siamo dentro la fascia e mancano almeno 30 minuti alla fine
-			if (dentroFascia && minutiAllaFine >= 30) {
-				fasciaDaPrenotare = fascia;
-				break;
-			}
-
-			// Se mancano meno di 30 minuti alla fine, salta alla prossima fascia
-			if (dentroFascia && minutiAllaFine < 30) {
-				continue;
-			}
-
-			// Se la fascia deve iniziare a breve (entro 10 minuti), prenota su quella
-			if (!dentroFascia && now < inizioFascia) {
-				const diffMinuti =
-					(inizioFascia.getTime() - now.getTime()) / 60000;
-				if (diffMinuti >= 0 && diffMinuti <= 10) {
-					fasciaDaPrenotare = fascia;
-					break;
+			if (!forceNextFascia) {
+				if (dentroFascia && minutiInizio <= 10) {
+					return this.toLocalISOString(inizioFascia);
 				}
+				if (!dentroFascia && now < inizioFascia) {
+					const diffMinuti =
+						(inizioFascia.getTime() - now.getTime()) / 60000;
+					if (diffMinuti >= 0 && diffMinuti <= 10) {
+						return this.toLocalISOString(inizioFascia);
+					}
+				}
+			} else if (
+				forceNextFascia &&
+				prossimaFascia &&
+				now < inizioProssima!
+			) {
+				return this.toLocalISOString(inizioProssima!);
 			}
 		}
 
-		if (!fasciaDaPrenotare) {
-			// Nessuna fascia disponibile per la prenotazione
-			return '';
-		}
+		return '';
+	}
 
-		const inizioFasciaPrenotare = toDate(fasciaDaPrenotare.inizio);
-
-		// Restituisce la data ISO locale (senza 'Z' finale)
-		const offsetMs = inizioFasciaPrenotare.getTimezoneOffset() * 60000;
-		return new Date(inizioFasciaPrenotare.getTime() - offsetMs)
-			.toISOString()
-			.slice(0, 19);
+	toLocalISOString(date: Date): string {
+		const offsetMs = date.getTimezoneOffset() * 60000;
+		return new Date(date.getTime() - offsetMs).toISOString().slice(0, 19);
 	}
 
 	annulla() {

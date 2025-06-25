@@ -59,7 +59,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 	}
 
 	async onProceedClick() {
-		const refTorretta = 59; // Torretta fissa per ora
+		const refTorretta = 12; // Torretta fissa per ora
 
 		if (!this.otp || this.otp.trim().length === 0) {
 			this.presentToast("Inserisci l'OTP prima di procedere", 'warning');
@@ -78,7 +78,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 		const fasceOrarie = [
 			{ inizio: '12:00', fine: '13:30' },
 			{ inizio: '13:30', fine: '15:00' },
-			{ inizio: '19:30', fine: '21:00' },
+			{ inizio: '15:30', fine: '21:00' },
 			{ inizio: '21:00', fine: '22:30' },
 		];
 
@@ -104,8 +104,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 
 			if (
 				(now >= inizioFascia && now <= fineFascia) || // dentro la fascia
-				(now < inizioFascia && diffMinutiInizio <= 10) || // meno di 10 min prima
-				(minutiDopoFine >= 0 && minutiDopoFine <= 30) // entro 30 min dopo
+				(now < inizioFascia && diffMinutiInizio <= 10) // meno di 10 min prima
 			) {
 				const yyyy = now.getFullYear();
 				const mm = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -146,5 +145,9 @@ export class OrdinaAlTavoloPage implements OnInit {
 			);
 			console.error(error);
 		}
+
+    console.log(dataOraPrenotazione);
+    
 	}
+  
 }
