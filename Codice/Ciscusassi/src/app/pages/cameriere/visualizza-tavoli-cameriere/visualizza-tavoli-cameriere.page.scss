@@ -7,6 +7,17 @@ ion-content.custom-content {
 	background-color: #ffffff;
 }
 
+.locale-chiuso{
+	display: flex;
+	justify-content: center;  
+	align-items: center;   
+	font-size: 10vh;   
+	height: 75vh;        
+	color: var(--ion-color-rosso);
+	font-family: "Isocpeur";
+	text-align: center;
+}
+
 .titolo-pagina {
 	text-align: center;
 	font-size: 28px;

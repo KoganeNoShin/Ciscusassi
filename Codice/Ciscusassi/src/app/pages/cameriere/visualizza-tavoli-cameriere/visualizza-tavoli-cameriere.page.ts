@@ -67,7 +67,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	showConfermaArrivoPopup = false;
 	tavoloDaConfermare: any = null;
 
-	private intervalId: any;
+	localeAperto: boolean = false;
+	private intervalTavoli: any;
+	private intervalApertura: any;
 
 	constructor(
 		private toastController: ToastController,
@@ -76,17 +78,68 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
-		this.loadTavoli();
-		this.intervalId = setInterval(() => this.loadTavoli(), 30000);
+		if (this.localeAperto) {
+			this.loadTavoli();
+			this.intervalTavoli = setInterval(() => this.loadTavoli(), 30000);
+		}
+		this.checkOrariApertura();
+		this.intervalApertura = setInterval(
+			() => this.checkOrariApertura(),
+			30000
+		);
 	}
 
 	ngOnDestroy(): void {
-		if (this.intervalId) {
-			clearInterval(this.intervalId);
+		if (this.intervalTavoli) {
+			clearInterval(this.intervalTavoli);
+		}
+		if (this.intervalApertura) {
+			clearInterval(this.intervalApertura);
+		}
+	}
+
+	checkOrariApertura() {
+		const now = new Date();
+		const isInRange = (
+			startH: number,
+			startM: number,
+			endH: number,
+			endM: number
+		): boolean => {
+			const start = new Date(now);
+			start.setHours(startH, startM, 0, 0);
+
+			const end = new Date(now);
+			if (endH === 0) {
+				end.setDate(end.getDate() + 1);
+				end.setHours(0, 0, 0, 0);
+			} else {
+				end.setHours(endH, endM, 0, 0);
+			}
+
+			return now >= start && now <= end;
+		};
+
+		const eraApertoPrima = this.localeAperto;
+
+		this.localeAperto =
+			isInRange(12, 50, 15, 50) || isInRange(19, 20, 0, 0);
+
+		// Se il locale è appena passato da chiuso ad aperto
+		if (!eraApertoPrima && this.localeAperto) {
+			this.loadTavoli();
+			this.intervalTavoli = setInterval(() => this.loadTavoli(), 30000);
 		}
 	}
 
 	async loadTavoli() {
+		if (!this.localeAperto) {
+			// Non carichiamo tavoli se il locale è chiuso
+			this.tavoli = [];
+			this.tavoliFiltrati = [];
+			return;
+		}
+
 		try {
 			const filiale = this.authService.getFiliale();
 			const resp = await lastValueFrom(
@@ -150,6 +203,13 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	}
 
 	add() {
+		if (!this.localeAperto) {
+			this.presentToast(
+				'Il locale è chiuso, non è possibile aggiungere prenotazioni.',
+				'warning'
+			);
+			return;
+		}
 		this.showPopup = true;
 		this.resetPopup();
 	}
@@ -171,119 +231,180 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	}
 
 	async conferma() {
-	const persone = this.personeSelezionate ?? this.inputManuale;
-	let refCliente: number | null = null;
+		const persone = this.personeSelezionate ?? this.inputManuale;
+		let refCliente: number | null = null;
 
-	if (!persone || persone < 1) {
-		alert('Inserisci un numero valido di persone');
-		return;
-	}
-
-	if (this.refClienteInput.trim() !== '') {
-		const parsed = parseInt(this.refClienteInput.trim(), 10);
-		if (!isNaN(parsed)) {
-			refCliente = parsed;
-		} else {
-			alert('ref_cliente non valido');
+		if (!persone || persone < 1) {
+			await this.presentToast(
+				'Inserisci un numero valido di persone',
+				'warning'
+			);
 			return;
 		}
-	}
 
-	const filialeId = this.authService.getFiliale();
-	const dataPrenotazione = new Date(this.getLocalIsoString());
-
-	if (refCliente !== null) {
-		try {
-			const cliResp = await lastValueFrom(
-				this.prenotazioneService.getPrenotazioniByCliente(refCliente)
-			);
-
-			if (cliResp.success && cliResp.data?.length) {
-				const hasPrenotazioneFutura = cliResp.data.some((p) => {
-					const dataEsistente = new Date(p.data_ora_prenotazione);
-					return dataEsistente.getTime() >= dataPrenotazione.getTime();
-				});
-
-				if (hasPrenotazioneFutura) {
-					await this.presentToast(
-						"Il cliente ha già una prenotazione futura. Non è possibile crearne un'altra.",
-						'danger'
-					);
-					this.showPopup = false;
-					this.resetPopup();
-					return;
-				}
+		if (this.refClienteInput.trim() !== '') {
+			const parsed = parseInt(this.refClienteInput.trim(), 10);
+			if (!isNaN(parsed)) {
+				refCliente = parsed;
+			} else {
+				await this.presentToast('ref_cliente non valido', 'warning');
+				return;
 			}
-		} catch (e) {
-			console.error('Errore controllo prenotazioni cliente:', e);
+		}
+
+		const filialeId = this.authService.getFiliale();
+		const dataPrenotazione = new Date(this.getLocalIsoString());
+
+		if (refCliente !== null) {
+			try {
+				const cliResp = await lastValueFrom(
+					this.prenotazioneService.getPrenotazioniByCliente(
+						refCliente
+					)
+				);
+
+				if (cliResp.success && cliResp.data?.length) {
+					const hasPrenotazioneFutura = cliResp.data.some((p) => {
+						const dataEsistente = new Date(p.data_ora_prenotazione);
+						return (
+							dataEsistente.getTime() >=
+							dataPrenotazione.getTime()
+						);
+					});
+
+					if (hasPrenotazioneFutura) {
+						await this.presentToast(
+							"Il cliente ha già una prenotazione futura. Non è possibile crearne un'altra.",
+							'danger'
+						);
+						this.showPopup = false;
+						this.resetPopup();
+						return;
+					}
+				}
+			} catch (e) {
+				console.error('Errore controllo prenotazioni cliente:', e);
+				await this.presentToast(
+					'Errore controllo prenotazioni cliente',
+					'danger'
+				);
+				return;
+			}
+		}
+
+		const pren: PrenotazioneRequest = {
+			numero_persone: persone,
+			data_ora_prenotazione: this.getLocalIsoString(),
+			ref_cliente: refCliente,
+			ref_filiale: filialeId,
+		};
+
+		console.log(pren);
+
+		if (pren.data_ora_prenotazione == '') {
 			await this.presentToast(
-				'Errore controllo prenotazioni cliente',
+				'Non è possibile prenotare in nessuna fascia',
 				'danger'
 			);
 			return;
 		}
-	}
 
-	const pren: PrenotazioneRequest = {
-		numero_persone: persone,
-		data_ora_prenotazione: this.getLocalIsoString(),
-		ref_cliente: refCliente,
-		ref_filiale: filialeId,
-	};
-
-	try {
-		const result = await lastValueFrom(
-			this.prenotazioneService.prenotaLoco(pren)
-		);
-		if (result.success) {
-			await this.presentToast(
-				'Prenotazione creata con successo',
-				'success'
+		try {
+			const result = await lastValueFrom(
+				this.prenotazioneService.prenotaLoco(pren)
 			);
-			await this.loadTavoli();
-		} else {
+			if (result.success) {
+				await this.presentToast(
+					'Prenotazione creata con successo',
+					'success'
+				);
+				await this.loadTavoli();
+			} else {
+				await this.presentToast(
+					'Errore nella creazione della prenotazione',
+					'danger'
+				);
+			}
+		} catch (err) {
+			console.error(err);
 			await this.presentToast(
-				'Errore nella creazione della prenotazione',
+				'Errore, non ci sono abbastanza tavoli disponibili',
 				'danger'
 			);
 		}
-	} catch (err) {
-		console.error(err);
-		await this.presentToast(
-			'Errore, non ci sono abbastanza tavoli disponibili',
-			'danger'
-		);
+
+		this.showPopup = false;
+		this.resetPopup();
+		this.loadTavoli();
 	}
-
-	this.showPopup = false;
-	this.resetPopup();
-}
-
 
 	getLocalIsoString(): string {
-		const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
+		const fasce = [
+			{ inizio: '12:00', fine: '13:30' },
+			{ inizio: '13:30', fine: '15:00' },
+			{ inizio: '19:30', fine: '21:00' },
+			{ inizio: '21:00', fine: '22:30' },
+		];
+
 		const now = new Date();
-		const futuri = orariValidi
-			.map((h) => {
-				const [hh, mm] = h.split(':').map(Number);
-				const d = new Date();
-				d.setHours(hh, mm, 0, 0);
-				return d;
-			})
-			.filter((d) => d.getTime() > now.getTime());
 
-		const scelta = futuri.length
-			? futuri[0]
-			: (() => {
-					const d = new Date();
-					const [hh, mm] = orariValidi[0].split(':').map(Number);
-					d.setDate(d.getDate() + 1);
-					d.setHours(hh, mm, 0, 0);
-					return d;
-				})();
+		const toDate = (timeStr: string) => {
+			const [hh, mm] = timeStr.split(':').map(Number);
+			const d = new Date(now);
+			d.setHours(hh, mm, 0, 0);
+			return d;
+		};
 
-		const offsetMs = scelta.getTimezoneOffset() * 60000;
-		return new Date(scelta.getTime() - offsetMs).toISOString().slice(0, -1);
+		let fasciaDaPrenotare: (typeof fasce)[0] | null = null;
+
+		for (let i = 0; i < fasce.length; i++) {
+			const fascia = fasce[i];
+			const inizioFascia = toDate(fascia.inizio);
+			const fineFascia = toDate(fascia.fine);
+
+			const prossimaFascia = i + 1 < fasce.length ? fasce[i + 1] : null;
+			const inizioProssimaFascia = prossimaFascia
+				? toDate(prossimaFascia.inizio)
+				: null;
+
+			const dentroFascia = now >= inizioFascia && now <= fineFascia;
+			const minutiAllaFine =
+				(fineFascia.getTime() - now.getTime()) / 60000;
+
+			// Se siamo dentro la fascia e mancano almeno 30 minuti alla fine
+			if (dentroFascia && minutiAllaFine >= 30) {
+				fasciaDaPrenotare = fascia;
+				break;
+			}
+
+			// Se mancano meno di 30 minuti alla fine, salta alla prossima fascia
+			if (dentroFascia && minutiAllaFine < 30) {
+				continue;
+			}
+
+			// Se la fascia deve iniziare a breve (entro 10 minuti), prenota su quella
+			if (!dentroFascia && now < inizioFascia) {
+				const diffMinuti =
+					(inizioFascia.getTime() - now.getTime()) / 60000;
+				if (diffMinuti >= 0 && diffMinuti <= 10) {
+					fasciaDaPrenotare = fascia;
+					break;
+				}
+			}
+		}
+
+		if (!fasciaDaPrenotare) {
+			// Nessuna fascia disponibile per la prenotazione
+			return '';
+		}
+
+		const inizioFasciaPrenotare = toDate(fasciaDaPrenotare.inizio);
+
+		// Restituisce la data ISO locale (senza 'Z' finale)
+		const offsetMs = inizioFasciaPrenotare.getTimezoneOffset() * 60000;
+		return new Date(inizioFasciaPrenotare.getTime() - offsetMs)
+			.toISOString()
+			.slice(0, 19);
 	}
 
 	annulla() {
@@ -365,4 +486,3 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			: [...this.tavoli];
 	}
 }
-

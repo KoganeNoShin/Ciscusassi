@@ -5,8 +5,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="custom-content">
-	<h1 class="titolo-pagina">VISUALIZZA TAVOLI</h1>
+	
 
+	@if(!this.localeAperto){
+		<h2 class="locale-chiuso">AL MOMENTO CISCUSASSI È CHIUSO</h2>
+	} @else {
+	<h1 class="titolo-pagina">VISUALIZZA TAVOLI</h1>
 	<!-- Filtri -->
 	<div class="chips-container" style="padding: 0 16px 16px">
 		<ion-chip
@@ -171,4 +175,5 @@
 			</div>
 		</ng-template>
 	</ion-modal>
+	}
 </ion-content>
