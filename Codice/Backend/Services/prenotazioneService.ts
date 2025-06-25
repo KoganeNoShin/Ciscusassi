@@ -46,6 +46,7 @@ class PrenotazioneService {
 
 	static async prenota(data: PrenotazioneRequest): Promise<number> {
 		try {
+			data.data_ora_prenotazione = this.dataToFormattedString(data.data_ora_prenotazione);
 			// Recupera torrette libere alla data e filiale specificate
 			const torretteLibere = await Torretta.getTorretteLibere(
 				data.ref_filiale,
