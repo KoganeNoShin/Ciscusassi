@@ -252,9 +252,40 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			}
 		}
 
+		// === Logica simile a salvaPersone ===
+		const MAX_PERSONE = 999999;
+		let numeroPersoneFinale = persone;
+
+		if (numeroPersoneFinale > MAX_PERSONE) {
+			numeroPersoneFinale = MAX_PERSONE;
+		}
+
+		let numeroTavoliRichiesti = 0;
+
+		for (let t = 2; t <= numeroPersoneFinale; t++) {
+			const postiDisponibili = 2 * t + 2;
+			if (postiDisponibili >= numeroPersoneFinale) {
+				numeroTavoliRichiesti = t;
+				break;
+			}
+		}
+
+		// Assumiamo che authService.getNumeroTavoli() esista, oppure hardcodiamo un valore
+		const numTavoliDisponibili = 20; // Sostituisci con valore reale se disponibile
+
+		if (numeroTavoliRichiesti > numTavoliDisponibili) {
+			await this.presentToast(
+				'Non ci sono abbastanza tavoli disponibili per il numero di persone selezionato.',
+				'danger'
+			);
+			return;
+		}
+		// === Fine logica salvaPersone ===
+
 		const filialeId = this.authService.getFiliale();
 		const dataPrenotazione = new Date(this.getLocalIsoString());
 
+		// Verifica prenotazioni cliente se refCliente è fornito
 		if (refCliente !== null) {
 			try {
 				const cliResp = await lastValueFrom(
@@ -293,15 +324,13 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		}
 
 		const pren: PrenotazioneRequest = {
-			numero_persone: persone,
+			numero_persone: numeroPersoneFinale,
 			data_ora_prenotazione: this.getLocalIsoString(),
 			ref_cliente: refCliente,
 			ref_filiale: filialeId,
 		};
 
-		console.log(pren);
-
-		if (pren.data_ora_prenotazione == '') {
+		if (pren.data_ora_prenotazione === '') {
 			await this.presentToast(
 				'Non è possibile prenotare in nessuna fascia',
 				'danger'
