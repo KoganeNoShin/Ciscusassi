@@ -16,6 +16,7 @@ import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { Router, RouterModule } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
+import { TavoloService } from 'src/app/core/tavolo.service';
 
 @Component({
 	selector: 'app-menu-tavolo',
@@ -35,7 +36,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 })
 export class MenuTavoloPage implements OnInit {
 	nomeUtente: string = '';
-	numeroTavolo: number = 30;
+	numeroTavolo: number = -1;
 	prodottiNelCarrello: ProdottoRecord[] = [];
 	totale: number = 0;
 
@@ -43,7 +44,8 @@ export class MenuTavoloPage implements OnInit {
 		private servizioCarrello: CarrelloService,
 		private router: Router,
 		private toastController: ToastController,
-		private servizioAutenticazione: AuthenticationService
+		private servizioAutenticazione: AuthenticationService,
+		private servizioTavolo: TavoloService
 	) {}
 
 	async checkTotale() {
@@ -98,5 +100,7 @@ export class MenuTavoloPage implements OnInit {
 	}
 	ngOnInit() {
 		this.nomeUtente = this.servizioAutenticazione.getUsername();
+		this.numeroTavolo = this.servizioTavolo.getnumeroTorretta();
 	}
+
 }

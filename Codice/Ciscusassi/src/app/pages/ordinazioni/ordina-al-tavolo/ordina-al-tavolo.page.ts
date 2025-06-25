@@ -16,6 +16,7 @@ import {
 import { RouterModule, Router } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { firstValueFrom } from 'rxjs';
+import { TavoloService } from 'src/app/core/tavolo.service';
 
 @Component({
 	selector: 'app-ordina-al-tavolo',
@@ -39,14 +40,19 @@ import { firstValueFrom } from 'rxjs';
 })
 export class OrdinaAlTavoloPage implements OnInit {
 	otp: string = '';
+	numeroTorretta: number | null = null;;
 
 	constructor(
 		private prenotazioneService: PrenotazioneService,
 		private toastController: ToastController,
-		private router: Router
+		private router: Router,
+		private tavoloService: TavoloService
 	) {}
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.numeroTorretta = null;
+		this.otp = "";
+	}
 
 	async presentToast(message: string, color: string = 'primary') {
 		const toast = await this.toastController.create({
@@ -59,10 +65,10 @@ export class OrdinaAlTavoloPage implements OnInit {
 	}
 
 	async onProceedClick() {
-		const refTorretta = 12; // Torretta fissa per ora
+		const refTorretta = this.numeroTorretta;
 
-		if (!this.otp || this.otp.trim().length === 0) {
-			this.presentToast("Inserisci l'OTP prima di procedere", 'warning');
+		if (!this.otp || this.otp.trim().length === 0 || this.numeroTorretta === null || this.numeroTorretta === -1) {
+			this.presentToast("Compila tutti i campi prima di procedere", 'warning');
 			return;
 		}
 
@@ -78,7 +84,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 		const fasceOrarie = [
 			{ inizio: '12:00', fine: '13:30' },
 			{ inizio: '13:30', fine: '15:00' },
-			{ inizio: '19:30', fine: '21:00' },
+			{ inizio: '20:28', fine: '21:00' }, //MI DEVO RICORDARE DI CAMBIARLO
 			{ inizio: '21:00', fine: '22:30' },
 		];
 
@@ -126,13 +132,14 @@ export class OrdinaAlTavoloPage implements OnInit {
 			const otpRes = await firstValueFrom(
 				this.prenotazioneService.checkOtp(
 					dataOraPrenotazione,
-					refTorretta,
+					refTorretta as number,
 					this.otp.trim()
 				)
 			);
 
 			if (otpRes.success && otpRes.data === true) {
 				this.presentToast('OTP valido. Accesso consentito.', 'success');
+				this.tavoloService.setnumeroTorretta(this.numeroTorretta);
 				this.router.navigate(['/menu-tavolo']);
 			} else {
 				const msg = otpRes.message || 'OTP non valido. Riprova.';
