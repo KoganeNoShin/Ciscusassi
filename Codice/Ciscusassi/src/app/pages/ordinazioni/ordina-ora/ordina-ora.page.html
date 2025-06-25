@@ -1,7 +1,9 @@
 <ion-content [fullscreen]="true" color="light" class="fixed-content">
-	<ion-row class="fixed-row">
+	<ion-row
+		class="fixed-row ion-align-items-center ion-justify-content-center"
+	>
 		<!-- Colonna immagine panino -->
-		<ion-col class="fixed-col-img">
+		<ion-col class="fixed-col-img ion-hide-xl-down" size="6">
 			<ion-img
 				class="img-panino"
 				[src]="'/assets/illustrations/Panino.png'"
@@ -9,16 +11,23 @@
 		</ion-col>
 
 		<!-- Colonna bottoni -->
-		<ion-col class="fixed-col-buttons">
+		<ion-col class="buttons-col" size="12" sizeXl="6">
 			<!-- Bottone Ordina al Tavolo -->
-			<ion-button class="ordina" [routerLink]="['/ordina-al-tavolo']">
+			<ion-button
+				class="ordina bg-color-verdechiaro"
+				[routerLink]="['/ordina-al-tavolo']"
+			>
 				<div class="button-content">
 					<div class="button-text">
-						<h1>ORDINA AL TAVOLO</h1>
-						<p>
-							Ordina comodamente dal tuo tavolo, non c'è bisogno
-							di aspettare nessuno
-						</p>
+						<ion-text class="ion-text-left">
+							<h5 class="text-color-bianco">ORDINA AL TAVOLO</h5>
+						</ion-text>
+						<ion-text class="ion-text-left">
+							<p class="text-color-bianco">
+								Ordina comodamente dal tuo tavolo, non c'è
+								bisogno di aspettare nessuno
+							</p>
+						</ion-text>
 					</div>
 					<ion-img
 						class="img-ordinaora"
@@ -28,14 +37,22 @@
 			</ion-button>
 
 			<!-- Bottone Ordina Asporto -->
-			<ion-button class="asporto" [routerLink]="['/ordina-asporto']">
+			<ion-button
+				class="asporto bg-color-salmone"
+				[routerLink]="['/ordina-asporto']"
+			>
 				<div class="button-content">
 					<div class="button-text">
-						<h1>ORDINA D'ASPORTO</h1>
-						<p>
-							Ordina da casa tua, appena sarà tutto pronto ti
-							consegneremo un pasto delizioso!
-						</p>
+						<ion-text class="ion-text-left">
+							<h5 class="text-color-bianco">ORDINA D'ASPORTO</h5>
+						</ion-text>
+
+						<ion-text class="ion-text-left">
+							<p class="text-color-bianco">
+								Ordina da casa tua, appena sarà tutto pronto ti
+								consegneremo un pasto delizioso!
+							</p>
+						</ion-text>
 					</div>
 					<ion-img
 						class="img-asporto"

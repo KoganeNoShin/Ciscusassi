@@ -7,6 +7,7 @@ import {
 	IonImg,
 	IonRow,
 	IonCol,
+	IonText,
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 
@@ -16,6 +17,7 @@ import { RouterModule } from '@angular/router';
 	styleUrls: ['./ordina-ora.page.scss'],
 	standalone: true,
 	imports: [
+		IonText,
 		RouterModule,
 		IonCol,
 		IonRow,
