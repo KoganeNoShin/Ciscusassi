@@ -123,7 +123,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		const eraApertoPrima = this.localeAperto;
 
 		this.localeAperto =
-			isInRange(12, 50, 15, 50) || isInRange(17, 20, 0, 0);
+			isInRange(12, 50, 15, 50) || isInRange(19, 20, 0, 0);
 
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {

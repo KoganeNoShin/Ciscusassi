@@ -78,7 +78,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 		const fasceOrarie = [
 			{ inizio: '12:00', fine: '13:30' },
 			{ inizio: '13:30', fine: '15:00' },
-			{ inizio: '15:30', fine: '21:00' },
+			{ inizio: '19:30', fine: '21:00' },
 			{ inizio: '21:00', fine: '22:30' },
 		];
 
