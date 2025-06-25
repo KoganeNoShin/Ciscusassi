@@ -241,22 +241,52 @@ export class SceltaGiornoPage implements OnInit {
 			});
 	}
 
+	// Funzione per verificare se la fascia oraria è passata (solo per oggi)
+	isFasciaPassata(oraFascia: string): boolean {
+		if (!this.dataSelezionata) return false;
+
+		const oggi = this.formatDateToYYYYMMDD(Date.now());
+		if (this.dataSelezionata !== oggi) return false; // controllo solo se è oggi
+
+		const now = new Date();
+
+		const [ora, minuti] = oraFascia.split(':').map(Number);
+		const fasciaDate = new Date();
+		fasciaDate.setHours(ora, minuti, 0, 0);
+
+		return now > fasciaDate;
+	}
+
 	// Ritorna una Promise con le prenotazioni del cliente
 	private caricaPrenotazioniCliente(): Promise<PrenotazioneWithFiliale[]> {
 		const idCliente = 1;
-		return this.prenotazioneService
-			.getPrenotazioniByCliente(idCliente)
-			.toPromise()
-			.then((res) => {
-				if (res && res.success && res.data) {
-					return res.data;
-				}
-				return [];
-			})
-			.catch((err) => {
-				console.error('Errore nel recupero prenotazioni:', err);
-				return [];
+
+		return new Promise((resolve, reject) => {
+			this.prenotazioneService.getPrenotazioniByCliente(idCliente).subscribe({
+				next: (res) => {
+					if (res.success && res.data) {
+						const now = new Date();
+
+						const futurePrenotazioni = res.data.filter((prenotazione) => {
+							const parsedDate = this.parseDateTime(prenotazione.data_ora_prenotazione);
+							if (!parsedDate) return false;
+
+							return parsedDate >= now;
+						});
+						this.prenotazioni = futurePrenotazioni;
+						resolve(futurePrenotazioni);
+					} else {
+						this.prenotazioni = [];
+						resolve([]);
+					}
+				},
+				error: (err) => {
+					console.error('Errore nel recupero prenotazioni:', err);
+					this.prenotazioni = [];
+					resolve([]);
+				},
 			});
+		});
 	}
 
 	async confermaPrenotazione(ora: string) {
@@ -318,5 +348,25 @@ export class SceltaGiornoPage implements OnInit {
 					await toast.present();
 				},
 			});
+	}
+
+	private parseDateTime(dateTimeStr: string): Date | null {
+		if (!dateTimeStr) return null;
+
+		const [datePart, timePart] = dateTimeStr.split(" ");
+		if (!datePart || !timePart) return null;
+
+		const [year, month, day] = datePart.split("-").map(Number);
+		const [hour, minute, second] = timePart.split(":").map(Number);
+
+		if (
+			isNaN(year) || isNaN(month) || isNaN(day) ||
+			isNaN(hour) || isNaN(minute)
+		) {
+			console.warn("Data malformata:", dateTimeStr);
+			return null;
+		}
+
+		return new Date(year, month - 1, day, hour, minute, second || 0, 0);
 	}
 }
