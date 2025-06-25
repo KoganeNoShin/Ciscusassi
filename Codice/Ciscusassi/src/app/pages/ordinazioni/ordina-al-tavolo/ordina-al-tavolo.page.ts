@@ -2,101 +2,149 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  IonButton,
-  IonCard,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonImg,
-  IonRow,
-  IonText,
-  IonInput,
-  ToastController,
+	IonButton,
+	IonCard,
+	IonCol,
+	IonContent,
+	IonGrid,
+	IonImg,
+	IonRow,
+	IonText,
+	IonInput,
+	ToastController,
 } from '@ionic/angular/standalone';
 import { RouterModule, Router } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-ordina-al-tavolo',
-  templateUrl: './ordina-al-tavolo.page.html',
-  styleUrls: ['./ordina-al-tavolo.page.scss'],
-  standalone: true,
-  imports: [
-    IonInput,
-    IonContent,
-    CommonModule,
-    FormsModule,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonImg,
-    IonCard,
-    IonText,
-    IonButton,
-    RouterModule,
-  ],
+	selector: 'app-ordina-al-tavolo',
+	templateUrl: './ordina-al-tavolo.page.html',
+	styleUrls: ['./ordina-al-tavolo.page.scss'],
+	standalone: true,
+	imports: [
+		IonInput,
+		IonContent,
+		CommonModule,
+		FormsModule,
+		IonGrid,
+		IonRow,
+		IonCol,
+		IonImg,
+		IonCard,
+		IonText,
+		IonButton,
+		RouterModule,
+	],
 })
 export class OrdinaAlTavoloPage implements OnInit {
-  otp: string = '';
+	otp: string = '';
 
-  constructor(
-    private prenotazioneService: PrenotazioneService,
-    private toastController: ToastController,
-    private router: Router
-  ) {}
+	constructor(
+		private prenotazioneService: PrenotazioneService,
+		private toastController: ToastController,
+		private router: Router
+	) {}
 
-  ngOnInit() {}
+	ngOnInit() {}
 
-  async presentToast(message: string, color: string = 'primary') {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2500,
-      color,
-      position: 'bottom',
-    });
-    toast.present();
-  }
+	async presentToast(message: string, color: string = 'primary') {
+		const toast = await this.toastController.create({
+			message,
+			duration: 2500,
+			color,
+			position: 'bottom',
+		});
+		toast.present();
+	}
 
-  async onProceedClick() {
-    const clienteId = 1; // TODO: sostituire con id reale o da sessione
+	async onProceedClick() {
+		const refTorretta = 59; // Torretta fissa per ora
 
-    if (!this.otp || this.otp.trim().length === 0) {
-      this.presentToast("Inserisci l'OTP prima di procedere", 'warning');
-      return;
-    }
+		if (!this.otp || this.otp.trim().length === 0) {
+			this.presentToast("Inserisci l'OTP prima di procedere", 'warning');
+			return;
+		}
 
-    try {
-      const res = await firstValueFrom(
-        this.prenotazioneService.getPrenotazioniByCliente(clienteId)
-      );
+		const otpPattern = /^[a-zA-Z0-9]{6}$/; // OTP alfanumerico di 6 caratteri
+		if (!otpPattern.test(this.otp.trim())) {
+			this.presentToast(
+				'Formato OTP non valido. Inserisci un codice alfanumerico di 6 caratteri.',
+				'warning'
+			);
+			return;
+		}
 
-      if (res.success && res.data && res.data.length > 0) {
-        // Ordina per data_ora_prenotazione decrescente
-        const latest = res.data.sort(
-          (a, b) =>
-            new Date(b.data_ora_prenotazione).getTime() -
-            new Date(a.data_ora_prenotazione).getTime()
-        )[0];
+		const fasceOrarie = [
+			{ inizio: '11:30', fine: '13:30' },
+			{ inizio: '13:30', fine: '15:00' },
+			{ inizio: '19:30', fine: '21:00' },
+			{ inizio: '21:00', fine: '22:30' },
+		];
 
-        const dataOraPrenotazione = latest.data_ora_prenotazione;
-        const refTorretta = latest.ref_torretta;
+		const now = new Date();
+		let dataOraPrenotazione: string | null = null;
 
-        const otpRes = await firstValueFrom(
-          this.prenotazioneService.checkOtp(dataOraPrenotazione, refTorretta, this.otp)
-        );
+		for (const fascia of fasceOrarie) {
+			const [inizioHour, inizioMin] = fascia.inizio
+				.split(':')
+				.map(Number);
+			const [fineHour, fineMin] = fascia.fine.split(':').map(Number);
 
-        if (otpRes.success && otpRes.data === true) {
-          this.router.navigate(['/menu-tavolo']);
-        } else {
-          this.presentToast('OTP non valido. Riprova.', 'danger');
-        }
-      } else {
-        this.presentToast('Nessuna prenotazione trovata.', 'warning');
-      }
-    } catch (error) {
-      this.presentToast('Errore durante la verifica. Riprova.', 'danger');
-      console.error(error);
-    }
-  }
+			const inizioFascia = new Date(now);
+			inizioFascia.setHours(inizioHour, inizioMin, 0, 0);
+
+			const fineFascia = new Date(now);
+			fineFascia.setHours(fineHour, fineMin, 0, 0);
+
+			const diffMinutiInizio =
+				(inizioFascia.getTime() - now.getTime()) / 60000;
+			const minutiDopoFine =
+				(now.getTime() - fineFascia.getTime()) / 60000;
+
+			if (
+				(now >= inizioFascia && now <= fineFascia) || // dentro la fascia
+				(now < inizioFascia && diffMinutiInizio <= 10) || // meno di 10 min prima
+				(minutiDopoFine >= 0 && minutiDopoFine <= 30) // entro 30 min dopo
+			) {
+				const yyyy = now.getFullYear();
+				const mm = (now.getMonth() + 1).toString().padStart(2, '0');
+				const dd = now.getDate().toString().padStart(2, '0');
+				dataOraPrenotazione = `${yyyy}-${mm}-${dd} ${fascia.inizio}:00`;
+				break;
+			}
+		}
+
+		if (!dataOraPrenotazione) {
+			this.presentToast(
+				'Nessuna fascia oraria valida trovata per l’orario attuale.',
+				'warning'
+			);
+			return;
+		}
+
+		try {
+			const otpRes = await firstValueFrom(
+				this.prenotazioneService.checkOtp(
+					dataOraPrenotazione,
+					refTorretta,
+					this.otp.trim()
+				)
+			);
+
+			if (otpRes.success && otpRes.data === true) {
+				this.presentToast('OTP valido. Accesso consentito.', 'success');
+				this.router.navigate(['/menu-tavolo']);
+			} else {
+				const msg = otpRes.message || 'OTP non valido. Riprova.';
+				this.presentToast(msg, 'danger');
+			}
+		} catch (error) {
+			this.presentToast(
+				'Errore durante la verifica dell’OTP. Riprova più tardi.',
+				'danger'
+			);
+			console.error(error);
+		}
+	}
 }
