@@ -45,8 +45,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 	constructor(
 		private prenotazioneService: PrenotazioneService,
 		private toastController: ToastController,
-		private router: Router,
-		private tavoloService: TavoloService
+		private router: Router
 	) {}
 
 	ngOnInit() {
@@ -139,7 +138,6 @@ export class OrdinaAlTavoloPage implements OnInit {
 
 			if (otpRes.success && otpRes.data === true) {
 				this.presentToast('OTP valido. Accesso consentito.', 'success');
-				this.tavoloService.setnumeroTorretta(this.numeroTorretta);
 				this.router.navigate(['/menu-tavolo']);
 			} else {
 				const msg = otpRes.message || 'OTP non valido. Riprova.';
