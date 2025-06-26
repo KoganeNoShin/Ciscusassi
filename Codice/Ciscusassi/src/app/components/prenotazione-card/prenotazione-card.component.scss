@@ -1,0 +1,22 @@
+.flexRow {
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+	align-items: center;
+	gap: 25px;
+}
+
+.prenotazione-card {
+	border-radius: 25px;
+	width: fit-content;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+ion-icon {
+	width: 25px;
+	height: 25px;
+}
+
+p {
+	font-size: clamp(1rem, 1.3vw, 1.2rem);
+}

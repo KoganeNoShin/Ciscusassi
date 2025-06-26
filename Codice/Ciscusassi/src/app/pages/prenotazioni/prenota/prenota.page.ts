@@ -11,10 +11,10 @@ import {
 	IonGrid,
 	IonItem,
 	IonInput,
-	IonIcon,
 	AlertController,
 	ToastController,
 	IonSpinner,
+	IonText,
 } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 import { LeafletMapComponent } from 'src/app/components/leaflet-map/leaflet-map.component';
@@ -25,6 +25,7 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { Router, RouterModule } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
+import { PrenotazioneCardComponent } from '../../../components/prenotazione-card/prenotazione-card.component';
 
 @Component({
 	selector: 'app-prenota',
@@ -32,6 +33,7 @@ import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 	styleUrls: ['./prenota.page.scss'],
 	standalone: true,
 	imports: [
+		IonText,
 		IonSpinner,
 		RouterModule,
 		IonCard,
@@ -43,11 +45,11 @@ import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 		IonItem,
 		IonInput,
 		IonContent,
-		IonIcon,
 		CommonModule,
 		FormsModule,
 		HeroComponent,
 		LeafletMapComponent,
+		PrenotazioneCardComponent,
 	],
 })
 export class PrenotaPage implements OnInit {
@@ -98,17 +100,20 @@ export class PrenotaPage implements OnInit {
 	private parseDateTime(dateTimeStr: string): Date | null {
 		if (!dateTimeStr) return null;
 
-		const [datePart, timePart] = dateTimeStr.split(" ");
+		const [datePart, timePart] = dateTimeStr.split(' ');
 		if (!datePart || !timePart) return null;
 
-		const [year, month, day] = datePart.split("-").map(Number);
-		const [hour, minute, second] = timePart.split(":").map(Number);
+		const [year, month, day] = datePart.split('-').map(Number);
+		const [hour, minute, second] = timePart.split(':').map(Number);
 
 		if (
-			isNaN(year) || isNaN(month) || isNaN(day) ||
-			isNaN(hour) || isNaN(minute)
+			isNaN(year) ||
+			isNaN(month) ||
+			isNaN(day) ||
+			isNaN(hour) ||
+			isNaN(minute)
 		) {
-			console.warn("Data malformata:", dateTimeStr);
+			console.warn('Data malformata:', dateTimeStr);
 			return null;
 		}
 
@@ -125,7 +130,9 @@ export class PrenotaPage implements OnInit {
 					const now = new Date();
 
 					this.prenotazioni = res.data.filter((prenotazione) => {
-						const parsedDate = this.parseDateTime(prenotazione.data_ora_prenotazione);
+						const parsedDate = this.parseDateTime(
+							prenotazione.data_ora_prenotazione
+						);
 						if (!parsedDate) return false;
 
 						return parsedDate >= now;
@@ -163,7 +170,11 @@ export class PrenotaPage implements OnInit {
 				{
 					text: 'Annulla',
 					role: 'cancel',
-					cssClass: 'alert-button-cancel',
+					cssClass: [
+						'alert-button-cancel',
+						'bg-color-rosso',
+						'text-color-bianco',
+					],
 				},
 				{
 					text: 'Conferma',
@@ -176,18 +187,26 @@ export class PrenotaPage implements OnInit {
 							this.cancellaPrenotazione(id);
 						} else {
 							const toast = await this.toastController.create({
-								message: 'Impossibile cancellare la prenotazione perché è ancora associata a un tavolo',
+								message:
+									'Impossibile cancellare la prenotazione perché è ancora associata a un tavolo',
 								duration: 2000,
-								color: 'danger',
+								cssClass: [
+									'bg-color-bianco',
+									'text-color-bianco',
+								],
 								position: 'bottom',
 							});
 							await toast.present();
 						}
 					},
-					cssClass: 'alert-button-confirm',
+					cssClass: [
+						'alert-button-confirm',
+						'bg-color-verdechiaro',
+						'text-color-bianco',
+					],
 				},
 			],
-			cssClass: 'custom-alert',
+			cssClass: ['custom-alert', 'text-color-bianco'],
 		});
 
 		await alert.present();
@@ -220,20 +239,5 @@ export class PrenotaPage implements OnInit {
 				await toast.present();
 			},
 		});
-	}
-
-	formattaData(dateInput: string | number): string {
-		const date = new Date(dateInput);
-		if (isNaN(date.getTime())) {
-			console.error('Data non valida:', dateInput);
-			return '';
-		}
-
-		const pad = (n: number) => n.toString().padStart(2, '0');
-		return `${pad(date.getDate())}/${pad(
-			date.getMonth() + 1
-		)}/${pad(date.getFullYear())} - ${pad(date.getHours())}:${pad(
-			date.getMinutes()
-		)}`;
 	}
 }

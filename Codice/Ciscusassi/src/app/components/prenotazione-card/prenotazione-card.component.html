@@ -1,0 +1,65 @@
+<ion-card
+	class="bg-color-verdechiaro prenotazione-card ion-padding-horizontal ion-padding-vertical"
+>
+	<div class="flexRow">
+		<ion-icon
+			name="location"
+			size="large"
+			class="text-color-bianco"
+		></ion-icon>
+		<ion-text>
+			<p class="text-color-bianco">
+				{{ prenotazione.indirizzo }} - {{ prenotazione.comune }}
+			</p>
+		</ion-text>
+	</div>
+	<div class="flexRow">
+		<ion-icon
+			name="calendar"
+			size="large"
+			class="text-color-bianco"
+		></ion-icon>
+		<ion-text>
+			<p class="text-color-bianco">
+				{{ formattaData(prenotazione.data_ora_prenotazione) }}
+			</p>
+		</ion-text>
+	</div>
+
+	@if (prenotazione.numero_persone == 1) {
+		<div class="flexRow">
+			<ion-icon
+				name="person"
+				size="large"
+				class="text-color-bianco"
+			></ion-icon>
+			<ion-text>
+				<p class="text-color-bianco">
+					{{ prenotazione.numero_persone }} posto
+				</p></ion-text
+			>
+		</div>
+	} @else {
+		<div class="flexRow">
+			<ion-icon
+				name="people"
+				size="large"
+				class="text-color-bianco"
+			></ion-icon>
+			<ion-text>
+				<p class="text-color-bianco">
+					{{ prenotazione.numero_persone }} posti
+				</p>
+			</ion-text>
+		</div>
+	}
+	<ion-button
+		color="rosso"
+		(click)="confermaCancellazione()"
+		fill="solid"
+		shape="round"
+		expand="block"
+	>
+		Cancella Prenotazione
+	</ion-button>
+</ion-card>

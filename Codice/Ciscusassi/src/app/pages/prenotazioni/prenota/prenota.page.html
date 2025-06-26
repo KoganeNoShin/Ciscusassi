@@ -12,116 +12,103 @@
 		[backgroundURL]="'PrenotazioneBackground.jpeg'"
 	></app-hero>
 
-	<ng-container *ngIf="!loadingPrenotazioni; else loadingSpinner">
-		<div class="map-div">
-			@if (prenotazioni.length > 0) {
-			<h1>PRENOTA UN TAVOLO</h1>
-			<p>Hai già una prenotazione!</p>
+	<div class="second-div bg-color-senape">
+		@if(!loadingPrenotazioni) {
 
-			@for (prenotazione of prenotazioni; track prenotazione.id_prenotazione) {
-			<ion-card class="prenotazione-card">
-				<ion-row>
-					<ion-col size="9">
-						<div>
-							<ion-icon></ion-icon>
-							<ion-label>
-								{{ prenotazione?.indirizzo }} - {{ prenotazione?.comune }}
-							</ion-label>
-						</div>
+		<!-- Se abbiamo caricato correttamente -->
 
-						<div>
-							<ion-icon></ion-icon>
-							<ion-label>
-								{{ formattaData(prenotazione?.data_ora_prenotazione ?? '') }}
-							</ion-label>
-						</div>
+		<ion-text class="ion-text-center">
+			<h1 class="text-color-bianco">PRENOTA UN TAVOLO</h1>
+		</ion-text>
 
-						@if (prenotazione?.numero_persone == 1) {
-						<div>
-							<ion-icon></ion-icon>
-							<ion-label>{{ prenotazione?.numero_persone }} posto</ion-label>
-						</div>
-						} @else {
-						<div>
-							<ion-icon></ion-icon>
-							<ion-label>{{ prenotazione?.numero_persone }} posti</ion-label>
-						</div>
-						}
-					</ion-col>
+		@if (prenotazioni.length > 0) {
 
-					<ion-col size="3">
+		<!-- Abbiamo delle prenotazioni a carico -->
+
+		<ion-text class="ion-text-center">
+			<p class="text-color-bianco">Hai già una prenotazione!</p>
+		</ion-text>
+
+		<ion-grid>
+			@for (prenotazione of prenotazioni; track
+			prenotazione.id_prenotazione) {
+
+			<ion-row>
+				<ion-col size="12" class="center-row">
+					<app-prenotazione-card
+						[prenotazione]="prenotazione"
+						(confermaCancellazioneEmitter)="confermaCancellazione($event)"
+					></app-prenotazione-card>
+				</ion-col>
+			</ion-row>
+
+			}
+		</ion-grid>
+		} @else {
+
+		<!-- Non abbiamo delle prenotazioni a carico -->
+
+		<ion-text class="ion-text-center">
+			<p class="text-color-bianco">
+				Trova il ristorante più adatto a te!
+			</p>
+		</ion-text>
+
+		<ion-grid>
+			<ion-row>
+				<ion-col size="6" class="filiali-col">
+					<ion-item class="barra-ricerca">
+						<ion-input
+							placeholder="Indirizzo Filiale"
+							[(ngModel)]="searchFiliale"
+							(ionInput)="filtroFiliali()"
+						></ion-input>
+					</ion-item>
+
+					<div class="filiali-list">
+						@for (f of filialiFiltrate; track f.id_filiale) {
 						<ion-button
-							color="rosso"
-							(click)="confermaCancellazione(prenotazione?.id_prenotazione!)"
+							class="filiale"
+							(click)="salvaFiliale(f.id_filiale)"
 						>
-							Cancella Prenotazione
+							<ion-row>
+								<ion-col size="3">
+									<img
+										[src]="f.immagine"
+										alt="Immagine della Filiale"
+										class="immagine-filiale"
+									/>
+								</ion-col>
+								<ion-col size="9">
+									<ion-label>
+										<h2 class="filiale-comune">
+											{{ f.comune }}
+										</h2>
+										<h2 class="filiale-indirizzo">
+											{{ f.indirizzo }}
+										</h2>
+										<p>11:50 - 16:30<br />19:20 - 00:00</p>
+									</ion-label>
+								</ion-col>
+							</ion-row>
 						</ion-button>
-					</ion-col>
-				</ion-row>
-			</ion-card>
-			}
-			} @else {
-			<h1>PRENOTA UN TAVOLO</h1>
-			<p>Trova il ristorante più adatto a te!</p>
+						}
+					</div>
+				</ion-col>
 
-			<ion-grid>
-				<ion-row>
-					<ion-col size="6" class="filiali-col">
-						<ion-item class="barra-ricerca">
-							<ion-input
-								placeholder="Indirizzo Filiale"
-								[(ngModel)]="searchFiliale"
-								(ionInput)="filtroFiliali()"
-							></ion-input>
-						</ion-item>
-
-						<div class="filiali-list">
-							@for (f of filialiFiltrate; track f.id_filiale) {
-							<ion-button
-								class="filiale"
-								(click)="salvaFiliale(f.id_filiale)"
-							>
-								<ion-row>
-									<ion-col size="3">
-										<img
-											[src]="f.immagine"
-											alt="Immagine della Filiale"
-											class="immagine-filiale"
-										/>
-									</ion-col>
-									<ion-col size="9">
-										<ion-label>
-											<h2 class="filiale-comune">
-												{{ f.comune }}
-											</h2>
-											<h2 class="filiale-indirizzo">
-												{{ f.indirizzo }}
-											</h2>
-											<p>11:50 - 16:30<br />19:20 - 00:00</p>
-										</ion-label>
-									</ion-col>
-								</ion-row>
-							</ion-button>
-							}
+				<ion-col size="6">
+					<ion-card class="map-card">
+						<div class="map-card-content">
+							<app-leaflet-map></app-leaflet-map>
 						</div>
-					</ion-col>
-
-					<ion-col size="6">
-						<ion-card class="map-card">
-							<div class="map-card-content">
-								<app-leaflet-map></app-leaflet-map>
-							</div>
-						</ion-card>
-					</ion-col>
-				</ion-row>
-			</ion-grid>
-			}
-		</div>
-	</ng-container>
-
-	<ng-template #loadingSpinner>
+					</ion-card>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+		} } @else {
 		<div class="loading-wrapper">
-			<ion-spinner name="crescent" color="primary"></ion-spinner>
+			<ion-spinner name="crescent" color="light"></ion-spinner>
 		</div>
-	</ng-template>
+		}
+	</div>
 </ion-content>

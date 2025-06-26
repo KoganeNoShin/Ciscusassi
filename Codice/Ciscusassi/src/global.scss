@@ -130,4 +130,43 @@ ion-button {
 	font-family: 'Isocpeur-Regular', sans-serif;
 	font-size: clamp(1rem, 1.3vw, 1.2rem);
 	color: var(--ion-color-bianco);
+	border-radius: 8px;
+	--border-radius: 8px;
+}
+
+/* -----    ALERT CUSTOMIZZATO    ----- */
+
+ion-alert.custom-alert {
+	--background: var(--ion-color-bianco);
+	--ion-text-color: var(--ion-color-nero);
+	--border-radius: 25px;
+	border-radius: 25px;
+}
+
+.custom-alert .alert-wrapper {
+	border-radius: 12px;
+	--border-radius: 12px;
+}
+
+.custom-alert .alert-button-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+
+button.alert-button.alert-button-cancel,
+button.alert-button.alert-button-confirm {
+	border-radius: 8px;
+	width: 45%;
+	text-align: center;
+	--text-align: center;
+}
+
+button.alert-button.alert-button-cancel:hover,
+button.alert-button.alert-button-confirm:hover {
+	filter: brightness(80%);
+}
+
+.custom-alert .alert-button-inner {
+	justify-content: center !important;
 }
