@@ -113,7 +113,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		const eraApertoPrima = this.localeAperto;
 
 		this.localeAperto =
-			isInRange(12, 50, 19, 50) || isInRange(19, 20, 0, 0);//modificare in 12, 50, 15, 50
+			isInRange(12, 50, 15, 50) || isInRange(19, 20, 0, 0);
 
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
