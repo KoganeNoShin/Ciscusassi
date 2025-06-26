@@ -47,49 +47,58 @@ export class PagamentoCartaPage implements OnInit {
 			.reduce((acc, p) => acc + p.quantita * p.prezzo, 0)
 			.toFixed(2);
 
-		// Crea un div invisibile nel body per la generazione
 		const container = document.createElement('div');
 		container.style.width = '800px';
 		container.style.padding = '20px';
 		container.style.fontFamily = 'Arial';
 		container.style.backgroundColor = '#fff';
+		container.style.color = '#000';
+
+		let itemsHTML = `
+		<div style="display: flex; font-weight: bold; border-bottom: 1px solid #ccc; padding: 8px 0;">
+			<span style="flex: 2;">Prodotto</span>
+			<span style="flex: 1; text-align: center;">Quantità</span>
+			<span style="flex: 1; text-align: right;">Prezzo</span>
+		</div>
+	`;
+
+		for (const p of this.prodotti) {
+			itemsHTML += `
+			<div style="display: flex; border-bottom: 1px solid #eee; padding: 8px 0;">
+				<span style="flex: 2;">${p.nome}</span>
+				<span style="flex: 1; text-align: center;">${p.quantita}</span>
+				<span style="flex: 1; text-align: right;">€ ${(p.quantita * p.prezzo).toFixed(2)}</span>
+			</div>
+		`;
+		}
 
 		container.innerHTML = `
-      <div style="text-align: center; margin-bottom: 20px;">
-        <img src="${this.logo}" style="max-height: 80px;" />
-        <h2>Ricevuta</h2>
-        <small>${data}</small>
-      </div>
+		<div style="text-align: center; margin-bottom: 20px;">
+			<img src="${this.logo}" style="max-height: 80px;" />
+			<h2>Ricevuta</h2>
+			<small>${data}</small>
+		</div>
 
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-        <thead>
-          <tr>
-            <th style="text-align: left; border-bottom: 1px solid #ccc;">Prodotto</th>
-            <th style="text-align: center; border-bottom: 1px solid #ccc;">Quantità</th>
-            <th style="text-align: right; border-bottom: 1px solid #ccc;">Prezzo</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${this.prodotti
-				.map(
-					(p) => `
-            <tr>
-              <td>${p.nome}</td>
-              <td style="text-align: center;">${p.quantita}</td>
-              <td style="text-align: right;">€ ${(p.quantita * p.prezzo).toFixed(2)}</td>
-            </tr>
-          `
-				)
-				.join('')}
-        </tbody>
-      </table>
+		<div style="margin-bottom: 20px;">
+			${itemsHTML}
+		</div>
 
-      <div style="text-align: right; font-weight: bold;">
-        Totale: € ${totale}
-      </div>
-    `;
+		<div style="text-align: right; font-weight: bold;">
+			Totale: € ${totale}
+		</div>
+	`;
 
-		document.body.appendChild(container); // Aggiungi il div al DOM
+		document.body.appendChild(container);
+
+		// Attendi rendering e caricamento immagine
+		await new Promise((resolve) => setTimeout(resolve, 150));
+		const logoImg = container.querySelector('img');
+		if (logoImg && !logoImg.complete) {
+			await new Promise((resolve) => {
+				logoImg.onload = resolve;
+				logoImg.onerror = resolve;
+			});
+		}
 
 		const canvas = await html2canvas(container, { scale: 2 });
 		const imgData = canvas.toDataURL('image/png');
@@ -101,6 +110,6 @@ export class PagamentoCartaPage implements OnInit {
 		pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 		pdf.save('ricevuta.pdf');
 
-		document.body.removeChild(container); // Pulisci il DOM
+		document.body.removeChild(container);
 	}
 }
