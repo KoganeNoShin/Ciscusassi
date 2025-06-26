@@ -5,6 +5,10 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="custom-content">
+
+  @if(!localeAperto){
+		<h2 class="locale-chiuso">AL MOMENTO CISCUSASSI È CHIUSO</h2>
+	} @else {
   <h1 class="titolo-pagina">VISUALIZZA TAVOLI</h1>
 
   <!-- Chips filtro -->
@@ -66,4 +70,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+}
 </ion-content>

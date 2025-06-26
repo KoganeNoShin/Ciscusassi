@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Tavolo, TavoloService } from 'src/app/core/services/tavolo.service';
+
 import {
 	IonContent,
 	IonHeader,
@@ -18,6 +20,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { lastValueFrom } from 'rxjs';
 import { PrenotazioneRequest } from 'src/app/core/interfaces/Prenotazione';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-visualizza-tavoli',
@@ -74,7 +77,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	constructor(
 		private toastController: ToastController,
 		private authService: AuthenticationService,
-		private prenotazioneService: PrenotazioneService
+		private prenotazioneService: PrenotazioneService,
+		private router: Router,
+		private tavoloService: TavoloService
 	) {}
 
 	ngOnInit(): void {
@@ -123,7 +128,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		const eraApertoPrima = this.localeAperto;
 
 		this.localeAperto =
-			isInRange(12, 50, 15, 50) || isInRange(19, 20, 0, 0);
+			isInRange(12, 50, 19, 50) || isInRange(19, 20, 0, 0);//modificare in 12, 50, 15, 50
 
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
@@ -158,8 +163,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 								)
 							);
 							return {
-								numero: p.id_prenotazione,
-								nome: `Torretta: ${p.ref_torretta}`,
+								numero: p.ref_torretta,
+								nome: `Prenotazione: ${p.id_prenotazione}`,
 								orario: this.formattaOrario(
 									p.data_ora_prenotazione
 								),
@@ -169,8 +174,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 						} catch (e) {
 							console.error(e);
 							return {
-								numero: p.id_prenotazione,
-								nome: `Tavolo ${p.id_prenotazione}`,
+								numero: p.ref_torretta,
+								nome: `Prenotazione: ${p.id_prenotazione}`,
 								orario: this.formattaOrario(
 									p.data_ora_prenotazione
 								),
@@ -448,6 +453,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.showConfermaArrivoPopup = true;
 		} else if (this.isCliccabile(tavolo)) {
 			console.log('Hai cliccato sul tavolo:', tavolo);
+			this.tavoloService.setTavolo(tavolo);
+			this.router.navigate(['/visualizza-ordini-cameriere']);
 		}
 	}
 
