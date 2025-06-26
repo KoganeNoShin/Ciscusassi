@@ -1,34 +1,64 @@
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" color="senape">
+	<ion-grid fixed>
+		<ion-row>
+			<ion-col
+				size="12"
+				class="ion-justify-content-center ion-align-items-center"
+			>
+				@if(loading) {
+				<ion-spinner name="bubbles"></ion-spinner>
+				} @else {
+				<ion-text class="ion-text-center">
+					<h2 class="text-color-bianco">PRENOTA UN TAVOLO</h2>
+				</ion-text>
 
-	<div class="map-div">
-		@if(loading) {
-		<ion-spinner name="bubbles"></ion-spinner>
-		} @else {
-      <h1>PRENOTA UN TAVOLO</h1>
-		  <p>{{filiale?.comune}}, {{filiale?.indirizzo}}</p>
-      <p>In quanti sarete?</p>
-      <div class="scelte">
-          <div
-            *ngFor="let n of personePossibili"
-            (click)="selezionaPersone(n)"
-            [class.selected]="n === personeSelezionate"
-            [class.match-input]="inputManuale === n"
-            class="cerchio"
-          >
-            {{ n }}
-          </div>
-        </div>
-      <p>OPPURE</p>
-      <div class="popup-footer">
-          <input
-            type="number"
-            placeholder="Inserisci in quanti sarete..."
-            [(ngModel)]="inputManuale"
-            (input)="onInputChange()"
-            min="1"
-          />
-      </div>
-      <ion-button (click)="salvaPersone(this.personeSelezionate ?? -1, this.inputManuale ?? -1)">CONFERMA</ion-button>
-    }
-  </div>
+				<ion-text class="ion-text-center">
+					<h5 class="text-color-bianco">
+						{{filiale?.comune}}, {{filiale?.indirizzo}}
+					</h5>
+				</ion-text>
+
+				<ion-text class="ion-text-center ion-margin-bottom">
+					<h6 class="text-color-bianco">In quanti sarete?</h6>
+				</ion-text>
+
+				<div class="scelte ion-hide-sm-down">
+					@for(number of personePossibili; track number){
+
+					<div
+						(click)="selezionaPersone(number)"
+						[class.selected]="number === personeSelezionate"
+						[class.match-input]="inputManuale === number"
+						class="cerchio"
+					>
+						<p>{{ number }}</p>
+					</div>
+					}
+				</div>
+
+				<ion-text class="ion-text-center">
+					<h6 class="text-color-bianco">OPPURE</h6>
+				</ion-text>
+
+				<div class="input-div ion-text-center">
+					<ion-input
+						type="number"
+						placeholder="Inserisci in quanti sarete..."
+						[(ngModel)]="inputManuale"
+						(input)="onInputChange()"
+						min="1"
+						class="ion-padding-horizontal"
+					></ion-input>
+
+					<br />
+					<ion-button
+						expand="block"
+						(click)="salvaPersone(this.personeSelezionate ?? -1, this.inputManuale ?? -1)"
+						>CONFERMA</ion-button
+					>
+				</div>
+				}
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 </ion-content>

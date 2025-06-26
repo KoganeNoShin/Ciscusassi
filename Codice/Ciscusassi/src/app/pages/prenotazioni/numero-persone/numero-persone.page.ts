@@ -6,7 +6,14 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular/standalone';
+import {
+	ToastController,
+	IonGrid,
+	IonRow,
+	IonCol,
+	IonText,
+	IonInput,
+} from '@ionic/angular/standalone';
 import { IonContent, IonSpinner, IonButton } from '@ionic/angular/standalone';
 
 @Component({
@@ -14,7 +21,18 @@ import { IonContent, IonSpinner, IonButton } from '@ionic/angular/standalone';
 	templateUrl: './numero-persone.page.html',
 	styleUrls: ['./numero-persone.page.scss'],
 	standalone: true,
-	imports: [IonSpinner, IonContent, CommonModule, FormsModule, IonButton],
+	imports: [
+		IonInput,
+		IonText,
+		IonCol,
+		IonRow,
+		IonGrid,
+		IonSpinner,
+		IonContent,
+		CommonModule,
+		FormsModule,
+		IonButton,
+	],
 })
 export class NumeroPersonePage implements OnInit {
 	filiale: FilialeRecord | null = null;
