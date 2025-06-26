@@ -17,20 +17,7 @@
 			<div class="label">CONSEGNATO</div>
 		</div>
 	</div>
-	@for (prodotto of prodotti; track prodotto.id_prodotto) {
-	<div class="plate">
-		<div class="circle consegnato"></div>
-		<img
-			[src]="prodotto.immagine"
-			alt="Immagine del piatto"
-			class="immagine-rotante"
-		/>
-		<div class="plateInfo">
-			<h2>{{ prodotto.nome }} - {{ prodotto.costo }} €</h2>
-			<h3>{{ prodotto.descrizione }}</h3>
-		</div>
-	</div>
-	}
+	<app-lista-ordini [prodotti]="prodotti"></app-lista-ordini>
 
 	<div class="button-group">
 		<ion-button [routerLink]="['/menu-tavolo']" style="--background: var(--ion-color-verdechiaro);" >CONTINUA A ORDINARE</ion-button>

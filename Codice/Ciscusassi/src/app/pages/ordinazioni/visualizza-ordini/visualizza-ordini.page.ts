@@ -11,7 +11,8 @@ import {
 import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { Router, RouterModule } from '@angular/router';
-
+import { ProdottoOrdineComponent } from 'src/app/components/prodotto-ordine/prodotto-ordine.component';
+import { ListaOrdiniComponent } from "../../../components/lista-ordini/lista-ordini.component";
 
 @Component({
 	selector: 'app-visualizza-ordini',
@@ -19,12 +20,13 @@ import { Router, RouterModule } from '@angular/router';
 	styleUrls: ['./visualizza-ordini.page.scss'],
 	standalone: true,
 	imports: [
-		RouterModule,
-		IonButton,
-		IonContent,
-		CommonModule,
-		FormsModule,
-	],
+    RouterModule,
+    IonButton,
+    IonContent,
+    CommonModule,
+    FormsModule,
+    ListaOrdiniComponent
+],
 })
 export class VisualizzaOrdiniPage implements OnInit {
 	prodotti: ProdottoRecord[] = [];

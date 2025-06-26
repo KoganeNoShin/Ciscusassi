@@ -21,7 +21,7 @@ import { ProdottoMenuComponent } from 'src/app/components/prodotto-menu/prodotto
 })
 
 export class ListaMenuComponent  implements OnInit {
-  piatti: ProdottoRecord[] = [];
+  	piatti: ProdottoRecord[] = [];
     primi: ProdottoRecord[] = [];
     antipasti: ProdottoRecord[] = [];
     dolci: ProdottoRecord[] = [];

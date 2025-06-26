@@ -1,0 +1,133 @@
+.plate {
+	background-color: var(--ion-color-senape);
+}
+
+.plate_giorno {
+	background-color: var(--ion-color-verdescuro);
+}
+
+.plate {
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	padding: 2rem;
+	text-align: left;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: fit-content;
+	border-bottom: 3px solid var(--ion-color-bianco);
+}
+
+.plate:last-child {
+	padding-bottom: 5rem;
+}
+
+.plateInfo {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	text-align: left;
+	justify-content: start;
+	align-items: start;
+	word-wrap: break-word;
+	width: 50%;
+}
+
+img {
+	width: 250px;
+	height: 250px;
+}
+
+ion-button.aggiungi {
+	--background: var(--ion-color-arancione);
+}
+
+ion-button.rimuovi {
+	--background: var(--ion-color-rosso);
+}
+
+ion-button {
+	--color: var(--ion-color-bianco);
+	--border-radius: 10px;
+	font-size: 1rem;
+}
+
+.plateInfo > h2,
+.plateInfo > h3 {
+	color: var(--ion-color-bianco);
+}
+
+div > h2 {
+	color: var(--ion-color-bianco);
+}
+
+.button-group {
+	display: flex;
+	flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+	padding-bottom: 2%;
+	background-color: var(--ion-color-senape);
+    gap: 1rem;
+}
+
+.status-container {
+	display: flex;
+	height: 30%;
+	justify-content: space-around;
+	align-items: center;
+	padding-top: 3%;
+	background-color: var(--ion-color-senape);
+	border-bottom: 3px solid var(--ion-color-bianco);
+	font-family: 'Isocpeur-Regular', sans-serif;
+    font-size: larger;
+}
+
+.status {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	color: white;
+}
+
+.circle {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-bottom: 10px;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.non-lavorazione {
+	background-color: var(--ion-color-rosso);
+}
+.in-lavorazione {
+	background-color: var(--ion-color-arancione);
+}
+.in-consegna {
+	background-color: #467d8d;
+}
+.consegnato {
+	background-color: var(--ion-color-verdechiaro);
+}
+
+.bottoni-chef{
+    display: flex;
+    flex-direction: column;
+}
+
+.bottoni-cameriere{
+    display: flex;
+    flex-direction: column;
+}
+
+.chef{
+    background-color: var(--ion-color-verdechiaro)
+}
+
+.cameriere{
+    background-color: var(--ion-color-verdechiaro)
+
+}

@@ -16,7 +16,6 @@ import {
 import { RouterModule, Router } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { firstValueFrom } from 'rxjs';
-import { TavoloService } from 'src/app/core/tavolo.service';
 
 @Component({
 	selector: 'app-ordina-al-tavolo',
@@ -81,9 +80,9 @@ export class OrdinaAlTavoloPage implements OnInit {
 		}
 
 		const fasceOrarie = [
-			{ inizio: '12:00', fine: '13:30' },
+			{ inizio: '00:00', fine: '13:30' },
 			{ inizio: '13:30', fine: '15:00' },
-			{ inizio: '20:28', fine: '21:00' }, //MI DEVO RICORDARE DI CAMBIARLO
+			{ inizio: '19:30', fine: '21:00' }, //MI DEVO RICORDARE DI CAMBIARLO
 			{ inizio: '21:00', fine: '22:30' },
 		];
 
