@@ -1,51 +1,52 @@
 <div [ngClass]="ruolo" class="plate">
-	@if (this.ruolo == 'cliente') {
-		@if (this.statoPiatto == 'non-in-lavorazione') {
-			<div class="circle non-lavorazione"></div>
-		} @else if (this.statoPiatto == 'in-lavorazione') {
-			<div class="circle in-lavorazione"></div>
-		} @else if (this.statoPiatto == 'in-consegna') {
-			<div class="circle in-consegna"></div>
-		} @else if (this.statoPiatto == 'consegnato') {
-			<div class="circle consegnato"></div>
-		}
-	}
+  @if (this.ruolo == 'cliente') {
+    @if (this.statoPiatto == 'non-in-lavorazione') {
+      <div class="circle non-lavorazione"></div>
+    } @else if (this.statoPiatto == 'in-lavorazione') {
+      <div class="circle in-lavorazione"></div>
+    } @else if (this.statoPiatto == 'in-consegna') {
+      <div class="circle in-consegna"></div>
+    } @else if (this.statoPiatto == 'consegnato') {
+      <div class="circle consegnato"></div>
+    }
+  }
 
-	<img
-		[src]="prodotto.immagine"
-		alt="Immagine del piatto"
-		class="immagine-rotante"
-	/>
-	<div class="plateInfo">
-		<h2>{{ prodotto.nome }}</h2>
-		<h3>{{ prodotto.descrizione }}</h3>
-	</div>
-	@if (this.ruolo == 'chef') {
-		<div class="bottoni-chef">
-			@if (this.statoPiatto == 'non-in-lavorazione') {
-				<ion-button color="arancione" (click)="iniziaLavorazione()"> INIZIA LAVORAZIONE </ion-button>
-			} @else if (this.statoPiatto == 'in-lavorazione') {
-				<ion-button color="rosso" (click)="fineLavorazione()"> FINE LAVORAZIONE </ion-button>
-			} @else if (this.statoPiatto == 'in-consegna'){
+  <img
+    [src]="prodotto.immagine"
+    alt="Immagine del piatto"
+    class="immagine-rotante"
+  />
+  <div class="plateInfo">
+    <h2>{{ prodotto.nome }}</h2>
+    <h3>{{ prodotto.descrizione }}</h3>
+  </div>
+
+  @if (this.ruolo == 'chef') {
+    <div class="bottoni-chef">
+      @if (this.statoPiatto == 'non-in-lavorazione') {
+        <ion-button color="arancione" (click)="iniziaLavorazione()">INIZIA LAVORAZIONE</ion-button>
+      } @else if (this.statoPiatto == 'in-lavorazione') {
+        <ion-button color="rosso" (click)="fineLavorazione()">FINE LAVORAZIONE</ion-button>
+      } @else if (this.statoPiatto == 'in-consegna') {
         <p>IN CONSEGNA</p>
-      } @else if(this.statoPiatto == 'consegnato'){
+      } @else if (this.statoPiatto == 'consegnato') {
         <p>CONSEGNATO</p>
       }
-		</div>
-	} @else if (this.ruolo == 'cameriere') {
-		<div class="bottoni-cameriere">
-      @if(this.statoPiatto == 'in-consegna'){
-        <ion-button color="arancione" (click)="consegna()"> CONSEGNA </ion-button>
-        <ion-button color="rosso" (click)="cestina()"> CESTINA </ion-button>
-      } @else if (this.statoPiatto == 'non-in-lavorazione'){
+    </div>
+  } @else if (this.ruolo == 'cameriere') {
+    <div class="bottoni-cameriere">
+      @if (this.statoPiatto == 'in-consegna') {
+        <ion-button color="arancione" (click)="consegna()">CONSEGNA</ion-button>
+        <ion-button color="rosso" (click)="cestina()">CESTINA</ion-button>
+      } @else if (this.statoPiatto == 'non-in-lavorazione') {
         <p>NON IN LAVORAZIONE</p>
-      } @else if(this.statoPiatto == 'in-lavorazione'){
+      } @else if (this.statoPiatto == 'in-lavorazione') {
         <p>IN LAVORAZIONE</p>
-      } @else if(this.statoPiatto == 'consegnato'){
+      } @else if (this.statoPiatto == 'consegnato') {
         <p>CONSEGNATO</p>
       }
-		</div>
-	} @else if (this.ruolo == 'cliente') {
-		<h3>{{ prodotto.costo }}€</h3>
-	}
+    </div>
+  } @else if (this.ruolo == 'cliente') {
+    <h3>{{ prodotto.costo }}€</h3>
+  }
 </div>

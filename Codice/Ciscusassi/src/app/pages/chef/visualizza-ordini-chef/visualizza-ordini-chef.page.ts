@@ -6,33 +6,34 @@ import {
 	IonHeader,
 	IonTitle,
 	IonToolbar,
+	IonCol,
 	IonButton,
+	IonRow,
 } from '@ionic/angular/standalone';
-import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
-import { Router, RouterModule } from '@angular/router';
-import { ProdottoOrdineComponent } from 'src/app/components/prodotto-ordine/prodotto-ordine.component';
-import { ListaOrdiniComponent } from '../../../components/lista-ordini/lista-ordini.component';
-import { Observable, of } from 'rxjs';
+import { ListaOrdiniComponent } from 'src/app/components/lista-ordini/lista-ordini.component';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Component({
-	selector: 'app-visualizza-ordini',
-	templateUrl: './visualizza-ordini.page.html',
-	styleUrls: ['./visualizza-ordini.page.scss'],
+	selector: 'app-visualizza-ordini-chef',
+	templateUrl: './visualizza-ordini-chef.page.html',
+	styleUrls: ['./visualizza-ordini-chef.page.scss'],
 	standalone: true,
 	imports: [
-		RouterModule,
 		IonButton,
+		IonCol,
 		IonContent,
 		CommonModule,
 		FormsModule,
+		IonRow,
+		IonCol,
 		ListaOrdiniComponent,
 	],
 })
-export class VisualizzaOrdiniPage implements OnInit {
+export class VisualizzaOrdiniChefPage implements OnInit {
 	//prodotti: OrdProdEstended[] = [];
 	//DA CANCELLARE SOTTO SERVE SOLO PER LE PROVE FIN QUANDO NON CI SONO LE ROTTE
-	prodotti: Observable<OrdProdEstended[]> = of([
+	private prodottiSubject = new BehaviorSubject<OrdProdEstended[]>([
 		{
 			id_prodotto: 1,
 			nome: 'Pizza Margherita',
@@ -274,13 +275,33 @@ export class VisualizzaOrdiniPage implements OnInit {
 			stato: 'consegnato',
 		},
 	]);
+	public prodotti$ = this.prodottiSubject.asObservable();
 
-	constructor(private router: Router) {}
-	terminaServizio() {
-		//implemetare la logica per controllare se tutti i prodotti sono stati consegnati
-		//altrimenti mostrare un messaggio di errore tramite toast
-		this.router.navigate(['/pagamento-tavolo']);
-	}
+	numeroTavolo: number | null = null;
+
+	constructor() {}
 
 	ngOnInit() {}
+
+	iniziaLavorazioneTotale() {
+		const prodottiList = this.prodottiSubject.getValue();
+		const nuoviProdotti = prodottiList.map((prodotto) => {
+			if (prodotto.stato === 'non-in-lavorazione') {
+				return { ...prodotto, stato: 'in-lavorazione' };
+			}
+			return prodotto;
+		});
+		this.prodottiSubject.next(nuoviProdotti);
+	}
+
+	fineLavorazioneTotale() {
+		const prodottiList = this.prodottiSubject.getValue();
+		const nuoviProdotti = prodottiList.map((prodotto) => {
+			if (prodotto.stato === 'in-lavorazione') {
+				return { ...prodotto, stato: 'in-consegna' };
+			}
+			return prodotto;
+		});
+		this.prodottiSubject.next(nuoviProdotti);
+	}
 }

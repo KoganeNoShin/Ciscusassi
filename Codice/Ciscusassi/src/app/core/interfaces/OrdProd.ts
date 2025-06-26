@@ -1,6 +1,6 @@
-import { ProdottoInput } from "./Prodotto";
+import { ProdottoInput, ProdottoRecord } from "./Prodotto";
 
-interface OrdProdEstended extends ProdottoInput {
+export interface OrdProdEstended extends ProdottoRecord {
     id_ord_prod: number;
     is_romana: boolean;
     stato: string;

@@ -1,0 +1,28 @@
+ion-row {
+	padding-top: 80px;
+	align-items: center;
+}
+
+ion-content{
+    --background: var(--ion-color-verdechiaro);
+}
+
+ion-col:first-child {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+ion-col:last-child {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+ion-button {
+	--background: var(--ion-color-arancione);
+	height: auto;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	--border-radius: 8px;
+}
