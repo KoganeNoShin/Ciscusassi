@@ -1,24 +1,78 @@
-<ion-content [fullscreen]="true">
-	<div class="map-div">
-		@if(loading) {
-		<ion-spinner name="bubbles"></ion-spinner>
-		} @else {
-		<h1>PRENOTA UN TAVOLO</h1>
-		<p style="text-align: center">
-			{{filiale?.comune}}, {{filiale?.indirizzo}}<br />Numero persone:
-			{{persone}}
-		</p>
-		}
-		<ion-row class="date-row">
-			<ion-col size="9">
-				<ion-datetime [(ngModel)]="dataSelezionata" (ngModelChange)="alCambioData()" presentation="date" color="senape" [isDateEnabled]="noMartediEMaxDueSettimane"></ion-datetime>
-			</ion-col>
-			<ion-col size="3" class="time-buttons">
-				<ion-button (click)="confermaPrenotazione('12:00')" [disabled]="primaFasciaNonDisponibile || isFasciaPassata('12:00')">12:00-13:30</ion-button>
-				<ion-button (click)="confermaPrenotazione('13:30')" [disabled]="secondaFasciaNonDisponibile || isFasciaPassata('13:30')">13:30-15:00</ion-button>
-				<ion-button (click)="confermaPrenotazione('19:30')" [disabled]="terzaFasciaNonDisponibile || isFasciaPassata('19:30')">19:30-21:00</ion-button>
-				<ion-button (click)="confermaPrenotazione('21:00')" [disabled]="quartaFasciaNonDisponibile || isFasciaPassata('21:00')">21:00-22:30</ion-button>
+<ion-content [fullscreen]="true" color="senape">
+	<ion-grid fixed class="ion-padding ion-margin-vertical">
+		<ion-row>
+			<ion-col size="12">
+				<ion-text class="ion-text-center">
+					<h2 class="text-color-bianco">PRENOTA UN TAVOLO</h2>
+				</ion-text>
 			</ion-col>
 		</ion-row>
-	</div>
+		<ion-row class="ion-padding-bottom">
+			<ion-col size="12">
+				<ion-text class="ion-text-center">
+					<h5 class="text-color-bianco">
+						{{filiale?.comune}}, {{filiale?.indirizzo}}
+						<br />
+						Numero persone: {{persone}}
+					</h5>
+				</ion-text>
+			</ion-col>
+		</ion-row>
+		<ion-row class="ion-padding-top">
+			@if(loading){
+
+			<ion-col
+				size="12"
+				class="ion-justify-content-center ion-align-items-center"
+			>
+				<ion-spinner name="bubbles"></ion-spinner>
+			</ion-col>
+			} @else {
+			<ion-col
+				size="12"
+				sizeMd="6"
+				class="ion-justify-content-center ion-align-items-center input-col"
+			>
+				<ion-datetime
+					[(ngModel)]="dataSelezionata"
+					(ngModelChange)="alCambioData()"
+					presentation="date"
+					color="rosso"
+					class="bg-color-bianco"
+					[isDateEnabled]="noMartediEMaxDueSettimane"
+				></ion-datetime>
+			</ion-col>
+			<ion-col
+				size="12"
+				sizeMd="6"
+				class="time-buttons ion-justify-content-center ion-align-items-center input-col"
+			>
+				<ion-button
+					expand="block"
+					(click)="confermaPrenotazione('12:00')"
+					[disabled]="primaFasciaNonDisponibile || isFasciaPassata('12:00')"
+					>12:00-13:30</ion-button
+				>
+				<ion-button
+					expand="block"
+					(click)="confermaPrenotazione('13:30')"
+					[disabled]="secondaFasciaNonDisponibile || isFasciaPassata('13:30')"
+					>13:30-15:00</ion-button
+				>
+				<ion-button
+					expand="block"
+					(click)="confermaPrenotazione('19:30')"
+					[disabled]="terzaFasciaNonDisponibile || isFasciaPassata('19:30')"
+					>19:30-21:00</ion-button
+				>
+				<ion-button
+					expand="block"
+					(click)="confermaPrenotazione('21:00')"
+					[disabled]="quartaFasciaNonDisponibile || isFasciaPassata('21:00')"
+					>21:00-22:30</ion-button
+				>
+			</ion-col>
+			}
+		</ion-row>
+	</ion-grid>
 </ion-content>

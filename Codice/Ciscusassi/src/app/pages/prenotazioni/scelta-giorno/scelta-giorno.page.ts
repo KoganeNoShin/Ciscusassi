@@ -16,10 +16,12 @@ import {
 	IonContent,
 	IonSpinner,
 	IonDatetime,
-	IonLabel,
 	IonRow,
 	IonCol,
 	IonButton,
+	IonGrid,
+	IonText,
+	IonCheckbox,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -28,6 +30,9 @@ import {
 	styleUrls: ['./scelta-giorno.page.scss'],
 	standalone: true,
 	imports: [
+		IonCheckbox,
+		IonText,
+		IonGrid,
 		IonButton,
 		IonCol,
 		IonRow,
@@ -262,30 +267,36 @@ export class SceltaGiornoPage implements OnInit {
 		const idCliente = 1;
 
 		return new Promise((resolve, reject) => {
-			this.prenotazioneService.getPrenotazioniByCliente(idCliente).subscribe({
-				next: (res) => {
-					if (res.success && res.data) {
-						const now = new Date();
+			this.prenotazioneService
+				.getPrenotazioniByCliente(idCliente)
+				.subscribe({
+					next: (res) => {
+						if (res.success && res.data) {
+							const now = new Date();
 
-						const futurePrenotazioni = res.data.filter((prenotazione) => {
-							const parsedDate = this.parseDateTime(prenotazione.data_ora_prenotazione);
-							if (!parsedDate) return false;
+							const futurePrenotazioni = res.data.filter(
+								(prenotazione) => {
+									const parsedDate = this.parseDateTime(
+										prenotazione.data_ora_prenotazione
+									);
+									if (!parsedDate) return false;
 
-							return parsedDate >= now;
-						});
-						this.prenotazioni = futurePrenotazioni;
-						resolve(futurePrenotazioni);
-					} else {
+									return parsedDate >= now;
+								}
+							);
+							this.prenotazioni = futurePrenotazioni;
+							resolve(futurePrenotazioni);
+						} else {
+							this.prenotazioni = [];
+							resolve([]);
+						}
+					},
+					error: (err) => {
+						console.error('Errore nel recupero prenotazioni:', err);
 						this.prenotazioni = [];
 						resolve([]);
-					}
-				},
-				error: (err) => {
-					console.error('Errore nel recupero prenotazioni:', err);
-					this.prenotazioni = [];
-					resolve([]);
-				},
-			});
+					},
+				});
 		});
 	}
 
@@ -353,17 +364,20 @@ export class SceltaGiornoPage implements OnInit {
 	private parseDateTime(dateTimeStr: string): Date | null {
 		if (!dateTimeStr) return null;
 
-		const [datePart, timePart] = dateTimeStr.split(" ");
+		const [datePart, timePart] = dateTimeStr.split(' ');
 		if (!datePart || !timePart) return null;
 
-		const [year, month, day] = datePart.split("-").map(Number);
-		const [hour, minute, second] = timePart.split(":").map(Number);
+		const [year, month, day] = datePart.split('-').map(Number);
+		const [hour, minute, second] = timePart.split(':').map(Number);
 
 		if (
-			isNaN(year) || isNaN(month) || isNaN(day) ||
-			isNaN(hour) || isNaN(minute)
+			isNaN(year) ||
+			isNaN(month) ||
+			isNaN(day) ||
+			isNaN(hour) ||
+			isNaN(minute)
 		) {
-			console.warn("Data malformata:", dateTimeStr);
+			console.warn('Data malformata:', dateTimeStr);
 			return null;
 		}
 
