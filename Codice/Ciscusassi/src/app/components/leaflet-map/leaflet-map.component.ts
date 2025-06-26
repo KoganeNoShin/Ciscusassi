@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import {
 	map,
 	tileLayer,
@@ -11,8 +11,10 @@ import {
 } from 'leaflet';
 import { IonSpinner } from '@ionic/angular/standalone';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
-import { LeafletMapService } from './leaflet-map.service';
+import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-leaflet-map',
@@ -26,8 +28,13 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 	loading: boolean = true;
 	filiali: FilialeRecord[] = [];
 	error: boolean = false;
+	@Input() redirect: boolean = false;
 
-	constructor(private leafletMapService: LeafletMapService) {}
+	constructor(
+		private filialeService: FilialeService,
+		private prenotazioneService: PrenotazioneService,
+		private router: Router
+	) {}
 
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
 		console.log(response);
@@ -46,7 +53,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-		this.leafletMapService.GetFiliali().subscribe({
+		this.filialeService.GetSedi().subscribe({
 			next: (response) => this.handleResponse(response),
 			error: (err) => {
 				console.error(err);
@@ -81,14 +88,50 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 			console.log(f.immagine);
 
 			let mark = marker([f.latitudine, f.longitudine], markerOptions);
+
 			mark.bindTooltip(f.indirizzo);
+
+			if (this.redirect) {
+				mark.bindPopup(`
+					<div style="text-align:center">
+						<strong>${f.indirizzo}</strong><br/>
+						<button class="btn-prenota-filiale" data-id="${f.id_filiale}">
+							Prenota
+						</button>
+					</div>
+				`);
+			} else {
+				mark.addEventListener('click', () => {
+					const googleMapsUrl = `https://www.google.com/maps?q=${f.latitudine},${f.longitudine}`;
+					window.open(googleMapsUrl, '_blank');
+				});
+			}
+
 			mark.addTo(this.map);
+
+			mark.on('popupopen', () => {
+				setTimeout(() => {
+					const btn = document.querySelector(
+						`.btn-prenota-filiale[data-id="${f.id_filiale}"]`
+					);
+					if (btn) {
+						btn.addEventListener('click', () => {
+							this.salvaFiliale(f.id_filiale);
+						});
+					}
+				}, 0);
+			});
 		});
 
 		// Forza il ridimensionamento dopo che il DOM è pronto
 		setTimeout(() => {
 			this.map.invalidateSize();
 		}, 100);
+	}
+
+	salvaFiliale(id_filiale: number): void {
+		this.prenotazioneService.setFilialeId(id_filiale);
+		this.router.navigate(['/numero-persone']);
 	}
 
 	ngOnDestroy(): void {

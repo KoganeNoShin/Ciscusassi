@@ -17,8 +17,8 @@ ion-card {
 }
 
 .campoForm {
-	border-radius: 12px; // o quanto vuoi
-	overflow: hidden; // utile per non tagliare il focus ring
-	--background: white; // se vuoi un colore di sfondo
-	--border-radius: 12px; // supportato da molti temi Ionic
+	border-radius: 12px;
+	overflow: hidden;
+	--background: white;
+	--border-radius: 12px;
 }

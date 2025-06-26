@@ -259,15 +259,22 @@ export const routes: Routes = [
 			).then((m) => m.VisualizzaTavoliChefPage),
 		canActivate: [authGuard(['chef'])],
 	},
-  {
-    path: 'visualizza-ordini-cameriere',
-    loadComponent: () => import('./pages/cameriere/visualizza-ordini-cameriere/visualizza-ordini-cameriere.page').then( m => m.VisualizzaOrdiniCamerierePage)
-  },  {
-    path: 'visualizza-ordini-chef',
-    loadComponent: () => import('./pages/chef/visualizza-ordini-chef/visualizza-ordini-chef.page').then( m => m.VisualizzaOrdiniChefPage)
-  },
-
-
+	{
+		path: 'visualizza-ordini-cameriere',
+		loadComponent: () =>
+			import(
+				'./pages/cameriere/visualizza-ordini-cameriere/visualizza-ordini-cameriere.page'
+			).then((m) => m.VisualizzaOrdiniCamerierePage),
+		canActivate: [authGuard(['cameriere'])],
+	},
+	{
+		path: 'visualizza-ordini-chef',
+		loadComponent: () =>
+			import(
+				'./pages/chef/visualizza-ordini-chef/visualizza-ordini-chef.page'
+			).then((m) => m.VisualizzaOrdiniChefPage),
+		canActivate: [authGuard(['chef'])],
+	},
 ];
 
 export const AppRoutingModule = provideRouter(routes);

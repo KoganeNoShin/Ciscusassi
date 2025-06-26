@@ -1,0 +1,38 @@
+ion-card {
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+	background-color: transparent;
+	--background: transparent;
+	box-shadow: none;
+}
+
+.img-filiale {
+	width: 20%;
+	height: 20%;
+	object-fit: contain;
+	min-width: 100px;
+}
+
+.img-filiale::part(image) {
+	border-radius: 25px;
+}
+
+ion-text,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	width: 100%;
+	text-transform: none;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+	align-items: center;
+}

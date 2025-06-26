@@ -4,17 +4,14 @@ import { FormsModule } from '@angular/forms';
 import {
 	IonContent,
 	IonCard,
-	IonButton,
-	IonLabel,
 	IonCol,
 	IonRow,
 	IonGrid,
-	IonItem,
-	IonInput,
 	AlertController,
 	ToastController,
 	IonSpinner,
 	IonText,
+	IonSearchbar,
 } from '@ionic/angular/standalone';
 import { HeroComponent } from 'src/app/components/hero/hero.component';
 import { LeafletMapComponent } from 'src/app/components/leaflet-map/leaflet-map.component';
@@ -26,6 +23,7 @@ import { Router, RouterModule } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 import { PrenotazioneCardComponent } from '../../../components/prenotazione-card/prenotazione-card.component';
+import { FilialeCardComponent } from 'src/app/components/filiale-card/filiale-card.component';
 
 @Component({
 	selector: 'app-prenota',
@@ -33,23 +31,21 @@ import { PrenotazioneCardComponent } from '../../../components/prenotazione-card
 	styleUrls: ['./prenota.page.scss'],
 	standalone: true,
 	imports: [
+		IonSearchbar,
 		IonText,
 		IonSpinner,
 		RouterModule,
 		IonCard,
-		IonButton,
-		IonLabel,
 		IonCol,
 		IonRow,
 		IonGrid,
-		IonItem,
-		IonInput,
 		IonContent,
 		CommonModule,
 		FormsModule,
 		HeroComponent,
 		LeafletMapComponent,
 		PrenotazioneCardComponent,
+		FilialeCardComponent,
 	],
 })
 export class PrenotaPage implements OnInit {
@@ -150,10 +146,12 @@ export class PrenotaPage implements OnInit {
 		});
 	}
 
-	filtroFiliali(): void {
-		const term = this.searchFiliale.toLowerCase();
+	onFiltraFilialiChange(event: Event): void {
+		const target = event.target as HTMLIonSearchbarElement;
+		const query = target.value?.toLowerCase() || '';
+
 		this.filialiFiltrate = this.filiali.filter((filiale) =>
-			filiale.indirizzo.toLowerCase().includes(term)
+			filiale.indirizzo.toLowerCase().includes(query)
 		);
 	}
 

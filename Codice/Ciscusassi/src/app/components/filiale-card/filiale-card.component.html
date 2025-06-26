@@ -1,0 +1,53 @@
+<ion-button color="verdechiaro" (click)="salvaFiliale(filiale.id_filiale)">
+	<ion-card
+		class="ion-padding-horizontal ion-padding-vertical ion-align-items-center ion-justify-content-start"
+	>
+		<ion-img
+			[src]="filiale.immagine"
+			alt="Immagine della Filiale"
+			class="img-filiale"
+		>
+		</ion-img>
+
+		<div class="ion-padding-horizontal">
+			<div class="flex-row">
+				<ion-icon
+					slot="start"
+					name="location"
+					class="text-color-bianco ion-padding-end"
+					size="large"
+				></ion-icon>
+				<ion-text class="ion-text-left">
+					<h6 class="filiale-comune text-color-bianco">
+						{{ filiale.comune }} - {{ filiale.indirizzo }}
+					</h6>
+				</ion-text>
+			</div>
+
+			<div class="flex-row">
+				<ion-icon
+					slot="start"
+					name="time"
+					class="text-color-bianco ion-padding-end"
+					size="large"
+				></ion-icon>
+				<ion-text class="ion-text-left">
+					<p class="text-color-bianco">
+						11:50 - 16:30 / 19:20 - 00:00
+					</p>
+				</ion-text>
+			</div>
+			<div class="flex-row">
+				<ion-icon
+					slot="start"
+					name="information-circle"
+					class="text-color-bianco ion-padding-end"
+					size="large"
+				></ion-icon>
+				<ion-text class="ion-text-left">
+					<p class="text-color-bianco">Il martedì chiusi</p>
+				</ion-text>
+			</div>
+		</div>
+	</ion-card>
+</ion-button>
