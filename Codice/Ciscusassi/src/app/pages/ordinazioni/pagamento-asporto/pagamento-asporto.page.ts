@@ -88,12 +88,20 @@ export class PagamentoAsportoPage implements OnInit {
 		const consegna = new Date(now);
 		consegna.setMinutes(now.getMinutes() + this.tempo + 2); // aggiungi tempo + margine
 
-		this.ora_attuale = now.toLocaleString('sv-SE'); // formato ISO locale
-		this.ora_consegna = consegna.toLocaleString('sv-SE');
+		this.ora_attuale = this.formatDateNoSeconds(now);
+		this.ora_consegna = this.formatDateNoSeconds(consegna);
 	}
 
-	svuotaCarrello() {
-		this.aggiungiAsporto();
+	formatDateNoSeconds(date: Date): string {
+		const pad = (n: number) => n.toString().padStart(2, '0');
+
+		const year = date.getFullYear();
+		const month = pad(date.getMonth() + 1);
+		const day = pad(date.getDate());
+		const hours = pad(date.getHours());
+		const minutes = pad(date.getMinutes());
+
+		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 
 	aggiungiAsporto() {
@@ -101,12 +109,14 @@ export class PagamentoAsportoPage implements OnInit {
 		const consegna = new Date(now);
 		consegna.setMinutes(now.getMinutes() + this.tempo + 2); // aggiungi tempo + margine
 
-		this.ora_attuale = now.toLocaleString('sv-SE');
-		this.ora_consegna = consegna.toLocaleString('sv-SE');
+		this.ora_attuale = this.formatDateNoSeconds(now);
+		this.ora_consegna = this.formatDateNoSeconds(consegna);
 
 		this.nuovoAsporto.indirizzo = this.indirizzo;
 		this.nuovoAsporto.data_ora_pagamento = this.ora_attuale;
+		console.log(this.nuovoAsporto.data_ora_pagamento);
 		this.nuovoAsporto.data_ora_consegna = this.ora_consegna;
+		console.log(this.nuovoAsporto.data_ora_consegna);
 		this.nuovoAsporto.prodotti = this.prodottiNelCarrello.map(
 			(prodotto) => prodotto.id_prodotto
 		);
@@ -119,7 +129,6 @@ export class PagamentoAsportoPage implements OnInit {
 		this.servizioAsporto.addProdotto(this.nuovoAsporto).subscribe({
 			next: () => {
 				console.log('Ordine aggiunto con successo');
-				this.servizioCarrello.svuotaCarrello();
 			},
 			error: (err) => {
 				console.error('Errore aggiungendo ordine:', err);
