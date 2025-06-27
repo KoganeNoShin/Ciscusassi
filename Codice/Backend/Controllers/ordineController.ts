@@ -34,3 +34,5 @@ class OrdineController {
         }
     }
 }
+
+export default OrdineController;

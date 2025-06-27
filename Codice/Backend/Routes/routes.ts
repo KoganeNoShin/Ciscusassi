@@ -18,6 +18,8 @@ import OrdProdController from '../Controllers/ordprodController';
 import ordprodValidator from '../Validators/ordprodValidator';
 import TorrettaController from '../Controllers/torrettaController';
 import prenotazioneValidator from '../Validators/prenotazioneValidator';
+import ordineValidator from '../Validators/ordineValidator';
+import OrdineController from '../Controllers/ordineController';
 
 const router = express.Router();
 
@@ -88,6 +90,19 @@ router.get(
 );
 
 // Route per Ordine
+router.post(
+	'/addOrdine',
+	ordineValidator.aggiungiOrdine,
+	ordineValidator.validate,
+	OrdineController.addOrdine
+);
+
+router.post(
+	'/ordine/pay',
+	ordineValidator.aggiungiPagamentoValidator,
+	ordineValidator.validate,
+	OrdineController.addPagamento
+);
 
 // Route per OrdProd
 router.get(

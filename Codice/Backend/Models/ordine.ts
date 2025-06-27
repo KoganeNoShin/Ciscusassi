@@ -7,10 +7,10 @@ export interface OrdineInput {
 	username_ordinante: string;
 	ref_prenotazione: number;
 	ref_cliente: number | null;
-	ref_pagamento: number | null;
 }
 export interface OrdineRecord extends OrdineInput {
 	id_ordine: number;
+	ref_pagamento: number | null;
 }
 
 export class Ordine {
@@ -18,8 +18,8 @@ export class Ordine {
 	static async create(data: OrdineInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO ordini (username_ordinante, ref_prenotazione, ref_cliente, ref_pagamento) VALUES (?, ?, ?, ?)',
-				[data.username_ordinante, data.ref_prenotazione, data.ref_cliente, data.ref_pagamento],
+				'INSERT INTO ordini (username_ordinante, ref_prenotazione, ref_cliente) VALUES (?, ?, ?)',
+				[data.username_ordinante, data.ref_prenotazione, data.ref_cliente],
 				function (err) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);

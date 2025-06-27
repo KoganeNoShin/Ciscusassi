@@ -4,57 +4,59 @@ import OrdProd from '../Models/ord_prod';
 import OrdineService from '../Services/ordineService';
 import Prodotto from '../Models/prodotto';
 import Ordine from '../Models/ordine';
+import Prenotazione from '../Models/prenotazione';
+import Cliente from '../Models/cliente';
 
 // Parametri
 const idOrdineValidator = (field: string, isPagamento: boolean = false) => {
-    return (req: Request) => {
-        // Se la richiesta è DELETE, usa param per estrarre l'ID dall'URL
+    const deleteValidator = param(field)
+        .notEmpty().withMessage("L'ID dell'ordine è obbligatorio")
+        .isInt({ gt: 0 }).withMessage("L'ID dell'ordine deve essere un numero positivo")
+        .bail()
+        .custom(async (id) => {
+            const ordine = await Ordine.getById(id);
+            if (!ordine) {
+                throw new Error("Ordine non esistente");
+            }
+
+            const ordProd = await OrdProd.getByOrdine(Number(id));
+            if (ordProd && ordProd.length > 0) {
+                throw new Error("Impossibile eliminare l'ordine: contiene prodotti associati.");
+            }
+            return true;
+        });
+
+    const postValidator = body(field)
+        .notEmpty().withMessage("L'ID dell'ordine è obbligatorio")
+        .isInt({ gt: 0 }).withMessage("L'ID dell'ordine deve essere un numero positivo")
+        .bail()
+        .custom(async (id_ordine) => {
+            const ordine = await Ordine.getById(id_ordine);
+            if (!ordine) {
+                throw new Error("Ordine non esistente");
+            }
+
+            const ordProd = await OrdProd.getByOrdine(Number(id_ordine));
+            if (!ordProd || ordProd.length === 0) {
+                throw new Error("ID ordine senza prodotti ordinati");
+            }
+
+            if (isPagamento) {
+                for (const prod of ordProd) {
+                    if (prod.stato !== 'consegnato') {
+                        throw new Error("L'ordine contiene prodotti non ancora consegnati.");
+                    }
+                }
+            }
+            return true;
+        });
+
+    // Middleware compatibile con Express
+    return (req: Request, res: Response, next: NextFunction) => {
         if (req.method === 'DELETE') {
-            return param(field)  // Uso param per ottenere l'ID dalla route
-                .notEmpty().withMessage('L\'ID dell\'ordine è obbligatorio')
-                .isInt({ gt: 0 }).withMessage('L\'ID dell\'ordine deve essere un numero positivo')
-                .bail()
-                .custom(async (id) => {
-                    const ordine = await Ordine.getById(id);
-                    if(ordine == null) {
-                        throw new Error("Ordine non esistente")
-                    }
-
-                    const ordProd = await OrdProd.getByOrdine(Number(id));
-
-                    if (ordProd && ordProd.length > 0) {
-                        throw new Error('Impossibile eliminare l\'ordine: contiene prodotti associati.');
-                    }
-
-                    return true;
-                    })
+            return deleteValidator(req, res, next);
         } else {
-            // Se la richiesta è POST/GET, usa body per ottenere l'ID dal corpo della richiesta
-            return body(field)  // Uso body per ottenere l'ID dal corpo
-                .notEmpty().withMessage('L\'ID dell\'ordine è obbligatorio')
-                .isInt({ gt: 0 }).withMessage('L\'ID dell\'ordine deve essere un numero positivo')
-                .bail()
-                .custom(async (id_ordine) => {
-                    const ordine = await Ordine.getById(id_ordine);
-                    if(ordine == null) {
-                        throw new Error("Ordine non esistente")
-                    }
-
-                    const ordProd = await OrdProd.getByOrdine(Number(id_ordine));
-                    if (!ordProd || ordProd.length === 0) {
-                        throw new Error('ID ordine senza prodotti ordinati');
-                    }
-
-                    if (isPagamento) {
-                        // Se è per il pagamento, verifica che tutti i prodotti siano consegnati
-                        for (const prod of ordProd) {
-                            if (prod.stato !== 'consegnato') {
-                                throw new Error('L\'ordine contiene prodotti non ancora consegnati.');
-                            }
-                        }
-                    }
-                    return true;
-                });
+            return postValidator(req, res, next);
         }
     };
 };
@@ -94,11 +96,80 @@ const dataOraPagamentoValidator = (field: string) =>
 
             return true;
         });
-         
+        
+const ref_prenotazioneValidator = (field: string) =>
+    body(field)
+        .notEmpty().withMessage('Il riferimento alla prenotazione è obbligatorio')
+        .isInt({ gt: 0 }).withMessage('L\'ID dell\'ordine deve essere un numero positivo')
+        .bail()
+        .custom(async (valore, { req }) => {
+            const prenotazione = await Prenotazione.getById(valore);
+            if(prenotazione == null) {
+                throw new Error("Prenotazioe non trovata")
+            }
+            return true;
+        });
+
+const ref_clienteValidator = (field: string) =>
+    body(field)
+        .optional({ nullable: true })
+        .isInt({ gt: 0 }).withMessage('L\'ID cliente, se presente, deve essere un numero positivo')
+        .bail()
+        .custom(async (valore) => {
+            if (valore == null) return true;
+
+            const cliente = await Cliente.findByNumeroCarta(valore);
+            if (!cliente) {
+                throw new Error('Cliente non trovato');
+            }
+            return true;
+        });
+
+const username_ordinanteValidator = (field: string, ref_cliente_field = 'ref_cliente') =>
+    body(field)
+        .notEmpty().withMessage('Username ordinante è obbligatorio')
+        .matches(/^[a-z]+\.[a-z]+\.[0-9]{4}$/i).withMessage('Formato username non valido (nome.cognome.annodinascita)')
+        .bail()
+        .custom(async (valore, { req }) => {
+            const ref_cliente = req.body[ref_cliente_field];
+
+            if (!ref_cliente) {
+                return true;
+            }
+
+            // Estrai dati da username
+            const [nome, cognome, anno] = valore.split('.');
+
+            const utente = await Cliente.findByNumeroCarta(ref_cliente);
+
+            if (!utente) {
+                throw new Error('Utente associato al cliente non trovato');
+            }
+
+            const annoUtente = utente.data_nascita.split('/')[0];
+
+            const nomeCorrisponde = utente.nome.toLowerCase() === nome.toLowerCase();
+            const cognomeCorrisponde = utente.cognome.toLowerCase() === cognome.toLowerCase();
+            const annoCorrisponde = annoUtente === anno;
+
+            if (!nomeCorrisponde || !cognomeCorrisponde || !annoCorrisponde) {
+                throw new Error('Username non corrisponde ai dati dell\'utente associato al cliente ' + valore);
+            }
+
+            return true;
+        });
+
+// Validator
+const aggiungiOrdine = [
+    ref_prenotazioneValidator('ref_prenotazione'),
+    username_ordinanteValidator('username'),
+    ref_clienteValidator('ref_cliente')
+];
+
 const aggiungiPagamentoValidator = [
-    idOrdineValidator('id_ordine'),
-    importoPagamentoValidator('pagamento.importo'),
-    dataOraPagamentoValidator('pagamento.data_ora_pagamento')
+    idOrdineValidator('id_ordine', true),
+    importoPagamentoValidator('pagamento_importo'),
+    dataOraPagamentoValidator('data_ora_pagamento')
 ];
 
 
@@ -118,5 +189,6 @@ const validate = (req: Request, res: Response, next: NextFunction): void => {
 export default {
     validate,
     aggiungiPagamentoValidator,
-    eliminaOrdineValidator
+    eliminaOrdineValidator,
+    aggiungiOrdine
 }
