@@ -1,0 +1,37 @@
+<div id="contenitoreRicevuta">
+  <div class="content-wrapper">
+    <div class="header">
+      <img [src]="logo" alt="logo" />
+      <h2>Ricevuta</h2>
+      <small>{{ data }}</small>
+    </div>
+
+    <div class="tabella">
+      <div class="riga intestazione">
+        <span>PRODOTTO</span>
+        <span>QUANTITÀ</span>
+        <span>PREZZO</span>
+      </div>
+      @for (elemento of prodottiRaggruppati; track elemento) {
+      <div class="riga">
+        <span>{{ elemento.prodotto.nome }}</span>
+        <span>{{ elemento.quantita }}</span>
+        <span>€ {{ (elemento.prodotto.costo * elemento.quantita).toFixed(2) }}</span>
+      </div>
+      }
+    </div>
+
+    <div class="totale">
+      Totale: € {{ totale }}
+    </div>
+  
+
+  <div class="footer">
+    &copy; Ciscusassi 2025 - Tutti i diritti riservati<br>
+    Leonardo Giovanni Caiezza<br>
+    Diego Corona<br>
+    Luca Gaetani<br>
+    Daniele Orazio Susino<br>
+  </div>
+  </div>
+</div>
