@@ -1,10 +1,9 @@
 import { body, param, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
-import Prenotazione from '../Models/prenotazione';
 import Cliente from '../Models/cliente';
 import Filiale from '../Models/filiale';
 import PrenotazioneService from '../Services/prenotazioneService';
-import filialeValidator from './filialeValidator';
+
 
 // Validatori
 const dataFuturaValidator = (dataPrenotazione: Date, adesso: Date) => {
@@ -49,30 +48,33 @@ const data_ora_prenotazioneValidator = (field: string, tipo: 'futuro' | '10minut
         });
 
 const ref_filialeValidator = (field: string) => {
-	return (req: Request) => {
+  const getValidator = param(field)
+    .isInt({ min: 1 }).withMessage('ID filiale non valido')
+    .bail()
+    .custom(async (value) => {
+      const esiste = await Filiale.getById(value);
+      if (!esiste) throw new Error('La filiale specificata non esiste');
+      return true;
+    });
+
+  const postPutValidator = body(field)
+    .isInt({ min: 1 }).withMessage('ID filiale non valido')
+    .bail()
+    .custom(async (value) => {
+      const esiste = await Filiale.getById(value);
+      if (!esiste) throw new Error('La filiale specificata non esiste');
+      return true;
+    });
+
+  return (req: Request, res: Response, next: NextFunction) => {
     if (req.method === 'GET') {
-      // Se la richiesta è GET, utilizza param
-      return param(field)
-        .isInt({ min: 1 }).withMessage('ID filiale non valido')
-        .bail()
-        .custom(async (value) => {
-          const esiste = await Filiale.getById(value);
-          if (!esiste) throw new Error('La filiale specificata non esiste');
-          return true;
-        });
+      return getValidator(req, res, next);
     } else {
-      // Se la richiesta è POST/PUT, utilizza body
-      return body(field)
-        .isInt({ min: 1 }).withMessage('ID filiale non valido')
-        .bail()
-        .custom(async (value) => {
-          const esiste = await Filiale.getById(value);
-          if (!esiste) throw new Error('La filiale specificata non esiste');
-          return true;
-        });
+      return postPutValidator(req, res, next);
     }
   };
 };
+
 
 const ref_clienteValidator = (field: string) =>
 	body(field)
@@ -116,32 +118,35 @@ const numuroPersoneValidator = (field: string) =>
 		});
 
 const id_prenotazioneValidator = (field: string) => {
-	return (req: Request) => {
-		if (req.method === 'GET') {
-		// Se la richiesta è GET, utilizza param
-		return param(field)
-			.isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
-			.bail()
-			.custom(async (value) => {
-			const esiste = await Filiale.getById(value);
-			if (!esiste) throw new Error('La prenotazione specificata non esiste');
-			return true;
-			});
-		} else {
-		// Se la richiesta è POST/PUT, utilizza body
-		return body(field)
-			.isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
-			.bail()
-			.custom(async (value) => {
-			const esiste = await Filiale.getById(value);
-			if (!esiste) throw new Error('La prenotazionee specificata non esiste');
-			return true;
-			});
-		}
-	};
-	};
+    const getValidator = param(field)
+        .isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
+        .bail()
+        .custom(async (value) => {
+            const esiste = await Filiale.getById(value);
+            if (!esiste) throw new Error('La prenotazione specificata non esiste');
+            return true;
+        });
+
+    const postPutValidator = body(field)
+        .isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
+        .bail()
+        .custom(async (value) => {
+            const esiste = await Filiale.getById(value);
+            if (!esiste) throw new Error('La prenotazione specificata non esiste');
+            return true;
+        });
+
+    return (req: Request, res: Response, next: NextFunction) => {
+        if (req.method === 'GET') {
+            return getValidator(req, res, next);
+        } else {
+            return postPutValidator(req, res, next);
+        }
+    };
+};
 
 
+// Validatori
 const prenotazioneInputValidator = [
 	data_ora_prenotazioneValidator('data_ora_prenotazione', 'futuro'),
 	ref_filialeValidator('ref_filiale'),
@@ -191,9 +196,9 @@ export default {
     validate,
     prenotazioneInputValidator,
     prenotazioneInputLocoValidator,
-    prenotazioneUpdateValidator,
-    getPrenotazioniFilialeValidator,
-    comfermaPrenotazioneValidator,
-    GetOTPValidator,
+	prenotazioneUpdateValidator,
+	getPrenotazioniFilialeValidator,
+	comfermaPrenotazioneValidator,
+	GetOTPValidator,
 	statoPrenotazioneValidator
 }

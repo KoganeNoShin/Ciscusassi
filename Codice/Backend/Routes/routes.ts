@@ -1,7 +1,6 @@
 import express from 'express';
 
 import ClienteController from '../Controllers/clienteController';
-
 import AuthValidator from '../Validators/authValidator';
 import ProdottoController from '../Controllers/prodottoController';
 import FilialeController from '../Controllers/filialeController';
@@ -15,10 +14,10 @@ import asportoValidator from '../Validators/asportoValidator';
 import prodottoValidator from '../Validators/prodottoValidator';
 import filialeValidator from '../Validators/filialeValidator';
 import PrenotazioneController from '../Controllers/prenotazioneController';
-import prenotazioneValidator from '../Validators/prenotazioneValidator';
 import OrdProdController from '../Controllers/ordprodController';
 import ordprodValidator from '../Validators/ordprodValidator';
 import TorrettaController from '../Controllers/torrettaController';
+import prenotazioneValidator from '../Validators/prenotazioneValidator';
 
 const router = express.Router();
 
@@ -158,7 +157,7 @@ router.get('/prenotazione/:id', PrenotazioneController.getPrenotazioneById);
 
 router.get(
 	'/prenotazioni/cliente/:clienteId',
-	//authMiddleware,
+	authMiddleware,
 	prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniByCliente
 );
@@ -167,14 +166,14 @@ router.get(
 	'/prenotazioni/:filiale',
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere', 'chef']),
-	prenotazioneValidator.getPrenotazioniFilialeValidator,
-	prenotazioneValidator.validate,
+	prenotazioneValidator.prenotazioneInputValidator,
+    prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
 
 router.get(
 	'/tavoli-in-uso/:filiale',
-	//authMiddleware,
+	authMiddleware,
 	PrenotazioneController.getTavoliInUso,
 );
 
