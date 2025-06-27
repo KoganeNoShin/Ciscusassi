@@ -24,15 +24,12 @@
 
 				<div class="scelte ion-hide-sm-down">
 					@for(number of personePossibili; track number){
-
-					<div
-						(click)="selezionaPersone(number)"
-						[class.selected]="number === personeSelezionate"
-						[class.match-input]="inputManuale === number"
-						class="cerchio"
-					>
-						<p>{{ number }}</p>
-					</div>
+					<app-numero-posti-button
+						[number]="number"
+						[personeSelezionate]="personeSelezionate"
+						[inputManuale]="inputManuale"
+						(selectCircleEmitter)="selezionaPersone($event)"
+					></app-numero-posti-button>
 					}
 				</div>
 

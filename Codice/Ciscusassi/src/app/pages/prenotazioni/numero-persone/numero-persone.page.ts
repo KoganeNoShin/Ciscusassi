@@ -15,6 +15,7 @@ import {
 	IonInput,
 } from '@ionic/angular/standalone';
 import { IonContent, IonSpinner, IonButton } from '@ionic/angular/standalone';
+import { NumeroPostiButton } from 'src/app/components/numero-posti-button/numero-posti-button.component';
 
 @Component({
 	selector: 'app-numero-persone',
@@ -32,6 +33,7 @@ import { IonContent, IonSpinner, IonButton } from '@ionic/angular/standalone';
 		CommonModule,
 		FormsModule,
 		IonButton,
+		NumeroPostiButton,
 	],
 })
 export class NumeroPersonePage implements OnInit {

@@ -1,0 +1,48 @@
+.cerchio {
+	width: clamp(5rem, 6.5vw, 8rem);
+	height: clamp(5rem, 6.5vw, 8rem);
+	border-radius: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+	color: black;
+	background-color: white;
+
+	p {
+		font-size: clamp(1.5rem, 2vw, 4rem);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		vertical-align: text-top;
+		transition: all 0.2s ease-in-out;
+	}
+}
+
+.cerchio.selected {
+	background-color: var(--ion-color-verdechiaro);
+	border-color: var(--ion-color-verdechiaro);
+
+	p {
+		color: var(--ion-color-bianco);
+	}
+}
+
+.cerchio.match-input:not(.selected) {
+	background-color: var(--ion-color-verdechiaro);
+	border-color: var(--ion-color-verdechiaro);
+
+	p {
+		color: var(--ion-color-bianco);
+	}
+}
+
+.cerchio:hover {
+	background-color: var(--ion-color-verdechiaro);
+
+	p {
+		color: var(--ion-color-bianco);
+	}
+}
