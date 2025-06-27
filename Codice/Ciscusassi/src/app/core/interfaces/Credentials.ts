@@ -3,10 +3,14 @@ export interface Credentials {
 	password: string;
 }
 
-export interface LoginRecord {
-	token: string;
+export interface OurTokenPayload {
+	id_utente: number;
 	ruolo: 'cliente' | 'chef' | 'cameriere' | 'amministratore';
 	username: string;
-	avatar: string;
 	id_filiale?: number;
+}
+
+export interface LoginRecord {
+	token: string;
+	avatar: string;
 }

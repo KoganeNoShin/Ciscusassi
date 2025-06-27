@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { ApiResponse } from '../interfaces/ApiResponse';
-import { LoginRecord } from '../interfaces/Credentials';
+import { LoginRecord, OurTokenPayload } from '../interfaces/Credentials';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Credentials } from '../interfaces/Credentials';
 
@@ -11,14 +11,19 @@ import { Storage } from '@ionic/storage-angular';
 
 import { firstValueFrom } from 'rxjs';
 
+import { jwtDecode } from 'jwt-decode';
+
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthenticationService {
 	private apiURL = environment.apiURL;
 
+	private idUtenteSubject = new BehaviorSubject<number>(-1);
+	id_utente$ = this.idUtenteSubject.asObservable(); // Il dollaro alla fine è convenzione per indicare un observable!
+
 	private tokenSubject = new BehaviorSubject<string>('');
-	token$ = this.tokenSubject.asObservable(); // Il dollaro alla fine è convenzione per indicare un observable!
+	token$ = this.tokenSubject.asObservable();
 
 	private roleSubject = new BehaviorSubject<string>('');
 	role$ = this.roleSubject.asObservable();
@@ -46,6 +51,16 @@ export class AuthenticationService {
 		);
 	}
 
+	decodeTokenPayload(token: string): OurTokenPayload {
+		try {
+			const decoded = jwtDecode<OurTokenPayload>(token);
+
+			return decoded;
+		} catch (err) {
+			throw new Error('Token non valido o scaduto!');
+		}
+	}
+
 	invalidateToken(): Observable<ApiResponse<string>> {
 		return this.http.get<ApiResponse<string>>(`${this.apiURL}/logout`);
 	}
@@ -60,6 +75,7 @@ export class AuthenticationService {
 
 	async init(): Promise<void> {
 		await Promise.all([
+			this.loadIdUtente(),
 			this.loadToken(),
 			this.loadUsername(),
 			this.loadRole(),
@@ -77,6 +93,7 @@ export class AuthenticationService {
 			}
 
 			await Promise.all([
+				this.clearIdUtente(),
 				this.clearToken(),
 				this.clearRole(),
 				this.clearUsername(),
@@ -90,6 +107,12 @@ export class AuthenticationService {
 	}
 
 	// ----- LOADERS ------
+
+	async loadIdUtente(): Promise<void> {
+		const id_utente = await this.storage.get('auth-id-utente');
+		this.idUtenteSubject.next(id_utente ?? -1);
+		console.log(id_utente);
+	}
 
 	async loadToken(): Promise<void> {
 		const token = await this.storage.get('auth-token');
@@ -123,6 +146,11 @@ export class AuthenticationService {
 
 	// ----- SETTERS ------
 
+	async setIdUtente(id_utente: number): Promise<void> {
+		await this.storage.set('auth-id-utente', id_utente);
+		this.idUtenteSubject.next(id_utente);
+	}
+
 	async setToken(token: string): Promise<void> {
 		await this.storage.set('auth-token', token);
 		this.tokenSubject.next(token);
@@ -152,6 +180,10 @@ export class AuthenticationService {
 
 	// ----- GETTERS ------
 
+	getIdUtente(): number {
+		return this.idUtenteSubject.getValue();
+	}
+
 	getToken(): string {
 		return this.tokenSubject.getValue();
 	}
@@ -173,6 +205,11 @@ export class AuthenticationService {
 	}
 
 	// ----- CLEARERS ------
+
+	async clearIdUtente(): Promise<void> {
+		await this.storage.remove('auth-id-utente');
+		this.idUtenteSubject.next(-1);
+	}
 
 	async clearToken(): Promise<void> {
 		await this.storage.remove('auth-token');

@@ -8,7 +8,6 @@ import { AsportoInput, AsportoRecord } from '../interfaces/Asporto';
 @Injectable({
 	providedIn: 'root',
 })
-
 export class AsportoService {
 	private apiURL = environment.apiURL;
 
@@ -26,8 +25,11 @@ export class AsportoService {
 			prodotto
 		);
 	}
-	
-	updateProdotto(id: number, prodotto: AsportoInput): Observable<ApiResponse<void>> {
+
+	updateProdotto(
+		id: number,
+		prodotto: AsportoInput
+	): Observable<ApiResponse<void>> {
 		return this.http.put<ApiResponse<void>>(
 			`${this.apiURL}/updateAsporto/${id}`,
 			prodotto

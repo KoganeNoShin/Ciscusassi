@@ -62,26 +62,20 @@ export class RingraziamentiAsportoPage implements OnInit {
 			environmentInjector: this.injector,
 		});
 
-		// Passa i dati necessari
 		componentRef.instance.carrello = this.carrello;
-		componentRef.instance.logo = 'assets/icon/logo.png'; // imposta il path corretto del logo
+		componentRef.instance.logo = 'assets/icon/logo.png';
 
 		componentRef.changeDetectorRef.detectChanges();
 
-		// Ottieni il DOM element
 		const element = componentRef.location.nativeElement as HTMLElement;
-
-		// Applica stile e classe PDF
 		element.style.position = 'fixed';
 		element.style.top = '-10000px';
 		element.style.left = '-10000px';
 		element.style.width = '800px';
 		element.classList.add('pdf-mode');
 
-		// Aggiungi al DOM
 		document.body.appendChild(element);
 
-		// Aspetta che l'immagine venga caricata
 		await new Promise((resolve) => {
 			const img = element.querySelector('img');
 			if (img && !img.complete) {
@@ -91,22 +85,59 @@ export class RingraziamentiAsportoPage implements OnInit {
 				resolve(null);
 			}
 		});
-
-		// Aspetta un attimo per sicurezza
 		await new Promise((resolve) => setTimeout(resolve, 100));
 
-		// Cattura con html2canvas
-		const canvas = await html2canvas(element, { scale: 2 });
-		const imgData = canvas.toDataURL('image/png');
+		// Step 1: Cattura intero canvas
+		const canvas = await html2canvas(element, { scale: 2.5 });
+		const imgWidth = 210; // A4 larghezza in mm
+		const pageHeight = 297; // A4 altezza in mm
+		const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-		// Genera PDF
-		const pdf = new jsPDF('p', 'mm', 'a4');
-		const pdfWidth = pdf.internal.pageSize.getWidth();
-		const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-		pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+		const pdf = new jsPDF({
+			orientation: 'p',
+			unit: 'mm',
+			format: 'a4',
+			compress: true,
+		});
+
+		// Step 2: Calcola la scala in px per 1mm nel PDF
+		const pageHeightPx = (canvas.width / imgWidth) * pageHeight;
+
+		let position = 0;
+
+		while (position < canvas.height) {
+			const pageCanvas = document.createElement('canvas');
+			pageCanvas.width = canvas.width;
+			pageCanvas.height = Math.min(
+				pageHeightPx,
+				canvas.height - position
+			);
+
+			const ctx = pageCanvas.getContext('2d');
+			ctx?.drawImage(
+				canvas,
+				0,
+				position, // source x,y
+				canvas.width,
+				pageCanvas.height, // source width,height
+				0,
+				0,
+				canvas.width,
+				pageCanvas.height // destination
+			);
+
+			const imgData = pageCanvas.toDataURL('image/jpeg', 0.9);
+			const imgHeightMM = (pageCanvas.height * imgWidth) / canvas.width;
+
+			if (position > 0) pdf.addPage();
+			pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeightMM);
+
+			position += pageCanvas.height;
+		}
+
 		pdf.save('ricevuta.pdf');
 
-		// Pulisci
+		// Cleanup
 		document.body.removeChild(element);
 		componentRef.destroy();
 	}

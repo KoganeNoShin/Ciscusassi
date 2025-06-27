@@ -9,7 +9,6 @@ import {
 	IonCard,
 	IonText,
 	IonButton,
-	IonLabel,
 	IonItem,
 	IonSpinner,
 	IonInputPasswordToggle,
@@ -23,7 +22,11 @@ import {
 	Validators,
 } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import { Credentials, LoginRecord } from 'src/app/core/interfaces/Credentials';
+import {
+	Credentials,
+	LoginRecord,
+	OurTokenPayload,
+} from 'src/app/core/interfaces/Credentials';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { IonInput } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
@@ -70,15 +73,18 @@ export class LoginPage implements OnInit {
 		console.log(response);
 
 		if (response.success && response.data) {
-			const { token, ruolo, username, avatar, id_filiale } =
-				response.data;
+			const risposta: LoginRecord = response.data;
+
+			const tokenPayload: OurTokenPayload =
+				this.authenticationService.decodeTokenPayload(risposta.token);
 
 			Promise.all([
-				this.authenticationService.setToken(token),
-				this.authenticationService.setRole(ruolo),
-				this.authenticationService.setUsername(username),
-				this.authenticationService.setAvatar(avatar),
-				this.authenticationService.setFiliale(id_filiale),
+				this.authenticationService.setIdUtente(tokenPayload.id_utente),
+				this.authenticationService.setToken(risposta.token),
+				this.authenticationService.setRole(tokenPayload.ruolo),
+				this.authenticationService.setUsername(tokenPayload.username),
+				this.authenticationService.setAvatar(risposta.avatar),
+				this.authenticationService.setFiliale(tokenPayload.id_filiale),
 			])
 				.then(() => this.navigation.navigateRoot('/home'))
 				.catch((err) => {

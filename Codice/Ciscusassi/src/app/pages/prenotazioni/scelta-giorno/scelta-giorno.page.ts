@@ -21,7 +21,6 @@ import {
 	IonButton,
 	IonGrid,
 	IonText,
-	IonCheckbox,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -30,7 +29,6 @@ import {
 	styleUrls: ['./scelta-giorno.page.scss'],
 	standalone: true,
 	imports: [
-		IonCheckbox,
 		IonText,
 		IonGrid,
 		IonButton,
