@@ -105,6 +105,13 @@ router.post(
 );
 
 // Route per OrdProd
+router.post(
+	'/ordine/addProdotti',
+	ordprodValidator.ordProdArrayValidator,
+	ordprodValidator.validate,
+	OrdProdController.addProdottiOrdine
+);
+
 router.get(
 	'/ordprod/:id',
 	authMiddleware,

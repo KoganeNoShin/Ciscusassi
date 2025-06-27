@@ -2,10 +2,13 @@ import { body, param, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Ordine from '../Models/ordine';
 import OrdProd from '../Models/ord_prod';
+import { error } from 'console';
+import { stat } from 'fs';
+import Prodotto from '../Models/prodotto';
 
 // Parametri
-const idOrdineValidator = (field: string) =>
-    param(field)
+const idOrdineValidator = (field: string) => {
+    const paramValidator = param(field)
         .notEmpty().withMessage('ID ordine obbligatorio')
         .isInt({ gt: 0 }).withMessage('ID ordine non valido')
         .bail()
@@ -14,6 +17,25 @@ const idOrdineValidator = (field: string) =>
             if (!ordine) throw new Error('Ordine non trovato nel database');
             return true;
         });
+
+    const bodyValidator = body(field)
+        .notEmpty().withMessage('ID ordine obbligatorio')
+        .isInt({ gt: 0 }).withMessage('ID ordine non valido')
+        .bail()
+        .custom(async (id) => {
+            const ordine = await Ordine.getById(Number(id));
+            if (!ordine) throw new Error('Ordine non trovato nel database');
+            return true;
+        });
+
+    return (req: Request, res: Response, next: NextFunction) => {
+        if (req.method === 'POST') {
+            return bodyValidator(req, res, next);
+        } else {
+            return paramValidator(req, res, next);
+        }
+    };
+}
 
 const idOrdProdValidator = (field: string) =>
     param(field)
@@ -31,36 +53,71 @@ const statoProdottoValidator = (field: string) =>
         .notEmpty().withMessage('Stato obbligatorio')
         .isString().withMessage('Lo stato deve essere una stringa')
         .bail()
-        .custom((nuovoStato, { req }) => {
+        .custom(async (nuovoStato, { req }) => {
             const statoNorm = nuovoStato.toLowerCase();
-			const STATI_VALIDI = ['non-in-lavorazione', 'preparazione', 'in-consegna', 'consegnato'];
-			const TRANSIZIONI_VALIDE: Record<string, string[]> = {
-				'non-in-lavorazione': ['preparazione'],
-				'preparazione': ['in-consegna'],
-				'in-consegna': ['consegnato', 'non-in-lavorazione'],
-				'consegnato': []
-			};
+            const STATI_VALIDI = ['non-in-lavorazione', 'preparazione', 'in-consegna', 'consegnato'];
+            const TRANSIZIONI_VALIDE: Record<string, string[]> = {
+                'non-in-lavorazione': ['preparazione'],
+                'preparazione': ['in-consegna'],
+                'in-consegna': ['consegnato', 'non-in-lavorazione'],
+                'consegnato': []
+            };
 
             // Verifica che lo stato sia valido
             if (!STATI_VALIDI.includes(statoNorm)) {
                 throw new Error(`Stato non valido. Valori ammessi: ${STATI_VALIDI.join(', ')}`);
             }
 
-            // Ottieni lo stato attuale
-            const statoAttuale: string = req.currentStato;
+            // Ottieni l'ID dell'ordine prodotto dal corpo della richiesta
+            const id_ord_prod = req.body.id_ord_prod;
+            if (!id_ord_prod) {
+                throw new Error("ID ordine prodotto è obbligatorio.");
+            }
 
-            // Ottieni le transizioni ammesse per lo stato attuale
-            const transizioniAmmesse = TRANSIZIONI_VALIDE[statoAttuale];
+            // Recupera l'ordine prodotto dal database
+            const ordProd = await OrdProd.getById(id_ord_prod);
 
-            // Verifica che la transizione sia consentita
-            if (!transizioniAmmesse.includes(statoNorm)) {
-                throw new Error(
-                    `Transizione non consentita da '${statoAttuale}' a '${statoNorm}'. ` +
-                    `Transizioni ammesse: ${transizioniAmmesse.join(', ') || 'nessuna'}`
-                );
+            // Se l'ordine prodotto esiste, controlla la transizione di stato
+            if (ordProd != null) {
+                const statoAttuale: string = ordProd.stato;
+                const transizioniAmmesse = TRANSIZIONI_VALIDE[statoAttuale];
+
+                // Verifica che la transizione sia consentita
+                if (!transizioniAmmesse.includes(statoNorm)) {
+                    throw new Error(
+                        `Transizione non consentita da '${statoAttuale}' a '${statoNorm}'. ` +
+                        `Transizioni ammesse: ${transizioniAmmesse.join(', ') || 'nessuna'}`
+                    );
+                }
+            } 
+            // Se l'ordine prodotto non esiste e lo stato non è "non-in-lavorazione", lancia errore
+            else if (statoNorm !== 'non-in-lavorazione') {
+                throw new Error("Lo stato dell'ordine prodotto deve essere 'non-in-lavorazione' per nuovi prodotti.");
             }
 
             return true;
+        });
+
+const is_romanaValidator = (field: string) =>
+    body(field)
+        .notEmpty().withMessage('Is_Romana prodotto obbligatorio')
+        .isBoolean().withMessage('Is_Romana prodotto deve essere booleano');
+
+const prodottoValidator = (field: string) =>
+    body(field)
+        .notEmpty().withMessage('Il prodotto è obbligatorio')
+        .isInt({ gt: 0 }).withMessage('ID prodotto non valido')
+        .bail()
+        .custom(async (idProdotto) => {
+            try {
+                const prodotto = await Prodotto.getByID(idProdotto);
+                if (!prodotto) {
+                    throw new Error(`Prodotto con ID ${idProdotto} non esiste`);
+                }
+                return true;
+            } catch (err) {
+                throw new Error('Errore durante il recupero del prodotto');
+            }
         });
 
 // Validatori
@@ -71,6 +128,13 @@ const getProdottiByOrdineValidator = [
 const cambiaStatoProdottoValidator = [
 	idOrdProdValidator('id'),
 	statoProdottoValidator('stato')
+];
+
+const ordProdArrayValidator = [
+    idOrdineValidator('*.ref_ordine'),
+    prodottoValidator('*.ref_prodotto'),
+    statoProdottoValidator('*.statoProdotto'),
+    is_romanaValidator('*.Is_Romana')
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
@@ -85,5 +149,6 @@ const validate = (req: Request, res: Response, next: NextFunction): void => {
 export default {
     validate,
     getProdottiByOrdineValidator,
-    cambiaStatoProdottoValidator
+    cambiaStatoProdottoValidator,
+    ordProdArrayValidator
 }

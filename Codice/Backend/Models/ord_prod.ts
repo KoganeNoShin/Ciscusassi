@@ -15,62 +15,23 @@ export interface OrdProdRecord extends OrdProdInput {
 }
 
 export class OrdProd {
-	// definisco il metodo per creare un nuovo utente
+	// Creazione di un nuovo OrdProd
 	static async create(data: OrdProdInput): Promise<number> {
-		const { is_romana, stato, ref_prodotto, ref_ordine } = data;
-
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO ord_prod (is_romana, stato, ref_prodotto, ref_ordine) VALUES (?, ?, ?, ?)',
-				[is_romana, stato, ref_prodotto, ref_ordine],
+				[data.is_romana, data.stato, data.ref_prodotto, data.ref_ordine],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						reject(err);
+					}
 					else resolve(this.lastID);
 				}
 			);
 		});
 	}
 
-	static async findAll(): Promise<OrdProdRecord[]> {
-		return new Promise((resolve, reject) => {
-			db.all(
-				'SELECT * FROM ord_prod',
-				(err: Error | null, rows: OrdProdRecord[]) => {
-					if (err) reject(err);
-					else resolve(rows);
-				}
-			);
-		});
-	}
-
-	// Ricerca per id
-	static async findById(id: number): Promise<OrdProdRecord> {
-		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT * FROM ord_prod WHERE id_ord_prod = ?',
-				[id],
-				(err: Error | null, row: OrdProdRecord) => {
-					if (err) reject(err);
-					else resolve(row);
-				}
-			);
-		});
-	}
-
-	// Aggiungi un prodotto ordinato
-	static async addProdotto(ref_ordine: number, ref_prodotto: number): Promise<number> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'INSERT INTO ord_prod (ref_ordine, ref_prodotto) VALUES (?, ?)',
-				[ref_ordine, ref_prodotto],
-				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
-					else resolve(this.lastID);
-				}
-			);
-		});
-	}
-	
 	// Rimuovi un prodotto ordinato
 	static async removeProdotto(id_ord_prod: number): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -78,38 +39,21 @@ export class OrdProd {
 				'DELETE FROM ord_prod WHERE id_ord_prod = ?',
 				[id_ord_prod],
 				function (this: RunResult, err: Error | null) {
-					if (err) reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
+						console.error('🧾 Query params:', id_ord_prod);
+						reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessun prodotto dell'ordine eliminato con ID ${id_ord_prod}`);
+						return reject(new Error(`Nessun prodotto dell'ordine trovato con ID ${id_ord_prod}`));
+					}
 					else resolve();
 				}
 			);
 		});
 	}
-	// IsRomana cambio
-	static async cambiaRomana(id_ord_prod: number): Promise<void> {
-	return new Promise((resolve, reject) => {
-		db.get(
-			'SELECT is_romana FROM ord_prod WHERE id_ord_prod = ?',
-			[id_ord_prod],
-			(err: Error | null, row: { is_romana: number }) => {
-				if (err) return reject(err);
-				if (!row) return reject(new Error("Ordine non trovato"));
 
-				const nuovoValore = !row.is_romana;
-
-				db.run(
-					'UPDATE ord_prod SET is_romana = ? WHERE id_ord_prod = ?',
-					[nuovoValore, id_ord_prod],
-					function (this: RunResult, err: Error | null) {
-						if (err) reject(err);
-						else resolve();
-					}
-				);
-			}
-		);
-		});
-	}
-
-// ----------------------------------CORRETTO----------------------------------
 	// Selezione di un Prodotto Ordinato per ID
 	static async getById(id_ord_prod: number): Promise<OrdProdRecord | null>{
 		return new Promise((resolve, reject) => {
@@ -186,6 +130,7 @@ export class OrdProd {
 		});
 	}
 
+	// Cambia Stato
 	static async cambiaStato(id_ord_prod: number, nuovoStato: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(

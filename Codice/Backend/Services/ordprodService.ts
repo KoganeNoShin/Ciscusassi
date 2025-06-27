@@ -1,4 +1,4 @@
-import OrdProd, { OrdProdRecord } from "../Models/ord_prod";
+import OrdProd, {OrdProdInput, OrdProdRecord } from "../Models/ord_prod";
 import Prodotto, { ProdottoInput } from "../Models/prodotto";
 
 interface OrdProdEstended extends ProdottoInput {
@@ -8,6 +8,22 @@ interface OrdProdEstended extends ProdottoInput {
 }
 
 class OrdProdService {
+    static async creaOrdiniProdotto(ordini: OrdProdInput[]): Promise<number[]> {
+        const idsInseriti: number[] = [];
+
+        for (const ordine of ordini) {
+            try {
+                const id = await OrdProd.create(ordine);
+                idsInseriti.push(id);
+            } catch (err) {
+                console.error('❌ [SERVICE ERROR] Errore durante la creazione di un OrdProd:', err);
+                throw err; // se preferisci continuare anche in caso di errore, rimuovi questa riga
+            }
+        }
+
+        return idsInseriti;
+    }
+
     static async getProdottiByOrdine(ordineId: number): Promise<OrdProdEstended[] | null> {
         try {
             const ord_prod = await OrdProd.getByOrdine(ordineId);
