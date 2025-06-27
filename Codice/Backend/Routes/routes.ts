@@ -88,9 +88,6 @@ router.get(
 );
 
 // Route per Ordine
-router.get(
-	'/addOrdine'
-);
 
 // Route per OrdProd
 router.get(

@@ -20,7 +20,7 @@ const emailValidator = (field: string) =>
 const passwordValidator = (field: string) =>
 	body(field)
 		.notEmpty().withMessage('La password è obbligatoria')
-		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri')
+		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri');
 
 // Metto il controllo delle lettere minuscole, maiuscole, numeri e caratteri speciali qua perché è comune a entrambi i campi
 // e in login non serve controllare, in registrazione sì		
