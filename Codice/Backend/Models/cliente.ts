@@ -24,7 +24,6 @@ export interface ClienteRecord extends ClienteData {
 	punti: number;
 }
 
-
 class Cliente {
 	static async create(data: ClienteData): Promise<number> {
 		const { nome, cognome, data_nascita, email, password, image } = data;
@@ -44,9 +43,10 @@ class Cliente {
 		});
 	}
 
-	static async updateToken(numeroCarta: number): Promise<string> {
-		const token = crypto.randomBytes(64).toString('hex'); // 128 caratteri random
-
+	static async updateToken(
+		numeroCarta: number,
+		token: string
+	): Promise<string> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
@@ -60,7 +60,6 @@ class Cliente {
 	}
 
 	// definisco il metodo per creare un nuovo utente
-	
 
 	// definiamo il metodo per ritornare tutti i clienti
 	static async findAll(): Promise<ClienteRecord[] | null> {
@@ -122,11 +121,11 @@ class Cliente {
 		});
 	}
 
-	static async invalidateToken(token: string): Promise<void> {
+	static async invalidateToken(numero_carta: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'UPDATE clienti SET token = NULL WHERE token = ?',
-				[token],
+				'UPDATE clienti SET token = NULL WHERE numero_carta = ?',
+				[numero_carta],
 				(err: Error | null) => {
 					if (err) reject(err);
 					else resolve();

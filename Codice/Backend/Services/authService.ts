@@ -3,10 +3,41 @@ import Cliente, {
 	ClienteData,
 	ClienteRecord,
 } from '../Models/cliente';
-import { credentials, LoginRecord } from '../Models/credentials';
+import {
+	credentials,
+	LoginRecord,
+	OurTokenPayload,
+} from '../Models/credentials';
 import Impiegato, { ImpiegatoRecord } from '../Models/impiegato';
 
+import jwt, { Secret, SignOptions } from 'jsonwebtoken';
+
 class AuthService {
+	static generateToken(payload: OurTokenPayload): string {
+		// Impostazioni del token
+		const secretKey: Secret =
+			process.env.JWT_SECRET_KEY || 'PasswordDelJWT';
+
+		const options: SignOptions = {
+			expiresIn: '1d', // Impostiamo che ogni token dura un giorno
+		};
+
+		return jwt.sign(payload, secretKey, options);
+	}
+
+	static verifyToken(token: string) {
+		try {
+			const decoded = jwt.verify(
+				token,
+				process.env.JWT_SECRET_KEY || 'PasswordDelJWT'
+			);
+
+			return decoded;
+		} catch (err) {
+			throw new Error('Token non valido o scaduto!');
+		}
+	}
+
 	static async register(input: ClienteData) {
 		const existing = await Cliente.findByEmail(input.email!);
 
@@ -37,12 +68,18 @@ class AuthService {
 
 			if (!passwordMatch) return;
 
-			const token = await Cliente.updateToken(user.numero_carta);
+			const tokenPayload: OurTokenPayload = {
+				id_utente: user.numero_carta,
+				ruolo: 'cliente',
+				username: `${user.nome} ${user.cognome}`,
+			};
+
+			const token = this.generateToken(tokenPayload);
+
+			await Cliente.updateToken(user.numero_carta, token);
 
 			const loginRecord: LoginRecord = {
 				token: token,
-				ruolo: 'cliente',
-				username: `${user.nome} ${user.cognome}`,
 				avatar: user.image,
 			};
 
@@ -62,17 +99,24 @@ class AuthService {
 			const impiegato = await Impiegato.getByEmail(input.email);
 
 			if (!impiegato) throw new Error('Impiegato non trovato');
-			const token = await Impiegato.updateToken(impiegato.matricola);
 
-			const loginRecord: LoginRecord = {
-				token: token,
+			const tokenPayload: OurTokenPayload = {
+				id_utente: impiegato.matricola,
 				ruolo: impiegato.ruolo.toLowerCase() as
 					| 'chef'
 					| 'cameriere'
 					| 'amministratore',
 				username: `${impiegato.nome} ${impiegato.cognome}`,
-				avatar: impiegato.foto,
 				id_filiale: impiegato.ref_filiale,
+			};
+
+			const token = this.generateToken(tokenPayload);
+
+			await Impiegato.updateToken(impiegato.matricola, token);
+
+			const loginRecord: LoginRecord = {
+				token: token,
+				avatar: impiegato.foto,
 			};
 
 			return loginRecord;
@@ -86,7 +130,7 @@ class AuthService {
 		const cliente = await Cliente.findByToken(token);
 
 		if (cliente) {
-			await Cliente.invalidateToken(token);
+			await Cliente.invalidateToken(cliente.numero_carta);
 			return true;
 		}
 

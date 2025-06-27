@@ -41,35 +41,65 @@ export class Impiegato {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO impiegati (nome, cognome, ruolo, foto, email, data_nascita, password, ref_filiale) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-				[data.nome, data.cognome, data.ruolo, data.foto, data.email, data.data_nascita, hashedPassword, data.ref_filiale],
+				[
+					data.nome,
+					data.cognome,
+					data.ruolo,
+					data.foto,
+					data.email,
+					data.data_nascita,
+					hashedPassword,
+					data.ref_filiale,
+				],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante INSERT:',
+							err.message
+						);
 						reject(err);
-					}
-					else resolve(this.lastID);
+					} else resolve(this.lastID);
 				}
 			);
 		});
 	}
 
 	// Modifica Impiegato
-	static async updateImpiegato(data: ImpiegatoData, matricola: number): Promise<void> {
+	static async updateImpiegato(
+		data: ImpiegatoData,
+		matricola: number
+	): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE impiegati SET nome = ?, cognome = ?, ruolo = ?, foto = ?, data_nascita = ?, ref_filiale = ? WHERE matricola = ?',
-				[data.nome, data.cognome, data.ruolo, data.foto, data.data_nascita, data.ref_filiale, matricola],
+				[
+					data.nome,
+					data.cognome,
+					data.ruolo,
+					data.foto,
+					data.data_nascita,
+					data.ref_filiale,
+					matricola,
+				],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante UPDATE:',
+							err.message
+						);
 						console.error('🧾 Query params:', matricola);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun impiegato aggiornato con matricola ${matricola}`);
-						return reject(new Error(`Nessun impiegato trovato con matricola ${matricola}`));
-					}
-					else resolve();
+						console.warn(
+							`⚠️ [DB WARNING] Nessun impiegato aggiornato con matricola ${matricola}`
+						);
+						return reject(
+							new Error(
+								`Nessun impiegato trovato con matricola ${matricola}`
+							)
+						);
+					} else resolve();
 				}
 			);
 		});
@@ -83,31 +113,46 @@ export class Impiegato {
 				[matricola],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante DELETE:',
+							err.message
+						);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun impiegato eliminato con matricola ${matricola}`);
-						return reject(new Error(`Nessun impiegato trovato con matricola ${matricola}`));
-					}
-					else resolve();
+						console.warn(
+							`⚠️ [DB WARNING] Nessun impiegato eliminato con matricola ${matricola}`
+						);
+						return reject(
+							new Error(
+								`Nessun impiegato trovato con matricola ${matricola}`
+							)
+						);
+					} else resolve();
 				}
 			);
 		});
 	}
 
 	// Seleziona tutti gli Impiegati
-	static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
+	static async getByFiliale(
+		id_filiale: number
+	): Promise<ImpiegatoRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
 				'SELECT * FROM impiegati WHERE ref_filiale = ?',
 				[id_filiale],
 				(err: Error | null, rows: ImpiegatoRecord[]) => {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante SELECT:',
+							err.message
+						);
 						reject(err);
 					} else if (!rows || rows.length === 0) {
-						console.warn('⚠️ [DB WARNING] Nessun Impiegato trovato');
+						console.warn(
+							'⚠️ [DB WARNING] Nessun Impiegato trovato'
+						);
 						resolve([]);
 					} else resolve(rows);
 				}
@@ -123,7 +168,10 @@ export class Impiegato {
 				[email],
 				(err: Error | null, row: ImpiegatoRecord) => {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante SELECT:',
+							err.message
+						);
 						reject(err);
 					} else if (!row) {
 						console.log('⚠️ [DB WARNING] Nessun Prodotto trovato');
@@ -133,28 +181,37 @@ export class Impiegato {
 			);
 		});
 	}
-	
+
 	//------------------ ZONA CREDENZIALI ------------------//
 
 	// Aggiornamento Token Impiegato
-	static async updateToken(matricola: number): Promise<string> {
-		const token = crypto.randomBytes(64).toString('hex'); // 128 caratteri random
-
+	static async updateToken(
+		matricola: number,
+		token: string
+	): Promise<string> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE impiegati SET token = ? WHERE matricola = ?',
 				[token, matricola],
 				function (this: RunResult, err: Error) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante UPDATE:',
+							err.message
+						);
 						console.error('🧾 Query params:', matricola);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun Token aggiornato con Impiegato matricola ${matricola}`);
-						return reject(new Error(`Nessun Token aggiornato con Impiegato matricola ${matricola}`));
-					}
-					else return resolve(token);
+						console.warn(
+							`⚠️ [DB WARNING] Nessun Token aggiornato con Impiegato matricola ${matricola}`
+						);
+						return reject(
+							new Error(
+								`Nessun Token aggiornato con Impiegato matricola ${matricola}`
+							)
+						);
+					} else return resolve(token);
 				}
 			);
 		});
@@ -168,7 +225,10 @@ export class Impiegato {
 				[token],
 				(err: Error, row: ImpiegatoRecord) => {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante SELECT:',
+							err.message
+						);
 						return reject(err);
 					}
 					if (!row) return resolve(null);
@@ -179,14 +239,19 @@ export class Impiegato {
 	}
 
 	// Seleziona le credenziali dell'impiegato in base all'email
-	static async getPassword(email: string): Promise<ImpiegatoCredentials | null> {
+	static async getPassword(
+		email: string
+	): Promise<ImpiegatoCredentials | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
 				'SELECT impiegati.email, impiegati.password FROM impiegati WHERE email = ?',
 				[email],
 				(err: Error | null, row: ImpiegatoCredentials) => {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante SELECT:',
+							err.message
+						);
 						return reject(err);
 					}
 					if (!row) return resolve(null);
@@ -204,10 +269,12 @@ export class Impiegato {
 				[matricola],
 				(err: Error | null) => {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante SELECT:',
+							err.message
+						);
 						return reject(err);
-					}
-					else resolve();
+					} else resolve();
 				}
 			);
 		});

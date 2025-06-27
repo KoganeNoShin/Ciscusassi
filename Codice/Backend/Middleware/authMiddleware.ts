@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Cliente from '../Models/cliente';
 import Impiegato from '../Models/impiegato';
+import AuthService from '../Services/authService';
 
 export interface AuthenticatedRequest extends Request {
 	user?: {
@@ -23,6 +24,13 @@ const authMiddleware = (
 	}
 
 	const token = authHeader.split(' ')[1];
+	var expiredToken = false;
+
+	try {
+		AuthService.verifyToken(token);
+	} catch (err) {
+		expiredToken = true;
+	}
 
 	Cliente.findByToken(token)
 		.then((cliente) => {
@@ -32,6 +40,17 @@ const authMiddleware = (
 					id: cliente.numero_carta,
 					ruolo: 'cliente',
 				};
+
+				if (expiredToken) {
+					Cliente.invalidateToken(cliente.numero_carta);
+					res.status(401).json({
+						success: false,
+						message: 'Il token è scaduto!',
+					});
+
+					return;
+				}
+
 				next();
 			} else {
 				// Non cliente, cerco impiegato
@@ -47,6 +66,17 @@ const authMiddleware = (
 								| 'cameriere',
 						};
 						console.log('Utente caricato:', req.user);
+
+						if (expiredToken) {
+							Impiegato.invalidateToken(impiegato.matricola);
+							res.status(401).json({
+								success: false,
+								message: 'Il token è scaduto!',
+							});
+
+							return;
+						}
+
 						next();
 					} else {
 						res.status(401).json({
@@ -61,7 +91,7 @@ const authMiddleware = (
 			console.error('Errore authMiddleware:', err);
 			res.status(500).json({
 				success: false,
-				message: 'Errore del server',
+				message: 'Errore del server ' + err,
 			});
 		});
 };
