@@ -4,6 +4,7 @@ import Prenotazione from '../Models/prenotazione';
 import Cliente from '../Models/cliente';
 import Filiale from '../Models/filiale';
 import PrenotazioneService from '../Services/prenotazioneService';
+import filialeValidator from './filialeValidator';
 
 // Validatori
 const dataFuturaValidator = (dataPrenotazione: Date, adesso: Date) => {
@@ -47,16 +48,31 @@ const data_ora_prenotazioneValidator = (field: string, tipo: 'futuro' | '10minut
             return true;
         });
 
-const ref_filialeValidator = (field: string) =>
-	body(field)
-		.notEmpty().withMessage('La filiale è obbligatoria')
-		.isInt({ min: 1 }).withMessage('ID filiale non valido')
-		.bail()
-		.custom(async (value) => {
-			const esiste = await Filiale.getById(value);
-			if (!esiste) throw new Error('La filiale specificata non esiste');
-			return true;
-		});
+const ref_filialeValidator = (field: string) => {
+	return (req: Request) => {
+    if (req.method === 'GET') {
+      // Se la richiesta è GET, utilizza param
+      return param(field)
+        .isInt({ min: 1 }).withMessage('ID filiale non valido')
+        .bail()
+        .custom(async (value) => {
+          const esiste = await Filiale.getById(value);
+          if (!esiste) throw new Error('La filiale specificata non esiste');
+          return true;
+        });
+    } else {
+      // Se la richiesta è POST/PUT, utilizza body
+      return body(field)
+        .isInt({ min: 1 }).withMessage('ID filiale non valido')
+        .bail()
+        .custom(async (value) => {
+          const esiste = await Filiale.getById(value);
+          if (!esiste) throw new Error('La filiale specificata non esiste');
+          return true;
+        });
+    }
+  };
+};
 
 const ref_clienteValidator = (field: string) =>
 	body(field)
@@ -99,106 +115,67 @@ const numuroPersoneValidator = (field: string) =>
 			return true;
 		});
 
-const id_prenotazioneValidator = (field: string) =>
-	body(field)
-		.notEmpty().withMessage('L\'ID della prenotazione è obbligatorio!')
-		.isInt({ min: 1 }).withMessage('L\'ID della prenotazione deve essere un intero positivo')
-		.bail()
-		.custom(async (id) => {
-			const pren = await Prenotazione.getById(id);
-			if (!pren) {
-				throw new Error('Prenotazione non trovata');
-			}
+const id_prenotazioneValidator = (field: string) => {
+	return (req: Request) => {
+		if (req.method === 'GET') {
+		// Se la richiesta è GET, utilizza param
+		return param(field)
+			.isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
+			.bail()
+			.custom(async (value) => {
+			const esiste = await Filiale.getById(value);
+			if (!esiste) throw new Error('La prenotazione specificata non esiste');
 			return true;
-		});
+			});
+		} else {
+		// Se la richiesta è POST/PUT, utilizza body
+		return body(field)
+			.isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
+			.bail()
+			.custom(async (value) => {
+			const esiste = await Filiale.getById(value);
+			if (!esiste) throw new Error('La prenotazionee specificata non esiste');
+			return true;
+			});
+		}
+	};
+	};
 
-export const prenotazioneInputValidator = [
+
+const prenotazioneInputValidator = [
 	data_ora_prenotazioneValidator('data_ora_prenotazione', 'futuro'),
 	ref_filialeValidator('ref_filiale'),
 	ref_clienteValidator('ref_cliente'),
 	numuroPersoneValidator('numero_persone')
 ];
 
-export const prenotazioneInputLocoValidator = [
+const prenotazioneInputLocoValidator = [
 	data_ora_prenotazioneValidator('data_ora_prenotazione', '10minuti'),
 	ref_filialeValidator('ref_filiale'),
 	ref_clienteValidator('ref_cliente'),
 	numuroPersoneValidator('numero_persone')
 ];
 
-export const prenotazioneUpdateValidator = [
+const prenotazioneUpdateValidator = [
 	id_prenotazioneValidator('id_prenotazione'),
 	data_ora_prenotazioneValidator('data_ora_prenotazione', 'futuro'),
 	numuroPersoneValidator('numero_persone')
 ];
 
 const getPrenotazioniFilialeValidator = [
-	param('filiale')
-		.notEmpty().withMessage('ID filiale obbligatorio')
-		.isInt({ min: 1 }).withMessage('ID filiale deve essere un intero positivo')
-    .bail()
-		.custom(async (value) => {
-			const id = parseInt(value);
-			const filialeEsiste = await Filiale.getById(id);
-			if (!filialeEsiste) {
-				throw new Error('La filiale specificata non esiste');
-			}
-			return true;
-		}),
+	ref_filialeValidator('filiale')
 ];
 
 const comfermaPrenotazioneValidator = [
-	body('id_prenotazione')
-		.notEmpty().withMessage('L\'ID della prenotazione è obbligatorio!')
-		.isInt({ min: 1 }).withMessage('L\'ID della prenotazione deve essere un intero positivo')
-		.bail()
-		.custom(async (id) => {
-			const prenotazione = await Prenotazione.getById(id);
-
-			if (!prenotazione) {
-				throw new Error('Prenotazione non trovata');
-			}
-
-			if (prenotazione.otp) {
-				throw new Error('La prenotazione è già confermata');
-			}
-
-			return true;
-		}),
+	id_prenotazioneValidator('id_prenotazione')
 ];
 
 const GetOTPValidator = [
-	body('id_prenotazione')
-		.notEmpty().withMessage('L\'ID della prenotazione è obbligatorio!')
-		.isInt({ min: 1 }).withMessage('L\'ID della prenotazione deve essere un intero positivo')
-		.bail()
-		.custom(async (id) => {
-			const prenotazione = await Prenotazione.getById(id);
-
-			if (!prenotazione) {
-				throw new Error('Prenotazione non trovata');
-			}
-
-			if (!prenotazione.otp) {
-				throw new Error('La prenotazione non è stata confermata');
-			}
-
-			return true;
-		}),
+	id_prenotazioneValidator('id_prenotazione')
 ];
 
 const statoPrenotazioneValidator = [
-  param('id')
-    .notEmpty().withMessage('L\'ID della prenotazione è obbligatorio')
-    .isInt({ min: 1 }).withMessage('L\'ID della prenotazione deve essere un numero intero positivo')
-    .bail()
-    .custom(async (id) => {
-      const prenotazioni = await Prenotazione.getById(parseInt(id));
-      if (!prenotazioni) {
-        throw new Error(`Nessuna prenotazione trovata con ID ${id}`);
-      }
-      return true;
-    })
+	id_prenotazioneValidator('id')
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
