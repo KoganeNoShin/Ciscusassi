@@ -21,7 +21,6 @@ const passwordValidator = (field: string) =>
 	body(field)
 		.notEmpty().withMessage('La password è obbligatoria')
 		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri')
-		.isAlphanumeric().withMessage('La password deve contenere solo lettere e numeri');
 
 // Metto il controllo delle lettere minuscole, maiuscole, numeri e caratteri speciali qua perché è comune a entrambi i campi
 // e in login non serve controllare, in registrazione sì		
@@ -29,7 +28,6 @@ const confermaPasswordValidator = (field: string) =>
 	body(field)
 		.notEmpty().withMessage('La conferma password è obbligatoria')
 		.isLength({ min: 6 }).withMessage('La conferma password deve essere lunga almeno 6 caratteri')
-		.isAlphanumeric().withMessage('La conferma password deve contenere solo lettere e numeri')
 		.matches(/[a-z]/).withMessage('La password deve contenere almeno una lettera minuscola') // Aggiunto controllo minuscole
         .matches(/[A-Z]/).withMessage('La password deve contenere almeno una lettera maiuscola') // Aggiunto controllo maiuscole
         .matches(/[0-9]/).withMessage('La password deve contenere almeno un numero') // Aggiunto controllo numeri

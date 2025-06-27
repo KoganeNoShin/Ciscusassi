@@ -87,6 +87,11 @@ router.get(
 	ImpiegatoController.getAllImpiegati
 );
 
+// Route per Ordine
+router.get(
+	'/addOrdine'
+);
+
 // Route per OrdProd
 router.get(
 	'/ordprod/:id',
