@@ -18,11 +18,12 @@ import { IonContent, IonSpinner, IonButton } from '@ionic/angular/standalone';
 import { NumeroPostiButton } from 'src/app/components/numero-posti-button/numero-posti-button.component';
 
 @Component({
-	selector: 'app-numero-persone',
-	templateUrl: './numero-persone.page.html',
-	styleUrls: ['./numero-persone.page.scss'],
-	standalone: true,
+	selector: 'app-numero-persone', // Selettore per l'uso in HTML
+	templateUrl: './numero-persone.page.html', // Template HTML associato
+	styleUrls: ['./numero-persone.page.scss'], // Stili CSS
+	standalone: true, // Il componente è standalone
 	imports: [
+		// Moduli importati per il template
 		IonInput,
 		IonText,
 		IonCol,
@@ -37,33 +38,36 @@ import { NumeroPostiButton } from 'src/app/components/numero-posti-button/numero
 	],
 })
 export class NumeroPersonePage implements OnInit {
+	// Dati di stato della pagina
 	filiale: FilialeRecord | null = null;
 	numeroTavoliRichiesti: number = 0;
 	idFiliale: number = 0;
 	loading: boolean = false;
 	error: boolean = false;
-	personePossibili = [1, 2, 3, 4, 5, 6, 7];
-	personeSelezionate: number | null = null;
-	inputManuale: number | null = null;
-	readonly MAX_PERSONE = 999999;
+	personePossibili = [1, 2, 3, 4, 5, 6, 7]; // Opzioni rapide selezionabili
+	personeSelezionate: number | null = null; // Valore selezionato con bottone
+	inputManuale: number | null = null; // Input inserito manualmente
+	readonly MAX_PERSONE = 999999; // Numero massimo per fallback
 
 	constructor(
-		private prenotazioneService: PrenotazioneService,
-		private filialeService: FilialeService,
-		private router: Router,
-		private toastController: ToastController
+		private prenotazioneService: PrenotazioneService, // Gestione prenotazioni
+		private filialeService: FilialeService, // Servizio filiale
+		private router: Router, // Navigazione
+		private toastController: ToastController // Messaggi toast
 	) {}
 
 	ngOnInit(): void {
+		// Inizializzazione della pagina
 		this.personeSelezionate = null;
 		this.inputManuale = null;
-		this.prenotazioneService.setNumeroPosti(-1);
-		const id = this.prenotazioneService.getFilialeId();
+		this.prenotazioneService.setNumeroPosti(-1); // Reset numero posti
+		const id = this.prenotazioneService.getFilialeId(); // Recupero ID filiale
 		this.idFiliale = id;
-		this.loadFiliale();
+		this.loadFiliale(); // Carica dati filiale
 	}
 
 	private loadFiliale() {
+		// Carica l'elenco delle sedi
 		this.loading = true;
 		this.error = false;
 		this.filialeService.GetSedi().subscribe({
@@ -77,6 +81,7 @@ export class NumeroPersonePage implements OnInit {
 	}
 
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
+		// Gestisce la risposta del server per la lista delle sedi
 		this.loading = false;
 
 		if (response.success && Array.isArray(response.data)) {
@@ -85,7 +90,7 @@ export class NumeroPersonePage implements OnInit {
 			);
 
 			if (filiale) {
-				this.filiale = filiale;
+				this.filiale = filiale; // Trovata e assegnata
 				this.error = false;
 			} else {
 				console.error('Filiale non trovata con id:', this.idFiliale);
@@ -103,11 +108,13 @@ export class NumeroPersonePage implements OnInit {
 	}
 
 	selezionaPersone(n: number) {
+		// Selezione rapida del numero di persone
 		this.personeSelezionate = n;
 		this.inputManuale = n;
 	}
 
 	onInputChange() {
+		// Aggiornamento quando si modifica l'input manuale
 		if (
 			this.inputManuale !== null &&
 			this.personePossibili.includes(this.inputManuale)
@@ -119,6 +126,7 @@ export class NumeroPersonePage implements OnInit {
 	}
 
 	conferma() {
+		// Validazione base del numero di persone prima di procedere
 		const persone = this.inputManuale;
 
 		if (!persone || persone < 1) {
@@ -131,10 +139,12 @@ export class NumeroPersonePage implements OnInit {
 		numeroPersone: number,
 		numeroPersoneSelezionate: number | null
 	) {
+		// Logica di salvataggio e verifica disponibilità tavoli
 		if (
 			numeroPersone < 1 &&
 			(numeroPersoneSelezionate === null || numeroPersoneSelezionate < 1)
 		) {
+			// Mostra toast di errore
 			this.toastController
 				.create({
 					message: 'Il numero di persone deve essere maggiore di 0',
@@ -145,6 +155,7 @@ export class NumeroPersonePage implements OnInit {
 				.then((toast) => toast.present());
 			return;
 		} else {
+			// Usa la selezione rapida se valida
 			if (
 				numeroPersoneSelezionate !== null &&
 				numeroPersoneSelezionate < this.MAX_PERSONE
@@ -154,6 +165,7 @@ export class NumeroPersonePage implements OnInit {
 				numeroPersone = this.MAX_PERSONE;
 			}
 
+			// Calcolo numero minimo di tavoli necessari
 			for (let t = 2; t <= numeroPersone; t++) {
 				const postiDisponibili = 2 * t + 2;
 				if (postiDisponibili >= numeroPersone) {
@@ -170,6 +182,8 @@ export class NumeroPersonePage implements OnInit {
 				'Numero di tavoli disponibili:',
 				this.filiale?.num_tavoli ?? 0
 			);
+
+			// Verifica disponibilità tavoli
 			if (this.numeroTavoliRichiesti > (this.filiale?.num_tavoli ?? 0)) {
 				this.toastController
 					.create({
@@ -182,6 +196,8 @@ export class NumeroPersonePage implements OnInit {
 					.then((toast) => toast.present());
 				return;
 			}
+
+			// Salva il numero e naviga alla prossima schermata
 			this.prenotazioneService.setNumeroPosti(numeroPersone);
 			console.log('Hai scelto il numero di persone:', numeroPersone);
 			this.router.navigate(['/scelta-giorno']);

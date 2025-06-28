@@ -43,6 +43,7 @@ import {
 	templateUrl: 'app.component.html',
 	styleUrls: ['./app.component.scss'],
 	imports: [
+		// Ionic core components for layout, navigation, and structure
 		IonApp,
 		IonRouterOutlet,
 		RouterModule,
@@ -62,27 +63,32 @@ import {
 })
 export class AppComponent {
 	constructor(
-		private storage: Storage,
-		private authService: AuthenticationService,
-		private router: Router,
-		private titleService: Title
+		private storage: Storage, // Gestione dello storage locale (sessioni, preferenze, ecc.)
+		private authService: AuthenticationService, // Servizio di autenticazione per gestire login/logout ecc.
+		private router: Router, // Router Angular per ascoltare eventi di navigazione
+		private titleService: Title // Usato per aggiornare dinamicamente il titolo della pagina
 	) {
-		this.initStorage();
+		this.initStorage(); // Inizializza storage e autenticazione al boot
+
+		// Ascolta gli eventi di navigazione per aggiornare il titolo della pagina
 		this.router.events
 			.pipe(filter((event) => event instanceof NavigationEnd))
 			.subscribe(() => {
 				const url = this.router.url;
-				const lastSegment = url.split('/').filter(Boolean).pop();
+				const lastSegment = url.split('/').filter(Boolean).pop(); // Estrae l'ultima parte del path
 				const capitalized = lastSegment
 					? lastSegment[0].toUpperCase() + lastSegment.slice(1)
-					: 'App';
-				this.titleService.setTitle('Ciscusassi - ' + capitalized);
+					: 'App'; // Capitalizza per renderlo più leggibile nel titolo
+				this.titleService.setTitle('Ciscusassi - ' + capitalized); // Aggiorna il titolo del documento
 			});
+
+		// Registra le icone utilizzate nel menu
 		addIcons({ home, newspaper, location, restaurant, calendar });
 	}
 
+	// Inizializza lo storage e il servizio di autenticazione
 	async initStorage() {
-		await this.storage.create();
-		await this.authService.init();
+		await this.storage.create(); // Prepara lo storage (richiesto da Ionic Storage)
+		await this.authService.init(); // Inizializza la sessione di autenticazione (es. token persistente)
 	}
 }

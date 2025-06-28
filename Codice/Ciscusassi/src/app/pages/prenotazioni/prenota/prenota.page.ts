@@ -49,19 +49,28 @@ import { FilialeCardComponent } from 'src/app/components/filiale-card/filiale-ca
 	],
 })
 export class PrenotaPage implements OnInit {
+	// Lista delle filiali disponibili
 	filiali: FilialeRecord[] = [];
+	// Lista delle filiali filtrate in base alla ricerca
 	filialiFiltrate: FilialeRecord[] = [];
+	// Stato di caricamento delle prenotazioni
 	loadingPrenotazioni: boolean = true;
+	// Stato di errore
 	error: boolean = false;
+	// Query della barra di ricerca
 	searchFiliale: string = '';
+	// Lista delle prenotazioni del cliente
 	prenotazioni: PrenotazioneWithFiliale[] = [];
+	// Filiale associata a una prenotazione (non sempre usata)
 	FilialePrenotazione: FilialeRecord | null = null;
+	// Stato di caricamento delle filiali
 	loading: boolean = true;
 
+	// Metodo chiamato ogni volta che la pagina sta per essere visualizzata
 	ionViewWillEnter() {
-		this.caricaFiliali();
-		this.caricaPrenotazioniCliente();
-		this.prenotazioneService.svuotaPrenotazione();
+		this.caricaFiliali(); // Carica l'elenco delle filiali
+		this.caricaPrenotazioniCliente(); // Carica le prenotazioni attive del cliente
+		this.prenotazioneService.svuotaPrenotazione(); // Svuota eventuali prenotazioni in corso
 	}
 
 	constructor(
@@ -74,6 +83,7 @@ export class PrenotaPage implements OnInit {
 
 	ngOnInit(): void {}
 
+	// Carica tutte le filiali dal server
 	private caricaFiliali(): void {
 		this.filialeService.GetSedi().subscribe({
 			next: (res: ApiResponse<FilialeRecord[]>) => {
@@ -92,7 +102,7 @@ export class PrenotaPage implements OnInit {
 		});
 	}
 
-	// Funzione helper per il parsing corretto del formato "YYYY-MM-DD HH:MM:SS"
+	// Parsing di una stringa nel formato "YYYY-MM-DD HH:MM:SS"
 	private parseDateTime(dateTimeStr: string): Date | null {
 		if (!dateTimeStr) return null;
 
@@ -116,6 +126,7 @@ export class PrenotaPage implements OnInit {
 		return new Date(year, month - 1, day, hour, minute, second || 0, 0);
 	}
 
+	// Carica le prenotazioni del cliente con ID 1 e filtra solo quelle future
 	private caricaPrenotazioniCliente(): void {
 		this.loadingPrenotazioni = true;
 		const idCliente = 1;
@@ -124,13 +135,11 @@ export class PrenotaPage implements OnInit {
 			next: (res) => {
 				if (res.success && res.data) {
 					const now = new Date();
-
 					this.prenotazioni = res.data.filter((prenotazione) => {
 						const parsedDate = this.parseDateTime(
 							prenotazione.data_ora_prenotazione
 						);
 						if (!parsedDate) return false;
-
 						return parsedDate >= now;
 					});
 				} else {
@@ -146,6 +155,7 @@ export class PrenotaPage implements OnInit {
 		});
 	}
 
+	// Gestisce il filtraggio delle filiali in base alla ricerca dell'utente
 	onFiltraFilialiChange(event: Event): void {
 		const target = event.target as HTMLIonSearchbarElement;
 		const query = target.value?.toLowerCase() || '';
@@ -155,11 +165,13 @@ export class PrenotaPage implements OnInit {
 		);
 	}
 
+	// Salva l'ID della filiale scelta e reindirizza alla selezione del numero di persone
 	salvaFiliale(id_filiale: number): void {
 		this.prenotazioneService.setFilialeId(id_filiale);
 		this.router.navigate(['/numero-persone']);
 	}
 
+	// Mostra un alert per confermare la cancellazione della prenotazione
 	async confermaCancellazione(id: number): Promise<void> {
 		const alert = await this.alertController.create({
 			header: 'Conferma cancellazione',
@@ -177,6 +189,7 @@ export class PrenotaPage implements OnInit {
 				{
 					text: 'Conferma',
 					handler: async () => {
+						// La prenotazione può essere cancellata solo se non è già assegnata a un tavolo (otp === null)
 						if (
 							this.prenotazioni.find(
 								(p) => p.id_prenotazione === id
@@ -210,10 +223,12 @@ export class PrenotaPage implements OnInit {
 		await alert.present();
 	}
 
+	// Esegue la cancellazione della prenotazione sul backend
 	private async cancellaPrenotazione(id: number): Promise<void> {
 		this.prenotazioneService.eliminaPrenotazione(id).subscribe({
 			next: async (res) => {
 				if (res.success) {
+					// Rimuove la prenotazione dalla lista
 					this.prenotazioni = this.prenotazioni.filter(
 						(p) => p.id_prenotazione !== id
 					);
