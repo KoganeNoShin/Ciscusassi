@@ -1,4 +1,5 @@
 import OrdProd, {OrdProdInput, OrdProdRecord } from "../Models/ord_prod";
+import Ordine from "../Models/ordine";
 import Prodotto, { ProdottoInput } from "../Models/prodotto";
 
 interface OrdProdEstended extends ProdottoInput {
@@ -23,6 +24,27 @@ class OrdProdService {
 
         return idsInseriti;
     }
+
+    static async getProdottiByPrenotazione(prenotazioneId: number): Promise<OrdProdEstended[] | null> {
+        try {
+            const ordini = await Ordine.getByPrenotazione(prenotazioneId);
+            if (!ordini || ordini.length === 0) {
+                return null;
+            }
+
+            const prodotti = await Promise.all(
+                ordini.map(async (ordine) => {
+                    return await this.getProdottiByOrdine(ordine.id_ordine);
+                })
+            );
+
+            return prodotti.flat().filter(p => p !== null) as OrdProdEstended[];
+        } catch (error) {
+            console.error('❌ [OrdProdService] Errore durante il recupero dei prodotti per la prenotazione:', error);
+            throw error;
+        }
+    }
+    
 
     static async getProdottiByOrdine(ordineId: number): Promise<OrdProdEstended[] | null> {
         try {

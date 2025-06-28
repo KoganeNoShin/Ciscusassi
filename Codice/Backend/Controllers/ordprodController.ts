@@ -33,6 +33,29 @@ class OrdProdController {
         }
     }
 
+    static async getProdottiByPrenotazione(req: Request, res: Response): Promise<void> {
+        try {
+            const prenotazioneId = parseInt(req.params.prenotazioneId, 10);
+
+            if (isNaN(prenotazioneId)) {
+                res.status(400).json({ error: 'ID prenotazione non valido' });
+                return;
+            }
+
+            const prodotti = await OrdProdService.getProdottiByPrenotazione(prenotazioneId);
+
+            if (!prodotti || prodotti.length === 0) {
+                res.status(404).json({ message: 'Nessun prodotto trovato per la prenotazione' });
+                return;
+            }
+
+            res.status(200).json(prodotti);
+        } catch (error) {
+            console.error('[OrdProdController] Errore nel recupero dei prodotti:', error);
+            res.status(500).json({ error: 'Errore interno del server' });
+        }
+    }
+
     static async cambiaStatoProdottoOrdine(req: Request, res: Response): Promise<void> {
         try {
             const idProdotto = parseInt(req.params.id);

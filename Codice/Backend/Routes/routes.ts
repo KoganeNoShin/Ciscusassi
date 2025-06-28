@@ -120,6 +120,13 @@ router.get(
 	OrdProdController.getProdottiByOrdine
 );
 
+router.get(
+	'/prenotazione/:id_prenotazione/ordprod',
+	ordprodValidator.getProdottiByPrenotazioneValidator,
+	ordprodValidator.validate,
+	OrdProdController.getProdottiByPrenotazione
+);
+
 router.put(
 	'/ordprod/:id/cambiaStato',
 	authMiddleware,

@@ -5,6 +5,7 @@ import OrdProd from '../Models/ord_prod';
 import { error } from 'console';
 import { stat } from 'fs';
 import Prodotto from '../Models/prodotto';
+import Prenotazione from '../Models/prenotazione';
 
 // Parametri
 const idOrdineValidator = (field: string) => {
@@ -45,6 +46,17 @@ const idOrdProdValidator = (field: string) =>
         .custom(async (id) => {
             const prodotto = await OrdProd.getById(Number(id));
             if (!prodotto) throw new Error('Prodotto non trovato nel database');
+            return true;
+        });
+
+const idPrenotazioneValidator = (field: string) =>
+    param(field)
+        .notEmpty().withMessage('ID prenotazione obbligatorio')
+        .isInt({ gt: 0 }).withMessage('ID prenotazione non valido')
+        .bail()
+        .custom(async (id) => {
+            const prenotazione = await Prenotazione.getById(Number(id));
+            if (!prenotazione) throw new Error('prenotazione non trovata nel database');
             return true;
         });
 
@@ -137,6 +149,10 @@ const ordProdArrayValidator = [
     is_romanaValidator('*.Is_Romana')
 ];
 
+const getProdottiByPrenotazioneValidator = [
+    idPrenotazioneValidator('id_prenotazione')
+];
+
 const validate = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -150,5 +166,6 @@ export default {
     validate,
     getProdottiByOrdineValidator,
     cambiaStatoProdottoValidator,
-    ordProdArrayValidator
+    ordProdArrayValidator,
+    getProdottiByPrenotazioneValidator
 }

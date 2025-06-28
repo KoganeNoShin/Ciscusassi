@@ -21,7 +21,7 @@ const dataEntroDieciMinutiValidator = (dataPrenotazione: Date, adesso: Date) => 
 
 const data_ora_prenotazioneValidator = (field: string, tipo: 'futuro' | '10minuti') =>
     body(field)
-        .notEmpty().withMessage('La data di prenotazione è obbligatoria')
+        .optional({ checkFalsy: true })
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di prenotazione deve essere nel formato "yyyy-MM-dd HH:mm"')
         .custom((value: string) => {
             const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
@@ -93,7 +93,7 @@ const numuroPersoneValidator = (field: string) =>
 		.isInt({ min: 1 }).withMessage('Il numero di persone deve essere un intero positivo')
 		.bail()
 		.custom(async (numeroPersone: number, { req }) => {
-			const data = PrenotazioneService.dataToFormattedString(req.body.data_ora_prenotazione);
+			const data = req.body.data_ora_prenotazione;
 			const filialeId = req.body.ref_filiale;
 
 			if (!data || !filialeId) {
