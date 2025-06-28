@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import Cliente from '../Models/cliente';
 import Filiale from '../Models/filiale';
 import PrenotazioneService from '../Services/prenotazioneService';
+import Prenotazione from '../Models/prenotazione';
 
 
 // Validatori
@@ -119,10 +120,11 @@ const numuroPersoneValidator = (field: string) =>
 
 const id_prenotazioneValidator = (field: string) => {
     const getValidator = param(field)
+        .toInt()
         .isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
         .bail()
         .custom(async (value) => {
-            const esiste = await Filiale.getById(value);
+            const esiste = await Prenotazione.getById(value);
             if (!esiste) throw new Error('La prenotazione specificata non esiste');
             return true;
         });
