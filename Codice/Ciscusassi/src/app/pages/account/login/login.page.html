@@ -7,12 +7,13 @@
 				></ion-img>
 			</ion-col>
 
-			<ion-col size="12" sizeXl="6" class="ion-padding-start">
+			<ion-col size="12" sizeXl="6">
 				<ion-card
-					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center bg-color-verdechiaro"
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
+					color="verdechiaro"
 				>
 					<ion-text>
-						<h1 class="title text-color-bianco">LOGIN</h1>
+						<h1 class="text-color-bianco">LOGIN</h1>
 					</ion-text>
 
 					@if (error) {
@@ -59,18 +60,17 @@
 							<ion-spinner name="bubbles"></ion-spinner>
 							}
 						</ion-button>
-
-						<ion-text class="forgot-text">
-							<p class="text-color-bianco">
-								Hai dimenticato la password?
-								<a
-									routerLink="/recupero-password"
-									class="text-color-arancione"
-									><b>Recuperala!</b></a
-								>
-							</p>
-						</ion-text>
 					</form>
+					<ion-text class="forgot-text">
+						<p class="text-color-bianco">
+							Hai dimenticato la password?
+							<a
+								routerLink="/recupero-password"
+								class="text-color-arancione"
+								><b>Recuperala!</b></a
+							>
+						</p>
+					</ion-text>
 				</ion-card>
 			</ion-col>
 		</ion-row>

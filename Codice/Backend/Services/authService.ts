@@ -68,10 +68,14 @@ class AuthService {
 
 			if (!passwordMatch) return;
 
+			const anno = user.data_nascita.slice(0, 4); // Prende le ultime due cifre dell'anno
+
 			const tokenPayload: OurTokenPayload = {
 				id_utente: user.numero_carta,
 				ruolo: 'cliente',
-				username: `${user.nome} ${user.cognome}`,
+				username: `${user.nome}.${user.cognome}.${anno}`
+					.toLowerCase()
+					.replace(/\s+/g, ''),
 			};
 
 			const token = this.generateToken(tokenPayload);
@@ -100,13 +104,17 @@ class AuthService {
 
 			if (!impiegato) throw new Error('Impiegato non trovato');
 
+			const anno = impiegato.data_nascita.slice(0, 4); // Prende le ultime due cifre dell'anno
+
 			const tokenPayload: OurTokenPayload = {
 				id_utente: impiegato.matricola,
 				ruolo: impiegato.ruolo.toLowerCase() as
 					| 'chef'
 					| 'cameriere'
 					| 'amministratore',
-				username: `${impiegato.nome} ${impiegato.cognome}`,
+				username: `${impiegato.nome}.${impiegato.cognome}.${anno}`
+					.toLowerCase()
+					.replace(/\s+/g, ''),
 				id_filiale: impiegato.ref_filiale,
 			};
 

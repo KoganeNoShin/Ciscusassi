@@ -13,7 +13,6 @@ import {
 	IonList,
 	IonItem,
 	IonImg,
-	IonCardContent,
 	IonRow,
 	IonText,
 	ToastController,
@@ -32,7 +31,6 @@ import { CarrelloService } from 'src/app/core/services/carrello.service';
 	styleUrls: ['./ordina-asporto.page.scss'],
 	standalone: true,
 	imports: [
-		IonCardContent,
 		IonImg,
 		IonItem,
 		IonList,
