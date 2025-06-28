@@ -52,6 +52,7 @@ const idOrdProdValidator = (field: string) =>
 const idPrenotazioneValidator = (field: string) =>
     param(field)
         .notEmpty().withMessage('ID prenotazione obbligatorio')
+        .toInt()
         .isInt({ gt: 0 }).withMessage('ID prenotazione non valido')
         .bail()
         .custom(async (id) => {
