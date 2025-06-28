@@ -14,13 +14,13 @@ export class OrdineService {
 	constructor(private http: HttpClient) {}
 
 	addOrdine(
-		ref_prenotazione: number,
 		username: string,
-		ref_cliente: number
+		ref_prenotazione: number,
+		ref_cliente: number | null
 	): Observable<ApiResponse<any>> {
 		const body = {
+			username_ordinante: username,
 			ref_prenotazione: ref_prenotazione,
-			username: username,
 			ref_cliente: ref_cliente,
 		};
 

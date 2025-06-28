@@ -146,7 +146,7 @@ const username_ordinanteValidator = (field: string, ref_cliente_field = 'ref_cli
                 throw new Error('Utente associato al cliente non trovato');
             }
 
-            const annoUtente = utente.data_nascita.split('/')[0];
+            const annoUtente = utente.data_nascita.split('-')[0];
 
             const nomeCorrisponde = utente.nome.toLowerCase() === nome.toLowerCase();
             const cognomeCorrisponde = utente.cognome.toLowerCase() === cognome.toLowerCase();
@@ -162,7 +162,7 @@ const username_ordinanteValidator = (field: string, ref_cliente_field = 'ref_cli
 // Validator
 const aggiungiOrdine = [
     ref_prenotazioneValidator('ref_prenotazione'),
-    username_ordinanteValidator('username'),
+    username_ordinanteValidator('username_ordinante'),
     ref_clienteValidator('ref_cliente')
 ];
 

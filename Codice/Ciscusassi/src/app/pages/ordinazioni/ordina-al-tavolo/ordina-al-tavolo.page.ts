@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TavoloService } from 'src/app/core/services/tavolo.service';
 import {
 	IonButton,
 	IonCard,
@@ -39,12 +40,13 @@ import { firstValueFrom } from 'rxjs';
 })
 export class OrdinaAlTavoloPage implements OnInit {
 	otp: string = '';
-	numeroTorretta: number | null = null;;
+	numeroTorretta: number | null = null;
 
 	constructor(
 		private prenotazioneService: PrenotazioneService,
 		private toastController: ToastController,
-		private router: Router
+		private router: Router,
+		private tavoloService: TavoloService
 	) {}
 
 	ngOnInit() {
@@ -81,7 +83,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 
 		const fasceOrarie = [
 			{ inizio: '12:00', fine: '13:30' },
-			{ inizio: '13:30', fine: '15:00' },
+			{ inizio: '13:30', fine: '19:00' }, //DA MODIFICARE
 			{ inizio: '19:30', fine: '21:00' },
 			{ inizio: '21:00', fine: '22:30' },
 		];
@@ -113,7 +115,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 				const yyyy = now.getFullYear();
 				const mm = (now.getMonth() + 1).toString().padStart(2, '0');
 				const dd = now.getDate().toString().padStart(2, '0');
-				dataOraPrenotazione = `${yyyy}-${mm}-${dd} ${fascia.inizio}:00`;
+				dataOraPrenotazione = `${yyyy}-${mm}-${dd} ${fascia.inizio}`;
 				break;
 			}
 		}
@@ -135,8 +137,10 @@ export class OrdinaAlTavoloPage implements OnInit {
 				)
 			);
 
-			if (otpRes.success && otpRes.data === true) {
+			if (otpRes.success && otpRes.data != false) {
 				this.presentToast('OTP valido. Accesso consentito.', 'success');
+				this.tavoloService.setPrenotazione(otpRes.data);
+				this.tavoloService.setNumeroTavolo(refTorretta!);
 				this.router.navigate(['/menu-tavolo']);
 			} else {
 				const msg = otpRes.message || 'OTP non valido. Riprova.';

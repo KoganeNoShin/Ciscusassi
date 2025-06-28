@@ -16,6 +16,9 @@ import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { Router, RouterModule } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
+import { OrdineService } from 'src/app/core/services/ordine.service';
+import { TavoloService } from 'src/app/core/services/tavolo.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
 	selector: 'app-menu-tavolo',
@@ -35,7 +38,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 })
 export class MenuTavoloPage implements OnInit {
 	nomeUtente: string = '';
-	numeroTavolo: number = -1;
+	numeroTavolo: number | null = null;
 	prodottiNelCarrello: ProdottoRecord[] = [];
 	totale: number = 0;
 
@@ -44,6 +47,8 @@ export class MenuTavoloPage implements OnInit {
 		private router: Router,
 		private toastController: ToastController,
 		private servizioAutenticazione: AuthenticationService,
+		private ordineService: OrdineService,
+		private tavoloService: TavoloService
 	) {}
 
 	async checkTotale() {
@@ -62,7 +67,42 @@ export class MenuTavoloPage implements OnInit {
 			});
 			await toast.present();
 		} else {
-			//INSERISCI CHIAMATA AL DB
+			const numeroTavolo = this.tavoloService.getNumeroTavolo();
+			const prenotazione = this.tavoloService.getPrenotazione();
+
+			if (prenotazione === null) {
+				const toast = await this.toastController.create({
+					message: 'Errore: prenotazione non trovata.',
+					duration: 3000,
+					position: 'bottom',
+					color: 'danger',
+				});
+				await toast.present();
+				return;
+			}
+			console.log(prenotazione);
+			console.log(this.servizioAutenticazione.getIdUtente());
+			try {
+				await firstValueFrom(
+					this.ordineService.addOrdine(
+						"luca.gaetani.2003",
+						prenotazione,
+						this.servizioAutenticazione.getIdUtente()
+					)
+				);
+			} catch (error) {
+				const toast = await this.toastController.create({
+					message: 'Errore: ordine non inviato',
+					duration: 3000,
+					position: 'bottom',
+					color: 'danger',
+				});
+				await toast.present();
+				console.error(error);
+				return;
+				
+			}
+
 			this.servizioCarrello.svuotaCarrello();
 			this.totale = 0;
 			const toast = await this.toastController.create({
@@ -97,7 +137,11 @@ export class MenuTavoloPage implements OnInit {
 		}
 	}
 	ngOnInit() {
-		this.nomeUtente = this.servizioAutenticazione.getUsername();
+		this.ngViewWillEnter();
 	}
 
+	ngViewWillEnter() {
+		this.nomeUtente = this.servizioAutenticazione.getUsername();
+		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
+	}
 }
