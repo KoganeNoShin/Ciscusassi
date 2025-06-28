@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import PrenotazioneService from '../Services/prenotazioneService';
-import { parse } from 'path';
-import { da } from 'date-fns/locale';
 
 class PrenotazioneController {
     static async prenota(req: Request, res: Response): Promise<void> {
@@ -176,11 +174,16 @@ class PrenotazioneController {
             const { data } = req.query;
             let dataFormattata: string;
             // Se non è presente, usiamo la data corrente
-            if(!data) {
-                dataFormattata = PrenotazioneService.dataToFormattedString((new Date()).toString());
-            }
-            else {
-                dataFormattata = PrenotazioneService.dataToFormattedString(data as string);
+            if (!data) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                dataFormattata = `${year}-${month}-${day} ${hours}:${minutes}`;
+            } else {
+                dataFormattata = data as string;
             }
 
             // Recupera le prenotazioni per la filiale e la data
@@ -210,12 +213,18 @@ class PrenotazioneController {
             const { data } = req.query;
             let dataFormattata: string;
             // Se non è presente, usiamo la data corrente
-            if(!data) {
-                dataFormattata = PrenotazioneService.dataToFormattedString((new Date()).toString());
+            if (!data) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                dataFormattata = `${year}-${month}-${day} ${hours}:${minutes}`;
+            } else {
+                dataFormattata = data as string;
             }
-            else {
-                dataFormattata = PrenotazioneService.dataToFormattedString(data as string);
-            }
+
 
 			const tavoli = await PrenotazioneService.calcolaTavoliInUso(parseInt(req.params.filiale), dataFormattata);
 			res.status(200).json(tavoli);

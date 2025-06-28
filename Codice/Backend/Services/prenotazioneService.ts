@@ -5,8 +5,6 @@ import Prenotazione, {
 	PrenotazioneRecord,
 } from '../Models/prenotazione';
 import Torretta from '../Models/torretta';
-import { format } from 'date-fns';
-import { it } from 'date-fns/locale';
 
 export interface PrenotazioneRequest {
 	numero_persone: number;
@@ -32,21 +30,8 @@ class PrenotazioneService {
 		return Math.ceil((numeroPersone - 2) / 2);
 	}
 
-	static dataToFormattedString(data: string): string {
-		if (!data) return '';
-		const parsedDate = new Date(data);
-		if (isNaN(parsedDate.getTime())) {
-			throw new Error('Formato data non valido ' + data);
-		}
-		const dataFormattata = format(parsedDate, 'yyyy-MM-dd HH:mm:ss', {
-			locale: it,
-		});
-		return dataFormattata;
-	}
-
 	static async prenota(data: PrenotazioneRequest): Promise<number> {
 		try {
-			data.data_ora_prenotazione = this.dataToFormattedString(data.data_ora_prenotazione);
 			// Recupera torrette libere alla data e filiale specificate
 			const torretteLibere = await Torretta.getTorretteLibere(
 				data.ref_filiale,
@@ -63,16 +48,10 @@ class PrenotazioneService {
 					'Nessuna torretta disponibile per questa data/ora'
 				);
 			}
-			let dataFormattata = '';
-			if (data.data_ora_prenotazione) {
-				dataFormattata = this.dataToFormattedString(
-					data.data_ora_prenotazione
-				);
-			}
 
 			const input: PrenotazioneInput = {
 				numero_persone: data.numero_persone,
-				data_ora_prenotazione: dataFormattata,
+				data_ora_prenotazione: data.data_ora_prenotazione,
 				ref_cliente: data.ref_cliente,
 				ref_torretta: torrettaSelezionata,
 			};
@@ -106,16 +85,9 @@ class PrenotazioneService {
 				);
 			}
 
-			let dataFormattata = '';
-			if (data.data_ora_prenotazione) {
-				dataFormattata = this.dataToFormattedString(
-					data.data_ora_prenotazione
-				);
-			}
-
 			const input: PrenotazioneInput = {
 				numero_persone: data.numero_persone,
-				data_ora_prenotazione: dataFormattata,
+				data_ora_prenotazione: data.data_ora_prenotazione,
 				ref_cliente: data.ref_cliente,
 				ref_torretta: torrettaSelezionata,
 			};
@@ -150,16 +122,10 @@ class PrenotazioneService {
 		data_ora_prenotazione: string
 	): Promise<void> {
 		try {
-			let dataFormattata = '';
-			if (data_ora_prenotazione) {
-				dataFormattata = this.dataToFormattedString(
-					data_ora_prenotazione
-				);
-			}
 			return await Prenotazione.update(
 				id_prenotazione,
 				numero_persone,
-				dataFormattata
+				data_ora_prenotazione
 			);
 		} catch (error) {
 			console.error(
@@ -243,12 +209,9 @@ class PrenotazioneService {
 		data: string
 	): Promise<PrenotazioneRecord[] | null> {
 		try {
-			const dataFormattata = format(new Date(data), 'yyyy-MM-dd', {
-				locale: it,
-			});
 			return await Prenotazione.getPrenotazioniDataAndFiliale(
 				id_filiale,
-				dataFormattata
+				data
 			);
 		} catch (error) {
 			console.error(
@@ -265,22 +228,18 @@ class PrenotazioneService {
 	): Promise<Record<string, number>> {
 		const orariValidi = ['12:00:00', '13:30:00', '19:30:00', '21:00:00'];
 		const tavoliPerOrario: Record<string, number> = {};
-		const dataFormattata = format(new Date(data), 'yyyy-MM-dd', {
-			locale: it,
-		});
 
 		for (const orario of orariValidi) {
-			const timestamp = `${dataFormattata} ${orario}`;
 			const prenotazioni =
 				await Prenotazione.getPrenotazioniDataAndFiliale(
 					id_filiale,
-					dataFormattata
+					data
 				);
-			tavoliPerOrario[timestamp] = 0;
+			tavoliPerOrario[data] = 0;
 			for (const p of prenotazioni) {
 				const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
 
-				tavoliPerOrario[timestamp] += tavoli;
+				tavoliPerOrario[data] += tavoli;
 			}
 		}
 
@@ -333,7 +292,7 @@ class PrenotazioneService {
 		}
 	}
 
-	static async checkOTP(data_ora_prenotazione: string, ref_torretta: number, otp: string): Promise<boolean> {
+	static async checkOTP(data_ora_prenotazione: string, ref_torretta: number, otp: string): Promise<number> {
 		try {
 			const prenotazione = await Prenotazione.getByDataETorretta(data_ora_prenotazione, ref_torretta);
 			if (!prenotazione) {
@@ -348,7 +307,12 @@ class PrenotazioneService {
 				console.error('OTP non corrisponde: ', prenotazione.otp, otp);
 				throw new Error('OTP non corrisponde');
 			}
-			return prenotazione.otp === otp;
+			if(prenotazione.otp === otp) {
+				return prenotazione.id_prenotazione;
+			}
+			else {
+				return -1;
+			}
 		} catch (error) {
 			console.error(
 				'❌ [PrenotazioneService] Errore durante il controllo dell\'OTP:',
