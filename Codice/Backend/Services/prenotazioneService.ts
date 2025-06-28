@@ -204,15 +204,9 @@ class PrenotazioneService {
 		}
 	}
 
-	static async getPrenotazioniDataAndFiliale(
-		id_filiale: number,
-		data: string
-	): Promise<PrenotazioneRecord[] | null> {
+	static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneRecord[] | null> {
 		try {
-			return await Prenotazione.getPrenotazioniDataAndFiliale(
-				id_filiale,
-				data
-			);
+			return await Prenotazione.getPrenotazioniDataAndFiliale(id_filiale, data);
 		} catch (error) {
 			console.error(
 				'❌ [PrenotazioneService] Errore durante il recupero delle prenotazioni per data:',

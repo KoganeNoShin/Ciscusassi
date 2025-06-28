@@ -195,7 +195,7 @@ router.get(
 
 router.get(
 	'/prenotazioni/:filiale',
-	authMiddleware,
+	//authMiddleware,
 	prenotazioneValidator.getPrenotazioniFilialeValidator,
     prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
