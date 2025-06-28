@@ -197,7 +197,7 @@ router.get(
 	'/prenotazioni/:filiale',
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere', 'chef']),
-	prenotazioneValidator.prenotazioneInputValidator,
+	prenotazioneValidator.getPrenotazioniFilialeValidator,
     prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
