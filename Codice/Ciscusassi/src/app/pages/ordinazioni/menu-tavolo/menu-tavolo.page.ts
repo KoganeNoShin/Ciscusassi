@@ -80,23 +80,45 @@ export class MenuTavoloPage implements OnInit {
 				await toast.present();
 				return;
 			}
-			console.log(prenotazione);
-			console.log(this.servizioAutenticazione.getIdUtente());
 			try {
-				await firstValueFrom(
-					this.ordineService.addOrdine(
-						"luca.gaetani.2003",
-						prenotazione,
-						this.servizioAutenticazione.getIdUtente()
-					)
-				);
+				if (!this.tavoloService.getHaOrdinato()){
+					await firstValueFrom(
+						this.ordineService.addOrdine(
+							"luca.gaetani.2003",
+							prenotazione,
+							this.servizioAutenticazione.getIdUtente()
+						)
+					);
+					this.tavoloService.setHaOrdinato(true);
+				}
 			} catch (error) {
 				const toast = await this.toastController.create({
-					message: 'Errore: ordine non inviato',
+					message: 'Errore: l\'ordine non è stato creato',
 					duration: 3000,
 					position: 'bottom',
 					color: 'danger',
 				});
+				await toast.present();
+				console.error(error);
+				return;
+				
+			}
+
+			try {
+				await firstValueFrom(
+					this.ordineService.ordineAddProdotti(
+						prenotazione,
+						this.servizioCarrello.getProdotti()
+					)
+				);
+			} catch (error) {
+				const toast = await this.toastController.create({
+					message: 'Errore: L\'ordine è stato creato ma i prodotti non sono stati aggiunti',
+					duration: 3000,
+					position: 'bottom',
+					color: 'danger',
+				});
+				console.log(this.servizioCarrello.getProdotti());
 				await toast.present();
 				console.error(error);
 				return;
@@ -141,7 +163,9 @@ export class MenuTavoloPage implements OnInit {
 	}
 
 	ngViewWillEnter() {
+		
 		this.nomeUtente = this.servizioAutenticazione.getUsername();
 		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
+		
 	}
 }

@@ -20,6 +20,8 @@ export class TavoloService {
     stato: null as any
   };
 
+  haOrdinato: boolean = false;
+
   setNumeroTavolo(numero: number): void {
     if (this.tavolo) {
       this.tavolo.numero = numero;
@@ -31,12 +33,19 @@ export class TavoloService {
       this.tavolo.prenotazione = prenotazione;
     }
   }
+  
   getNumeroTavolo(): number | null {
-    return this.tavolo ? this.tavolo.numero : null;
+    if (this.tavolo){
+      return this.tavolo.numero;
+    }
+    return null;
   }
 
   getPrenotazione(): number | null{
-    return this.tavolo ? this.tavolo.prenotazione: null;
+    if (this.tavolo){
+      return this.tavolo.prenotazione;
+    }
+    return null;
   }
 
   setTavolo(tavolo: Tavolo){
@@ -47,4 +56,21 @@ export class TavoloService {
     return this.tavolo;
   }
   
+  setHaOrdinato(HaOrdinato: boolean){
+    this.haOrdinato = HaOrdinato
+  }
+
+  getHaOrdinato(): boolean{
+    return this.haOrdinato;
+  }
+
+  svuotaTavolo(){
+    this.tavolo =  {
+    numero: null as any,
+    prenotazione: null as any,
+    orario: null as any,
+    persone: null as any,
+    stato: null as any
+  };
+  }
 }

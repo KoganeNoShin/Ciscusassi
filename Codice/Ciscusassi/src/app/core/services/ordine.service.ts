@@ -52,14 +52,12 @@ export class OrdineService {
 	ordineAddProdotti(
 		ref_ordine: number,
 		ref_prodotto: ProdottoInput[],
-		stato_prodotto: string,
-		Is_romana: number
 	): Observable<ApiResponse<any>> {
 		const body = {
 			ref_ordine: ref_ordine,
 			ref_prodotto: ref_prodotto,
-			stato_prodotto: stato_prodotto,
-			Is_romana: Is_romana,
+			stato_prodotto: "non-in-lavorazione",
+			Is_romana: false,
 		};
 
 		return this.http.post<ApiResponse<any>>(

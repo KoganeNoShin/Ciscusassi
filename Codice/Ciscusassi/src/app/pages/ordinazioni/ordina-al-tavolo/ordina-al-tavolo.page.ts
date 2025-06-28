@@ -50,6 +50,10 @@ export class OrdinaAlTavoloPage implements OnInit {
 	) {}
 
 	ngOnInit() {
+		this.ngViewWillEnter();
+	}
+	ngViewWillEnter(){
+		this.tavoloService.svuotaTavolo();
 		this.numeroTorretta = null;
 		this.otp = "";
 	}
