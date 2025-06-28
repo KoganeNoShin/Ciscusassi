@@ -20,6 +20,8 @@ export class TavoloService {
     stato: null as any
   };
 
+  numeroOrdine: number | null = null;
+
   haOrdinato: boolean = false;
 
   setNumeroTavolo(numero: number): void {
@@ -62,6 +64,14 @@ export class TavoloService {
 
   getHaOrdinato(): boolean{
     return this.haOrdinato;
+  }
+
+  setNumeroOrdine(numeroOrdine: number){
+    this.numeroOrdine = numeroOrdine;
+  }
+
+  getNumeroOrdine(): number | null{
+    return this.numeroOrdine;
   }
 
   svuotaTavolo(){

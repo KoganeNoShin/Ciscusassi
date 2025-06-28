@@ -19,6 +19,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { OrdineService } from 'src/app/core/services/ordine.service';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { firstValueFrom } from 'rxjs';
+import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 
 @Component({
 	selector: 'app-menu-tavolo',
@@ -40,6 +41,7 @@ export class MenuTavoloPage implements OnInit {
 	nomeUtente: string = '';
 	numeroTavolo: number | null = null;
 	prodottiNelCarrello: ProdottoRecord[] = [];
+	prodottiOrdinati: OrdProdEstended[] = [];
 	totale: number = 0;
 
 	constructor(
@@ -81,19 +83,21 @@ export class MenuTavoloPage implements OnInit {
 				return;
 			}
 			try {
-				if (!this.tavoloService.getHaOrdinato()){
-					await firstValueFrom(
+				//IL CONTROLLO SE HA ORDINATO BISOGNA CONTROLLARE IL DB//
+				if (!this.tavoloService.getHaOrdinato()) {
+					const ordineResponse = await firstValueFrom(
 						this.ordineService.addOrdine(
-							"luca.gaetani.2003",
+							'luca.gaetani.2003',
 							prenotazione,
 							this.servizioAutenticazione.getIdUtente()
 						)
 					);
+					this.tavoloService.setNumeroOrdine(12); //VA IMPOSTATO IL NUMERO ORDINE TRAMITE DB
 					this.tavoloService.setHaOrdinato(true);
 				}
 			} catch (error) {
 				const toast = await this.toastController.create({
-					message: 'Errore: l\'ordine non è stato creato',
+					message: "Errore: l'ordine non è stato creato",
 					duration: 3000,
 					position: 'bottom',
 					color: 'danger',
@@ -101,7 +105,6 @@ export class MenuTavoloPage implements OnInit {
 				await toast.present();
 				console.error(error);
 				return;
-				
 			}
 
 			try {
@@ -113,7 +116,8 @@ export class MenuTavoloPage implements OnInit {
 				);
 			} catch (error) {
 				const toast = await this.toastController.create({
-					message: 'Errore: L\'ordine è stato creato ma i prodotti non sono stati aggiunti',
+					message:
+						"Errore: L'ordine è stato creato ma i prodotti non sono stati aggiunti",
 					duration: 3000,
 					position: 'bottom',
 					color: 'danger',
@@ -122,7 +126,6 @@ export class MenuTavoloPage implements OnInit {
 				await toast.present();
 				console.error(error);
 				return;
-				
 			}
 
 			this.servizioCarrello.svuotaCarrello();
@@ -139,33 +142,60 @@ export class MenuTavoloPage implements OnInit {
 	}
 
 	async visualizzaOrdini() {
-		// Controlla se ci sono prodotti nel db ordinati NON GUARDARE IL CARRELLO------------------
-		this.prodottiNelCarrello = this.servizioCarrello.getProdotti();
-		this.totale = parseFloat(
-			this.prodottiNelCarrello
-				.reduce((acc, prodotto) => acc + prodotto.costo, 0)
-				.toFixed(2)
-		);
-		if (this.totale == 0) {
+		try {
+			const numeroOrdine = this.tavoloService.getNumeroOrdine();
+			if (numeroOrdine === null) {
+				const toast = await this.toastController.create({
+					message: 'Errore: numero ordine non disponibile.',
+					duration: 3000,
+					position: 'bottom',
+					color: 'danger',
+				});
+				await toast.present();
+				return;
+			}
+
+			const response = await firstValueFrom(
+				this.ordineService.getProdottiOrdinatiByNumeroOrdine(
+					numeroOrdine
+				)
+			);
+
+			if (
+				!response.success ||
+				!response.data
+			) {
+				const toast = await this.toastController.create({
+					message: 'Non hai ancora effettuato ordini',
+					duration: 3000,
+					position: 'bottom',
+					color: 'warning',
+				});
+				await toast.present();
+				return;
+			}
+			
+			if (this.tavoloService.getHaOrdinato()){
+				this.router.navigate(['/visualizza-ordini']);
+			}
+		} catch (error) {
 			const toast = await this.toastController.create({
-				message: 'Non hai ancora effettuato ordini',
+				message: 'Errore nel recupero degli ordini.',
 				duration: 3000,
 				position: 'bottom',
-				color: 'warning',
+				color: 'danger',
 			});
 			await toast.present();
-		} else {
-			this.router.navigate(['/visualizza-ordini']);
+			console.error(error);
 		}
 	}
+
 	ngOnInit() {
 		this.ngViewWillEnter();
 	}
 
 	ngViewWillEnter() {
-		
 		this.nomeUtente = this.servizioAutenticazione.getUsername();
 		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
-		
 	}
 }

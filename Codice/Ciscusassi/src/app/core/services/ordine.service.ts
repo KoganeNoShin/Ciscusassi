@@ -4,12 +4,14 @@ import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
 import { Observable } from 'rxjs';
 import { ProdottoInput } from '../interfaces/Prodotto';
+import { OrdProdEstended } from '../interfaces/OrdProd';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class OrdineService {
 	private apiURL = environment.apiURL;
+	prodottiOrdinati: OrdProdEstended[] = [];
 
 	constructor(private http: HttpClient) {}
 
@@ -65,5 +67,20 @@ export class OrdineService {
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
+	}
+
+	getProdottiOrdinatiByNumeroOrdine(id: number
+		): Observable<ApiResponse<OrdProdEstended>> {
+			return this.http.get<ApiResponse<OrdProdEstended>>(
+				`${this.apiURL}/ordprod/${id}`
+			);
+		}
+
+	setProdottiOrdinati(prodottiOrdinati: OrdProdEstended[]){
+		this.prodottiOrdinati = prodottiOrdinati;
+	}
+
+	getProdottiOrdinati(): OrdProdEstended[]{
+		return this.prodottiOrdinati;
 	}
 }

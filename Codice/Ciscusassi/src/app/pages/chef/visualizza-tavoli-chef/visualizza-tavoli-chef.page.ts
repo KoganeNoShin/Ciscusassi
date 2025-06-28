@@ -56,7 +56,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 
 	private intervalloAggiornamento: any; // Timer per auto-refresh
 	localeAperto: boolean = false;
-  private intervalTavoli: any;
+  	private intervalTavoli: any;
 	private intervalApertura: any;
 
 	constructor(
