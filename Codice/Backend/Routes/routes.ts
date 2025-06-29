@@ -265,10 +265,17 @@ router.post(
 );
 
 router.get(
-	'/prenotazione/:id_prenotazione/stato',
+	'/prenotazione/:id_prenotazione/cameriere/stato',
 	idPrenotazioneValidator(param('id_prenotazione')),
 	validate,
-	PrenotazioneController.getStatoPrenotazione
+	PrenotazioneController.getStatoPrenotazioneCameriere
+);
+
+router.get(
+	'/prenotazione/:id_prenotazione/chef/stato',
+	idPrenotazioneValidator(param('id_prenotazione')),
+	validate,
+	PrenotazioneController.getStatoPrenotazioneChef
 );
 
 router.post(

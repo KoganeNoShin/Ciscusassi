@@ -302,7 +302,7 @@ class PrenotazioneService {
 		return tavoliPerOrario;
 	}
 
-	static async getStatoPrenotazione(id_prenotazione: number): Promise<string> {
+	static async getStatoPrenotazioneCameriere(id_prenotazione: number): Promise<string> {
 		try {
 			const otp = await Prenotazione.getOTPById(id_prenotazione);
 			if (!otp) {
@@ -333,6 +333,50 @@ class PrenotazioneService {
 				}
 
 			if (hasPreparazione) return 'in-lavorazione';
+			if (allConsegnati) return 'consegnato';
+		}
+
+			return 'non-in-lavorazione';
+		} catch (err) {
+			console.error(
+				`❌ Errore nel recuperare lo stato della prenotazione ${id_prenotazione}:`,
+				err
+			);
+			throw err;
+		}
+	}
+
+	static async getStatoPrenotazioneChef(id_prenotazione: number): Promise<string> {
+		try {
+			const otp = await Prenotazione.getOTPById(id_prenotazione);
+			if (!otp) {
+				return 'attesa-arrivo';
+			}
+			const ordini = await Ordine.getByPrenotazione(id_prenotazione);
+
+			if (!ordini || ordini.length === 0) {
+				return 'senza-ordini';
+			}
+
+			for (const ordine of ordini) {
+				const prodotti = await OrdProd.getByOrdine(ordine.id_ordine);
+
+				if (prodotti == null || prodotti.length === 0) continue;
+
+				let hasPreparazione = false;
+				let hasInConsegna = false;
+				let allConsegnati = true;
+
+			for (const p of prodotti) {
+				if (p.stato === 'in-consegna') hasInConsegna = true;
+				else if (p.stato === 'in-lavorazione') hasPreparazione = true;
+				else if (p.stato !== 'consegnato') allConsegnati = false;
+
+					// Early exit per priorità
+					if (hasPreparazione) return 'in-consegna';
+				}
+
+			if (hasInConsegna) return 'in-lavorazione';
 			if (allConsegnati) return 'consegnato';
 		}
 
