@@ -40,11 +40,17 @@ import { FilialeInput } from 'src/app/core/interfaces/Filiale';
   ],
 })
 export class AggiungiFilialiPage implements OnInit {
+  // Campo per l'indirizzo della filiale
   indirizzo: string = '';
+  // Campo per il comune della filiale
   comune: string = '';
+  // Numero di tavoli disponibili nella filiale
   numTavoli: number | null = null;
+  // Immagine in formato base64 per la filiale
   immagineBase64: string = '';
+  // Lista di suggerimenti per l'indirizzo da OpenStreetMap
   suggestions: string[] = [];
+  // Timeout per gestire la richiesta di suggerimenti con debounce
   timeout: any = null;
 
   constructor(
@@ -53,7 +59,9 @@ export class AggiungiFilialiPage implements OnInit {
     private http: HttpClient
   ) {}
 
+  // Metodo eseguito all'inizializzazione del componente
   ngOnInit() {
+    // Recupera eventuali dati di filiale passati tramite stato di navigazione
     const navigation = window.history.state;
     if (navigation && navigation.filiale) {
       const f = navigation.filiale;
@@ -64,6 +72,7 @@ export class AggiungiFilialiPage implements OnInit {
     }
   }
 
+  // Gestisce la selezione di un file immagine e lo converte in base64
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -77,6 +86,7 @@ export class AggiungiFilialiPage implements OnInit {
     }
   }
 
+  // Gestisce l'input sull'indirizzo per mostrare suggerimenti (autocomplete)
   onIndirizzoInput(): void {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
@@ -88,10 +98,13 @@ export class AggiungiFilialiPage implements OnInit {
       const query = `${this.indirizzo}, ${this.comune}`;
       this.http
         .get<any[]>(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            query
+          )}&addressdetails=1&limit=5`
         )
         .subscribe(
           (res) => {
+            // Mappa la risposta per ottenere solo i nomi da mostrare come suggerimenti
             this.suggestions = res.map((item) => item.display_name);
           },
           (err) => {
@@ -99,15 +112,18 @@ export class AggiungiFilialiPage implements OnInit {
             this.suggestions = [];
           }
         );
-    }, 300);
+    }, 300); // debounce di 300ms per limitare le chiamate API
   }
 
+  // Seleziona un suggerimento e aggiorna il campo indirizzo, svuotando i suggerimenti
   selectSuggestion(s: string): void {
     this.indirizzo = s;
     this.suggestions = [];
   }
 
+  // Crea una nuova filiale, validando i dati e ottenendo coordinate tramite geocoding
   async creaFiliale(): Promise<void> {
+    // Controlla che tutti i campi obbligatori siano compilati
     if (
       !this.indirizzo.trim() ||
       !this.comune.trim() ||
@@ -120,12 +136,14 @@ export class AggiungiFilialiPage implements OnInit {
 
     const fullAddress = `${this.indirizzo}, ${this.comune}`;
     try {
+      // Ottiene le coordinate geografiche dall'indirizzo
       const coords = await this.geocodificaIndirizzo(fullAddress);
       if (!coords) {
         this.presentToast('Indirizzo non trovato. Verifica e riprova.', 'danger');
         return;
       }
 
+      // Prepara l'oggetto filiale da inviare al servizio backend
       const nuovaFiliale: FilialeInput = {
         indirizzo: this.indirizzo,
         comune: this.comune,
@@ -135,11 +153,12 @@ export class AggiungiFilialiPage implements OnInit {
         longitudine: coords.lon,
       };
 
+      // Invio richiesta per aggiungere la filiale
       this.filialeService.addFiliale(nuovaFiliale).subscribe({
         next: async (res) => {
           if (res.success) {
             this.presentToast('Filiale aggiunta con successo! 🎉', 'success');
-            this.resetForm();
+            this.resetForm(); // Reset del form dopo il successo
           } else {
             this.presentToast("Errore durante l'aggiunta della filiale.", 'danger');
           }
@@ -155,6 +174,7 @@ export class AggiungiFilialiPage implements OnInit {
     }
   }
 
+  // Funzione per ottenere le coordinate geografiche tramite OpenStreetMap Nominatim
   async geocodificaIndirizzo(address: string): Promise<{ lat: number; lon: number } | null> {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
       address
@@ -174,6 +194,7 @@ export class AggiungiFilialiPage implements OnInit {
     }
   }
 
+  // Mostra un toast con messaggio e colore specifico
   async presentToast(message: string, color: 'success' | 'danger' | 'warning') {
     const toast = await this.toastController.create({
       message,
@@ -184,6 +205,7 @@ export class AggiungiFilialiPage implements OnInit {
     toast.present();
   }
 
+  // Resetta tutti i campi del form e svuota i suggerimenti
   resetForm(): void {
     this.indirizzo = '';
     this.comune = '';
