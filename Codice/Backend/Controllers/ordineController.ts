@@ -48,10 +48,7 @@ class OrdineController {
 
             if(idOrdine) res.status(201).json({ 
                 success: true, 
-                data: {
-                    body: req.body,
-                    id_ordine: idOrdine
-                }
+                data: idOrdine
             });
             else res.status(400).json({
                     success: false,
