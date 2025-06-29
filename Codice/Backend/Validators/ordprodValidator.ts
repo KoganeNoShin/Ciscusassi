@@ -146,8 +146,8 @@ const cambiaStatoProdottoValidator = [
 const ordProdArrayValidator = [
     idOrdineValidator('*.ref_ordine'),
     prodottoValidator('*.ref_prodotto'),
-    statoProdottoValidator('*.statoProdotto'),
-    is_romanaValidator('*.Is_Romana')
+    statoProdottoValidator('*.stato'),
+    is_romanaValidator('*.is_romana')
 ];
 
 const getProdottiByPrenotazioneValidator = [
