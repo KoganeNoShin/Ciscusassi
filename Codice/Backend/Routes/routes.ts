@@ -252,7 +252,7 @@ router.get(
 
 router.get(
 	'/prenotazione/:id_prenotazione/otp',
-	idFilialeValidator(param('id_filiale')),
+	idPrenotazioneValidator(param('id_prenotazione')),
 	validate,
 	PrenotazioneController.getOTPById
 );
