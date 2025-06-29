@@ -42,16 +42,17 @@ import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 	],
 })
 export class AggiungiDipendentiPage implements OnInit {
+	// Proprietà legate al form per l'aggiunta di un dipendente
 	nome: string = '';
 	cognome: string = '';
 	data_nascita: string = '';
 	ruolo: string = '';
 	email: string = '';
-	foto: string = ''; // immagine base64
+	foto: string = ''; // immagine in formato base64
 	password: string = '';
-	ref_filiale?: number;
+	ref_filiale?: number; // riferimento alla filiale selezionata
 
-	filiali: FilialeRecord[] = [];
+	filiali: FilialeRecord[] = []; // elenco delle filiali disponibili
 
 	constructor(
 		private impiegatoService: ImpiegatoService,
@@ -59,10 +60,12 @@ export class AggiungiDipendentiPage implements OnInit {
 		private toastController: ToastController
 	) {}
 
+	// Metodo eseguito all'inizializzazione del componente
 	ngOnInit() {
-		this.caricaFiliali();
+		this.caricaFiliali(); // carica le filiali da mostrare nel select
 	}
 
+	// Mostra un toast con messaggio e colore personalizzati
 	async presentToast(message: string, color: string = 'success') {
 		const toast = await this.toastController.create({
 			message,
@@ -73,6 +76,7 @@ export class AggiungiDipendentiPage implements OnInit {
 		await toast.present();
 	}
 
+	// Gestisce la selezione di un'immagine e la converte in base64
 	onImageSelected(event: any) {
 		const file = event.target.files[0];
 		if (file) {
@@ -84,11 +88,13 @@ export class AggiungiDipendentiPage implements OnInit {
 		}
 	}
 
+	// Validazione semplice per l'indirizzo email
 	private isValidEmail(email: string): boolean {
 		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return re.test(email.toLowerCase());
 	}
 
+	// Carica le filiali da backend e le assegna alla proprietà 'filiali'
 	caricaFiliali() {
 		this.filialeService.GetSedi().subscribe({
 			next: (res) => {
@@ -106,7 +112,9 @@ export class AggiungiDipendentiPage implements OnInit {
 		});
 	}
 
+	// Metodo chiamato al submit del form per aggiungere un nuovo dipendente
 	aggiungiDipendente() {
+		// Validazioni preliminari
 		if (this.password.length < 8) {
 			this.presentToast(
 				'La password deve contenere almeno 8 caratteri.',
@@ -125,6 +133,7 @@ export class AggiungiDipendentiPage implements OnInit {
 			return;
 		}
 
+		// Creazione dell'oggetto ImpiegatoInput con i dati inseriti
 		const nuovoDipendente: ImpiegatoInput = {
 			nome: this.nome,
 			cognome: this.cognome,
@@ -136,6 +145,7 @@ export class AggiungiDipendentiPage implements OnInit {
 			ref_filiale: this.ref_filiale,
 		};
 
+		// Invio al servizio per l'aggiunta del dipendente
 		this.impiegatoService.AddImpiegato(nuovoDipendente).subscribe({
 			next: (response) => {
 				console.log('Dipendente aggiunto con successo:', response);
@@ -143,7 +153,7 @@ export class AggiungiDipendentiPage implements OnInit {
 					'Dipendente aggiunto con successo!',
 					'success'
 				);
-				this.resetForm();
+				this.resetForm(); // resetta i campi del form dopo l'inserimento
 			},
 			error: (error) => {
 				console.error(
@@ -158,6 +168,7 @@ export class AggiungiDipendentiPage implements OnInit {
 		});
 	}
 
+	// Reset dei campi del form
 	resetForm() {
 		this.nome = '';
 		this.cognome = '';
