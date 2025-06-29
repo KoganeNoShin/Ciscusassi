@@ -43,7 +43,7 @@ import {
 	templateUrl: 'app.component.html',
 	styleUrls: ['./app.component.scss'],
 	imports: [
-		// Ionic core components for layout, navigation, and structure
+		
 		IonApp,
 		IonRouterOutlet,
 		RouterModule,

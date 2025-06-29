@@ -21,7 +21,6 @@ import { TavoloService } from 'src/app/core/services/tavolo.service';
 	selector: 'app-visualizza-ordini',
 	templateUrl: './visualizza-ordini.page.html',
 	styleUrls: ['./visualizza-ordini.page.scss'],
-	standalone: true,
 	imports: [
 		RouterModule,
 		IonButton,
@@ -32,46 +31,79 @@ import { TavoloService } from 'src/app/core/services/tavolo.service';
 	],
 })
 export class VisualizzaOrdiniPage implements OnInit {
+	// Variabile per memorizzare l'interval che aggiorna gli ordini
 	private intervalAggiornamento: any;
+
+	// Observable di array di prodotti ordinati, inizialmente vuoto
 	prodotti$: Observable<OrdProdEstended[]> = of([]);
-	constructor(private router: Router, private ordineService: OrdineService, private tavoloService: TavoloService) {}
+
+	// Iniezione di dipendenze: router, servizio ordini e servizio tavolo
+	constructor(
+		private router: Router,
+		private ordineService: OrdineService,
+		private tavoloService: TavoloService
+	) {}
+
+	// Metodo per terminare il servizio e passare al pagamento
 	terminaServizio() {
-		//implemetare la logica per controllare se tutti i prodotti sono stati consegnati
-		//altrimenti mostrare un messaggio di errore tramite toast
-		this.router.navigate(['/pagamento-tavolo']);
+		// TODO: implementare logica che verifica se tutti i prodotti sono stati consegnati,
+		// altrimenti mostrare messaggio di errore con toast
+		this.router.navigate(['/pagamento-tavolo']); // Naviga alla pagina di pagamento tavolo
 	}
 
+	// Metodo lifecycle Angular chiamato all'inizializzazione del componente
 	ngOnInit() {
-		this.ngViewWillEnter();
+		this.ngViewWillEnter(); // Chiama la funzione per caricare gli ordini e impostare aggiornamenti
 	}
 
-	ngViewWillEnter(){
-		this.loadOrdini();
-		this.intervalAggiornamento = setInterval(() => this.loadOrdini(), 30000);
+	// Metodo personalizzato per caricare dati e impostare aggiornamenti periodici
+	ngViewWillEnter() {
+		this.loadOrdini(); // Carica gli ordini inizialmente
+
+		// Imposta un intervallo che ricarica gli ordini ogni 30 secondi
+		this.intervalAggiornamento = setInterval(
+			() => this.loadOrdini(),
+			30000
+		);
 	}
 
-	ngOnDestroy(){
+	// Metodo lifecycle Angular chiamato prima che il componente venga distrutto
+	ngOnDestroy() {
+		// Se esiste un intervallo di aggiornamento, lo cancella per evitare memory leak
 		if (this.intervalAggiornamento) {
 			clearInterval(this.intervalAggiornamento);
 		}
 	}
 
-	async loadOrdini(){
+	// Metodo asincrono per caricare gli ordini dal backend
+	async loadOrdini() {
+		// Ottiene il numero ordine dal servizio tavolo
 		const numeroOrdine = this.tavoloService.getNumeroOrdine();
+
+		// Se il numero ordine non è disponibile, stampa errore e termina
 		if (numeroOrdine === null) {
 			console.error('Numero ordine non disponibile');
 			return;
 		}
+
+		// Effettua la chiamata al servizio ordini per ottenere i prodotti ordinati
 		const response = await firstValueFrom(
 			this.ordineService.getProdottiOrdinatiByNumeroOrdine(numeroOrdine)
 		);
 
+		// Se la risposta non ha successo o dati, imposta l'observable prodotti$ a vuoto
 		if (!response.success || !response.data) {
 			this.prodotti$ = of([]);
 		} else {
+			// Se la risposta contiene un array di prodotti, filtra gli elementi validi
+			// Altrimenti, se è un singolo prodotto, lo incapsula in un array
 			const prodotti = Array.isArray(response.data)
-				? response.data.filter((item): item is OrdProdEstended => !!item)
+				? response.data.filter(
+						(item): item is OrdProdEstended => !!item
+					)
 				: [response.data];
+
+			// Aggiorna l'observable prodotti$ con i prodotti ottenuti
 			this.prodotti$ = of(prodotti);
 		}
 	}
