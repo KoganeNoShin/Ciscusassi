@@ -1,7 +1,6 @@
 import { body, param, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Filiale from '../Models/filiale';
-import Impiegato from '../Models/impiegato';
 
 // Parametri
 const nomeImpiegatoValidator = (field: string) =>
@@ -81,7 +80,7 @@ const passwordValidator = (field: string) =>
 		.notEmpty().withMessage('La password è obbligatoria')
 		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri');
 
-    
+
 
 // Validatori
 const addImpiegato = [

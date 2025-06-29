@@ -2,7 +2,6 @@ import { body, param, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import OrdProd from '../Models/ord_prod';
 import OrdineService from '../Services/ordineService';
-import Prodotto from '../Models/prodotto';
 import Ordine from '../Models/ordine';
 import Prenotazione from '../Models/prenotazione';
 import Cliente from '../Models/cliente';
