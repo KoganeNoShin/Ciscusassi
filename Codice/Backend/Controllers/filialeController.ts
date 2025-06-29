@@ -38,7 +38,7 @@ class FilialeController {
 
 	static async deleteFiliale(req: Request, res: Response): Promise<void> {
 		try {
-			await FilialeService.deleteFiliale(parseInt(req.params.id));
+			await FilialeService.deleteFiliale(parseInt(req.params.id_filiale));
 
 			res.json({ success: true, message: 'Filiale eliminata con successo' });
 		} catch (err) {

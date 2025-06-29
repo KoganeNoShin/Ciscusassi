@@ -80,7 +80,7 @@ class PrenotazioneController {
 
     static async eliminaPrenotazione(req: Request, res: Response): Promise<void> {
         try {
-            await PrenotazioneService.eliminaPrenotazione(parseInt(req.params.id));
+            await PrenotazioneService.eliminaPrenotazione(parseInt(req.params.id_prenotazione));
 
             res.json({ success: true, message: 'Prenotazione eliminata con successo' });
         } catch (err) {
@@ -95,7 +95,7 @@ class PrenotazioneController {
 
     static async getOTPById(req: Request, res: Response): Promise<void> {
         try {
-            const otp = await PrenotazioneService.getOTPById(parseInt(req.params.id));
+            const otp = await PrenotazioneService.getOTPById(parseInt(req.params.id_prenotazione));
 
             if (otp) res.json({ success: true, data: otp });
             else res.status(404).json({
@@ -114,7 +114,7 @@ class PrenotazioneController {
 
     static async getPrenotazioneById(req: Request, res: Response): Promise<void> {
         try {
-            const prenotazione = await PrenotazioneService.getPrenotazioneById(parseInt(req.params.id));
+            const prenotazione = await PrenotazioneService.getPrenotazioneById(parseInt(req.params.id_prenotazione));
 
             if (prenotazione) res.json({ success: true, data: prenotazione });
             else res.status(404).json({
@@ -152,7 +152,7 @@ class PrenotazioneController {
 
     static async getPrenotazioniByCliente(req: Request, res: Response): Promise<void> {
         try {
-            const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(parseInt(req.params.clienteId));
+            const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(parseInt(req.params.id_cliente));
 
             if (prenotazioni) res.json({ success: true, data: prenotazioni });
             else res.status(404).json({
@@ -185,7 +185,7 @@ class PrenotazioneController {
             }
 
             // Recupera le prenotazioni per la filiale e la data
-            const prenotazioni = await PrenotazioneService.getPrenotazioniDataAndFiliale(parseInt(req.params.filiale), dataFormattata);
+            const prenotazioni = await PrenotazioneService.getPrenotazioniDataAndFiliale(parseInt(req.params.id_filiale), dataFormattata);
 
             if (prenotazioni && prenotazioni.length > 0) {
                 res.json({ success: true, data: prenotazioni });
@@ -224,7 +224,7 @@ class PrenotazioneController {
             }
 
 
-			const tavoli = await PrenotazioneService.calcolaTavoliInUso(parseInt(req.params.filiale), dataFormattata);
+			const tavoli = await PrenotazioneService.calcolaTavoliInUso(parseInt(req.params.id_filiale), dataFormattata);
 			res.status(200).json(tavoli);
 		} catch (error) {
 			console.error('❌ Errore durante il calcolo dei tavoli:', error);
@@ -234,7 +234,7 @@ class PrenotazioneController {
 
     static async getStatoPrenotazione(req: Request, res: Response): Promise<void> {
         try {
-            const id_prenotazione = parseInt(req.params.id);
+            const id_prenotazione = parseInt(req.params.id_prenotazione);
             const stato = await PrenotazioneService.getStatoPrenotazione(id_prenotazione);
 
             res.json({ success: true, data: stato });

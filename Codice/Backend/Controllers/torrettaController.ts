@@ -5,7 +5,7 @@ import { id } from 'date-fns/locale';
 class TorrettaController {
     static async getTorrettaByID(req: Request, res: Response): Promise<void> {
         try {
-            const id_torretta = Number(req.params.id);
+            const id_torretta = Number(req.params.id_torretta);
             const torretta = await TorrettaService.getTorrettaByID(id_torretta);
             if (torretta) {
                 res.status(200).json({ success: true, data: torretta });

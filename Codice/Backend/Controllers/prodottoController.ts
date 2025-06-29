@@ -27,7 +27,7 @@ class ProdottoController {
 
 	static async updateProdotto(req: Request, res: Response): Promise<void> {
 		try {
-			await ProdottoService.updateProdotto(req.body, parseInt(req.params.id));
+			await ProdottoService.updateProdotto(req.body, parseInt(req.params.id_prodotto));
 
 			res.json({ success: true, message: 'Piatto aggiornato con successo' });
 		} catch (err) {
@@ -43,7 +43,7 @@ class ProdottoController {
 	static async deleteProdotto(req: Request, res: Response): Promise<void> {
 		try {
 			await ProdottoService.deleteProdotto(
-				parseInt(req.params.id)
+				parseInt(req.params.id_prodotto)
 			);
 
 			res.json({ success: true, message: 'Piatto eliminato con successo' });
@@ -60,7 +60,7 @@ class ProdottoController {
 	static async chargePiattoDelGiorno(req: Request, res: Response): Promise<void> {
 		try {
 			await ProdottoService.chargePiattoDelGiorno(
-				parseInt(req.params.id)
+				parseInt(req.params.id_prodotto)
 			);
 
 			res.json({ success: true, message: 'Piatto del giorno cambiato con successo' });

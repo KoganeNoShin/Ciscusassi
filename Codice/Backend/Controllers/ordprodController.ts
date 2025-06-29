@@ -49,7 +49,7 @@ class OrdProdController {
 
     static async cambiaStatoProdottoOrdine(req: Request, res: Response): Promise<void> {
         try {
-            const idProdotto = Number(req.params.id);
+            const idProdotto = Number(req.params.id_ordprod);
             const nuovoStato = req.body.stato;
 
             await OrdProdService.cambiaStatoProdottoOrdine(idProdotto, nuovoStato);
