@@ -39,7 +39,6 @@ import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 	imports: [
 		IonButton,
 		IonText,
-		IonCardContent,
 		IonCard,
 		IonRow,
 		IonGrid,

@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
 export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 	tavoli: Array<{
 		numero: number;
-		nome: string;
+		prenotazione: number;
 		orario: string;
 		persone: number;
 		stato: string;
@@ -147,7 +147,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 
 							return {
 								numero: p.ref_torretta,
-								nome: `Prenotazione: ${p.id_prenotazione}`,
+								prenotazione: p.id_prenotazione,
 								orario: this.formattaOrario(
 									p.data_ora_prenotazione
 								),
@@ -161,7 +161,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 							);
 							return {
 								numero: p.ref_torretta,
-								nome: `Prenotazione: ${p.id_prenotazione}`,
+								prenotazione: p.id_prenotazione,
 								orario: this.formattaOrario(
 									p.data_ora_prenotazione
 								),

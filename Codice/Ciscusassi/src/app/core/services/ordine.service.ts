@@ -65,9 +65,16 @@ export class OrdineService {
 
 	getProdottiOrdinatiByNumeroOrdine(
 		id: number
-	): Observable<ApiResponse<OrdProdEstended>> {
-		return this.http.get<ApiResponse<OrdProdEstended>>(
+	): Observable<ApiResponse<OrdProdEstended[]>> {
+		return this.http.get<ApiResponse<OrdProdEstended[]>>(
 			`${this.apiURL}/prenotazione/ordine/${id}/prodotti`
+		);
+	}
+	getProdottiOrdinatiByPrenotazione(
+		idPrenotazione: number
+	): Observable<ApiResponse<OrdProdEstended[]>> {
+		return this.http.get<ApiResponse<OrdProdEstended[]>>(
+			`${this.apiURL}/prenotazione/${idPrenotazione}/prodotti`
 		);
 	}
 
