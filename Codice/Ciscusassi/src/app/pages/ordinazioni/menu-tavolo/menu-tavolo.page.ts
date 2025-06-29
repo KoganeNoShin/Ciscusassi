@@ -69,7 +69,6 @@ export class MenuTavoloPage implements OnInit {
 			});
 			await toast.present();
 		} else {
-			const numeroTavolo = this.tavoloService.getNumeroTavolo();
 			const prenotazione = this.tavoloService.getPrenotazione();
 
 			if (prenotazione === null) {
@@ -232,5 +231,6 @@ export class MenuTavoloPage implements OnInit {
 
 	ngViewWillEnter() {
 		this.nomeUtente = this.servizioAutenticazione.getUsername();
+		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
 	}
 }
