@@ -27,7 +27,7 @@ export class OrdineService {
 		};
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/addOrdine`,
+			`${this.apiURL}/prenotazione/addOrdine`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
@@ -45,7 +45,7 @@ export class OrdineService {
 		};
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/ordine/pay`,
+			`${this.apiURL}/prenotazione/ordine/pay`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
@@ -57,7 +57,7 @@ export class OrdineService {
 		const body = ref_prodotto;
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/ordine/addProdotti`,
+			`${this.apiURL}/prenotazione/ordine/addProdotti`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
@@ -67,7 +67,7 @@ export class OrdineService {
 		id: number
 	): Observable<ApiResponse<OrdProdEstended>> {
 		return this.http.get<ApiResponse<OrdProdEstended>>(
-			`${this.apiURL}/ordprod/${id}`
+			`${this.apiURL}/prenotazione/ordine/${id}/prodotti`
 		);
 	}
 

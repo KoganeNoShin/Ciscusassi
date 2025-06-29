@@ -54,7 +54,7 @@ export class PrenotazioneService {
 		};
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/check-otp`,
+			`${this.apiURL}/prenotazione/check-otp`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
@@ -72,13 +72,13 @@ export class PrenotazioneService {
 		filialeId: number
 	): Observable<ApiResponse<PrenotazioneRecord[]>> {
 		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(
-			`${this.apiURL}/prenotazioni/${filialeId}`
+			`${this.apiURL}/filiale/${filialeId}/prenotazioni`
 		);
 	}
 
 	getStatoPrenotazione(id: number) {
 		return this.http.get<{ success: boolean; data: string }>(
-			`${this.apiURL}/prenotazioni/${id}/stato`
+			`${this.apiURL}/prenotazione/${id}/stato`
 		);
 	}
 
@@ -99,7 +99,7 @@ export class PrenotazioneService {
 
 	confermaPrenotazione(id: number): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/conferma`,
+			`${this.apiURL}/prenotazione/conferma`,
 			{ id_prenotazione: id }
 		);
 	}
@@ -125,7 +125,7 @@ export class PrenotazioneService {
 		return this.http
 			.get<{
 				[fascia: string]: number;
-			}>(`${this.apiURL}/tavoli-in-uso/${id_filiale}?data=${data}`)
+			}>(`${this.apiURL}/filiale/${id_filiale}/tavoli-in-uso?data=${data}`)
 			.pipe(
 				// Wrap the response in an ApiResponse object
 				map((data) => ({

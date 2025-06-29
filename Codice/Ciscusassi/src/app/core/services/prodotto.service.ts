@@ -15,40 +15,40 @@ export class ProdottoService {
 
 	GetProdotti(): Observable<ApiResponse<ProdottoRecord[]>> {
 		return this.http.get<ApiResponse<ProdottoRecord[]>>(
-			`${this.apiURL}/Prodotti`
+			`${this.apiURL}/menu`
 		);
 	}
 
 	GetPiattoDelGiorno(): Observable<ApiResponse<ProdottoRecord>> {
 		return this.http.get<ApiResponse<ProdottoRecord>>(
-			`${this.apiURL}/PiattoDelGiorno`
+			`${this.apiURL}/menu/PiattoDelGiorno`
 		);
 	}
 
 	chargePiattoDelGiorno(id: number): Observable<ApiResponse<ProdottoRecord>> {
 		return this.http.put<ApiResponse<ProdottoRecord>>(
-			`${this.apiURL}/chargePiattoDelGiorno/${id}`,
+			`${this.apiURL}/menu/chargePiattoDelGiorno/${id}`,
 			{}
 		);
 	}
 
 	addProdotto(prodotto: ProdottoInput): Observable<ApiResponse<number>> {
 		return this.http.post<ApiResponse<number>>(
-			`${this.apiURL}/addProdotto`,
+			`${this.apiURL}/menu/addProdotto`,
 			prodotto
 		);
 	}
 	
 	updateProdotto(id: number, prodotto: ProdottoInput): Observable<ApiResponse<void>> {
 		return this.http.put<ApiResponse<void>>(
-			`${this.apiURL}/updateProdotto/${id}`,
+			`${this.apiURL}/menu/updateProdotto/${id}`,
 			prodotto
 		);
 	}
 
 	deleteProdotto(id: number): Observable<ApiResponse<void>> {
 		return this.http.delete<ApiResponse<void>>(
-			`${this.apiURL}/deleteProdotto/${id}`
+			`${this.apiURL}/menu/deleteProdotto/${id}`
 		);
 	}
 }
