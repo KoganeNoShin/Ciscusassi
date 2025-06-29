@@ -1,4 +1,4 @@
-import { body, param, validationResult } from 'express-validator'
+import { body, param, ValidationChain, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Cliente from '../Models/cliente';
 import Filiale from '../Models/filiale';
@@ -6,28 +6,16 @@ import PrenotazioneService from '../Services/prenotazioneService';
 import Prenotazione from '../Models/prenotazione';
 
 
-// Validatori
-const dataFuturaValidator = (dataPrenotazione: Date, adesso: Date) => {
-    if (dataPrenotazione < adesso) {
-        throw new Error('La data e ora della prenotazione non può essere nel passato');
-    }
-};
-
-const dataEntroDieciMinutiValidator = (dataPrenotazione: Date, adesso: Date) => {
-    const dieciMinutiDopo = new Date(adesso.getTime() + 10 * 60 * 1000); // 10 minuti dopo l'ora corrente
-    if (dataPrenotazione > dieciMinutiDopo || dataPrenotazione < adesso) {
-        throw new Error('La data e ora della prenotazione deve essere entro 10 minuti da adesso');
-    }
-};
-
-const data_ora_prenotazioneValidator = (field: string, tipo: 'futuro' | '10minuti') =>
-    body(field)
+// Funzioni
+function data_ora_prenotazioneValidator(chain: ValidationChain, minutiOffset: number): ValidationChain {
+  return chain
         .optional({ checkFalsy: true })
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di prenotazione deve essere nel formato "yyyy-MM-dd HH:mm"')
         .custom((value: string) => {
             const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
             const dataPrenotazione = new Date(value);
             const adesso = new Date();
+            const limiteMassimo = new Date(adesso.getTime() + minutiOffset * 60 * 1000)
 
             // Verifica che l'orario selezionato sia valido
             const ore = dataPrenotazione.getHours().toString().padStart(2, '0');
@@ -38,18 +26,18 @@ const data_ora_prenotazioneValidator = (field: string, tipo: 'futuro' | '10minut
                 throw new Error(`L'orario selezionato (${orarioPrenotato}) non è valido. Orari disponibili: ${orariValidi.join(', ')}`);
             }
 
-            // Applica il controllo corretto in base al tipo
-            if (tipo === 'futuro') {
-                dataFuturaValidator(dataPrenotazione, adesso); // Caso 1: data futura
-            } else if (tipo === '10minuti') {
-                dataEntroDieciMinutiValidator(dataPrenotazione, adesso); // Caso 2: entro 10 minuti
+            if(dataPrenotazione < adesso){
+                throw new Error('La data e ora della prenotazione non può essere nel passato');
             }
-
+            if(minutiOffset != 0 && dataPrenotazione > limiteMassimo) {
+                throw new Error('La data e ora della prenotazione deve essere entro 10 minuti da adesso');
+            }
             return true;
         });
+}
 
-const ref_filialeValidator = (field: string) => {
-  const getValidator = param(field)
+function ref_filialeValidator(chain: ValidationChain): ValidationChain {
+  return chain
     .isInt({ min: 1 }).withMessage('ID filiale non valido')
     .bail()
     .custom(async (value) => {
@@ -57,28 +45,11 @@ const ref_filialeValidator = (field: string) => {
       if (!esiste) throw new Error('La filiale specificata non esiste');
       return true;
     });
-
-  const postPutValidator = body(field)
-    .isInt({ min: 1 }).withMessage('ID filiale non valido')
-    .bail()
-    .custom(async (value) => {
-      const esiste = await Filiale.getById(value);
-      if (!esiste) throw new Error('La filiale specificata non esiste');
-      return true;
-    });
-
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (req.method === 'GET') {
-      return getValidator(req, res, next);
-    } else {
-      return postPutValidator(req, res, next);
-    }
-  };
-};
+}
 
 
-const ref_clienteValidator = (field: string) =>
-	body(field)
+function ref_clienteValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.isInt({ min: 1 }).withMessage('Il riferimento al cliente deve essere un ID numerico valido')
 		.bail()
 		.custom(async (value: number) => {
@@ -87,9 +58,10 @@ const ref_clienteValidator = (field: string) =>
 			if (!esiste) throw new Error('Il cliente specificato non esiste');
 			return true;
 		});
+}
 
-const numuroPersoneValidator = (field: string) =>
-	body(field)
+function numuroPersoneValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.notEmpty().withMessage('Il numero di persone è obbligatorio!')
 		.isInt({ min: 1 }).withMessage('Il numero di persone deve essere un intero positivo')
 		.bail()
@@ -117,9 +89,10 @@ const numuroPersoneValidator = (field: string) =>
 
 			return true;
 		});
+}
 
-const id_prenotazioneValidator = (field: string) => {
-    const getValidator = param(field)
+function id_prenotazioneValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .toInt()
         .isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
         .bail()
@@ -128,61 +101,43 @@ const id_prenotazioneValidator = (field: string) => {
             if (!esiste) throw new Error('La prenotazione specificata non esiste');
             return true;
         });
-
-    const postPutValidator = body(field)
-        .isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
-        .bail()
-        .custom(async (value) => {
-            const esiste = await Filiale.getById(value);
-            if (!esiste) throw new Error('La prenotazione specificata non esiste');
-            return true;
-        });
-
-    return (req: Request, res: Response, next: NextFunction) => {
-        if (req.method === 'GET') {
-            return getValidator(req, res, next);
-        } else {
-            return postPutValidator(req, res, next);
-        }
-    };
-};
-
+}
 
 // Validatori
 const prenotazioneInputValidator = [
-	data_ora_prenotazioneValidator('data_ora_prenotazione', 'futuro'),
-	ref_filialeValidator('ref_filiale'),
-	ref_clienteValidator('ref_cliente'),
-	numuroPersoneValidator('numero_persone')
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione'), 0),
+	ref_filialeValidator(body('ref_filiale')),
+	ref_clienteValidator(body('ref_cliente')),
+	numuroPersoneValidator(body('numero_persone'))
 ];
 
 const prenotazioneInputLocoValidator = [
-	data_ora_prenotazioneValidator('data_ora_prenotazione', '10minuti'),
-	ref_filialeValidator('ref_filiale'),
-	ref_clienteValidator('ref_cliente'),
-	numuroPersoneValidator('numero_persone')
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione'), 10),
+	ref_filialeValidator(body('ref_filiale')),
+	ref_clienteValidator(body('ref_cliente')),
+	numuroPersoneValidator(body('numero_persone'))
 ];
 
 const prenotazioneUpdateValidator = [
-	id_prenotazioneValidator('id_prenotazione'),
-	data_ora_prenotazioneValidator('data_ora_prenotazione', 'futuro'),
-	numuroPersoneValidator('numero_persone')
+	id_prenotazioneValidator(body('id_prenotazione')),
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione'), 0),
+	numuroPersoneValidator(body('numero_persone'))
 ];
 
 const getPrenotazioniFilialeValidator = [
-	ref_filialeValidator('filiale')
+	ref_filialeValidator(param('filiale'))
 ];
 
 const comfermaPrenotazioneValidator = [
-	id_prenotazioneValidator('id_prenotazione')
+	id_prenotazioneValidator(body('id_prenotazione'))
 ];
 
 const GetOTPValidator = [
-	id_prenotazioneValidator('id_prenotazione')
+	id_prenotazioneValidator(param('id_prenotazione'))
 ];
 
 const statoPrenotazioneValidator = [
-	id_prenotazioneValidator('id')
+	id_prenotazioneValidator(param('id'))
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
