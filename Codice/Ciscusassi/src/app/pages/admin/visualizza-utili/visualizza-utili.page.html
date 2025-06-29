@@ -57,10 +57,10 @@
 				>
 					<ion-col size="2">{{ row.address }}</ion-col>
 					<ion-col size="1" *ngFor="let value of row.values">
-						€ {{ value | number: '1.0-0' }}
+						€ {{ value | number: '1.2-2' }}
 					</ion-col>
 					<ion-col size="1"
-						>€ {{ getRowTotal(row) | number: '1.0-0' }}</ion-col
+						>€ {{ getRowTotal(row) | number: '1.2-2' }}</ion-col
 					>
 				</ion-row>
 
@@ -72,11 +72,11 @@
 						size="1"
 						*ngFor="let month of months; let i = index"
 					>
-						€ {{ getColumnTotal(i) | number: '1.0-0' }}
+						€ {{ getColumnTotal(i) | number: '1.2-2' }}
 					</ion-col>
 					<ion-col size="1"
 						><strong
-							>€ {{ getGrandTotal() | number: '1.0-0' }}</strong
+							>€ {{ getGrandTotal() | number: '1.2-2' }}</strong
 						></ion-col
 					>
 				</ion-row>

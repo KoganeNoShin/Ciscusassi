@@ -196,11 +196,6 @@ export class VisualizzaUtiliPage implements OnInit {
 			.reduce((acc, val) => acc + val, 0);
 	}
 
-	// Formatta un numero secondo la localizzazione italiana (es. 1.000,00)
-	formatItalianNumber(value: number): string {
-		return value.toLocaleString('it-IT');
-	}
-
 	// Funzione che permettte di creare un excel a partire dai dati di un anno specifico
 	exportExcel() {
 		/* ----- Definiamo e memorizziamo i dati ----- */
