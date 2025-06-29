@@ -51,6 +51,21 @@ export class OrdineService {
 		);
 	}
 
+	cambiaStato(
+		stato: string,
+		id: number
+	): Observable<ApiResponse<any>> {
+		const body = {
+			stato: stato
+		};
+
+		return this.http.put<ApiResponse<any>>(
+			`${this.apiURL}/prenotazione/ordine/prodotto/${id}/cambiaStato`,
+			body,
+			{ headers: { 'Content-Type': 'application/json' } }
+		);
+	}
+
 	ordineAddProdotti(
 		ref_prodotto: OrdProdInput[]
 	): Observable<ApiResponse<any>> {
