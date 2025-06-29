@@ -12,9 +12,9 @@ import {
 } from '@ionic/angular/standalone';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 import { ListaOrdiniComponent } from 'src/app/components/lista-ordini/lista-ordini.component';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Tavolo, TavoloService } from 'src/app/core/services/tavolo.service';
-import { OrdineService } from 'src/app/core/services/ordine.service'; // Update the path if needed
+import { OrdineService } from 'src/app/core/services/ordine.service';
 
 @Component({
 	selector: 'app-visualizza-ordini-chef',
@@ -33,8 +33,6 @@ import { OrdineService } from 'src/app/core/services/ordine.service'; // Update 
 	],
 })
 export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
-
-
 	private prodottiSubject = new BehaviorSubject<OrdProdEstended[]>([]);
 	public prodotti$: Observable<OrdProdEstended[]> =
 		this.prodottiSubject.asObservable();
@@ -42,7 +40,6 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 	tavolo: Tavolo | null = null;
 	private intervalAggiornamento: any;
 
-	// Stato caricamento
 	isLoading = false;
 
 	constructor(
@@ -62,7 +59,6 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 
 	ngViewWillEnter() {
 		this.loadOrdini();
-
 		this.intervalAggiornamento = setInterval(
 			() => this.loadOrdini(),
 			30000
@@ -117,22 +113,63 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 		}
 	}
 
-	consegnaTutto() {
+	fineLavorazioneTotale() {
 		const prodottiList = this.prodottiSubject.getValue();
-		const nuoviProdotti = prodottiList.map((prodotto) => {
-			if (prodotto.stato === 'in-consegna') {
-				return { ...prodotto, stato: 'consegnato' };
-			}
-			return prodotto;
-		});
-		this.prodottiSubject.next(nuoviProdotti);
+
+		prodottiList
+			.filter((p) => p.stato === 'in-lavorazione')
+			.forEach((prodotto) => {
+				this.ordineService
+					.cambiaStato('in-consegna', prodotto.id_ord_prod)
+					.subscribe({
+						next: () => {
+							const updatedProdotto: OrdProdEstended = {
+								...prodotto,
+								stato: 'in-consegna',
+							};
+							const nuoviProdotti = this.prodottiSubject
+								.getValue()
+								.map((p) =>
+									p.id_ord_prod === prodotto.id_ord_prod
+										? updatedProdotto
+										: p
+								);
+							this.prodottiSubject.next(nuoviProdotti);
+						},
+						error: (err) => {
+							console.error('Errore nel cambiare stato:', err);
+						},
+					});
+			});
 	}
 
-	fineLavorazioneTotale() {
-	throw new Error('Method not implemented.');
-	}
-	
 	iniziaLavorazioneTotale() {
-	throw new Error('Method not implemented.');
+		const prodottiList = this.prodottiSubject.getValue();
+
+		prodottiList
+			.filter((p) => p.stato === 'non-in-lavorazione')
+			.forEach((prodotto) => {
+				this.ordineService
+					.cambiaStato('in-lavorazione', prodotto.id_ord_prod)
+					.subscribe({
+						next: () => {
+							const updatedProdotto: OrdProdEstended = {
+								...prodotto,
+								stato: 'in-lavorazione',
+							};
+							const nuoviProdotti = this.prodottiSubject
+								.getValue()
+								.map((p) =>
+									p.id_ord_prod === prodotto.id_ord_prod
+										? updatedProdotto
+										: p
+								);
+							this.prodottiSubject.next(nuoviProdotti);
+						},
+						error: (err) => {
+							console.error('Errore nel cambiare stato:', err);
+						},
+					});
+			});
 	}
 }

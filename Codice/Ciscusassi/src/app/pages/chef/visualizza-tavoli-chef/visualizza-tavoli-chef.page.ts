@@ -115,6 +115,8 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		this.localeAperto =
 			isInRange(0, 50, 15, 50) || isInRange(19, 20, 0, 0); //DA MODIFICARE
 
+			//INSERIRE MARTEDI CHIUSI
+
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
 			this.loadTavoli();
@@ -138,7 +140,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 					prenotazioniFiltrate.map(async (p) => {
 						try {
 							const statoResponse = await lastValueFrom(
-								this.prenotazioneService.getStatoPrenotazione(
+								this.prenotazioneService.getStatoPrenotazioneChef(
 									p.id_prenotazione
 								)
 							);

@@ -4,6 +4,7 @@ import { IonButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 import { Subscription } from 'rxjs';
+import { OrdineService } from 'src/app/core/services/ordine.service';
 
 @Component({
   selector: 'app-prodotto-ordine',
@@ -20,7 +21,7 @@ export class ProdottoOrdineComponent implements OnInit, OnDestroy, OnChanges {
   ruolo: string = '';
   statoPiatto: string = '';
 
-  constructor(private servizioAutenticazione: AuthenticationService) {}
+  constructor(private servizioAutenticazione: AuthenticationService, private ordineService: OrdineService) {}
 
   ngOnInit() {
     this.authSub = this.servizioAutenticazione.role$.subscribe((ruolo) => {
@@ -41,18 +42,22 @@ export class ProdottoOrdineComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   iniziaLavorazione() {
+    this.ordineService.cambiaStato("in-lavorazione", this.prodotto.id_ord_prod).subscribe();
     this.statoPiatto = 'in-lavorazione';
   }
 
   fineLavorazione() {
+    this.ordineService.cambiaStato("in-consegna", this.prodotto.id_ord_prod).subscribe();
     this.statoPiatto = 'in-consegna';
   }
 
   consegna() {
+    this.ordineService.cambiaStato("consegnato", this.prodotto.id_ord_prod).subscribe();
     this.statoPiatto = 'consegnato';
   }
 
   cestina() {
+    this.ordineService.cambiaStato("non-in-lavorazione", this.prodotto.id_ord_prod).subscribe();
     this.statoPiatto = 'non-in-lavorazione';
   }
 }

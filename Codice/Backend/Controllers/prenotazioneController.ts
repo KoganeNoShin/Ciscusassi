@@ -232,10 +232,26 @@ class PrenotazioneController {
 		}
 	}
 
-    static async getStatoPrenotazione(req: Request, res: Response): Promise<void> {
+    static async getStatoPrenotazioneCameriere(req: Request, res: Response): Promise<void> {
         try {
             const id_prenotazione = parseInt(req.params.id_prenotazione);
-            const stato = await PrenotazioneService.getStatoPrenotazione(id_prenotazione);
+            const stato = await PrenotazioneService.getStatoPrenotazioneCameriere(id_prenotazione);
+
+            res.json({ success: true, data: stato });
+        } catch (err) {
+            console.error('❌ Errore in getStatoPrenotazione:', err);
+            res.status(500).json({
+                success: false,
+                message: 'Errore interno del server',
+                error: (err instanceof Error ? err.message : String(err))
+            });
+        }
+    }
+
+    static async getStatoPrenotazioneChef(req: Request, res: Response): Promise<void> {
+        try {
+            const id_prenotazione = parseInt(req.params.id_prenotazione);
+            const stato = await PrenotazioneService.getStatoPrenotazioneChef(id_prenotazione);
 
             res.json({ success: true, data: stato });
         } catch (err) {

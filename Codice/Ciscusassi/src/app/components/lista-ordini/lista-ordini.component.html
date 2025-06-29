@@ -1,3 +1,3 @@
-@for (prodotto of prodotti$ | async; track prodotto.id_prodotto) {
+@for (prodotto of prodotti$ | async; track prodotto.id_ord_prod) {
   <app-prodotto-ordine [prodotto]="prodotto"></app-prodotto-ordine>
 }
