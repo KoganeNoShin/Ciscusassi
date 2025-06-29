@@ -24,10 +24,10 @@ function statoProdottoValidator(chain: ValidationChain): ValidationChain {
         .bail()
         .custom(async (nuovoStato, { req }) => {
             const statoNorm = nuovoStato.toLowerCase();
-            const STATI_VALIDI = ['non-in-lavorazione', 'preparazione', 'in-consegna', 'consegnato'];
+            const STATI_VALIDI = ['non-in-lavorazione', 'in-lavorazione', 'in-consegna', 'consegnato'];
             const TRANSIZIONI_VALIDE: Record<string, string[]> = {
-                'non-in-lavorazione': ['preparazione'],
-                'preparazione': ['in-consegna'],
+                'non-in-lavorazione': ['in-lavorazione'],
+                'in-lavorazione': ['in-consegna'],
                 'in-consegna': ['consegnato', 'non-in-lavorazione'],
                 'consegnato': []
             };
