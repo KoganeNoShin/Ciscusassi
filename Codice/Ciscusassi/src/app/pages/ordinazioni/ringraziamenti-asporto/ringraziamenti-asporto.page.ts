@@ -1,11 +1,5 @@
 // src/app/pages/ordinazioni/ringraziamenti-asporto/ringraziamenti-asporto.page.ts
-import {
-	Component,
-	OnInit,
-	EnvironmentInjector,
-	ApplicationRef,
-	Injector,
-} from '@angular/core';
+import { Component, OnInit, EnvironmentInjector } from '@angular/core';
 import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.service';
 import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { RicevutaComponent } from 'src/app/components/ricevuta/ricevuta.component';
@@ -15,12 +9,12 @@ import jsPDF from 'jspdf';
 import {
 	IonButton,
 	IonCard,
-	IonCardContent,
 	IonCol,
 	IonContent,
 	IonGrid,
 	IonImg,
 	IonRow,
+	IonText,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -34,26 +28,26 @@ import {
 		IonCol,
 		IonImg,
 		IonCard,
-		IonCardContent,
 		IonButton,
+		IonText,
 	],
 })
 export class RingraziamentiAsportoPage implements OnInit {
 	filiale: any;
-	tempo: any;
+	tempo: number = 0;
 	carrello = this.servizioCarrello.getProdotti();
 
 	constructor(
 		private filialeAsportoService: FilialeAsportoService,
 		private servizioCarrello: CarrelloService,
-		private injector: EnvironmentInjector,
-		private appRef: ApplicationRef,
-		private injectorService: Injector
+		private injector: EnvironmentInjector
 	) {}
 
 	ngOnInit() {
 		this.filiale = this.filialeAsportoService.closestFiliale;
-		this.tempo = this.filialeAsportoService.travelTimeMinutes;
+
+		// Aggiungiamo 30 minuti perché così diamo l'illusione del tempo di preparazione
+		this.tempo = this.filialeAsportoService.travelTimeMinutes! + 30;
 	}
 
 	async generaRicevuta() {
@@ -91,7 +85,6 @@ export class RingraziamentiAsportoPage implements OnInit {
 		const canvas = await html2canvas(element, { scale: 2.5 });
 		const imgWidth = 210; // A4 larghezza in mm
 		const pageHeight = 297; // A4 altezza in mm
-		const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
 		const pdf = new jsPDF({
 			orientation: 'p',

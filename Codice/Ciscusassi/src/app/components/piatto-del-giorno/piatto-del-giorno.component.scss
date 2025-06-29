@@ -63,64 +63,58 @@
 	}
 }
 
-/* Responsive Text Sizing */
 h1 {
-	font-size: clamp(1.2rem, 6vw, 3rem); /* H1 responsivo */
+	font-size: clamp(1.2rem, 6vw, 3rem);
 	text-align: left;
 }
 
 h2 {
-	font-size: clamp(1rem, 5vw, 2.5rem); /* H2 responsivo */
+	font-size: clamp(1rem, 5vw, 2.5rem);
 	text-align: left;
 }
 
 h3 {
-	font-size: clamp(0.7rem, 3vw, 2rem); /* H3 responsivo */
+	font-size: clamp(0.7rem, 3vw, 2rem);
 	text-align: left;
 }
 
 h4 {
-	font-size: clamp(0.6rem, 2.8vw, 1.8rem); /* H4 responsivo */
+	font-size: clamp(0.6rem, 2.8vw, 1.8rem);
 	text-align: left;
 }
 
 h5 {
-	font-size: clamp(0.5rem, 2.6vw, 1.4rem); /* H5 responsivo */
+	font-size: clamp(0.5rem, 2.6vw, 1.4rem);
 	text-align: left;
 }
 
 h6 {
-	font-size: clamp(0.4rem, 2.4vw, 1.2rem); /* H6 responsivo */
+	font-size: clamp(0.4rem, 2.4vw, 1.2rem);
 	text-align: left;
 }
 
 p {
-	font-size: clamp(0.3rem, 2.2vw, 1rem); /* Paragrafo responsivo */
+	font-size: clamp(0.3rem, 2.2vw, 1rem);
 	text-align: left;
 }
 
 img {
 	border-radius: 100%;
-	width: clamp(
-		40%,
-		50vw,
-		80%
-	); /* Imposta la larghezza da un minimo del 40% al massimo del 80% */
-	max-width: 300px; /* Limita la dimensione massima */
+	width: clamp(40%, 50vw, 80%);
+	max-width: 300px;
 }
 
 @media (max-width: 768px) {
 	#plate {
-		flex-direction: column; /* Disposizione verticale su schermi piccoli */
+		flex-direction: column;
 	}
 
 	#plateInfo {
-		width: 100%; /* La larghezza della descrizione si espande su schermi piccoli */
+		width: 100%;
 	}
 
-	/* Cambia la larghezza dell'immagine su schermi piccoli */
 	img {
-		width: 70%; /* Immagine più grande su schermi piccoli */
+		width: 70%;
 		max-width: 50%;
 	}
 
@@ -132,7 +126,7 @@ img {
 
 @media (min-width: 1024px) {
 	img {
-		width: 20%; /* L'immagine sarà più grande su schermi lg */
+		width: 20%;
 		max-width: 20%;
 	}
 }

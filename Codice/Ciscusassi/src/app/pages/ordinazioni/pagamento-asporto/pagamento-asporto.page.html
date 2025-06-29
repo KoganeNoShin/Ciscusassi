@@ -1,29 +1,44 @@
-<ion-content fullscreen color="light" class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      <!-- Colonna sinistra: immagine -->
-      <ion-col size="12" size-md="6" class="image-col">
-        <ion-img src="/assets/illustrations/SceltaPagamentoAsporto.png"></ion-img>
-      </ion-col>
+<ion-content [fullscreen]="true" color="light">
+	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
+		<ion-row class="ion-align-items-center ion-justify-content-center">
+			<!-- Colonna sinistra: immagine -->
+			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
+				<ion-img
+					src="/assets/illustrations/SceltaPagamentoAsporto.png"
+				></ion-img>
+			</ion-col>
 
-      <!-- Colonna destra: form -->
-      <ion-col size="12" size-md="6" class="form-col">
-        <ion-card class="address-card">
-          <h1>PAGAMENTO</h1>
+			<!-- Colonna destra: Pulsanti -->
+			<ion-col size="24" sizeXl="6">
+				<ion-card
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
+					color="salmone"
+				>
+					<ion-text class="ion-text-center">
+						<h2 class="text-color-bianco">PAGAMENTO</h2>
+					</ion-text>
 
-          <ion-card-content>
-            <p>
-              I tuoi ordini: {{ totale }}€
-            </p>
+					<ion-text class="ion-text-center">
+						<p class="text-color-bianco">
+							I tuoi ordini: {{ totale }}€
+						</p>
+					</ion-text>
 
-
-            <!-- Bottone finale -->
-            <ion-button (click)="aggiungiAsporto()" [routerLink]="'/ringraziamenti-asporto'" fill="solid" shape="round" color="verdechiaro">
-              <ion-text color="light">PAGA</ion-text>
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+					<!-- Bottone finale -->
+					<ion-button
+						(click)="aggiungiAsporto()"
+						[routerLink]="'/ringraziamenti-asporto'"
+						size="default"
+						fill="solid"
+						shape="round"
+						color="verdechiaro"
+						expand="block"
+						class="ion-padding-horizontal"
+					>
+						PAGA
+					</ion-button>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 </ion-content>
