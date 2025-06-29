@@ -11,6 +11,7 @@ import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 import { ListaOrdiniComponent } from 'src/app/components/lista-ordini/lista-ordini.component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Tavolo, TavoloService } from 'src/app/core/services/tavolo.service';
+import { OrdineService } from 'src/app/core/services/ordine.service';
 
 @Component({
 	selector: 'app-visualizza-ordini-cameriere',
@@ -274,9 +275,11 @@ export class VisualizzaOrdiniCamerierePage implements OnInit {
 	]);
 	public prodotti$ = this.prodottiSubject.asObservable();
 
+
 	tavolo: Tavolo | null = null;
 	constructor(
-    private tavoloService: TavoloService
+    private tavoloService: TavoloService,
+	private ordineService: OrdineService
   ) {}
 
 	ngOnInit() {

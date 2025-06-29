@@ -107,7 +107,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 
 		// ✅ Definizione fasce orarie valide
 		const fasceOrarie = [
-			{ inizio: '11:20', fine: '13:30' },
+			{ inizio: '11:20', fine: '23:50' },
 			{ inizio: '13:30', fine: '19:00' }, // TODO: rivedere fascia centrale
 			{ inizio: '19:30', fine: '21:00' },
 			{ inizio: '21:00', fine: '22:30' },

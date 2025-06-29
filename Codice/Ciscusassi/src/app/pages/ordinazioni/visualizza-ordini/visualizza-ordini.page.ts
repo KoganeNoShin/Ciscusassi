@@ -7,6 +7,7 @@ import {
 	IonTitle,
 	IonToolbar,
 	IonButton,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
@@ -25,6 +26,7 @@ import { TavoloService } from 'src/app/core/services/tavolo.service';
 		RouterModule,
 		IonButton,
 		IonContent,
+		IonSpinner,
 		CommonModule,
 		FormsModule,
 		ListaOrdiniComponent,
@@ -36,6 +38,9 @@ export class VisualizzaOrdiniPage implements OnInit {
 
 	// Observable di array di prodotti ordinati, inizialmente vuoto
 	prodotti$: Observable<OrdProdEstended[]> = of([]);
+
+	// Variabile per mostrare il caricamento
+	isLoading = false;
 
 	// Iniezione di dipendenze: router, servizio ordini e servizio tavolo
 	constructor(
@@ -77,34 +82,36 @@ export class VisualizzaOrdiniPage implements OnInit {
 
 	// Metodo asincrono per caricare gli ordini dal backend
 	async loadOrdini() {
-		// Ottiene il numero ordine dal servizio tavolo
-		const numeroOrdine = this.tavoloService.getNumeroOrdine();
+		this.isLoading = true;
+		try {
+			const numeroOrdine = this.tavoloService.getNumeroOrdine();
+			if (numeroOrdine === null) {
+				console.error('Numero ordine non disponibile');
+				this.prodotti$ = of([]);
+				return;
+			}
 
-		// Se il numero ordine non è disponibile, stampa errore e termina
-		if (numeroOrdine === null) {
-			console.error('Numero ordine non disponibile');
-			return;
-		}
+			const response = await firstValueFrom(
+				this.ordineService.getProdottiOrdinatiByNumeroOrdine(
+					numeroOrdine
+				)
+			);
 
-		// Effettua la chiamata al servizio ordini per ottenere i prodotti ordinati
-		const response = await firstValueFrom(
-			this.ordineService.getProdottiOrdinatiByNumeroOrdine(numeroOrdine)
-		);
-
-		// Se la risposta non ha successo o dati, imposta l'observable prodotti$ a vuoto
-		if (!response.success || !response.data) {
+			if (!response.success || !response.data) {
+				this.prodotti$ = of([]);
+			} else {
+				const prodotti = Array.isArray(response.data)
+					? response.data.filter(
+							(item): item is OrdProdEstended => !!item
+						)
+					: [response.data];
+				this.prodotti$ = of(prodotti);
+			}
+		} catch (error) {
+			console.error('Errore nel caricamento prodotti', error);
 			this.prodotti$ = of([]);
-		} else {
-			// Se la risposta contiene un array di prodotti, filtra gli elementi validi
-			// Altrimenti, se è un singolo prodotto, lo incapsula in un array
-			const prodotti = Array.isArray(response.data)
-				? response.data.filter(
-						(item): item is OrdProdEstended => !!item
-					)
-				: [response.data];
-
-			// Aggiorna l'observable prodotti$ con i prodotti ottenuti
-			this.prodotti$ = of(prodotti);
+		} finally {
+			this.isLoading = false;
 		}
 	}
 }
