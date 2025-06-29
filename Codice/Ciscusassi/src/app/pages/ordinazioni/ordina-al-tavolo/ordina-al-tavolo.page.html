@@ -1,51 +1,76 @@
 <ion-content [fullscreen]="true" color="light">
-  <ion-grid fixed>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      <ion-col size="6">
-        <ion-card class="contentCard">
-          <ion-text color="light">
-            <h1>INFORMAZIONI DEL TAVOLO</h1>
-          </ion-text>
+	<ion-grid fixed>
+		<ion-row class="ion-align-items-center ion-justify-content-center">
+			<ion-col size="12" sizeXl="6">
+				<ion-card
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center ion-padding-horizontal ion-padding-top ion-padding-bottom"
+					color="verdechiaro"
+				>
+					<ion-text class="ion-text-center">
+						<h2 class="text-color-bianco">
+							INFORMAZIONI DEL TAVOLO
+						</h2>
+					</ion-text>
 
-          <ion-text color="light">
-            <p>Inserisci il numero della torretta mostrato sul retro</p>
-          </ion-text>
+					<ion-text class="ion-text-center">
+						<p class="text-color-bianco ion-hide-sm-down">
+							Inserisci il numero della torretta mostrato sul
+							retro
+						</p>
+					</ion-text>
 
-          <ion-input
-            [(ngModel)]="numeroTorretta"
-            label="Inserisci il numero della torretta"
-            label-placement="floating"
-            fill="solid"
-            type="number"
-          ></ion-input>
+					<ion-item
+						class="campoForm ion-padding-horizontal ion-text-center ion-align-items-center ion-justify-content-center"
+					>
+						<ion-input
+							[(ngModel)]="numeroTorretta"
+							type="number"
+							label="Numero torretta"
+							color="rosso"
+							placeholder="Inserisci il numero della torretta"
+							min="1"
+							class="transparent-input"
+						></ion-input>
+					</ion-item>
 
+					<ion-text>
+						<p
+							class="ion-text-center text-color-bianco ion-hide-sm-down"
+						>
+							Inserisci l'OTP mostrato sullo schermo della torre
+						</p>
+					</ion-text>
 
-          <ion-text color="light">
-            <p>Inserisci l'OTP mostrato sullo schermo della torre</p>
-          </ion-text>
+					<ion-item class="campoForm">
+						<ion-input-otp
+							[(ngModel)]="otp"
+							color="salmone"
+							type="text"
+							pattern="[a-zA-Z0-9]"
+							shape="soft"
+							length="6"
+							class="ion-padding-horizontal"
+						>
+						</ion-input-otp>
+					</ion-item>
 
-          <ion-input
-            [(ngModel)]="otp"
-            label="Inserisci l'OTP"
-            label-placement="floating"
-            fill="solid"
-          ></ion-input>
+					<ion-button
+						(click)="onProceedClick()"
+						[ngClass]="{'errore': otp.trim().length > 0 && otp.trim().length !== 6}"
+						[disabled]="!numeroTorretta || numeroTorretta < 1 || otp.trim().length !== 6"
+						size="default"
+						fill="solid"
+						shape="round"
+						color="rosso"
+					>
+						PROCEDI
+					</ion-button>
+				</ion-card>
+			</ion-col>
 
-          <ion-button
-            (click)="onProceedClick()"
-            size="default"
-            fill="solid"
-            shape="round"
-            color="rosso"
-          >
-            PROCEDI
-          </ion-button>
-        </ion-card>
-      </ion-col>
-
-      <ion-col size="6">
-        <ion-img src="/assets/illustrations/OTPTavolo.png"></ion-img>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+			<ion-col size="6" class="ion-hide-xl-down ion-padding-start">
+				<ion-img src="/assets/illustrations/OTPTavolo.png"></ion-img>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 </ion-content>
