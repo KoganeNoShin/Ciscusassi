@@ -15,7 +15,7 @@ class OrdProdController {
 
     static async getProdottiByOrdine(req: Request, res: Response): Promise<void> {
         try {
-            const ordineId = Number(req.params.id);
+            const ordineId = Number(req.params.id_ordine);
 
             const prodotti = await OrdProdService.getProdottiByOrdine(ordineId);
             if (prodotti) {
