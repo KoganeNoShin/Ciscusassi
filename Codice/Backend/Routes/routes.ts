@@ -225,6 +225,8 @@ router.get(
 
 router.post(
     '/prenotazioni/check-otp',
+	prenotazioneValidator.checkOTPValidator,
+	prenotazioneValidator.validate,
     PrenotazioneController.checkOTP,
 );
 
@@ -262,6 +264,8 @@ router.put(
 
 router.delete(
 	'/eliminaPrenotazione/:id',
+	prenotazioneValidator.deletePrenotazioneValidator,
+	prenotazioneValidator.validate,
 	authMiddleware,
 	PrenotazioneController.eliminaPrenotazione
 );

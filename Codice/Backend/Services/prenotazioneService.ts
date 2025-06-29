@@ -32,6 +32,23 @@ class PrenotazioneService {
 
 	static async prenota(data: PrenotazioneRequest): Promise<number> {
 		try {
+			// Check Orario
+			const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
+			const dataPrenotazione = new Date(data.data_ora_prenotazione);
+			const adesso = new Date();
+
+			const ore = dataPrenotazione.getHours().toString().padStart(2, '0');
+            const minuti = dataPrenotazione.getMinutes().toString().padStart(2, '0');
+            const orarioPrenotato = `${ore}:${minuti}`;
+
+            if (!orariValidi.includes(orarioPrenotato)) {
+                throw new Error(`L'orario selezionato (${orarioPrenotato}) non è valido. Orari disponibili: ${orariValidi.join(', ')}`);
+            }
+
+			if(dataPrenotazione < adesso){
+                throw new Error('La data e ora della prenotazione non può essere nel passato');
+            }
+
 			// Recupera torrette libere alla data e filiale specificate
 			const torretteLibere = await Torretta.getTorretteLibere(
 				data.ref_filiale,
@@ -68,6 +85,27 @@ class PrenotazioneService {
 
 	static async prenotaLoco(data: PrenotazioneRequest): Promise<number> {
 		try {
+			// Check Orario
+			const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
+			const dataPrenotazione = new Date(data.data_ora_prenotazione);
+			const adesso = new Date();
+			const minutiOffset = 10;
+
+			const ore = dataPrenotazione.getHours().toString().padStart(2, '0');
+            const minuti = dataPrenotazione.getMinutes().toString().padStart(2, '0');
+            const orarioPrenotato = `${ore}:${minuti}`;
+			
+            if (!orariValidi.includes(orarioPrenotato)) {
+                throw new Error(`L'orario selezionato (${orarioPrenotato}) non è valido. Orari disponibili: ${orariValidi.join(', ')}`);
+            }
+
+			if (dataPrenotazione < adesso) {
+				const limiteMassimo = new Date(dataPrenotazione.getTime() + minutiOffset * 60 * 1000)
+				if(adesso > limiteMassimo) {
+					throw new Error('La data e ora della prenotazione deve essere entro 10 minuti da adesso');
+				}
+			}
+
 			// Recupera torrette libere alla data e filiale specificate
 			const torretteLibere = await Torretta.getTorretteLibere(
 				data.ref_filiale,
@@ -116,12 +154,25 @@ class PrenotazioneService {
 		}
 	}
 
-	static async modificaPrenotazione(
-		id_prenotazione: number,
-		numero_persone: number,
-		data_ora_prenotazione: string
-	): Promise<void> {
+	static async modificaPrenotazione(id_prenotazione: number, numero_persone: number, data_ora_prenotazione: string): Promise<void> {
 		try {
+			// Check Orario
+			const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
+			const dataPrenotazione = new Date(data_ora_prenotazione);
+			const adesso = new Date();
+
+			const ore = dataPrenotazione.getHours().toString().padStart(2, '0');
+            const minuti = dataPrenotazione.getMinutes().toString().padStart(2, '0');
+            const orarioPrenotato = `${ore}:${minuti}`;
+
+            if (!orariValidi.includes(orarioPrenotato)) {
+                throw new Error(`L'orario selezionato (${orarioPrenotato}) non è valido. Orari disponibili: ${orariValidi.join(', ')}`);
+            }
+
+			if(dataPrenotazione < adesso){
+                throw new Error('La data e ora della prenotazione non può essere nel passato');
+            }
+
 			return await Prenotazione.update(
 				id_prenotazione,
 				numero_persone,
