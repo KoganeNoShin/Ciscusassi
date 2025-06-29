@@ -4,7 +4,7 @@ import Cliente from '../Models/cliente';
 import Prodotto from '../Models/prodotto';
 import Filiale from '../Models/filiale';
 
-// Parametri
+// Funzioni
 function indirizzoValidator(chain: ValidationChain): ValidationChain {
   return chain
         .trim()

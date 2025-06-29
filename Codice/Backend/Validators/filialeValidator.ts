@@ -1,61 +1,67 @@
-import { body, validationResult } from 'express-validator'
+import { body, ValidationChain, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
-import { id } from 'date-fns/locale';
 
-// Parametri
-const comuneValidator = (field: string) =>
-    body(field)
+// Funzioni
+function comuneValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('Il comune è obbligatorio!');
+}
 
-const indirizzoValidator = (field: string) =>
-    body(field)
+function indirizzoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('L\'indirizzo è obbligatorio!');
+}
 
-const num_tavoliValidator = (field: string) =>
-    body(field)
+function num_tavoliValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('Il numero di tavoli è obbligatorio!')
         .isInt({ min: 1 }).withMessage('Il numero di tavoli deve essere un numero intero positivo');
+}
 
-const longitudineValidator = (field: string) =>
-    body(field)
+function longitudineValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('La longitudine è obbligatoria!')
         .isFloat({ min: -180, max: 180 }).withMessage('La longitudine deve essere un numero tra -180 e 180');
+}
 
-const latitudineValidator = (field: string) =>
-    body(field)
+function latitudineValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('La latitudine è obbligatoria!')
         .isFloat({ min: -90, max: 90 }).withMessage('La latitudine deve essere un numero tra -90 e 90');
+}
 
-const immagineValidator = (field: string) =>
-    body(field)
+function immagineValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('L\'immagine è obbligatoria!')
         .isBase64().withMessage('Formato immagine non valido!');
+}
 
-const idFilialeValidator = (field: string) =>
-    body(field)
+function idFilialeValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('L\'ID della filiale è obbligatorio!')
         .isInt({ min: 1 }).withMessage('L\'ID della filiale deve essere un intero positivo!');
+}
 
 // Validatori
 const addFilialeValidator = [
-    comuneValidator('comune'),
-    indirizzoValidator('indirizzo'),
-    num_tavoliValidator('num_tavoli'),
-    longitudineValidator('longitudine'),
-    latitudineValidator('latitudine'),
-    immagineValidator('immagine')
+    comuneValidator(body('comune')),
+    indirizzoValidator(body('indirizzo')),
+    num_tavoliValidator(body('num_tavoli')),
+    longitudineValidator(body('longitudine')),
+    latitudineValidator(body('latitudine')),
+    immagineValidator(body('immagine'))
 ];
 
 const updateFilialeValidator = [
-    idFilialeValidator('id_filiale'),
-    comuneValidator('comune'),
-    indirizzoValidator('indirizzo'),
-    num_tavoliValidator('num_tavoli'),
-    longitudineValidator('longitudine'),
-    latitudineValidator('latitudine'),
-    immagineValidator('immagine')
+    idFilialeValidator(body('id_filiale')),
+    comuneValidator(body('comune')),
+    indirizzoValidator(body('indirizzo')),
+    num_tavoliValidator(body('num_tavoli')),
+    longitudineValidator(body('longitudine')),
+    latitudineValidator(body('latitudine')),
+    immagineValidator(body('immagine'))
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {

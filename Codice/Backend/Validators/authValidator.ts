@@ -1,7 +1,7 @@
 import { body, ValidationChain, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 
-// Validatori
+// Funzioni
 function nomeValidator(chain: ValidationChain): ValidationChain {
   return chain
 		.trim()
