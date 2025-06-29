@@ -9,7 +9,6 @@ import jsPDF from 'jspdf';
 import {
 	IonButton,
 	IonCard,
-	IonCardContent,
 	IonCol,
 	IonContent,
 	IonGrid,
@@ -29,7 +28,6 @@ import {
 		IonCol,
 		IonImg,
 		IonCard,
-		IonCardContent,
 		IonButton,
 		IonText,
 	],
