@@ -1,29 +1,33 @@
-import { body, validationResult } from 'express-validator'
+import { body, ValidationChain, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 
-// Parametri
-const nomeProdottoValidator = (field: string) =>
-    body(field)
+// Funzioni
+function nomeProdottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('Il nome del prodotto è obbligatorio!');
+}
 
-const descrizioneProdottoValidator = (field: string) =>
-    body(field)
+function descrizioneProdottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('La descrizione del prodotto è obbligatorio!');
+}
 
-const costoProdottoValidator = (field: string) =>
-    body(field)
+function costoProdottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('Il costo del prodotto è obbligatorio!')
         .isFloat({ min: 0.01 }).withMessage('Il costo deve essere un numero positivo');
+}
 
-const immagineProdottoValidator = (field: string) =>
-    body(field)
+function immagineProdottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('L\'immagine del prodotto è obbligatorio!')
         .isBase64().withMessage('Formato immagine non valido!');
+}
 
-const categoriaProdottoValidator = (field: string) =>
-    body(field)
+function categoriaProdottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('La categoria del prodotto è obbligatorio!')
         .custom((value) => {
             const categorieValide = ['ANTIPASTO', 'PRIMO', 'DOLCE', 'BEVANDA'];
@@ -32,14 +36,15 @@ const categoriaProdottoValidator = (field: string) =>
             }
             return true;
         });
+}
 
 // Validatori
 const addProdottoValidator = [
-    nomeProdottoValidator('nome'),
-    descrizioneProdottoValidator('descrizione'),
-    costoProdottoValidator('costo'),
-    immagineProdottoValidator('immagine'),
-    categoriaProdottoValidator('categoria')
+    nomeProdottoValidator(body('nome')),
+    descrizioneProdottoValidator(body('descrizione')),
+    costoProdottoValidator(body('costo')),
+    immagineProdottoValidator(body('immagine')),
+    categoriaProdottoValidator(body('categoria'))
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
