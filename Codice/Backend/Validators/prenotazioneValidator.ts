@@ -107,37 +107,22 @@ const prenotazioneInputValidator = [
 	numuroPersoneValidator(body('numero_persone'))
 ];
 
-const prenotazioneInputLocoValidator = [
-	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
-	ref_filialeValidator(body('ref_filiale')),
-	ref_clienteValidator(body('ref_cliente')),
-	numuroPersoneValidator(body('numero_persone'))
-];
-
 const prenotazioneUpdateValidator = [
 	id_prenotazioneValidator(body('id_prenotazione')),
 	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	numuroPersoneValidator(body('numero_persone'))
 ];
 
-const getPrenotazioniFilialeValidator = [
+const CheckParamFilialeForPrenotazioniValidator = [
 	ref_filialeValidator(param('filiale'))
 ];
 
-const comfermaPrenotazioneValidator = [
+const CheckIdPrenotazioneBody = [
 	id_prenotazioneValidator(body('id_prenotazione'))
 ];
 
-const GetOTPValidator = [
+const CheckIdPrenotazioneParam = [
 	id_prenotazioneValidator(param('id_prenotazione'))
-];
-
-const statoPrenotazioneValidator = [
-	id_prenotazioneValidator(param('id'))
-];
-
-const deletePrenotazioneValidator = [
-    id_prenotazioneValidator(param('id'))
 ];
 
 const checkOTPValidator = [
@@ -158,12 +143,9 @@ const validate = (req: Request, res: Response, next: NextFunction): void => {
 export default {
     validate,
     prenotazioneInputValidator,
-    prenotazioneInputLocoValidator,
 	prenotazioneUpdateValidator,
-	getPrenotazioniFilialeValidator,
-	comfermaPrenotazioneValidator,
-	GetOTPValidator,
-	statoPrenotazioneValidator,
-    deletePrenotazioneValidator,
+	CheckParamFilialeForPrenotazioniValidator,
+	CheckIdPrenotazioneBody,
+    CheckIdPrenotazioneParam,
     checkOTPValidator
 }

@@ -205,20 +205,22 @@ router.get(
 router.get(
 	'/prenotazioni/:filiale',
 	authMiddleware,
-	prenotazioneValidator.getPrenotazioniFilialeValidator,
+	prenotazioneValidator.CheckParamFilialeForPrenotazioniValidator,
     prenotazioneValidator.validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
 
 router.get(
 	'/tavoli-in-uso/:filiale',
+	prenotazioneValidator.CheckParamFilialeForPrenotazioniValidator,
+	prenotazioneValidator.validate,
 	authMiddleware,
 	PrenotazioneController.getTavoliInUso,
 );
 
 router.get(
 	'/prenotazioni/:id/otp',
-	prenotazioneValidator.GetOTPValidator,
+	prenotazioneValidator.CheckIdPrenotazioneParam,
 	prenotazioneValidator.validate,
 	PrenotazioneController.getOTPById
 );
@@ -232,7 +234,7 @@ router.post(
 
 router.get(
 	'/prenotazioni/:id/stato',
-	prenotazioneValidator.statoPrenotazioneValidator,
+	prenotazioneValidator.CheckIdPrenotazioneParam,
 	prenotazioneValidator.validate,
 	PrenotazioneController.getStatoPrenotazione
 );
@@ -247,7 +249,7 @@ router.post(
 
 router.post(
 	'/prenotaLoco',
-	prenotazioneValidator.prenotazioneInputLocoValidator,
+	prenotazioneValidator.prenotazioneInputValidator,
 	prenotazioneValidator.validate,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere']),
@@ -264,7 +266,7 @@ router.put(
 
 router.delete(
 	'/eliminaPrenotazione/:id',
-	prenotazioneValidator.deletePrenotazioneValidator,
+	prenotazioneValidator.CheckIdPrenotazioneParam,
 	prenotazioneValidator.validate,
 	authMiddleware,
 	PrenotazioneController.eliminaPrenotazione
@@ -272,7 +274,7 @@ router.delete(
 
 router.post(
 	'/prenotazioni/conferma',
-	prenotazioneValidator.comfermaPrenotazioneValidator,
+	prenotazioneValidator.CheckIdPrenotazioneBody,
 	prenotazioneValidator.validate,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere']),
