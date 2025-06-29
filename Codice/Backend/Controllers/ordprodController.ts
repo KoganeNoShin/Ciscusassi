@@ -31,7 +31,7 @@ class OrdProdController {
 
     static async getProdottiByPrenotazione(req: Request, res: Response): Promise<void> {
         try {
-            const prenotazioneId = Number(req.params.prenotazioneId);
+            const prenotazioneId = Number(req.params.id_prenotazione);
 
             const prodotti = await OrdProdService.getProdottiByPrenotazione(prenotazioneId);
 
