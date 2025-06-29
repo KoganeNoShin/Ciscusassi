@@ -71,6 +71,15 @@ export class OrdineService {
 		);
 	}
 
+	getProdottiOrdinatiByUsername(
+		idPrenotazione: number,
+		username: string
+	): Observable<ApiResponse<any>> {
+		return this.http.get<ApiResponse<any>>(
+			`${this.apiURL}/prenotazione/${idPrenotazione}/ordini/${username}`
+		);
+	}
+
 	setProdottiOrdinati(prodottiOrdinati: OrdProdEstended[]) {
 		this.prodottiOrdinati = prodottiOrdinati;
 	}

@@ -1,26 +1,33 @@
 <ion-content [fullscreen]="true">
-	<div class="status-container">
-		<div class="status">
-			<div class="circle non-lavorazione"></div>
-			<div class="label">NON IN LAVORAZIONE</div>
-		</div>
-		<div class="status">
-			<div class="circle in-lavorazione"></div>
-			<div class="label">IN LAVORAZIONE</div>
-		</div>
-		<div class="status">
-			<div class="circle in-consegna"></div>
-			<div class="label">IN CONSEGNA</div>
-		</div>
-		<div class="status">
-			<div class="circle consegnato"></div>
-			<div class="label">CONSEGNATO</div>
-		</div>
-	</div>
-	<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+  <div *ngIf="isLoading" class="spinner-center">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
 
-	<div class="button-group">
-		<ion-button [routerLink]="['/menu-tavolo']" style="--background: var(--ion-color-verdechiaro);" >CONTINUA A ORDINARE</ion-button>
-		<ion-button (click)="terminaServizio()" style="--background: var(--ion-color-rosso);">TERMINA SERVIZIO</ion-button>
-	</div>
+  <ng-container *ngIf="!isLoading">
+    <div class="status-container">
+      <div class="status">
+        <div class="circle non-lavorazione"></div>
+        <div class="label">NON IN LAVORAZIONE</div>
+      </div>
+      <div class="status">
+        <div class="circle in-lavorazione"></div>
+        <div class="label">IN LAVORAZIONE</div>
+      </div>
+      <div class="status">
+        <div class="circle in-consegna"></div>
+        <div class="label">IN CONSEGNA</div>
+      </div>
+      <div class="status">
+        <div class="circle consegnato"></div>
+        <div class="label">CONSEGNATO</div>
+      </div>
+    </div>
+
+    <app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+
+    <div class="button-group">
+      <ion-button [routerLink]="['/menu-tavolo']" style="--background: var(--ion-color-verdechiaro);">CONTINUA A ORDINARE</ion-button>
+      <ion-button (click)="terminaServizio()" style="--background: var(--ion-color-rosso);">TERMINA SERVIZIO</ion-button>
+    </div>
+  </ng-container>
 </ion-content>
