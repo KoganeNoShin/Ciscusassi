@@ -5,3 +5,10 @@ export interface OrdProdEstended extends ProdottoRecord {
     is_romana: boolean;
     stato: string;
 }
+
+export interface OrdProdInput {
+	is_romana: boolean;
+	stato: string;
+	ref_prodotto: number;
+	ref_ordine: number;
+}
