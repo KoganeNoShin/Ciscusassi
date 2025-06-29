@@ -9,6 +9,7 @@ function idOrdProdValidator(chain: ValidationChain): ValidationChain {
     .notEmpty().withMessage('ID ordine prodotto obbligatorio')
         .isInt({ gt: 0 }).withMessage('ID ordine prodotto non valido')
         .bail()
+        .toInt()
         .custom(async (id) => {
             const prodotto = await OrdProd.getById(Number(id));
             if (!prodotto) throw new Error('Prodotto non trovato nel database');

@@ -23,6 +23,7 @@ import { addProdottoValidator, idProdottoValidator, updateProdottoValidator } fr
 import { checkOTPValidator, idPrenotazioneValidator, prenotazioneInputValidator, prenotazioneUpdateValidator } from '../Validators/prenotazioneValidator';
 import { idTorrettaValidator } from '../Validators/torrettaValidator';
 import { loginValidator } from '../Validators/authValidator';
+import { addImpiegatoValidator, matricolaImpiegatoValidator, updateImpiegatoValidator } from '../Validators/impiegatoValidator';
 
 
 const router = express.Router();
@@ -75,9 +76,10 @@ router.delete(
 	FilialeController.deleteFiliale
 );
 
-// Route per i Impiegati ------------- DA FARE
+// Route per i Impiegati
 router.post(
 	'/addImpiegato',
+	addImpiegatoValidator,
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
@@ -86,6 +88,7 @@ router.post(
 
 router.put(
 	'/updateImpiegato/:matricola',
+	updateImpiegatoValidator,
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
@@ -94,6 +97,7 @@ router.put(
 
 router.delete(
 	'/deleteImpiegato/:matricola',
+	matricolaImpiegatoValidator(param('matricola')),
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
@@ -101,7 +105,8 @@ router.delete(
 );
 
 router.get(
-	'/impiegati/:id',
+	'/impiegati/:id_filiale',
+	idFilialeValidator(param('id_filiale')),
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),

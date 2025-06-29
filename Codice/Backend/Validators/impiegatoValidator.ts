@@ -1,5 +1,6 @@
-import { body, ValidationChain } from 'express-validator'
+import { body, param, ValidationChain } from 'express-validator'
 import { idFilialeValidator } from './filialeValidator';
+import Impiegato from '../Models/impiegato';
 
 // Funzioni
 function nomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
@@ -76,9 +77,21 @@ function passwordValidator(chain: ValidationChain): ValidationChain {
 		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri');
 }
 
-// Validatori
+export function matricolaImpiegatoValidator(chain: ValidationChain): ValidationChain {
+  return chain
+    .notEmpty().withMessage('Matricola obbligatoria')
+        .isInt({ gt: 0 }).withMessage('Matricola non valida')
+        .bail()
+        .toInt()
+        .custom(async (id) => {
+            const impiegato = await Impiegato.getByMatricola(id);
+            if (!impiegato) throw new Error('Impiegato non trovato nel database');
+            return true;
+        });
+}
 
-const addImpiegato = [
+// Validatori
+export const addImpiegatoValidator = [
     nomeImpiegatoValidator(body('nome')),
     cognomeImpiegatoValidator(body('cognome')),
     ruoloValidator(body('ruolo')),
@@ -89,3 +102,7 @@ const addImpiegato = [
     passwordValidator(body('password'))
 ];
 
+export const updateImpiegatoValidator = [
+  ...addImpiegatoValidator,
+  matricolaImpiegatoValidator(param('matricola'))
+];
