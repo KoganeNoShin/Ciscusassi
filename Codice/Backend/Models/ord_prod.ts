@@ -84,7 +84,7 @@ export class OrdProd {
 						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);
 					} else if (!rows || rows.length === 0) {
-						console.warn('⚠️ [DB WARNING] Nessun prodotto nell\'ordine trovato');
+						console.warn('⚠️ [DB WARNING] Nessun prodotto nell\'ordine trovato con id ' + ref_ordine);
 						resolve([]);
 					} else resolve(rows);
 				}
