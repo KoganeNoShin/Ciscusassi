@@ -323,19 +323,18 @@ class PrenotazioneService {
 				let hasInConsegna = false;
 				let allConsegnati = true;
 
-			for (const p of prodotti) {
-				if (p.stato === 'in-consegna') hasInConsegna = true;
-				else if (p.stato === 'in-lavorazione') hasPreparazione = true;
-				else if (p.stato !== 'consegnato') allConsegnati = false;
+				for (const p of prodotti) {
+					if (p.stato === 'in-consegna') hasInConsegna = true;
+					else if (p.stato === 'in-lavorazione') hasPreparazione = true;
+					else if (p.stato !== 'consegnato') allConsegnati = false;
 
-					// Early exit per priorità
-					if (hasInConsegna) return 'in-consegna';
-				}
+						// Early exit per priorità
+						if (hasInConsegna) return 'in-consegna';
+					}
 
-			if (hasPreparazione) return 'in-lavorazione';
-			if (allConsegnati) return 'consegnato';
-		}
-
+				if (hasPreparazione) return 'in-lavorazione';
+				if (allConsegnati) return 'consegnato';
+			}
 			return 'non-in-lavorazione';
 		} catch (err) {
 			console.error(
@@ -364,23 +363,15 @@ class PrenotazioneService {
 				if (prodotti == null || prodotti.length === 0) continue;
 
 				let hasPreparazione = false;
-				let hasInConsegna = false;
-				let allConsegnati = true;
-
-			for (const p of prodotti) {
-				if (p.stato === 'in-consegna') hasInConsegna = true;
-				else if (p.stato === 'in-lavorazione') hasPreparazione = true;
-				else if (p.stato !== 'consegnato') allConsegnati = false;
-
-					// Early exit per priorità
-					if (hasPreparazione) return 'in-lavorazione';
+				
+				for (const p of prodotti) {
+					if (p.stato === 'non-in-lavorazione') return 'non-in-lavorazione';
+					else if (p.stato === 'in-lavorazione') hasPreparazione = true;
 				}
-
-			if (hasInConsegna) return 'in-consegna';
-			if (allConsegnati) return 'consegnato';
-		}
-
-			return 'non-in-lavorazione';
+				if (hasPreparazione) return 'in-lavorazione';
+			}
+			
+			return 'consegnato';
 		} catch (err) {
 			console.error(
 				`❌ Errore nel recuperare lo stato della prenotazione ${id_prenotazione}:`,
