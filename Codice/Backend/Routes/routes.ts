@@ -20,6 +20,7 @@ import TorrettaController from '../Controllers/torrettaController';
 import prenotazioneValidator from '../Validators/prenotazioneValidator';
 import ordineValidator from '../Validators/ordineValidator';
 import OrdineController from '../Controllers/ordineController';
+import Ordine from '../Models/ordine';
 
 const router = express.Router();
 
@@ -102,6 +103,13 @@ router.post(
 	ordineValidator.aggiungiPagamentoValidator,
 	ordineValidator.validate,
 	OrdineController.addPagamento
+);
+
+router.get(
+	'/prenotazioni/:id_prenotazione/ordini/:username',
+	ordineValidator.getIDOrdineByPrenotazioneAndUsername,
+	ordineValidator.validate,
+	OrdineController.getIDOrdineByPrenotazioneAndUsername
 );
 
 // Route per OrdProd

@@ -1,4 +1,5 @@
 // importo il db
+import { rejects } from 'assert';
 import db from '../db';
 import { RunResult } from 'sqlite3';
 
@@ -146,6 +147,28 @@ export class Ordine {
 						console.warn('⚠️ [DB WARNING] Nessun ordine trovato per la prenotazione');
 						resolve([]);
 					} else resolve(rows);
+				}
+			);
+		});
+	}
+
+	// Selezione di Ordini per Prenotazione e Username (Copia univoca tramite validate)
+	static async getIDOrdineByPrenotazioneAndUsername(prenotazioneID: number, username: string): Promise<number | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				`SELECT id_ordine
+				FROM ordini
+				WHERE ref_prenotazione = ? AND
+					username_ordinante = ?`, 
+				[prenotazioneID, username],
+				(err: Error | null, row: number) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.log('⚠️ [DB WARNING] Nessun Ordine trovato');
+						resolve(null);
+					} else resolve(row);
 				}
 			);
 		});

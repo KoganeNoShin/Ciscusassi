@@ -81,6 +81,7 @@ const passwordValidator = (field: string) =>
 		.notEmpty().withMessage('La password è obbligatoria')
 		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri');
 
+    
 
 // Validatori
 const addImpiegato = [

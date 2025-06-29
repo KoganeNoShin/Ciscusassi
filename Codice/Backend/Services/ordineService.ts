@@ -68,6 +68,15 @@ class OrdineService {
         }
     }
 
+    static async getIDOrdineByPrenotazioneAndUsername(prenotazioneID: number, username: string): Promise<number | null> {
+        try {
+            return await Ordine.getIDOrdineByPrenotazioneAndUsername(prenotazioneID, username);
+        }catch (error) {
+            console.error('❌ [OrdineService] Errore durante il recupero dell\'ordine per prenotazione ed Username:', error);
+            throw error;
+        }
+    }
+
     static async calcolaImportoTotale(ordineId: number): Promise<number> {
         // Recupero Ordine
         const ordine = await this.getOrdineById(ordineId);

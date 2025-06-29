@@ -39,6 +39,33 @@ class OrdineController {
             });
         }
     }
+
+    static async getIDOrdineByPrenotazioneAndUsername(req: Request, res: Response): Promise<void> {
+        try{
+            const idPrenotazione: number = Number(req.params.id_prenotazione);
+            const username = req.params.username;
+            const idOrdine = await OrdineService.getIDOrdineByPrenotazioneAndUsername(idPrenotazione, username);
+
+            if(idOrdine) res.status(201).json({ 
+                success: true, 
+                data: {
+                    body: req.body,
+                    id_ordine: idOrdine
+                }
+            });
+            else res.status(400).json({
+                    success: false,
+					message: 'Ordine non trovato',
+			});
+        }catch (err) {
+            console.error(err);
+            res.status(500).json({
+                success: false,
+                message: 'Errore interno del server',
+                error: (err instanceof Error ? err.message : String(err))
+            });
+        }
+    }
 }
 
 export default OrdineController;

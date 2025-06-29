@@ -178,6 +178,25 @@ const eliminaOrdineValidator = [
     idOrdineValidator('id')
 ];
 
+const getIDOrdineByPrenotazioneAndUsername = [
+  param('id_prenotazione')
+    .notEmpty().withMessage('ID prenotazione obbligatorio')
+    .isInt({ gt: 0 }).withMessage('ID prenotazione non valido')
+    .toInt()
+    .bail()
+    .custom(async (id) => {
+      const prenotazione = await Prenotazione.getById(id);
+      if (!prenotazione) {
+        throw new Error('Prenotazione non trovata');
+      }
+      return true;
+    }),
+
+  param('username')
+    .notEmpty().withMessage('Username obbligatorio')
+    .isString().withMessage('Username deve essere una stringa')
+];
+
 const validate = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -191,5 +210,6 @@ export default {
     validate,
     aggiungiPagamentoValidator,
     eliminaOrdineValidator,
-    aggiungiOrdine
+    aggiungiOrdine,
+    getIDOrdineByPrenotazioneAndUsername
 }
