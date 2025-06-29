@@ -1,14 +1,21 @@
 <ion-content [fullscreen]="true" color="light">
-	<ion-grid fixed>
+	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
 		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<ion-col size="12" size-md="4" size-lg="6" class="ion-text-center">
+			<ion-col size="6" class="ion-hide-xl-down">
 				<ion-img
 					[src]="'/assets/illustrations/Amministrazione.png'"
 				></ion-img>
 			</ion-col>
-			<ion-col size="12" size-md="4" size-lg="6" class="ion-text-center">
-				<ion-card>
-					<h1>Benvenuto {{username}}!</h1>
+			<ion-col size="12" sizeXl="6">
+				<ion-card
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
+					color="verdechiaro"
+				>
+					<ion-text class="ion-text-center ion-padding-horizontal">
+						<h2 class="text-color-bianco">
+							Benvenuto {{username}}!
+						</h2>
+					</ion-text>
 
 					<ion-button
 						[routerLink]="['/gestisci-piatti']"

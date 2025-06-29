@@ -7,14 +7,10 @@ import {
 	IonCol,
 	IonContent,
 	IonGrid,
-	IonHeader,
 	IonImg,
 	IonRow,
 	IonText,
-	IonTitle,
-	IonToolbar,
 } from '@ionic/angular/standalone';
-import { Router } from 'express';
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
@@ -34,6 +30,7 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 		CommonModule,
 		FormsModule,
 		RouterModule,
+		IonText,
 	],
 })
 export class AmministrazionePage implements OnInit {
