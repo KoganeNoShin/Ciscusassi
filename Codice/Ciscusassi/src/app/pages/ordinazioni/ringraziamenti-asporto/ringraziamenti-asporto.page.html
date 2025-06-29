@@ -1,25 +1,44 @@
-<ion-content fullscreen color="light" class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-      <!-- Colonna sinistra: immagine -->
-      <ion-col size="12" size-md="6" class="image-col">
-        <ion-img src="/assets/illustrations/PagamentoCartaAsporto.png"></ion-img>
-      </ion-col>
+<ion-content [fullscreen]="true" color="light">
+	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
+		<ion-row class="ion-align-items-center ion-justify-content-center">
+			<!-- Colonna sinistra: immagine -->
+			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
+				<ion-img
+					src="/assets/illustrations/PagamentoCartaAsporto.png"
+				></ion-img>
+			</ion-col>
 
-      <!-- Colonna destra: form -->
-      <ion-col size="12" size-md="6" class="form-col">
-        <ion-card class="address-card">
-          <h1>PAGAMENTO EFFETTUATO</h1>
+			<!-- Colonna destra: form -->
+			<ion-col size="12" size-md="6">
+				<ion-card
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
+					color="salmone"
+				>
+					<ion-text class="ion-text-center ion-padding-horizontal">
+						<h2 class="text-color-bianco">PAGAMENTO EFFETTUATO</h2>
+					</ion-text>
 
-          <ion-card-content>
-            <p>
-              Grazie per averci scelto!<br>Il tuo ordine è stato preso in carico dalla filiale di {{filiale.indirizzo}}.<br>Arriverà entro {{tempo}} minuti.
-            </p>
-            <ion-button color="rosso" (click)="generaRicevuta()">SCARICA RICEVUTA</ion-button>
-  
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+					<ion-text class="ion-text-center ion-padding-horizontal">
+						<p class="text-color-bianco">
+							Grazie per averci scelto!<br />Il tuo ordine è stato
+							preso in carico dalla filiale di
+							{{filiale.indirizzo}}.<br />Arriverà entro {{tempo}}
+							minuti.
+						</p>
+					</ion-text>
+
+					<ion-button
+						size="default"
+						fill="solid"
+						shape="round"
+						color="rosso"
+						expand="block"
+						class="ion-padding-horizontal"
+						(click)="generaRicevuta()"
+						>SCARICA RICEVUTA</ion-button
+					>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 </ion-content>

@@ -31,6 +31,7 @@ export const routes: Routes = [
 			import('./pages/ordinazioni/ordina-ora/ordina-ora.page').then(
 				(m) => m.OrdinaOraPage
 			),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'prenota',
@@ -73,6 +74,7 @@ export const routes: Routes = [
 			import(
 				'./pages/ordinazioni/ordina-al-tavolo/ordina-al-tavolo.page'
 			).then((m) => m.OrdinaAlTavoloPage),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'ordina-asporto',
@@ -144,6 +146,7 @@ export const routes: Routes = [
 			import('./pages/ordinazioni/menu-tavolo/menu-tavolo.page').then(
 				(m) => m.MenuTavoloPage
 			),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'menu-asporto',
@@ -151,6 +154,7 @@ export const routes: Routes = [
 			import('./pages/ordinazioni/menu-asporto/menu-asporto.page').then(
 				(m) => m.MenuAsportoPage
 			),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'pagamento-asporto',
@@ -158,6 +162,7 @@ export const routes: Routes = [
 			import(
 				'./pages/ordinazioni/pagamento-asporto/pagamento-asporto.page'
 			).then((m) => m.PagamentoAsportoPage),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'ringraziamenti-asporto',
@@ -165,6 +170,7 @@ export const routes: Routes = [
 			import(
 				'./pages/ordinazioni/ringraziamenti-asporto/ringraziamenti-asporto.page'
 			).then((m) => m.RingraziamentiAsportoPage),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'aggiungi-dipendenti',
@@ -207,6 +213,7 @@ export const routes: Routes = [
 			import(
 				'./pages/ordinazioni/visualizza-ordini/visualizza-ordini.page'
 			).then((m) => m.VisualizzaOrdiniPage),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'visualizza-tavoli-cameriere',
@@ -222,6 +229,7 @@ export const routes: Routes = [
 			import(
 				'./pages/ordinazioni/pagamento-tavolo/pagamento-tavolo.page'
 			).then((m) => m.PagamentoTavoloPage),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'pagamento-carta',
@@ -229,6 +237,7 @@ export const routes: Routes = [
 			import(
 				'./pages/ordinazioni/pagamento-carta/pagamento-carta.page'
 			).then((m) => m.PagamentoCartaPage),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'pagamento-cassa',
@@ -236,6 +245,7 @@ export const routes: Routes = [
 			import(
 				'./pages/ordinazioni/pagamento-cassa/pagamento-cassa.page'
 			).then((m) => m.PagamentoCassaPage),
+		canActivate: [authGuard(['cliente'])],
 	},
 	{
 		path: 'numero-persone',

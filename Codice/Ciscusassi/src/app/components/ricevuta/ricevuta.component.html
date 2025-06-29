@@ -8,15 +8,15 @@
 
 		<div class="pdf-section tabella">
 			<div class="riga intestazione">
-				<span>PRODOTTO</span>
-				<span>QUANTITÀ</span>
-				<span>PREZZO</span>
+				<span class="text-color-bianco">PRODOTTO</span>
+				<span class="text-color-bianco">QUANTITÀ</span>
+				<span class="text-color-bianco">PREZZO</span>
 			</div>
 			@for (elemento of prodottiRaggruppati; track elemento) {
 				<div class="riga">
-					<span>{{ elemento.prodotto.nome }}</span>
-					<span>{{ elemento.quantita }}</span>
-					<span
+					<span class="text-black">{{ elemento.prodotto.nome }}</span>
+					<span class="text-black">{{ elemento.quantita }}</span>
+					<span class="text-black"
 						>€
 						{{
 							(
