@@ -83,7 +83,7 @@ function is_romanaValidator(chain: ValidationChain): ValidationChain {
 
 // Validatori
 export const cambiaStatoProdottoValidator = [
-	idOrdProdValidator(param('id')),
+	idOrdProdValidator(param('id_ordprod')),
 	statoProdottoValidator(body('stato'))
 ];
 
