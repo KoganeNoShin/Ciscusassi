@@ -189,6 +189,17 @@ class PrenotazioneService {
 
 	static async eliminaPrenotazione(id: number): Promise<void> {
 		try {
+			const prenotazione = await Prenotazione.getById(id);
+			if (!prenotazione) {
+				throw new Error('Prenotazione non trovata');
+			}
+
+			const adesso = new Date();
+			const dataPrenotazione = new Date(prenotazione.data_ora_prenotazione);
+
+			if (dataPrenotazione < adesso) {
+				throw new Error('Non è possibile eliminare una prenotazione passata');
+			}
 			return await Prenotazione.delete(id);
 		} catch (error) {
 			console.error(
@@ -291,9 +302,7 @@ class PrenotazioneService {
 		return tavoliPerOrario;
 	}
 
-	static async getStatoPrenotazione(
-		id_prenotazione: number
-	): Promise<string> {
+	static async getStatoPrenotazione(id_prenotazione: number): Promise<string> {
 		try {
 			const otp = await Prenotazione.getOTPById(id_prenotazione);
 			if (!otp) {

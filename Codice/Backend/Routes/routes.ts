@@ -1,35 +1,46 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import { body, param, validationResult } from 'express-validator';
 
+import authMiddleware from '../Middleware/authMiddleware';
+import roleMiddleware from '../Middleware/roleMiddleware';
 import ClienteController from '../Controllers/clienteController';
-import AuthValidator from '../Validators/authValidator';
 import ProdottoController from '../Controllers/prodottoController';
 import FilialeController from '../Controllers/filialeController';
 import ImpiegatoController from '../Controllers/impiegatoController';
-import authMiddleware from '../Middleware/authMiddleware';
-import roleMiddleware from '../Middleware/roleMiddleware';
 import AuthController from '../Controllers/authController';
 import AsportoController from '../Controllers/asportoController';
 import PagamentoController from '../Controllers/pagamentoController';
-import asportoValidator from '../Validators/asportoValidator';
-import prodottoValidator from '../Validators/prodottoValidator';
-import filialeValidator from '../Validators/filialeValidator';
 import PrenotazioneController from '../Controllers/prenotazioneController';
 import OrdProdController from '../Controllers/ordprodController';
-import ordprodValidator from '../Validators/ordprodValidator';
 import TorrettaController from '../Controllers/torrettaController';
-import prenotazioneValidator from '../Validators/prenotazioneValidator';
-import ordineValidator from '../Validators/ordineValidator';
 import OrdineController from '../Controllers/ordineController';
-import Ordine from '../Models/ordine';
-import torrettaValidator from '../Validators/torrettaValidator';
+import { addAsportoValidator } from '../Validators/asportoValidator';
+import { addFilialeValidator, idFilialeValidator, updateFilialeValidator } from '../Validators/filialeValidator';
+import { addOrdineValidator, addPagamentoValidator, getIDOrdineByPrenotazioneAndUsername, idOrdineValidator } from '../Validators/ordineValidator';
+import { cambiaStatoProdottoValidator, ordProdArrayValidator } from '../Validators/ordprodValidator';
+import { annoPagamentoValidator } from '../Validators/pagamentoValidator';
+import { addProdottoValidator, idProdottoValidator, updateProdottoValidator } from '../Validators/prodottoValidator';
+import { checkOTPValidator, idPrenotazioneValidator, prenotazioneInputValidator, prenotazioneUpdateValidator } from '../Validators/prenotazioneValidator';
+import { idTorrettaValidator } from '../Validators/torrettaValidator';
+import { loginValidator } from '../Validators/authValidator';
+
 
 const router = express.Router();
+
+export const validate = (req: Request, res: Response, next: NextFunction): void => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+        return;
+    }
+    next();
+};
 
 // Route per Asporto
 router.post(
 	'/addAsporto',
-	asportoValidator.addAsportoValidator,
-	asportoValidator.validate,
+	addAsportoValidator,
+	validate,
 	authMiddleware,
 	AsportoController.addAsporto
 );
@@ -39,32 +50,35 @@ router.get('/filiali', FilialeController.getAllFiliali);
 
 router.post(
 	'/addFiliale',
-	filialeValidator.validate,
-	filialeValidator.updateFilialeValidator,
+	updateFilialeValidator,
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	FilialeController.addFiliale
 );
 
 router.put(
-	'/updateFiliale/:id',
-	filialeValidator.validate,
-	filialeValidator.addFilialeValidator,
+	'/updateFiliale/:id_filiale',
+	addFilialeValidator,
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	FilialeController.updateFiliale
 );
 
 router.delete(
-	'/deleteFiliale/:id',
+	'/deleteFiliale/:id_filiale',
+	idFilialeValidator(param('id_filiale')),
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	FilialeController.deleteFiliale
 );
 
-// Route per i Impiegati
+// Route per i Impiegati ------------- DA FARE
 router.post(
 	'/addImpiegato',
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	ImpiegatoController.addImpiegato
@@ -72,6 +86,7 @@ router.post(
 
 router.put(
 	'/updateImpiegato/:matricola',
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	ImpiegatoController.updateImpiegato
@@ -79,6 +94,7 @@ router.put(
 
 router.delete(
 	'/deleteImpiegato/:matricola',
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	ImpiegatoController.deleteImpiegato
@@ -86,6 +102,7 @@ router.delete(
 
 router.get(
 	'/impiegati/:id',
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	ImpiegatoController.getAllImpiegati
@@ -93,55 +110,55 @@ router.get(
 
 // Route per Ordine
 router.post(
-	'/addOrdine',
-	ordineValidator.aggiungiOrdine,
-	ordineValidator.validate,
+	'/prenotazione/addOrdine',
+	addOrdineValidator,
+	validate,
 	OrdineController.addOrdine
 );
 
 router.post(
-	'/ordine/pay',
-	ordineValidator.aggiungiPagamentoValidator,
-	ordineValidator.validate,
+	'/prenotazione/ordine/pay',
+	addPagamentoValidator,
+	validate,
 	OrdineController.addPagamento
 );
 
 router.get(
-	'/prenotazioni/:id_prenotazione/ordini/:username',
-	ordineValidator.getIDOrdineByPrenotazioneAndUsername,
-	ordineValidator.validate,
+	'/prenotazione/:id_prenotazione/ordini/:username',
+	getIDOrdineByPrenotazioneAndUsername,
+	validate,
 	OrdineController.getIDOrdineByPrenotazioneAndUsername
 );
 
 // Route per OrdProd
 router.post(
-	'/ordine/addProdotti',
-	ordprodValidator.ordProdArrayValidator,
-	ordprodValidator.validate,
+	'/prenotazione/ordine/addProdotti',
+	ordProdArrayValidator,
+	validate,
 	OrdProdController.addProdottiOrdine
 );
 
 router.get(
-	'/ordprod/:id',
+	'/prenotazione/ordine/:id_ordine/prodotti/',
 	authMiddleware,
-	ordprodValidator.getProdottiByOrdineValidator,
-	ordprodValidator.validate,
+	idOrdineValidator(param('id_ordine'), "EsistenzaOrdine"),
+	validate,
 	OrdProdController.getProdottiByOrdine
 );
 
 router.get(
-	'/prenotazione/:id_prenotazione/ordprod',
-	ordprodValidator.getProdottiByPrenotazioneValidator,
-	ordprodValidator.validate,
+	'/prenotazione/:id_prenotazione/prodotti',
+	idPrenotazioneValidator(param('id_prenotazione')),
+	validate,
 	OrdProdController.getProdottiByPrenotazione
 );
 
 router.put(
-	'/ordprod/:id/cambiaStato',
+	'/prenotazione/ordine/prodotto/:id_ordprod/cambiaStato',
 	authMiddleware,
 	roleMiddleware(['amministratore', 'chef', 'cameriere']),
-	ordprodValidator.cambiaStatoProdottoValidator,
-	ordprodValidator.validate,
+	cambiaStatoProdottoValidator,
+	validate,
 	OrdProdController.cambiaStatoProdottoOrdine
 );
 
@@ -150,107 +167,117 @@ router.get(
 	'/pagamenti/:year',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
+	annoPagamentoValidator(param('year')),
+	validate,
 	PagamentoController.getPagamentiByYear
 );
 
 // Route per i Prodotti
-router.get('/piattoDelGiorno', ProdottoController.getProdottoDelGiorno);
+router.get('/menu/piattoDelGiorno', ProdottoController.getProdottoDelGiorno);
 
-router.get('/prodotti', ProdottoController.getAllProdotti);
+router.get('/menu', ProdottoController.getAllProdotti);
 
 router.post(
-	'/addProdotto',
-	prodottoValidator.addProdottoValidator,
-	prodottoValidator.validate,
+	'/menu/addProdotto',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
+	addProdottoValidator,
+	validate,
 	ProdottoController.addProdotto
 );
 
 router.put(
-	'/updateProdotto/:id',
-	prodottoValidator.addProdottoValidator,
-	prodottoValidator.validate,
+	'/menu/updateProdotto/:id_prodotto',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
+	updateProdottoValidator,
+	validate,
 	ProdottoController.updateProdotto
 );
 
 router.delete(
-	'/deleteProdotto/:id',
+	'/menu/deleteProdotto/:id_prodotto',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
+	idProdottoValidator(param(':id_prodotto')),
+	validate,
 	ProdottoController.deleteProdotto
 );
 
 router.put(
-	'/chargePiattoDelGiorno/:id',
+	'/menu/chargePiattoDelGiorno/:id_prodotto',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
+	idProdottoValidator(param(':id_prodotto')),
+	validate,
 	ProdottoController.chargePiattoDelGiorno
 );
 
 // Route per i Prenotazioni
 router.get('/prenotazioni', PrenotazioneController.getAllPrenotazioni);
 
-router.get('/prenotazione/:id', PrenotazioneController.getPrenotazioneById);
+router.get('/prenotazione/:id_prenotazione', 
+	idPrenotazioneValidator(param('id_prenotazione')),
+	validate,
+	PrenotazioneController.getPrenotazioneById
+);
 
 router.get(
-	'/prenotazioni/cliente/:clienteId',
+	'/prenotazioni/cliente/:id_cliente',
 	authMiddleware,
-	prenotazioneValidator.validate,
+	validate,
 	PrenotazioneController.getPrenotazioniByCliente
 );
 
 router.get(
-	'/prenotazioni/:filiale',
+	'/filiale/:id_filiale/prenotazioni',
 	authMiddleware,
-	prenotazioneValidator.CheckParamFilialeForPrenotazioniValidator,
-    prenotazioneValidator.validate,
+	idFilialeValidator(param('id_filiale')),
+    validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
 
 router.get(
-	'/tavoli-in-uso/:filiale',
-	prenotazioneValidator.CheckParamFilialeForPrenotazioniValidator,
-	prenotazioneValidator.validate,
+	'/filiale/:id_filiale/tavoli-in-uso',
+	idFilialeValidator(param('id_filiale')),
+	validate,
 	authMiddleware,
 	PrenotazioneController.getTavoliInUso,
 );
 
 router.get(
-	'/prenotazioni/:id/otp',
-	prenotazioneValidator.CheckIdPrenotazioneParam,
-	prenotazioneValidator.validate,
+	'/prenotazione/:id_prenotazione/otp',
+	idFilialeValidator(param('id_filiale')),
+	validate,
 	PrenotazioneController.getOTPById
 );
 
 router.post(
-    '/prenotazioni/check-otp',
-	prenotazioneValidator.checkOTPValidator,
-	prenotazioneValidator.validate,
+    '/prenotazione/check-otp',
+	checkOTPValidator,
+	validate,
     PrenotazioneController.checkOTP,
 );
 
 router.get(
-	'/prenotazioni/:id/stato',
-	prenotazioneValidator.CheckIdPrenotazioneParam,
-	prenotazioneValidator.validate,
+	'/prenotazione/:id_prenotazione/stato',
+	idPrenotazioneValidator(param('id_prenotazione')),
+	validate,
 	PrenotazioneController.getStatoPrenotazione
 );
 
 router.post(
 	'/prenota',
-	prenotazioneValidator.prenotazioneInputValidator,
-	prenotazioneValidator.validate,
+	prenotazioneInputValidator,
+	validate,
 	authMiddleware,
 	PrenotazioneController.prenota
 );
 
 router.post(
 	'/prenotaLoco',
-	prenotazioneValidator.prenotazioneInputValidator,
-	prenotazioneValidator.validate,
+	prenotazioneInputValidator,
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere']),
 	PrenotazioneController.prenotaLoco
@@ -258,24 +285,24 @@ router.post(
 
 router.put(
 	'/modificaPrenotazione',
-	prenotazioneValidator.prenotazioneUpdateValidator,
-	prenotazioneValidator.validate,
+	prenotazioneUpdateValidator,
+	validate,
 	authMiddleware,
 	PrenotazioneController.modificaPrenotazione
 );
 
 router.delete(
-	'/eliminaPrenotazione/:id',
-	prenotazioneValidator.CheckIdPrenotazioneParam,
-	prenotazioneValidator.validate,
+	'/eliminaPrenotazione/:id_prenotazione',
+	idPrenotazioneValidator(param('id_prenotazione')),
+	validate,
 	authMiddleware,
 	PrenotazioneController.eliminaPrenotazione
 );
 
 router.post(
-	'/prenotazioni/conferma',
-	prenotazioneValidator.CheckIdPrenotazioneBody,
-	prenotazioneValidator.validate,
+	'/prenotazione/conferma',
+	idPrenotazioneValidator(body("id_prenotazione")),
+	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere']),
 	PrenotazioneController.confermaPrenotazione
@@ -284,8 +311,8 @@ router.post(
 // Route per le torrette
 router.get(
 	'/torrette/:id_torretta',
-	torrettaValidator.getTorrettaByIDValidator,
-	torrettaValidator.validate,
+	idTorrettaValidator(param('id_torretta')),
+	validate,
 	TorrettaController.getTorrettaByID
 );
 
@@ -305,8 +332,8 @@ router.post(
 // Login
 router.post(
 	'/login',
-	AuthValidator.loginValidator,
-	AuthValidator.validate,
+	loginValidator,
+	validate,
 	AuthController.login
 );
 

@@ -1,5 +1,5 @@
-import { body, ValidationChain, validationResult } from 'express-validator'
-import { Request, Response, NextFunction } from 'express';
+import { body, param, ValidationChain } from 'express-validator'
+import Prodotto from '../Models/prodotto';
 
 // Funzioni
 function nomeProdottoValidator(chain: ValidationChain): ValidationChain {
@@ -38,8 +38,20 @@ function categoriaProdottoValidator(chain: ValidationChain): ValidationChain {
         });
 }
 
+export function idProdottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
+        .notEmpty().withMessage('ID prodotto è obbligatorio!')
+        .isInt({ min: 1 }).withMessage('ID filiale non valido')
+        .toInt()
+        .custom(async (value) => {
+              const esiste = await Prodotto.getByID(value);
+              if (!esiste) throw new Error('La filiale specificata non esiste');
+              return true;
+            });
+}
+
 // Validatori
-const addProdottoValidator = [
+export const addProdottoValidator = [
     nomeProdottoValidator(body('nome')),
     descrizioneProdottoValidator(body('descrizione')),
     costoProdottoValidator(body('costo')),
@@ -47,16 +59,7 @@ const addProdottoValidator = [
     categoriaProdottoValidator(body('categoria'))
 ];
 
-const validate = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
-    next();
-};
-
-export default {
-    validate,
-    addProdottoValidator
-}
+export const updateProdottoValidator = [
+    ...addProdottoValidator,
+    idProdottoValidator(param('id'))
+];

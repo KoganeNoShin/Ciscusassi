@@ -1,6 +1,5 @@
-import { body, param, ValidationChain, validationResult } from 'express-validator'
-import { Request, Response, NextFunction } from 'express';
-import Filiale from '../Models/filiale';
+import { body, ValidationChain } from 'express-validator'
+import { idFilialeValidator } from './filialeValidator';
 
 // Funzioni
 function nomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
@@ -64,18 +63,6 @@ function data_nascitaValidator(chain: ValidationChain): ValidationChain {
         });
 }
 
-function ref_filialeValidator(chain: ValidationChain): ValidationChain {
-  return chain
-    .isInt({ min: 1 }).withMessage('ID filiale non valido')
-    .bail()
-    .toInt()
-    .custom(async (value) => {
-      const esiste = await Filiale.getById(value);
-      if (!esiste) throw new Error('La filiale specificata non esiste');
-      return true;
-    });
-}
-
 function emailValidator(chain: ValidationChain): ValidationChain {
   return chain
 		.trim()
@@ -90,14 +77,6 @@ function passwordValidator(chain: ValidationChain): ValidationChain {
 }
 
 // Validatori
-const validate = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
-    next();
-};
 
 const addImpiegato = [
     nomeImpiegatoValidator(body('nome')),
@@ -106,7 +85,7 @@ const addImpiegato = [
     fotoValidator(body('foto')),
     emailValidator(body('email')),
     data_nascitaValidator(body('data_nascita')),
-    ref_filialeValidator(body('ref_filiale')),
+    idFilialeValidator(body('ref_filiale')),
     passwordValidator(body('password'))
 ];
 

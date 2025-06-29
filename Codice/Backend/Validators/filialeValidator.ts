@@ -1,5 +1,4 @@
-import { body, ValidationChain, validationResult } from 'express-validator'
-import { Request, Response, NextFunction } from 'express';
+import { body, param, ValidationChain } from 'express-validator'
 
 // Funzioni
 function comuneValidator(chain: ValidationChain): ValidationChain {
@@ -41,7 +40,7 @@ function immagineValidator(chain: ValidationChain): ValidationChain {
         .isBase64().withMessage('Formato immagine non valido!');
 }
 
-function idFilialeValidator(chain: ValidationChain): ValidationChain {
+export function idFilialeValidator(chain: ValidationChain): ValidationChain {
   return chain
         .notEmpty().withMessage('L\'ID della filiale è obbligatorio!')
         .isInt({ min: 1 }).withMessage('L\'ID della filiale deve essere un intero positivo!')
@@ -49,7 +48,7 @@ function idFilialeValidator(chain: ValidationChain): ValidationChain {
 }
 
 // Validatori
-const addFilialeValidator = [
+export const addFilialeValidator = [
     comuneValidator(body('comune')),
     indirizzoValidator(body('indirizzo')),
     num_tavoliValidator(body('num_tavoli')),
@@ -58,27 +57,7 @@ const addFilialeValidator = [
     immagineValidator(body('immagine'))
 ];
 
-const updateFilialeValidator = [
-    idFilialeValidator(body('id_filiale')),
-    comuneValidator(body('comune')),
-    indirizzoValidator(body('indirizzo')),
-    num_tavoliValidator(body('num_tavoli')),
-    longitudineValidator(body('longitudine')),
-    latitudineValidator(body('latitudine')),
-    immagineValidator(body('immagine'))
+export const updateFilialeValidator = [
+    idFilialeValidator(param('id_filiale')),
+    ...addFilialeValidator
 ];
-
-const validate = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
-    next();
-};
-
-export default {
-    validate, 
-    addFilialeValidator, 
-    updateFilialeValidator
-}

@@ -1,5 +1,4 @@
-import { body, ValidationChain, validationResult } from 'express-validator';
-import { Request, Response, NextFunction } from 'express';
+import { body, ValidationChain } from 'express-validator'
 
 // Funzioni
 function nomeValidator(chain: ValidationChain): ValidationChain {
@@ -48,7 +47,7 @@ function confermaPasswordValidator(chain: ValidationChain): ValidationChain {
 }
 
 // Validatori
-const registerValidator = [
+export const registerValidator = [
 	nomeValidator(body('nome')),
 	cognomeValidator(body('cognome')),
 	emailValidator(body('email')),
@@ -56,18 +55,7 @@ const registerValidator = [
 	confermaPasswordValidator(body('conferma_password'))
 ];
 
-const loginValidator = [
+export const loginValidator = [
 	emailValidator(body('email')),
 	passwordValidator(body('password')),
 ];
-
-const validate = (req: Request, res: Response, next: NextFunction): void => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		res.status(400).json({ errors: errors.array() });
-		return;
-	}
-	next();
-};
-
-export default { validate, registerValidator, loginValidator };

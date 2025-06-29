@@ -1,13 +1,12 @@
-import { body, param, ValidationChain, validationResult } from 'express-validator'
-import { Request, Response, NextFunction } from 'express';
+import { body, param, ValidationChain } from 'express-validator'
 import OrdProd from '../Models/ord_prod';
 import OrdineService from '../Services/ordineService';
 import Ordine from '../Models/ordine';
-import Prenotazione from '../Models/prenotazione';
 import Cliente from '../Models/cliente';
+import { idPrenotazioneValidator } from './prenotazioneValidator';
 
 // Funzioni
-function idOrdineValidator(chain: ValidationChain, operazione: string): ValidationChain {
+export function idOrdineValidator(chain: ValidationChain, operazione: string): ValidationChain {
   return chain
         .notEmpty().withMessage("L'ID dell'ordine è obbligatorio")
         .isInt({ gt: 0 }).withMessage("L'ID dell'ordine deve essere un numero positivo")
@@ -19,21 +18,23 @@ function idOrdineValidator(chain: ValidationChain, operazione: string): Validati
                 throw new Error("Ordine non esistente");
             }
             
-            const ordProd = await OrdProd.getByOrdine(Number(id));
+            if(operazione !== "EsistenzaOrdine"){
+                const ordProd = await OrdProd.getByOrdine(Number(id));
 
-            if(operazione === 'Eliminazione') {
-                if (ordProd && ordProd.length > 0) {
-                    throw new Error("Impossibile eliminare l'ordine: contiene prodotti associati.");
-                }
-            } else {
-                if (!ordProd || ordProd.length === 0) {
-                    throw new Error("ID ordine senza prodotti ordinati");
-                }
-                
-                if(operazione === "Pagamento") {
-                    for (const prod of ordProd) {
-                        if (prod.stato !== 'consegnato') {
-                            throw new Error("L'ordine contiene prodotti non ancora consegnati.");
+                if(operazione === 'Eliminazione') {
+                    if (ordProd && ordProd.length > 0) {
+                        throw new Error("Impossibile eliminare l'ordine: contiene prodotti associati.");
+                    }
+                } else {
+                    if (!ordProd || ordProd.length === 0) {
+                        throw new Error("ID ordine senza prodotti ordinati");
+                    }
+                    
+                    if(operazione === "Pagamento") {
+                        for (const prod of ordProd) {
+                            if (prod.stato !== 'consegnato') {
+                                throw new Error("L'ordine contiene prodotti non ancora consegnati.");
+                            }
                         }
                     }
                 }
@@ -79,20 +80,6 @@ function dataOraPagamentoValidator(chain: ValidationChain): ValidationChain {
             return true;
         });
  }
-       
-function ref_prenotazioneValidator(chain: ValidationChain): ValidationChain {
-  return chain
-        .notEmpty().withMessage('Il riferimento alla prenotazione è obbligatorio')
-        .isInt({ gt: 0 }).withMessage('L\'ID dell\'ordine deve essere un numero positivo')
-        .bail()
-        .custom(async (valore, { req }) => {
-            const prenotazione = await Prenotazione.getById(valore);
-            if(prenotazione == null) {
-                throw new Error("Prenotazioe non trovata")
-            }
-            return true;
-        });
-}
 
 function ref_clienteValidator(chain: ValidationChain): ValidationChain {
   return chain
@@ -118,41 +105,19 @@ function username_ordinanteValidator(chain: ValidationChain): ValidationChain {
 }
 
 // Validator
-const aggiungiOrdine = [
-    ref_prenotazioneValidator(body('ref_prenotazione')),
-    ref_clienteValidator(body('ref_cliente')),
+export const addOrdineValidator = [
+    idPrenotazioneValidator(body('ref_prenotazione')),
+    ref_clienteValidator(body('ref_cliente')), // Da cambiare con idClienteValidator
     username_ordinanteValidator(body('username_ordinante')),
 ];
 
-const aggiungiPagamentoValidator = [
+export const addPagamentoValidator = [
     idOrdineValidator(body('id_ordine'), 'Pagamento'),
     importoPagamentoValidator(body('pagamento_importo')),
     dataOraPagamentoValidator(body('data_ora_pagamento'))
 ];
 
-
-const eliminaOrdineValidator = [
-    idOrdineValidator(body('id_ordine'), 'Eliminazione'),
-];
-
-const getIDOrdineByPrenotazioneAndUsername = [
-    ref_prenotazioneValidator(param('id_prenotazione')),
+export const getIDOrdineByPrenotazioneAndUsername = [
+    idPrenotazioneValidator(param('id_prenotazione')),
     username_ordinanteValidator(param('username'))
 ];
-
-const validate = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
-    next();
-};
-
-export default {
-    validate,
-    aggiungiPagamentoValidator,
-    eliminaOrdineValidator,
-    aggiungiOrdine,
-    getIDOrdineByPrenotazioneAndUsername
-}

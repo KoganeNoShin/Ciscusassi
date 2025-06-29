@@ -1,8 +1,7 @@
-import { body, ValidationChain, validationResult } from 'express-validator'
-import { Request, Response, NextFunction } from 'express';
+import { body, ValidationChain } from 'express-validator'
 import Cliente from '../Models/cliente';
 import Prodotto from '../Models/prodotto';
-import Filiale from '../Models/filiale';
+import { idFilialeValidator } from './filialeValidator';
 
 // Funzioni
 function indirizzoValidator(chain: ValidationChain): ValidationChain {
@@ -37,19 +36,6 @@ function ref_clienteValidator(chain: ValidationChain): ValidationChain {
         .custom(async (value: number) => {
             const cliente = await Cliente.findByNumeroCarta(value);
             if(!cliente) throw new Error('Cliente inesistente, ricontrolla ID!');
-            return true;
-        });
-}
-
-function ref_filialeValidator(chain: ValidationChain): ValidationChain {
-  return chain
-        .notEmpty().notEmpty().withMessage('Filiale obbligatoria!')
-        .isInt({ min: 1}).withMessage('Riferimento non valido, deve essere un numero intero positivo')
-        .bail()
-        .toInt()
-        .custom(async (value: number) => {
-            const filiale = await Filiale.getById(value);
-            if(!filiale) throw new Error('Filiale inesistente, ricontrolla ID!');
             return true;
         });
 }
@@ -90,23 +76,12 @@ function prodottiValidator(chain: ValidationChain): ValidationChain {
 }
 
 // Validatori
-const addAsportoValidator = [
+export const addAsportoValidator = [
     indirizzoValidator(body('indirizzo')),
     dataOraConsegnaValidator(body('data_ora_consegna')),
-    ref_clienteValidator(body('ref_cliente')),
-    ref_filialeValidator(body('ref_filiale')),
+    ref_clienteValidator(body('ref_cliente')), // da cambiare in idCliente
+    idFilialeValidator(body('ref_filiale')),
     importoValidator(body('importo')),
     dataOraPagamentoValidator(body('data_ora_pagamento')),
     prodottiValidator(body('prodotti'))
 ];
-
-const validate = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
-    next();
-};
-
-export default {validate, addAsportoValidator}
