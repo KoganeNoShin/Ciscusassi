@@ -1,14 +1,24 @@
-import { body, param, validationResult } from 'express-validator'
+import { body, param, ValidationChain, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Ordine from '../Models/ordine';
 import OrdProd from '../Models/ord_prod';
-import { error } from 'console';
-import { stat } from 'fs';
 import Prodotto from '../Models/prodotto';
 import Prenotazione from '../Models/prenotazione';
 
 // Parametri
-const idOrdineValidator = (field: string) => {
+function ordineValidator(chain: ValidationChain): ValidationChain {
+  return chain
+    .notEmpty().withMessage('ID ordine obbligatorio')
+    .isInt({ gt: 0 }).withMessage('ID ordine non valido')
+    .bail()
+    .custom(async (id) => {
+      const ordine = await Ordine.getById(Number(id));
+      if (!ordine) throw new Error('Ordine non trovato nel database');
+      return true;
+    });
+}
+
+/*const idOrdineValidator = (field: string) => {
     const paramValidator = param(field)
         .notEmpty().withMessage('ID ordine obbligatorio')
         .isInt({ gt: 0 }).withMessage('ID ordine non valido')
@@ -36,7 +46,7 @@ const idOrdineValidator = (field: string) => {
             return paramValidator(req, res, next);
         }
     };
-}
+}*/
 
 const idOrdProdValidator = (field: string) =>
     param(field)
@@ -135,7 +145,7 @@ const prodottoValidator = (field: string) =>
 
 // Validatori
 const getProdottiByOrdineValidator = [
-	idOrdineValidator('id')
+	ordineValidator(param('id'))
 ];
 
 const cambiaStatoProdottoValidator = [
@@ -144,7 +154,7 @@ const cambiaStatoProdottoValidator = [
 ];
 
 const ordProdArrayValidator = [
-    idOrdineValidator('*.ref_ordine'),
+    ordineValidator(body('*.ref_ordine')),
     prodottoValidator('*.ref_prodotto'),
     statoProdottoValidator('*.stato'),
     is_romanaValidator('*.is_romana')

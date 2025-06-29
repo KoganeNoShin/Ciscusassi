@@ -4,17 +4,20 @@ import { Request, Response, NextFunction } from 'express';
 // Validatori
 const nomeValidator = (field: string) =>
 	body(field)
-		.notEmpty().withMessage('Il nome è obbligatorio')
+		.trim()
+        .notEmpty().withMessage('Il nome è obbligatorio')
 		.isString().withMessage('Il nome deve essere una stringa');
 
 const cognomeValidator = (field: string) =>
 	body(field)
-		.notEmpty().withMessage('Il cognome è obbligatorio')
+		.trim()
+        .notEmpty().withMessage('Il cognome è obbligatorio')
 		.isString().withMessage('Il cognome deve essere una stringa');
 
 const emailValidator = (field: string) =>
 	body(field)
-		.notEmpty().withMessage("L'email è obbligatoria")
+		.trim()
+        .notEmpty().withMessage("L'email è obbligatoria")
 		.isEmail().withMessage("L'email deve essere valida");
 	
 const passwordValidator = (field: string) =>
@@ -38,7 +41,8 @@ const confermaPasswordValidator = (field: string) =>
 			}
 			return true;
 		});
-		
+
+// Validatori
 const registerValidator = [
 	nomeValidator('nome'),
 	cognomeValidator('cognome'),

@@ -5,10 +5,12 @@ import { id } from 'date-fns/locale';
 // Parametri
 const comuneValidator = (field: string) =>
     body(field)
+        .trim()
         .notEmpty().withMessage('Il comune è obbligatorio!');
 
 const indirizzoValidator = (field: string) =>
     body(field)
+        .trim()
         .notEmpty().withMessage('L\'indirizzo è obbligatorio!');
 
 const num_tavoliValidator = (field: string) =>

@@ -7,6 +7,7 @@ import Filiale from '../Models/filiale';
 // Parametri
 const indirizzoValidator = (field: string) =>
     body(field)
+        .trim()
         .notEmpty().withMessage('Indirizzo non può essere vuoto.');
 
 const dataOraConsegnaValidator = (field: string) =>

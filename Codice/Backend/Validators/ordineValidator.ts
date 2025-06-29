@@ -127,6 +127,7 @@ const ref_clienteValidator = (field: string) =>
 
 const username_ordinanteValidator = (field: string, ref_cliente_field = 'ref_cliente') =>
     body(field)
+        .trim()
         .notEmpty().withMessage('Username ordinante è obbligatorio')
         .matches(/^[a-z]+\.[a-z]+\.[0-9]{4}$/i).withMessage('Formato username non valido (nome.cognome.annodinascita)')
         .bail()

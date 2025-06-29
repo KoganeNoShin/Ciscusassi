@@ -5,7 +5,13 @@ class OrdineController {
     static async addOrdine(req: Request, res: Response): Promise<void> {
         try {
             const ordine = await OrdineService.creaOrdine(req.body);
-            if(ordine) res.status(201).json({ success: true, data: req.body });
+            if(ordine) res.status(201).json({ 
+                success: true, 
+                data: {
+                    body: req.body,
+                    id_ordine: ordine
+                }
+            });
             else res.status(400).json({
                     success: false,
 					message: 'Errore durante l\'aggiunta dell\'ordine',

@@ -41,22 +41,10 @@ export class Impiegato {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO impiegati (nome, cognome, ruolo, foto, email, data_nascita, password, ref_filiale) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-				[
-					data.nome,
-					data.cognome,
-					data.ruolo,
-					data.foto,
-					data.email,
-					data.data_nascita,
-					hashedPassword,
-					data.ref_filiale,
-				],
+				[data.nome, data.cognome, data.ruolo, data.foto, data.email, data.data_nascita, hashedPassword, data.ref_filiale],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante INSERT:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
 						reject(err);
 					} else resolve(this.lastID);
 				}
@@ -65,40 +53,23 @@ export class Impiegato {
 	}
 
 	// Modifica Impiegato
-	static async updateImpiegato(
-		data: ImpiegatoData,
-		matricola: number
-	): Promise<void> {
+	static async updateImpiegato(data: ImpiegatoData, matricola: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'UPDATE impiegati SET nome = ?, cognome = ?, ruolo = ?, foto = ?, data_nascita = ?, ref_filiale = ? WHERE matricola = ?',
-				[
-					data.nome,
-					data.cognome,
-					data.ruolo,
-					data.foto,
-					data.data_nascita,
-					data.ref_filiale,
-					matricola,
-				],
+				`UPDATE impiegati 
+				SET nome = ?, cognome = ?, ruolo = ?, foto = ?, data_nascita = ?, ref_filiale = ? 
+				WHERE matricola = ?`,
+				[data.nome, data.cognome, data.ruolo, data.foto, data.data_nascita, data.ref_filiale,
+				matricola],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante UPDATE:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
 						console.error('🧾 Query params:', matricola);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(
-							`⚠️ [DB WARNING] Nessun impiegato aggiornato con matricola ${matricola}`
-						);
-						return reject(
-							new Error(
-								`Nessun impiegato trovato con matricola ${matricola}`
-							)
-						);
+						console.warn(`⚠️ [DB WARNING] Nessun impiegato aggiornato con matricola ${matricola}`);
+						return reject(new Error(`Nessun impiegato trovato con matricola ${matricola}`));
 					} else resolve();
 				}
 			);
@@ -113,21 +84,12 @@ export class Impiegato {
 				[matricola],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante DELETE:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante DELETE: ',err.message);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(
-							`⚠️ [DB WARNING] Nessun impiegato eliminato con matricola ${matricola}`
-						);
-						return reject(
-							new Error(
-								`Nessun impiegato trovato con matricola ${matricola}`
-							)
-						);
+						console.warn(`⚠️ [DB WARNING] Nessun impiegato eliminato con matricola ${matricola}`);
+						return reject(new Error(`Nessun impiegato trovato con matricola ${matricola}`));
 					} else resolve();
 				}
 			);
@@ -135,24 +97,17 @@ export class Impiegato {
 	}
 
 	// Seleziona tutti gli Impiegati
-	static async getByFiliale(
-		id_filiale: number
-	): Promise<ImpiegatoRecord[] | null> {
+	static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
 				'SELECT * FROM impiegati WHERE ref_filiale = ?',
 				[id_filiale],
 				(err: Error | null, rows: ImpiegatoRecord[]) => {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante SELECT:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);
 					} else if (!rows || rows.length === 0) {
-						console.warn(
-							'⚠️ [DB WARNING] Nessun Impiegato trovato'
-						);
+						console.warn('⚠️ [DB WARNING] Nessun Impiegato trovato');
 						resolve([]);
 					} else resolve(rows);
 				}
@@ -168,13 +123,31 @@ export class Impiegato {
 				[email],
 				(err: Error | null, row: ImpiegatoRecord) => {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante SELECT:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);
 					} else if (!row) {
 						console.log('⚠️ [DB WARNING] Nessun Prodotto trovato');
+						resolve(null);
+					} else resolve(row);
+				}
+			);
+		});
+	}
+
+	// Seleziona in base all'ID
+	static async getByMatricola(id: number): Promise<ImpiegatoData | null> {
+		return new Promise((resolve, reject) => {
+			db.get(
+				`SELECT nome, cognome, ruolo, foto, data_nascita, ref_filiale 
+				FROM impiegati 
+				WHERE matricola = ?`,
+				[id],
+				(err: Error | null, row: ImpiegatoData) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.log('⚠️ [DB WARNING] Nessun Impiegato trovato');
 						resolve(null);
 					} else resolve(row);
 				}

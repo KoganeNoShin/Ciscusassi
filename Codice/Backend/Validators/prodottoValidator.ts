@@ -4,10 +4,12 @@ import { Request, Response, NextFunction } from 'express';
 // Parametri
 const nomeProdottoValidator = (field: string) =>
     body(field)
+        .trim()
         .notEmpty().withMessage('Il nome del prodotto è obbligatorio!');
 
 const descrizioneProdottoValidator = (field: string) =>
     body(field)
+        .trim()
         .notEmpty().withMessage('La descrizione del prodotto è obbligatorio!');
 
 const costoProdottoValidator = (field: string) =>
