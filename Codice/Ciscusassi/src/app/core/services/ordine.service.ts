@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { ApiResponse } from '../interfaces/ApiResponse';
 import { Observable } from 'rxjs';
 import { ProdottoInput } from '../interfaces/Prodotto';
-import { OrdProdEstended } from '../interfaces/OrdProd';
+import { OrdProdEstended, OrdProdInput } from '../interfaces/OrdProd';
 
 @Injectable({
 	providedIn: 'root',
@@ -52,15 +52,9 @@ export class OrdineService {
 	}
 
 	ordineAddProdotti(
-		ref_ordine: number,
-		ref_prodotto: ProdottoInput[],
+		ref_prodotto: OrdProdInput[]
 	): Observable<ApiResponse<any>> {
-		const body = {
-			ref_ordine: ref_ordine,
-			ref_prodotto: ref_prodotto,
-			stato_prodotto: "non-in-lavorazione",
-			Is_romana: false,
-		};
+		const body = ref_prodotto;
 
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/ordine/addProdotti`,
@@ -69,18 +63,19 @@ export class OrdineService {
 		);
 	}
 
-	getProdottiOrdinatiByNumeroOrdine(id: number
-		): Observable<ApiResponse<OrdProdEstended>> {
-			return this.http.get<ApiResponse<OrdProdEstended>>(
-				`${this.apiURL}/ordprod/${id}`
-			);
-		}
+	getProdottiOrdinatiByNumeroOrdine(
+		id: number
+	): Observable<ApiResponse<OrdProdEstended>> {
+		return this.http.get<ApiResponse<OrdProdEstended>>(
+			`${this.apiURL}/ordprod/${id}`
+		);
+	}
 
-	setProdottiOrdinati(prodottiOrdinati: OrdProdEstended[]){
+	setProdottiOrdinati(prodottiOrdinati: OrdProdEstended[]) {
 		this.prodottiOrdinati = prodottiOrdinati;
 	}
 
-	getProdottiOrdinati(): OrdProdEstended[]{
+	getProdottiOrdinati(): OrdProdEstended[] {
 		return this.prodottiOrdinati;
 	}
 }
