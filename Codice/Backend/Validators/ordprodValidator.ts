@@ -7,14 +7,14 @@ import { idOrdineValidator } from './ordineValidator';
 function idOrdProdValidator(chain: ValidationChain): ValidationChain {
   return chain
     .notEmpty().withMessage('ID ordine prodotto obbligatorio')
-        .isInt({ gt: 0 }).withMessage('ID ordine prodotto non valido')
-        .bail()
-        .toInt()
-        .custom(async (id) => {
-            const prodotto = await OrdProd.getById(Number(id));
-            if (!prodotto) throw new Error('Prodotto non trovato nel database');
-            return true;
-        });
+    .isInt({ gt: 0 }).withMessage('ID ordine prodotto non valido')
+    .bail()
+    .toInt()
+    .custom(async (id) => {
+        const prodotto = await OrdProd.getById(Number(id));
+        if (!prodotto) throw new Error('Prodotto non trovato nel database');
+         return true;
+    });
 }
 
 function statoProdottoValidator(chain: ValidationChain): ValidationChain {
@@ -45,10 +45,10 @@ function statoProdottoValidator(chain: ValidationChain): ValidationChain {
             }
 
             // Ottieni l'ID dell'ordine prodotto dal corpo della richiesta
-            const id_ord_prod = req.body.id_ord_prod;
-            if (!id_ord_prod) {
+            if (!req.params || !req.params.id_ordprod) {
                 throw new Error("ID ordine prodotto è obbligatorio.");
             }
+            const id_ord_prod = Number(req.params.id_ordprod);
 
             // Recupera l'ordine prodotto dal database
             const ordProd = await OrdProd.getById(id_ord_prod);
