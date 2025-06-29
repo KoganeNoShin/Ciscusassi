@@ -6,12 +6,9 @@ import {
 	IonCol,
 	IonContent,
 	IonGrid,
-	IonHeader,
 	IonRow,
 	IonSelect,
 	IonSelectOption,
-	IonTitle,
-	IonToolbar,
 	IonText,
 } from '@ionic/angular/standalone';
 
@@ -42,6 +39,12 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 export class VisualizzaUtiliPage implements OnInit {
 	selectedYear: number | null = null;
 
+	loading: boolean = true;
+	error: string = '';
+
+	isChrome: boolean = false;
+	isFirefox: boolean = false;
+
 	// Nomi mesi italiani, usati come intestazioni di colonna e per mappatura dati
 	months = [
 		'Gennaio',
@@ -71,8 +74,23 @@ export class VisualizzaUtiliPage implements OnInit {
 
 	ngOnInit() {
 		// Inizializza selezione anno con il più recente e carica i dati corrispondenti
+		this.loading = true;
 		this.selectedYear = this.years[0];
 		this.loadDataForYear(this.selectedYear);
+		this.detectBrowser();
+	}
+
+	// Rileva il browser e aggiunge una classe specifica
+	detectBrowser() {
+		if (navigator.userAgent.includes('Chrome')) {
+			document.body.classList.add('chrome');
+			console.log('Chrome');
+			this.isChrome = true;
+		} else {
+			document.body.classList.add('firefox');
+			console.log('Firefox');
+			this.isFirefox = true;
+		}
 	}
 
 	// Quando cambia l'anno selezionato, ricarica i dati
