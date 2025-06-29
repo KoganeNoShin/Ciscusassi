@@ -373,10 +373,10 @@ class PrenotazioneService {
 				else if (p.stato !== 'consegnato') allConsegnati = false;
 
 					// Early exit per priorità
-					if (hasPreparazione) return 'in-consegna';
+					if (hasPreparazione) return 'in-lavorazione';
 				}
 
-			if (hasInConsegna) return 'in-lavorazione';
+			if (hasInConsegna) return 'in-consegna';
 			if (allConsegnati) return 'consegnato';
 		}
 
