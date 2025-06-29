@@ -3,10 +3,36 @@ import Ordine, { OrdineInput, OrdineRecord } from "../Models/ordine";
 import Prenotazione from "../Models/prenotazione";
 import OrdProd from "../Models/ord_prod";
 import Prodotto from "../Models/prodotto";
+import Cliente from "../Models/cliente";
 
 class OrdineService {
     static async creaOrdine(data: OrdineInput): Promise<number> {
         try {
+            if (data.ref_cliente != null) {
+                const cliente = await Cliente.findByNumeroCarta(data.ref_cliente);
+
+                if (!cliente) {
+                    throw new Error('Cliente non trovato');
+                }
+
+                const [nome, cognome, anno] = data.username_ordinante.split('.');
+                const annoNascitaCliente = cliente.data_nascita.split('-')[0];
+
+                const nomeMatch = cliente.nome.toLowerCase() === nome.toLowerCase();
+                const cognomeMatch = cliente.cognome.toLowerCase() === cognome.toLowerCase();
+                const annoMatch = annoNascitaCliente === anno;
+
+                if (!(nomeMatch && cognomeMatch && annoMatch)) {
+                    throw new Error('Username non corrisponde ai dati del cliente');
+                }
+            }
+
+            const ordineEsistente = await Ordine.getIDOrdineByPrenotazioneAndUsername(data.ref_prenotazione, data.username_ordinante);
+
+            if(ordineEsistente){
+                throw new Error('Esiste già un ordine con questo username per la stessa prenotazione');
+            }
+            
             return await Ordine.create(data);
         } catch (error) {
             console.error('❌ [OrdineService] Errore durante la creazione dell\'ordine:', error);

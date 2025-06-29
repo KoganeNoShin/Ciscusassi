@@ -2,7 +2,7 @@ import { body, param, ValidationChain, validationResult } from 'express-validato
 import { Request, Response, NextFunction } from 'express';
 import Filiale from '../Models/filiale';
 
-// Parametri
+// Funzioni
 function nomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
   return chain
         .trim()
@@ -68,6 +68,7 @@ function ref_filialeValidator(chain: ValidationChain): ValidationChain {
   return chain
     .isInt({ min: 1 }).withMessage('ID filiale non valido')
     .bail()
+    .toInt()
     .custom(async (value) => {
       const esiste = await Filiale.getById(value);
       if (!esiste) throw new Error('La filiale specificata non esiste');
@@ -78,7 +79,7 @@ function ref_filialeValidator(chain: ValidationChain): ValidationChain {
 function emailValidator(chain: ValidationChain): ValidationChain {
   return chain
 		.trim()
-        .notEmpty().withMessage("L'email è obbligatoria")
+    .notEmpty().withMessage("L'email è obbligatoria")
 		.isEmail().withMessage("L'email deve essere valida");
 }
 

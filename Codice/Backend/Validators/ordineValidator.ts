@@ -1,4 +1,4 @@
-import { body, param, validationResult } from 'express-validator'
+import { body, param, ValidationChain, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import OrdProd from '../Models/ord_prod';
 import OrdineService from '../Services/ordineService';
@@ -6,62 +6,44 @@ import Ordine from '../Models/ordine';
 import Prenotazione from '../Models/prenotazione';
 import Cliente from '../Models/cliente';
 
-// Parametri
-const idOrdineValidator = (field: string, isPagamento: boolean = false) => {
-    const deleteValidator = param(field)
+// Funzioni
+function idOrdineValidator(chain: ValidationChain, operazione: string): ValidationChain {
+  return chain
         .notEmpty().withMessage("L'ID dell'ordine è obbligatorio")
         .isInt({ gt: 0 }).withMessage("L'ID dell'ordine deve essere un numero positivo")
         .bail()
-        .custom(async (id) => {
+        .toInt()
+        .custom(async (id: number) => {
             const ordine = await Ordine.getById(id);
             if (!ordine) {
                 throw new Error("Ordine non esistente");
             }
-
+            
             const ordProd = await OrdProd.getByOrdine(Number(id));
-            if (ordProd && ordProd.length > 0) {
-                throw new Error("Impossibile eliminare l'ordine: contiene prodotti associati.");
-            }
-            return true;
-        });
 
-    const postValidator = body(field)
-        .notEmpty().withMessage("L'ID dell'ordine è obbligatorio")
-        .isInt({ gt: 0 }).withMessage("L'ID dell'ordine deve essere un numero positivo")
-        .bail()
-        .custom(async (id_ordine) => {
-            const ordine = await Ordine.getById(id_ordine);
-            if (!ordine) {
-                throw new Error("Ordine non esistente");
-            }
-
-            const ordProd = await OrdProd.getByOrdine(Number(id_ordine));
-            if (!ordProd || ordProd.length === 0) {
-                throw new Error("ID ordine senza prodotti ordinati");
-            }
-
-            if (isPagamento) {
-                for (const prod of ordProd) {
-                    if (prod.stato !== 'consegnato') {
-                        throw new Error("L'ordine contiene prodotti non ancora consegnati.");
+            if(operazione === 'Eliminazione') {
+                if (ordProd && ordProd.length > 0) {
+                    throw new Error("Impossibile eliminare l'ordine: contiene prodotti associati.");
+                }
+            } else {
+                if (!ordProd || ordProd.length === 0) {
+                    throw new Error("ID ordine senza prodotti ordinati");
+                }
+                
+                if(operazione === "Pagamento") {
+                    for (const prod of ordProd) {
+                        if (prod.stato !== 'consegnato') {
+                            throw new Error("L'ordine contiene prodotti non ancora consegnati.");
+                        }
                     }
                 }
             }
             return true;
         });
+}
 
-    // Middleware compatibile con Express
-    return (req: Request, res: Response, next: NextFunction) => {
-        if (req.method === 'DELETE') {
-            return deleteValidator(req, res, next);
-        } else {
-            return postValidator(req, res, next);
-        }
-    };
-};
-
- const importoPagamentoValidator = (field: string) =>
-    body(field)
+function importoPagamentoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('L\'importo è obbligatorio')
         .isFloat({ gt: 0 }).withMessage('L\'importo deve essere un numero positivo')
         .bail()
@@ -80,9 +62,10 @@ const idOrdineValidator = (field: string, isPagamento: boolean = false) => {
 
             return true;
         });
-        
-const dataOraPagamentoValidator = (field: string) =>
-    body(field)
+}
+
+function dataOraPagamentoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('La data e ora del pagamento è obbligatoria')
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di prenotazione deve essere nel formato "yyyy-MM-dd HH:mm"')
         .custom((value) => {
@@ -95,9 +78,10 @@ const dataOraPagamentoValidator = (field: string) =>
 
             return true;
         });
-        
-const ref_prenotazioneValidator = (field: string) =>
-    body(field)
+ }
+       
+function ref_prenotazioneValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('Il riferimento alla prenotazione è obbligatorio')
         .isInt({ gt: 0 }).withMessage('L\'ID dell\'ordine deve essere un numero positivo')
         .bail()
@@ -108,9 +92,10 @@ const ref_prenotazioneValidator = (field: string) =>
             }
             return true;
         });
+}
 
-const ref_clienteValidator = (field: string) =>
-    body(field)
+function ref_clienteValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .optional({ nullable: true })
         .isInt({ gt: 0 }).withMessage('L\'ID cliente, se presente, deve essere un numero positivo')
         .bail()
@@ -123,77 +108,36 @@ const ref_clienteValidator = (field: string) =>
             }
             return true;
         });
+}
 
-const username_ordinanteValidator = (field: string, ref_cliente_field = 'ref_cliente') =>
-    body(field)
+function username_ordinanteValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('Username ordinante è obbligatorio')
         .matches(/^[a-z]+\.[a-z]+\.[0-9]{4}$/i).withMessage('Formato username non valido (nome.cognome.annodinascita)')
-        .bail()
-        .custom(async (valore, { req }) => {
-            const ref_cliente = req.body[ref_cliente_field];
-
-            if (!ref_cliente) {
-                return true;
-            }
-
-            // Estrai dati da username
-            const [nome, cognome, anno] = valore.split('.');
-
-            const utente = await Cliente.findByNumeroCarta(ref_cliente);
-
-            if (!utente) {
-                throw new Error('Utente associato al cliente non trovato');
-            }
-
-            const annoUtente = utente.data_nascita.split('-')[0];
-
-            const nomeCorrisponde = utente.nome.toLowerCase() === nome.toLowerCase();
-            const cognomeCorrisponde = utente.cognome.toLowerCase() === cognome.toLowerCase();
-            const annoCorrisponde = annoUtente === anno;
-
-            if (!nomeCorrisponde || !cognomeCorrisponde || !annoCorrisponde) {
-                throw new Error('Username non corrisponde ai dati dell\'utente associato al cliente ' + valore);
-            }
-
-            return true;
-        });
+}
 
 // Validator
 const aggiungiOrdine = [
-    ref_prenotazioneValidator('ref_prenotazione'),
-    username_ordinanteValidator('username_ordinante'),
-    ref_clienteValidator('ref_cliente')
+    ref_prenotazioneValidator(body('ref_prenotazione')),
+    ref_clienteValidator(body('ref_cliente')),
+    username_ordinanteValidator(body('username_ordinante')),
 ];
 
 const aggiungiPagamentoValidator = [
-    idOrdineValidator('id_ordine', true),
-    importoPagamentoValidator('pagamento_importo'),
-    dataOraPagamentoValidator('data_ora_pagamento')
+    idOrdineValidator(body('id_ordine'), 'Pagamento'),
+    importoPagamentoValidator(body('pagamento_importo')),
+    dataOraPagamentoValidator(body('data_ora_pagamento'))
 ];
 
 
 const eliminaOrdineValidator = [
-    idOrdineValidator('id')
+    idOrdineValidator(body('id_ordine'), 'Eliminazione'),
 ];
 
 const getIDOrdineByPrenotazioneAndUsername = [
-  param('id_prenotazione')
-    .notEmpty().withMessage('ID prenotazione obbligatorio')
-    .isInt({ gt: 0 }).withMessage('ID prenotazione non valido')
-    .toInt()
-    .bail()
-    .custom(async (id) => {
-      const prenotazione = await Prenotazione.getById(id);
-      if (!prenotazione) {
-        throw new Error('Prenotazione non trovata');
-      }
-      return true;
-    }),
-
-  param('username')
-    .notEmpty().withMessage('Username obbligatorio')
-    .isString().withMessage('Username deve essere una stringa')
+    ref_prenotazioneValidator(param('id_prenotazione')),
+    username_ordinanteValidator(param('username'))
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {

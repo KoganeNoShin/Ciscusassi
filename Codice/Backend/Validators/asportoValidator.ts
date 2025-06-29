@@ -33,6 +33,7 @@ function ref_clienteValidator(chain: ValidationChain): ValidationChain {
         .notEmpty().withMessage('Cliente obbligatorio!')
         .isInt({ min: 1}).withMessage('Riferimento non valido, deve essere un numero intero positivo')
         .bail()
+        .toInt()
         .custom(async (value: number) => {
             const cliente = await Cliente.findByNumeroCarta(value);
             if(!cliente) throw new Error('Cliente inesistente, ricontrolla ID!');
@@ -45,6 +46,7 @@ function ref_filialeValidator(chain: ValidationChain): ValidationChain {
         .notEmpty().notEmpty().withMessage('Filiale obbligatoria!')
         .isInt({ min: 1}).withMessage('Riferimento non valido, deve essere un numero intero positivo')
         .bail()
+        .toInt()
         .custom(async (value: number) => {
             const filiale = await Filiale.getById(value);
             if(!filiale) throw new Error('Filiale inesistente, ricontrolla ID!');
@@ -55,7 +57,8 @@ function ref_filialeValidator(chain: ValidationChain): ValidationChain {
 function importoValidator(chain: ValidationChain): ValidationChain {
   return chain
         .notEmpty().withMessage('L\'importo è obbligatorio')
-        .isFloat({ min: 0.01 }).withMessage('Importo non valido, deve essere un numero positivo');
+        .isFloat({ min: 0.01 }).withMessage('Importo non valido, deve essere un numero positivo')
+        .toFloat();
 }
 
 function dataOraPagamentoValidator(chain: ValidationChain): ValidationChain {
