@@ -31,12 +31,7 @@ class OrdProdController {
 
     static async getProdottiByPrenotazione(req: Request, res: Response): Promise<void> {
         try {
-            const prenotazioneId = parseInt(req.params.prenotazioneId, 10);
-
-            if (isNaN(prenotazioneId)) {
-                res.status(400).json({ error: 'ID prenotazione non valido' });
-                return;
-            }
+            const prenotazioneId = Number(req.params.prenotazioneId);
 
             const prodotti = await OrdProdService.getProdottiByPrenotazione(prenotazioneId);
 
@@ -54,13 +49,8 @@ class OrdProdController {
 
     static async cambiaStatoProdottoOrdine(req: Request, res: Response): Promise<void> {
         try {
-            const idProdotto = parseInt(req.params.id);
+            const idProdotto = Number(req.params.id);
             const nuovoStato = req.body.stato;
-
-            if (isNaN(idProdotto) || !nuovoStato) {
-                res.status(400).json({ success: false, message: 'ID prodotto o stato non valido' });
-                return;
-            }
 
             await OrdProdService.cambiaStatoProdottoOrdine(idProdotto, nuovoStato);
             res.status(200).json({ success: true, message: 'Stato del prodotto aggiornato con successo' });
