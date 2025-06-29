@@ -1,3 +1,4 @@
+// Importazione dei moduli Angular, Ionic, HTTP e servizi interni
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FilialeService } from 'src/app/core/services/filiale.service';
@@ -48,21 +49,25 @@ import { CarrelloService } from 'src/app/core/services/carrello.service';
 	],
 })
 export class OrdinaAsportoPage implements OnInit {
+	// Variabili di stato per l'interazione utente
 	testoRicerca: string = '';
 	indirizziTrovati: any[] = [];
 	indirizzoSelezionato: string = '';
 	coordinateSelezionate: { lat: number; lon: number } | null = null;
 
+	// Dati sulle filiali
 	elencoFiliali: FilialeRecord[] = [];
 	filialePiuVicino: FilialeRecord | null = null;
 	distanzaFilialeMetri: number | null = null;
 	tempoViaggioSecondi: number | null = null;
 	tempoViaggioMinuti: number | null = null;
 
+	// Stato dell'app
 	caricamentoInCorso: boolean = true;
 	erroreNellaRichiesta: boolean = false;
-	cacheRisultati: Map<string, any[]> = new Map();
+	cacheRisultati: Map<string, any[]> = new Map(); // Cache per evitare chiamate duplicate
 
+	// Gestione soggetto reattivo per la ricerca
 	private soggettoRicerca = new Subject<string>();
 	private chiaveTomTom = environment.tomtomApiKey;
 
@@ -74,12 +79,14 @@ export class OrdinaAsportoPage implements OnInit {
 		private toastController: ToastController,
 		private servizioCarrello: CarrelloService
 	) {
+		// Debounce della ricerca per ridurre le chiamate a TomTom
 		this.soggettoRicerca
 			.pipe(debounceTime(800), distinctUntilChanged())
 			.subscribe((termine) => this.eseguiGeocoding(termine));
 	}
 
 	ngOnInit() {
+		// Caricamento iniziale delle filiali
 		this.servizioFiliale.GetSedi().subscribe({
 			next: (risposta) => this.processaRispostaFiliali(risposta),
 			error: (err) => {
@@ -91,6 +98,7 @@ export class OrdinaAsportoPage implements OnInit {
 	}
 
 	avviaRicerca() {
+		// Avvia geocoding solo se l'input ha almeno 4 caratteri
 		if (this.testoRicerca.length > 3) {
 			this.soggettoRicerca.next(this.testoRicerca);
 		} else {
@@ -99,6 +107,7 @@ export class OrdinaAsportoPage implements OnInit {
 	}
 
 	private async processaRispostaFiliali(risposta: any) {
+		// Salva filiali e trova quella più vicina se coordinate disponibili
 		if (risposta.success && risposta.data) {
 			this.elencoFiliali = risposta.data;
 			if (this.coordinateSelezionate) {
@@ -115,6 +124,7 @@ export class OrdinaAsportoPage implements OnInit {
 	}
 
 	private eseguiGeocoding(indirizzo: string) {
+		// Controlla se la ricerca è già stata fatta (cache)
 		const chiaveRicerca = indirizzo.trim().toLowerCase();
 		if (this.cacheRisultati.has(chiaveRicerca)) {
 			this.indirizziTrovati =
@@ -122,6 +132,7 @@ export class OrdinaAsportoPage implements OnInit {
 			return;
 		}
 
+		// Chiamata a TomTom Search API
 		const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
 			indirizzo
 		)}%20Palermo.json?key=${this.chiaveTomTom}&limit=2&countrySet=IT`;
@@ -138,6 +149,7 @@ export class OrdinaAsportoPage implements OnInit {
 		origine: { lat: number; lon: number },
 		traffico: boolean = false
 	): Promise<{ distanza: number; tempo: number }> {
+		// Calcola percorso tra utente e filiale usando Routing API
 		const baseUrl = 'https://api.tomtom.com/routing/1/calculateRoute';
 		const origineStr = `${origine.lat},${origine.lon}`;
 		const destinazioneStr = `${destinazione.lat},${destinazione.lon}`;
@@ -158,6 +170,7 @@ export class OrdinaAsportoPage implements OnInit {
 			});
 	}
 
+	// Trova la filiale con il tempo di percorrenza minore
 	async trovaFilialePiuVicina(puntoPartenza: { lat: number; lon: number }) {
 		if (!this.elencoFiliali || this.elencoFiliali.length === 0) {
 			this.filialePiuVicino = null;
@@ -167,6 +180,7 @@ export class OrdinaAsportoPage implements OnInit {
 			return;
 		}
 
+		// Calcola distanza e tempo per ogni filiale
 		const promises = this.elencoFiliali.map(async (filiale) => {
 			try {
 				const datiPercorso = await this.ottieniDatiPercorso(
@@ -191,6 +205,7 @@ export class OrdinaAsportoPage implements OnInit {
 			}
 		});
 
+		// Filtra risultati validi e seleziona il più vicino
 		const risultati = await Promise.all(promises);
 		const validi = risultati.filter((r) => r !== null) as {
 			filiale: FilialeRecord;
@@ -218,12 +233,14 @@ export class OrdinaAsportoPage implements OnInit {
 			}
 		}
 
+		// Salva i dati della filiale selezionata
 		this.filialePiuVicino = filialePiùVicina;
 		this.distanzaFilialeMetri = distanzaMinima;
 		this.tempoViaggioSecondi = tempoMinimo;
 		this.tempoViaggioMinuti = Math.round(tempoMinimo / 60);
 	}
 
+	// Quando l'utente seleziona un indirizzo dai suggerimenti
 	selezionaIndirizzo(indirizzo: any) {
 		this.indirizzoSelezionato =
 			indirizzo.address.freeformAddress ||
@@ -237,6 +254,7 @@ export class OrdinaAsportoPage implements OnInit {
 		this.indirizziTrovati = [];
 	}
 
+	// Imposta la filiale e gestisce la logica di navigazione in base al tempo di consegna
 	async svuotaCampo() {
 		if (this.filialePiuVicino) {
 			console.log(
@@ -248,12 +266,14 @@ export class OrdinaAsportoPage implements OnInit {
 				this.indirizzoSelezionato
 			);
 
+			// Salva filiale selezionata nel servizio
 			this.servizioFilialeAsporto.setFiliale(
 				this.filialePiuVicino,
 				this.tempoViaggioMinuti,
 				this.indirizzoSelezionato
 			);
 
+			// Controlla se la distanza è accettabile per l’asporto
 			if (
 				this.tempoViaggioMinuti !== undefined &&
 				this.tempoViaggioMinuti !== null
@@ -276,20 +296,23 @@ export class OrdinaAsportoPage implements OnInit {
 		}
 	}
 
+	// Metodo principale chiamato quando l’utente preme "Procedi"
 	async procedi() {
 		if (this.coordinateSelezionate) {
 			this.caricamentoInCorso = true;
 			await this.trovaFilialePiuVicina(this.coordinateSelezionate);
 			this.caricamentoInCorso = false;
+
+			// Reset del carrello prima di procedere
 			this.servizioCarrello.svuotaCarrello();
 		}
 
-		// Pulizia campi input
+		// Pulizia degli input
 		this.testoRicerca = '';
 		this.indirizziTrovati = [];
 		this.coordinateSelezionate = null;
 
-		// Chiamata aggiornata (con await)
+		// Avvio della logica successiva (navigazione o errore distanza)
 		await this.svuotaCampo();
 	}
 }
