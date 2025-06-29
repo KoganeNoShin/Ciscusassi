@@ -1,33 +1,25 @@
-ion-content {
-	--background: #ffffff;
+.page-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 100vh;
 }
 
-/* Titolo */
-
-/* Sezione select + bottone */
 .input-container {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 25px;
 	width: 100%;
 }
 
-/* Menù a tendina */
-.custom-select {
-	width: 100px;
-	font-style: italic;
-	font-size: 1.5em;
-	border: 7px solid #a83736;
-	--padding-start: 12px;
-	--background: white;
-	transition: border-color 0.3s ease;
-	color: black;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+h1 {
+	font-family: 'LucidaCalligraphy', sans-serif;
 }
-.custom-select:hover,
-.custom-select:focus {
-	border-color: black;
+
+ion-select {
+	width: fit-content;
+	height: fit-content;
 }
 
 /* Bottone scarica Excel */
@@ -42,26 +34,47 @@ ion-content {
 	transition: background-color 0.3s ease;
 }
 
+// Classi della tabella d'ora in avanti
+
 /* Contenitore scrollabile della tabella */
 .table-wrapper {
-	overflow-x: auto;
-	width: auto;
+	overflow-x: auto; /* scroll solo se serve */
+	width: 100%;
+	border: none;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-	border-radius: 12px;
-	margin: 0 auto 40px auto;
 }
 
 /* Griglia base come tabella */
 .custom-grid {
 	display: table;
-	width: 50%;
+	min-width: max-content;
+	width: fit-content;
 	table-layout: auto;
 	background-color: #fff;
-	border-radius: 12px;
 	overflow: hidden;
 	border: 1px solid #ddd;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	font-size: 0.95em;
+}
+
+/* Header della tabella */
+.table-header {
+	background-color: var(--ion-color-verdechiaro);
+	font-weight: 700;
+	border-bottom: 2px solid #aac7ff;
+
+	ion-col {
+		color: white;
+	}
+}
+
+/* Righe alternate per leggibilità */
+ion-row.even {
+	background-color: #ffffff;
+}
+
+ion-row.odd {
+	background-color: #f7f9fc;
 }
 
 /* Riga come table-row */
@@ -69,12 +82,8 @@ ion-row {
 	display: table-row;
 }
 
-/* Header della tabella */
-.table-header {
-	background-color: #e8f0fe;
-	font-weight: 700;
-	color: #2a3f5f;
-	border-bottom: 2px solid #aac7ff;
+ion-row:not(:first-of-type):hover {
+	background-color: #ebecef;
 }
 
 /* Celle come table-cell */
@@ -92,29 +101,4 @@ ion-col {
 /* Ultima colonna senza bordo destro */
 ion-col:last-child {
 	border-right: none;
-}
-
-/* Righe alternate per leggibilità */
-ion-row.even {
-	background-color: #ffffff;
-}
-
-ion-row.odd {
-	background-color: #f7f9fc;
-}
-
-/* Hover sulle righe */
-ion-row:hover {
-	background-color: #dbe9ff;
-	transition: background-color 0.25s ease;
-}
-
-.section-subtitle {
-	text-align: center;
-	font-family: 'LucidaCalligraphy';
-	font-size: 2.5em;
-	font-style: bold;
-	color: black;
-	margin: 20px 0 10px 0;
-	letter-spacing: 0.5px;
 }

@@ -12,8 +12,10 @@ import {
 	IonSelectOption,
 	IonTitle,
 	IonToolbar,
+	IonText,
 } from '@ionic/angular/standalone';
-import * as XLSX from 'xlsx'; // Libreria per manipolazione Excel
+
+import * as XLSX from 'xlsx-js-style';
 
 import { PagamentoService } from 'src/app/core/services/pagamento.service';
 import { FilialeService } from 'src/app/core/services/filiale.service';
@@ -24,10 +26,9 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 	styleUrls: ['./visualizza-utili.page.scss'],
 	standalone: true,
 	imports: [
+		IonText,
 		IonContent,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
+		IonText,
 		CommonModule,
 		FormsModule,
 		IonButton,
@@ -182,47 +183,110 @@ export class VisualizzaUtiliPage implements OnInit {
 		return value.toLocaleString('it-IT');
 	}
 
-	// --- EXPORT EXCEL ---
+	// Funzione che permettte di creare un excel a partire dai dati di un anno specifico
 	exportExcel() {
-		// Prepara un array di array (AOA) per creare il foglio Excel:
-		// ogni sotto-array rappresenta una riga nel foglio Excel
+		/* ----- Definiamo e memorizziamo i dati ----- */
 
-		const dataForExcel = [];
+		const header = ['INDIRIZZO FILIALE', ...this.months, 'TOTALE']; // Identifichiamo tutti gli header
+		const aoa: any[][] = [header]; // array bidimensionale che contiene i dati delle filiali
 
-		// Prima riga: intestazione colonna con indirizzo, mesi, e totale
-		const headerRow = ['INDIRIZZO FILIALE', ...this.months, 'TOTALE'];
-		dataForExcel.push(headerRow);
+		// Inseriamo righe dati (senza calcolare i totali)
+		this.rows.forEach((row, idx) => {
+			// Aggiungiamo la formula per il totale della colonna "Totale" della riga
+			// 65 sarebbe il carattere della 'A'.
+			const totalFormula = `=SUM(B${idx + 2}:${String.fromCharCode(65 + this.months.length)}${idx + 2})`; // Indice riga e colonna
 
-		// Per ogni riga (filiale) della tabella:
-		// - inserisce l'indirizzo
-		// - inserisce i valori mensili formattati in italiano
-		// - inserisce il totale riga formattato
-		this.rows.forEach((row) => {
-			const total = this.getRowTotal(row);
-			dataForExcel.push([
+			// Aggiungiamo una riga di dati all'array bidimensionale
+			aoa.push([
 				row.address,
-				...row.values.map((v) => this.formatItalianNumber(v)),
-				this.formatItalianNumber(total),
+				...row.values,
+				{ f: totalFormula }, // Aggiungiamo la formula per la colonna Totale
 			]);
 		});
 
-		// Aggiunge una riga finale di totali colonna e totale generale
-		const totalColumns = this.months.map((_, i) => this.getColumnTotal(i));
-		const grandTotal = this.getGrandTotal();
-		dataForExcel.push([
+		// Riga finale: TOTALE (testo, colonne con formula somma, colonna con somma finale)
+		const lastRowIndex = aoa.length + 1; // +1 perché è presente l'header che occupa la prima riga
+
+		// Ultima cella per calcolare la somma della riga
+		const totalFormulaRow = [
 			'TOTALE',
-			...totalColumns.map((v) => this.formatItalianNumber(v)),
-			this.formatItalianNumber(grandTotal),
-		]);
+			...this.months.map((_, colIdx) => ({
+				f: `SUM(${String.fromCharCode(66 + colIdx)}2:${String.fromCharCode(66 + colIdx)}${lastRowIndex - 1})`,
+			})),
+			{
+				f: `SUM(${String.fromCharCode(66 + this.months.length)}2:${String.fromCharCode(66 + this.months.length)}${lastRowIndex - 1})`,
+			},
+		];
+		aoa.push(totalFormulaRow);
 
-		// Crea il foglio di lavoro (worksheet) da array di array
-		const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataForExcel);
+		/* ----- Stile delle celle ----- */
 
-		// Crea un nuovo workbook e aggiunge il foglio creato
-		const wb: XLSX.WorkBook = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, 'Utili');
+		// Creiamo il foglio con tutti i dati che abbiamo costruito prima
+		const ws = XLSX.utils.aoa_to_sheet(aoa);
 
-		// Salva il file Excel con nome dinamico basato sull'anno selezionato
-		XLSX.writeFile(wb, `utili_${this.selectedYear ?? 'anno'}.xlsx`);
+		// Capiamo la dimensione del foglio
+		const range = XLSX.utils.decode_range(ws['!ref']!);
+
+		for (let R = range.s.r; R <= range.e.r; ++R) {
+			// Per ogni riga
+			const isHeader = R === 0; // verifichiamo se la riga è l'header
+			const isFooter = R === range.e.r; // oppure se è il footer
+			const even = R % 2 === 0; // controlliamo se la riga è pari
+			for (let C = range.s.c; C <= range.e.c; ++C) {
+				// Cicliamo per ogni colonna
+				const cellRef = XLSX.utils.encode_cell({ r: R, c: C }); // Otteniamo il riferimento alla cella
+				const cell = ws[cellRef]; // Otteniamo la cella
+				if (!cell) continue; // Se la cella non esiste skippiamo
+
+				const isAddress = C === 0; // Verifichiamo se la colonna è dell'indirizzo della filiale
+				const isTotalCol = C === range.e.c; // Verifichiamo se è quella del totale
+
+				// Impostiamo gli stili per la singola cella
+				cell.s = {
+					font: {
+						bold: isHeader || isFooter || isAddress || isTotalCol, // Grassetto per header, footer, indirizzo e totale
+						color: {
+							rgb: isHeader || isFooter ? 'FFFFFF' : '000000', // Colore bianco per header e footer, nero per altre celle
+						},
+					},
+					fill: {
+						patternType: 'solid',
+						fgColor: {
+							rgb:
+								isHeader || isFooter
+									? '3E885B' // Sfondo verde per header e footer
+									: even
+										? 'FFFFFF' // Sfondo bianco per le righe pari
+										: 'F7F9FC', // Sfondo Grigio chiaro per le righe dispari
+						},
+					},
+					alignment: {
+						horizontal: isAddress ? 'left' : 'center', // Allineamento a sinistra per gli indirizzi
+						vertical: 'middle', // Allineamento verticale al centro
+					},
+					numFmt: C > 0 ? '€#,##0' : undefined, // Formato in euro per le colonne numeriche
+				};
+			}
+		}
+
+		/* ----- Larghezza delle celle ----- */
+
+		const colWidths = []; // Adattiamo la larghezza delle colonne in base al contenuto
+		for (let C = range.s.c; C <= range.e.c; ++C) {
+			let max = 10; // Larghezza minima
+			for (let R = range.s.r; R <= range.e.r; ++R) {
+				const ref = XLSX.utils.encode_cell({ r: R, c: C }); // Riferimento della cella
+				const val = ws[ref]?.v?.toString() ?? ws[ref]?.f ?? ''; // Valore della cella
+				max = Math.max(max, val.length); // Lunghezza massima del valore
+			}
+			colWidths.push({ wch: max + 2 }); // Aggiungiamo larghezza alla colonna
+		}
+		ws['!cols'] = colWidths; // Imposta le larghezze delle colonne nel foglio
+
+		/* ----- Creiamo e salviamo il file ----- */
+
+		const wb = XLSX.utils.book_new(); // Creiamo un nuovo workbook (file)
+		XLSX.utils.book_append_sheet(wb, ws, 'Utili'); // Aggiungiamo il foglio al book
+		XLSX.writeFile(wb, `utili_${this.selectedYear}.xlsx`); // Salviamo il file excel
 	}
 }
