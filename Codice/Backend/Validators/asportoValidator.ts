@@ -1,17 +1,18 @@
-import { body, validationResult } from 'express-validator'
+import { body, ValidationChain, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Cliente from '../Models/cliente';
 import Prodotto from '../Models/prodotto';
 import Filiale from '../Models/filiale';
 
 // Parametri
-const indirizzoValidator = (field: string) =>
-    body(field)
+function indirizzoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('Indirizzo non può essere vuoto.');
+}
 
-const dataOraConsegnaValidator = (field: string) =>
-    body(field)
+function dataOraConsegnaValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('La data di consegna è obbligatoria')
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di consegna deve essere nel formato "yyyy-MM-dd HH:mm"')
         .bail()
@@ -25,9 +26,10 @@ const dataOraConsegnaValidator = (field: string) =>
             }
             return true;
         });
+}
 
-const ref_clienteValidator = (field: string) =>
-    body(field)
+function ref_clienteValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('Cliente obbligatorio!')
         .isInt({ min: 1}).withMessage('Riferimento non valido, deve essere un numero intero positivo')
         .bail()
@@ -36,9 +38,10 @@ const ref_clienteValidator = (field: string) =>
             if(!cliente) throw new Error('Cliente inesistente, ricontrolla ID!');
             return true;
         });
+}
 
-const ref_filialeValidator = (field: string) =>
-    body(field)
+function ref_filialeValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().notEmpty().withMessage('Filiale obbligatoria!')
         .isInt({ min: 1}).withMessage('Riferimento non valido, deve essere un numero intero positivo')
         .bail()
@@ -47,14 +50,16 @@ const ref_filialeValidator = (field: string) =>
             if(!filiale) throw new Error('Filiale inesistente, ricontrolla ID!');
             return true;
         });
+}
 
-const importoValidator = (field: string) =>
-    body(field)
+function importoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('L\'importo è obbligatorio')
         .isFloat({ min: 0.01 }).withMessage('Importo non valido, deve essere un numero positivo');
+}
 
-const dataOraPagamentoValidator = (field: string) =>
-    body('data_ora_pagamento')
+function dataOraPagamentoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('La data di pagamento è obbligatoria')
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di pagamento deve essere nel formato ISO8601')
         .bail()
@@ -63,9 +68,10 @@ const dataOraPagamentoValidator = (field: string) =>
             if(dataConsegna.getTime() > Date.now()) throw new Error('La data di pagamento deve essere nel passato o attuale.');
             return true;
         });
+}
 
-const prodottiValidator = (field: string) =>
-    body(field)
+function prodottiValidator(chain: ValidationChain): ValidationChain {
+  return chain
     .isArray({ min: 1 }).withMessage('Devi specificare almeno un prodotto.')
     .bail()
     .custom(async (prodotti) => {
@@ -78,16 +84,17 @@ const prodottiValidator = (field: string) =>
 
         return true;
     });
+}
 
 // Validatori
 const addAsportoValidator = [
-   indirizzoValidator('indirizzo'),
-    dataOraConsegnaValidator('data_ora_consegna'),
-    ref_clienteValidator('ref_cliente'),
-    ref_filialeValidator('ref_filiale'),
-    importoValidator('importo'),
-    dataOraPagamentoValidator('data_ora_pagamento'),
-    prodottiValidator('prodotti')
+    indirizzoValidator(body('indirizzo')),
+    dataOraConsegnaValidator(body('data_ora_consegna')),
+    ref_clienteValidator(body('ref_cliente')),
+    ref_filialeValidator(body('ref_filiale')),
+    importoValidator(body('importo')),
+    dataOraPagamentoValidator(body('data_ora_pagamento')),
+    prodottiValidator(body('prodotti'))
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
