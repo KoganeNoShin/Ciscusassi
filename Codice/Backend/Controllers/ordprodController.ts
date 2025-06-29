@@ -15,11 +15,7 @@ class OrdProdController {
 
     static async getProdottiByOrdine(req: Request, res: Response): Promise<void> {
         try {
-            const ordineId = parseInt(req.params.id);
-            if (isNaN(ordineId)) {
-                res.status(400).json({ success: false, message: 'ID ordine non valido' });
-                return;
-            }
+            const ordineId = Number(req.params.id);
 
             const prodotti = await OrdProdService.getProdottiByOrdine(ordineId);
             if (prodotti) {
