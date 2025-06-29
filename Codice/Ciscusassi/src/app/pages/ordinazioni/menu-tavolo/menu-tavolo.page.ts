@@ -19,7 +19,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { OrdineService } from 'src/app/core/services/ordine.service';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { firstValueFrom } from 'rxjs';
-import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
+import { OrdProdEstended, OrdProdInput } from 'src/app/core/interfaces/OrdProd';
 
 @Component({
 	selector: 'app-menu-tavolo',
@@ -69,7 +69,6 @@ export class MenuTavoloPage implements OnInit {
 			});
 			await toast.present();
 		} else {
-			const numeroTavolo = this.tavoloService.getNumeroTavolo();
 			const prenotazione = this.tavoloService.getPrenotazione();
 
 			if (prenotazione === null) {
@@ -87,12 +86,14 @@ export class MenuTavoloPage implements OnInit {
 				if (!this.tavoloService.getHaOrdinato()) {
 					const ordineResponse = await firstValueFrom(
 						this.ordineService.addOrdine(
-							'luca.gaetani.2003',
+							this.servizioAutenticazione.getUsername(),
 							prenotazione,
 							this.servizioAutenticazione.getIdUtente()
 						)
 					);
-					this.tavoloService.setNumeroOrdine(12); //VA IMPOSTATO IL NUMERO ORDINE TRAMITE DB
+					this.tavoloService.setNumeroOrdine(
+						ordineResponse.data.id_ordine
+					);
 					this.tavoloService.setHaOrdinato(true);
 				}
 			} catch (error) {
@@ -108,11 +109,39 @@ export class MenuTavoloPage implements OnInit {
 			}
 
 			try {
+				if (this.tavoloService.getNumeroOrdine() === null) {
+					const toast = await this.toastController.create({
+						message: 'Errore: numero ordine non disponibile.',
+						duration: 3000,
+						position: 'bottom',
+						color: 'danger',
+					});
+					await toast.present();
+					return;
+				}
+
+				const numeroOrdine = this.tavoloService.getNumeroOrdine();
+				if (numeroOrdine === null) {
+					const toast = await this.toastController.create({
+						message: 'Errore: numero ordine non disponibile.',
+						duration: 3000,
+						position: 'bottom',
+						color: 'danger',
+					});
+					await toast.present();
+					return;
+				}
+				const ordProdInputArray: OrdProdInput[] = this.servizioCarrello
+					.getProdotti()
+					.map((prodotto) => ({
+						is_romana: false,
+						stato: 'non-in-lavorazione',
+						ref_prodotto: prodotto.id_prodotto,
+						ref_ordine: numeroOrdine,
+					}));
+
 				await firstValueFrom(
-					this.ordineService.ordineAddProdotti(
-						prenotazione,
-						this.servizioCarrello.getProdotti()
-					)
+					this.ordineService.ordineAddProdotti(ordProdInputArray)
 				);
 			} catch (error) {
 				const toast = await this.toastController.create({
@@ -122,7 +151,6 @@ export class MenuTavoloPage implements OnInit {
 					position: 'bottom',
 					color: 'danger',
 				});
-				console.log(this.servizioCarrello.getProdotti());
 				await toast.present();
 				console.error(error);
 				return;
@@ -143,6 +171,17 @@ export class MenuTavoloPage implements OnInit {
 
 	async visualizzaOrdini() {
 		try {
+			if (this.tavoloService.getNumeroOrdine() === null) {
+				const toast = await this.toastController.create({
+					message: 'Errore: numero ordine non disponibile.',
+					duration: 3000,
+					position: 'bottom',
+					color: 'danger',
+				});
+				await toast.present();
+				return;
+			}
+
 			const numeroOrdine = this.tavoloService.getNumeroOrdine();
 			if (numeroOrdine === null) {
 				const toast = await this.toastController.create({
@@ -154,17 +193,13 @@ export class MenuTavoloPage implements OnInit {
 				await toast.present();
 				return;
 			}
-
 			const response = await firstValueFrom(
 				this.ordineService.getProdottiOrdinatiByNumeroOrdine(
 					numeroOrdine
 				)
 			);
 
-			if (
-				!response.success ||
-				!response.data
-			) {
+			if (!response.success || !response.data) {
 				const toast = await this.toastController.create({
 					message: 'Non hai ancora effettuato ordini',
 					duration: 3000,
@@ -174,8 +209,8 @@ export class MenuTavoloPage implements OnInit {
 				await toast.present();
 				return;
 			}
-			
-			if (this.tavoloService.getHaOrdinato()){
+
+			if (this.tavoloService.getHaOrdinato()) {
 				this.router.navigate(['/visualizza-ordini']);
 			}
 		} catch (error) {
