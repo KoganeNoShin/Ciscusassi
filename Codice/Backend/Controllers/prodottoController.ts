@@ -60,7 +60,7 @@ class ProdottoController {
 	static async chargePiattoDelGiorno(req: Request, res: Response): Promise<void> {
 		try {
 			await ProdottoService.chargePiattoDelGiorno(
-				parseInt(req.params.id_prodotto)
+				Number(req.params.id_prodotto)
 			);
 
 			res.json({ success: true, message: 'Piatto del giorno cambiato con successo' });
