@@ -1,20 +1,22 @@
-import { body, param, validationResult } from 'express-validator'
+import { body, param, ValidationChain, validationResult } from 'express-validator'
 import { Request, Response, NextFunction } from 'express';
 import Filiale from '../Models/filiale';
 
 // Parametri
-const nomeImpiegatoValidator = (field: string) =>
-    body(field)
+function nomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('Il nome dell\'impiegato è obbligatorio');
+}
 
-const cognomeImpiegatoValidator = (field: string) =>
-    body(field)
+function cognomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('Il cognome dell\'impiegato è obbligatorio');
+}
 
-const ruoloValidator = (field: string) =>
-    body(field)
+function ruoloValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .trim()
         .notEmpty().withMessage('Il ruolo dell\'impiegato è obbligatorio')
         .custom((value: string) => {
@@ -24,14 +26,16 @@ const ruoloValidator = (field: string) =>
             }
             return true;
         });
+}
 
-const fotoValidator = (field: string) =>
-    body(field)
+function fotoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('L\'immagine è obbligatoria!')
         .isBase64().withMessage('Formato immagine non valido!');
+}
 
-const data_nascitaValidator = (field: string) =>
-    body(field)
+function data_nascitaValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('La data di consegna è obbligatoria')
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di consegna deve essere nel formato "yyyy-MM-dd HH:mm"')
         .bail() 
@@ -58,9 +62,10 @@ const data_nascitaValidator = (field: string) =>
             }
             return true;
         });
+}
 
-const ref_filialeValidator = (field: string) => 
-  body(field)
+function ref_filialeValidator(chain: ValidationChain): ValidationChain {
+  return chain
     .isInt({ min: 1 }).withMessage('ID filiale non valido')
     .bail()
     .custom(async (value) => {
@@ -68,28 +73,39 @@ const ref_filialeValidator = (field: string) =>
       if (!esiste) throw new Error('La filiale specificata non esiste');
       return true;
     });
+}
 
-const emailValidator = (field: string) =>
-	body(field)
+function emailValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.trim()
         .notEmpty().withMessage("L'email è obbligatoria")
 		.isEmail().withMessage("L'email deve essere valida");
+}
 
-const passwordValidator = (field: string) =>
-	body(field)
+function passwordValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.notEmpty().withMessage('La password è obbligatoria')
 		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri');
-
-
+}
 
 // Validatori
+const validate = (req: Request, res: Response, next: NextFunction): void => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+        return;
+    }
+    next();
+};
+
 const addImpiegato = [
-    nomeImpiegatoValidator('nome'),
-    cognomeImpiegatoValidator('cognome'),
-    ruoloValidator('ruolo'),
-    fotoValidator('foto'),
-    emailValidator('email'),
-    data_nascitaValidator('data_nascita'),
-    ref_filialeValidator('ref_filiale'),
-    passwordValidator('password')
+    nomeImpiegatoValidator(body('nome')),
+    cognomeImpiegatoValidator(body('cognome')),
+    ruoloValidator(body('ruolo')),
+    fotoValidator(body('foto')),
+    emailValidator(body('email')),
+    data_nascitaValidator(body('data_nascita')),
+    ref_filialeValidator(body('ref_filiale')),
+    passwordValidator(body('password'))
 ];
+
