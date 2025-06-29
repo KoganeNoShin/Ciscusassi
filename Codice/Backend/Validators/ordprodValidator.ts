@@ -18,39 +18,9 @@ function ordineValidator(chain: ValidationChain): ValidationChain {
     });
 }
 
-/*const idOrdineValidator = (field: string) => {
-    const paramValidator = param(field)
-        .notEmpty().withMessage('ID ordine obbligatorio')
-        .isInt({ gt: 0 }).withMessage('ID ordine non valido')
-        .bail()
-        .custom(async (id) => {
-            const ordine = await Ordine.getById(Number(id));
-            if (!ordine) throw new Error('Ordine non trovato nel database');
-            return true;
-        });
-
-    const bodyValidator = body(field)
-        .notEmpty().withMessage('ID ordine obbligatorio')
-        .isInt({ gt: 0 }).withMessage('ID ordine non valido')
-        .bail()
-        .custom(async (id) => {
-            const ordine = await Ordine.getById(Number(id));
-            if (!ordine) throw new Error('Ordine non trovato nel database');
-            return true;
-        });
-
-    return (req: Request, res: Response, next: NextFunction) => {
-        if (req.method === 'POST') {
-            return bodyValidator(req, res, next);
-        } else {
-            return paramValidator(req, res, next);
-        }
-    };
-}*/
-
-const idOrdProdValidator = (field: string) =>
-    param(field)
-        .notEmpty().withMessage('ID ordine prodotto obbligatorio')
+function idOrdProdValidator(chain: ValidationChain): ValidationChain {
+  return chain
+    .notEmpty().withMessage('ID ordine prodotto obbligatorio')
         .isInt({ gt: 0 }).withMessage('ID ordine prodotto non valido')
         .bail()
         .custom(async (id) => {
@@ -58,9 +28,10 @@ const idOrdProdValidator = (field: string) =>
             if (!prodotto) throw new Error('Prodotto non trovato nel database');
             return true;
         });
+}   
 
-const idPrenotazioneValidator = (field: string) =>
-    param(field)
+function idPrenotazioneValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('ID prenotazione obbligatorio')
         .toInt()
         .isInt({ gt: 0 }).withMessage('ID prenotazione non valido')
@@ -70,9 +41,10 @@ const idPrenotazioneValidator = (field: string) =>
             if (!prenotazione) throw new Error('prenotazione non trovata nel database');
             return true;
         });
+}
 
-const statoProdottoValidator = (field: string) =>
-    body(field)
+function statoProdottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('Stato obbligatorio')
         .isString().withMessage('Lo stato deve essere una stringa')
         .bail()
@@ -127,14 +99,16 @@ const statoProdottoValidator = (field: string) =>
 
             return true;
         });
+}
 
-const is_romanaValidator = (field: string) =>
-    body(field)
+function is_romanaValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('Is_Romana prodotto obbligatorio')
         .isBoolean().withMessage('Is_Romana prodotto deve essere booleano');
+}
 
-const prodottoValidator = (field: string) =>
-    body(field)
+function prodottoValidator(chain: ValidationChain): ValidationChain {
+  return chain
         .notEmpty().withMessage('Il prodotto è obbligatorio')
         .isInt({ gt: 0 }).withMessage('ID prodotto non valido')
         .bail()
@@ -149,6 +123,7 @@ const prodottoValidator = (field: string) =>
                 throw new Error('Errore durante il recupero del prodotto');
             }
         });
+}
 
 // Validatori
 const getProdottiByOrdineValidator = [
@@ -156,19 +131,19 @@ const getProdottiByOrdineValidator = [
 ];
 
 const cambiaStatoProdottoValidator = [
-	idOrdProdValidator('id'),
-	statoProdottoValidator('stato')
+	idOrdProdValidator(param('id')),
+	statoProdottoValidator(body('stato'))
 ];
 
 const ordProdArrayValidator = [
     ordineValidator(body('*.ref_ordine')),
-    prodottoValidator('*.ref_prodotto'),
-    statoProdottoValidator('*.stato'),
-    is_romanaValidator('*.is_romana')
+    prodottoValidator(body('*.ref_prodotto')),
+    statoProdottoValidator(body('*.stato')),
+    is_romanaValidator(body('*.is_romana'))
 ];
 
 const getProdottiByPrenotazioneValidator = [
-    idPrenotazioneValidator('id_prenotazione')
+    idPrenotazioneValidator(param('id_prenotazione'))
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
