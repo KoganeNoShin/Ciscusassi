@@ -4,36 +4,14 @@ import Cliente from '../Models/cliente';
 import Filiale from '../Models/filiale';
 import PrenotazioneService from '../Services/prenotazioneService';
 import Prenotazione from '../Models/prenotazione';
+import Torretta from '../Models/torretta';
 
 
 // Funzioni
-function data_ora_prenotazioneValidator(chain: ValidationChain, minutiOffset: number): ValidationChain {
+function data_ora_prenotazioneValidator(chain: ValidationChain): ValidationChain {
   return chain
         .optional({ checkFalsy: true })
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di prenotazione deve essere nel formato "yyyy-MM-dd HH:mm"')
-        .custom((value: string) => {
-            const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
-            const dataPrenotazione = new Date(value);
-            const adesso = new Date();
-            const limiteMassimo = new Date(adesso.getTime() + minutiOffset * 60 * 1000)
-
-            // Verifica che l'orario selezionato sia valido
-            const ore = dataPrenotazione.getHours().toString().padStart(2, '0');
-            const minuti = dataPrenotazione.getMinutes().toString().padStart(2, '0');
-            const orarioPrenotato = `${ore}:${minuti}`;
-
-            if (!orariValidi.includes(orarioPrenotato)) {
-                throw new Error(`L'orario selezionato (${orarioPrenotato}) non è valido. Orari disponibili: ${orariValidi.join(', ')}`);
-            }
-
-            if(dataPrenotazione < adesso){
-                throw new Error('La data e ora della prenotazione non può essere nel passato');
-            }
-            if(minutiOffset != 0 && dataPrenotazione > limiteMassimo) {
-                throw new Error('La data e ora della prenotazione deve essere entro 10 minuti da adesso');
-            }
-            return true;
-        });
 }
 
 function ref_filialeValidator(chain: ValidationChain): ValidationChain {
@@ -103,16 +81,34 @@ function id_prenotazioneValidator(chain: ValidationChain): ValidationChain {
         });
 }
 
+function OTPValidator(chain: ValidationChain): ValidationChain {
+  return chain
+    .trim()
+    .notEmpty().withMessage('Indirizzo non può essere vuoto.');
+}
+
+function ref_TorrettaValidator(chain: ValidationChain): ValidationChain {
+  return chain
+        .toInt()
+        .isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
+        .bail()
+        .custom(async (value) => {
+            const esiste = await Torretta.getById(value);
+            if (!esiste) throw new Error('La torretta specificata non esiste');
+            return true;
+        });
+}
+
 // Validatori
 const prenotazioneInputValidator = [
-	data_ora_prenotazioneValidator(body('data_ora_prenotazione'), 0),
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	ref_filialeValidator(body('ref_filiale')),
 	ref_clienteValidator(body('ref_cliente')),
 	numuroPersoneValidator(body('numero_persone'))
 ];
 
 const prenotazioneInputLocoValidator = [
-	data_ora_prenotazioneValidator(body('data_ora_prenotazione'), 10),
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	ref_filialeValidator(body('ref_filiale')),
 	ref_clienteValidator(body('ref_cliente')),
 	numuroPersoneValidator(body('numero_persone'))
@@ -120,7 +116,7 @@ const prenotazioneInputLocoValidator = [
 
 const prenotazioneUpdateValidator = [
 	id_prenotazioneValidator(body('id_prenotazione')),
-	data_ora_prenotazioneValidator(body('data_ora_prenotazione'), 0),
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	numuroPersoneValidator(body('numero_persone'))
 ];
 
@@ -140,6 +136,16 @@ const statoPrenotazioneValidator = [
 	id_prenotazioneValidator(param('id'))
 ];
 
+const deletePrenotazioneValidator = [
+    id_prenotazioneValidator(param('id'))
+];
+
+const checkOTPValidator = [
+    OTPValidator(body('otp')),
+    data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
+    ref_TorrettaValidator(body('ref_torretta'))
+];
+
 const validate = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -157,5 +163,7 @@ export default {
 	getPrenotazioniFilialeValidator,
 	comfermaPrenotazioneValidator,
 	GetOTPValidator,
-	statoPrenotazioneValidator
+	statoPrenotazioneValidator,
+    deletePrenotazioneValidator,
+    checkOTPValidator
 }
