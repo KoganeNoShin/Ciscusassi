@@ -1,34 +1,38 @@
-import { body, validationResult } from 'express-validator';
+import { body, ValidationChain, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 
 // Validatori
-const nomeValidator = (field: string) =>
-	body(field)
+function nomeValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.trim()
         .notEmpty().withMessage('Il nome è obbligatorio')
 		.isString().withMessage('Il nome deve essere una stringa');
+}
 
-const cognomeValidator = (field: string) =>
-	body(field)
+function cognomeValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.trim()
         .notEmpty().withMessage('Il cognome è obbligatorio')
 		.isString().withMessage('Il cognome deve essere una stringa');
+}
 
-const emailValidator = (field: string) =>
-	body(field)
+function emailValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.trim()
         .notEmpty().withMessage("L'email è obbligatoria")
 		.isEmail().withMessage("L'email deve essere valida");
+}
 	
-const passwordValidator = (field: string) =>
-	body(field)
+function passwordValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.notEmpty().withMessage('La password è obbligatoria')
 		.isLength({ min: 6 }).withMessage('La password deve essere lunga almeno 6 caratteri');
+}
 
 // Metto il controllo delle lettere minuscole, maiuscole, numeri e caratteri speciali qua perché è comune a entrambi i campi
 // e in login non serve controllare, in registrazione sì		
-const confermaPasswordValidator = (field: string) =>
-	body(field)
+function confermaPasswordValidator(chain: ValidationChain): ValidationChain {
+  return chain
 		.notEmpty().withMessage('La conferma password è obbligatoria')
 		.isLength({ min: 6 }).withMessage('La conferma password deve essere lunga almeno 6 caratteri')
 		.matches(/[a-z]/).withMessage('La password deve contenere almeno una lettera minuscola') // Aggiunto controllo minuscole
@@ -41,19 +45,20 @@ const confermaPasswordValidator = (field: string) =>
 			}
 			return true;
 		});
+}
 
 // Validatori
 const registerValidator = [
-	nomeValidator('nome'),
-	cognomeValidator('cognome'),
-	emailValidator('email'),
-	passwordValidator('password'),
-	confermaPasswordValidator('conferma_password')
+	nomeValidator(body('nome')),
+	cognomeValidator(body('cognome')),
+	emailValidator(body('email')),
+	passwordValidator(body('password')),
+	confermaPasswordValidator(body('conferma_password'))
 ];
 
 const loginValidator = [
-	emailValidator('email'),
-	passwordValidator('password')
+	emailValidator(body('email')),
+	passwordValidator(body('password')),
 ];
 
 const validate = (req: Request, res: Response, next: NextFunction): void => {
