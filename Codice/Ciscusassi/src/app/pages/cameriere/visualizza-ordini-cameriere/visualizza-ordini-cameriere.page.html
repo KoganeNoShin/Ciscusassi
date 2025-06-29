@@ -1,12 +1,26 @@
 <ion-content [fullscreen]="true">
-	<ion-row>
+  <ion-row>
     <ion-col size="10">
-			<h2>VISUALIZZA COMANDE</h2>
-			<p>TAVOLO {{this.tavolo?.numero}}</p>
-		</ion-col>
+      <h2>VISUALIZZA COMANDE</h2>
+      <p>TAVOLO {{ this.tavolo?.numero }}</p>
+    </ion-col>
     <ion-col size="2">
-		<ion-button (click)="consegnaTutto()" color="arancione">CONSEGNA TUTTO</ion-button>
+      <ion-button (click)="consegnaTutto()" color="arancione" [disabled]="isLoading">
+        CONSEGNA TUTTO
+      </ion-button>
     </ion-col>
   </ion-row>
-	<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+
+  <!-- Spinner di caricamento -->
+  <ion-spinner
+    *ngIf="isLoading"
+    name="crescent"
+    style="display: block; margin: 2rem auto;"
+  ></ion-spinner>
+
+  <!-- Lista ordini visibile solo se NON sto caricando -->
+  <app-lista-ordini
+    *ngIf="!isLoading"
+    [prodotti$]="prodotti$"
+  ></app-lista-ordini>
 </ion-content>
