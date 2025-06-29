@@ -21,6 +21,7 @@ import prenotazioneValidator from '../Validators/prenotazioneValidator';
 import ordineValidator from '../Validators/ordineValidator';
 import OrdineController from '../Controllers/ordineController';
 import Ordine from '../Models/ordine';
+import torrettaValidator from '../Validators/torrettaValidator';
 
 const router = express.Router();
 
@@ -277,6 +278,8 @@ router.post(
 // Route per le torrette
 router.get(
 	'/torrette/:id_torretta',
+	torrettaValidator.getTorrettaByIDValidator,
+	torrettaValidator.validate,
 	TorrettaController.getTorrettaByID
 );
 

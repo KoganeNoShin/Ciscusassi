@@ -5,7 +5,7 @@ import OrdProd from '../Models/ord_prod';
 import Prodotto from '../Models/prodotto';
 import Prenotazione from '../Models/prenotazione';
 
-// Parametri
+// Funzioni
 function ordineValidator(chain: ValidationChain): ValidationChain {
   return chain
     .notEmpty().withMessage('ID ordine obbligatorio')
