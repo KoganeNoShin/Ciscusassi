@@ -91,6 +91,13 @@ const statoProdottoValidator = (field: string) =>
                 throw new Error(`Stato non valido. Valori ammessi: ${STATI_VALIDI.join(', ')}`);
             }
 
+            if (Array.isArray(req.body)) {
+                if (statoNorm !== 'non-in-lavorazione') {
+                    throw new Error("Per l'inserimento, lo stato deve essere 'non-in-lavorazione'.");
+                }
+                return true;
+            }
+
             // Ottieni l'ID dell'ordine prodotto dal corpo della richiesta
             const id_ord_prod = req.body.id_ord_prod;
             if (!id_ord_prod) {
