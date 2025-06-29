@@ -356,21 +356,20 @@ class PrenotazioneService {
 			if (!ordini || ordini.length === 0) {
 				return 'senza-ordini';
 			}
+			
+			let hasPreparazione = false;
 
 			for (const ordine of ordini) {
 				const prodotti = await OrdProd.getByOrdine(ordine.id_ordine);
 
 				if (prodotti == null || prodotti.length === 0) continue;
 
-				let hasPreparazione = false;
-				
 				for (const p of prodotti) {
 					if (p.stato === 'non-in-lavorazione') return 'non-in-lavorazione';
 					else if (p.stato === 'in-lavorazione') hasPreparazione = true;
 				}
-				if (hasPreparazione) return 'in-lavorazione';
 			}
-			
+			if (hasPreparazione) return 'in-lavorazione';
 			return 'consegnato';
 		} catch (err) {
 			console.error(
