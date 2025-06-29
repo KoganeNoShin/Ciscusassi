@@ -115,12 +115,36 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 
 	consegnaTutto() {
 		const prodottiList = this.prodottiSubject.getValue();
-		const nuoviProdotti = prodottiList.map((prodotto) => {
-			if (prodotto.stato === 'in-consegna') {
-				return { ...prodotto, stato: 'consegnato' };
-			}
-			return prodotto;
-		});
-		this.prodottiSubject.next(nuoviProdotti);
+
+		prodottiList
+			.filter((p) => p.stato === 'in-consegna')
+			.forEach((prodotto) => {
+				this.ordineService
+					.cambiaStato('consegnato', prodotto.id_ord_prod)
+					.subscribe({
+						next: () => {
+							// Crea un nuovo oggetto con stato aggiornato
+							const updatedProdotto: OrdProdEstended = {
+								...prodotto,
+								stato: 'consegnato',
+							};
+
+							// Sostituisci il prodotto aggiornato nella lista
+							const nuoviProdotti = this.prodottiSubject
+								.getValue()
+								.map((p) =>
+									p.id_ord_prod === prodotto.id_ord_prod
+										? updatedProdotto
+										: p
+								);
+
+							// Emetti nuova lista per notificare i componenti figli
+							this.prodottiSubject.next(nuoviProdotti);
+						},
+						error: (err) => {
+							console.error('Errore nel cambiare stato:', err);
+						},
+					});
+			});
 	}
 }

@@ -49,12 +49,20 @@ ion-select {
 	display: table;
 	min-width: max-content;
 	width: fit-content;
-	table-layout: auto;
 	background-color: #fff;
 	overflow: hidden;
 	border: 1px solid #ddd;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	font-size: 0.95em;
+}
+
+.chrome {
+	table-layout: fixed !important;
+}
+
+/* Per Firefox o altri browser */
+.firefox {
+	table-layout: auto !important;
 }
 
 /* Header della tabella */

@@ -128,7 +128,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		const eraApertoPrima = this.localeAperto;
 
 		this.localeAperto =
-			isInRange(0, 50, 15, 50) || isInRange(19, 20, 0, 0); //DA MODIFICARE
+			isInRange(0, 0, 23, 59) || isInRange(19, 20, 0, 0); //DA MODIFICARE
+
+			//INSERIRE MARTEDI CHIUSI
 
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
@@ -158,7 +160,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 					resp.data.map(async (p) => {
 						try {
 							const statoResp = await lastValueFrom(
-								this.prenotazioneService.getStatoPrenotazione(
+								this.prenotazioneService.getStatoPrenotazioneCameriere(
 									p.id_prenotazione
 								)
 							);

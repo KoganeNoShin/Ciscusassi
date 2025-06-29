@@ -76,11 +76,18 @@ export class PrenotazioneService {
 		);
 	}
 
-	getStatoPrenotazione(id: number) {
+	getStatoPrenotazioneCameriere(id: number) {
 		return this.http.get<{ success: boolean; data: string }>(
-			`${this.apiURL}/prenotazione/${id}/stato`
+			`${this.apiURL}/prenotazione/${id}/cameriere/stato`
 		);
 	}
+
+	getStatoPrenotazioneChef(id: number) {
+		return this.http.get<{ success: boolean; data: string }>(
+			`${this.apiURL}/prenotazione/${id}/chef/stato`
+		);
+	}
+
 
 	getTavoliInUso(): Observable<any> {
 		return this.http.get(`${this.apiURL}/tavoli-in-uso`);

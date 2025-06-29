@@ -36,7 +36,10 @@
 		</div>
 
 		<div class="table-wrapper">
-			<ion-grid class="custom-grid">
+			<ion-grid
+				class="custom-grid"
+				[ngClass]="{'chrome': isChrome, 'firefox': isFirefox}"
+			>
 				<!-- Header -->
 				<ion-row class="table-header">
 					<ion-col size="2"> Indirizzo filiale </ion-col>
