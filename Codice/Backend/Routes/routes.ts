@@ -129,6 +129,13 @@ router.post(
 );
 
 router.get(
+	'/prenotazione/ordine/:idOrdine/totale',
+	idOrdineValidator(param('idOrdine'), 'Pagamento'),
+	validate,
+	OrdineController.calcolaImportoTotale
+);
+
+router.get(
 	'/prenotazione/:id_prenotazione/ordini/:username',
 	getIDOrdineByPrenotazioneAndUsername,
 	validate,

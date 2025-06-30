@@ -63,6 +63,25 @@ class OrdineController {
             });
         }
     }
+
+    static async calcolaImportoTotale(req: Request, res: Response): Promise<void> {
+        const ordineId  = Number(req.params.idOrdine);
+
+        try {
+            const totale = await OrdineService.calcolaImportoTotale(ordineId);
+
+            res.json({
+                success: true,
+                totale: totale
+            });
+        } catch (error) {
+            console.error('❌ [Controller] Errore durante il calcolo del totale:', error);
+            res.status(500).json({
+                success: false,
+                message: `Errore durante il calcolo del totale: ${error}`
+            });
+        }
+    }
 }
 
 export default OrdineController;
