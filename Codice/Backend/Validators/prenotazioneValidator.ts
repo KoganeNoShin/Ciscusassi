@@ -6,6 +6,7 @@ import Prenotazione from '../Models/prenotazione';
 import Torretta from '../Models/torretta';
 import { idFilialeValidator } from './filialeValidator';
 import { idTorrettaValidator } from './torrettaValidator';
+import { numeroCartaValidator } from './clienteValidator';
 
 
 // Funzioni
@@ -13,18 +14,6 @@ function data_ora_prenotazioneValidator(chain: ValidationChain): ValidationChain
   return chain
         .optional({ checkFalsy: true })
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di prenotazione deve essere nel formato "yyyy-MM-dd HH:mm"')
-}
-
-function ref_clienteValidator(chain: ValidationChain): ValidationChain {
-  return chain
-		.isInt({ min: 1 }).withMessage('Il riferimento al cliente deve essere un ID numerico valido')
-		.bail()
-		.custom(async (value: number) => {
-			if (value === null || value === undefined) return true;
-			const esiste = await Cliente.getByNumeroCarta(value);
-			if (!esiste) throw new Error('Il cliente specificato non esiste');
-			return true;
-		});
 }
 
 function numuroPersoneValidator(chain: ValidationChain): ValidationChain {
@@ -80,7 +69,7 @@ function OTPValidator(chain: ValidationChain): ValidationChain {
 export const prenotazioneInputValidator = [
 	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	idFilialeValidator(body('ref_filiale')),
-	ref_clienteValidator(body('ref_cliente')),
+	numeroCartaValidator(body('ref_cliente')),
 	numuroPersoneValidator(body('numero_persone'))
 ];
 

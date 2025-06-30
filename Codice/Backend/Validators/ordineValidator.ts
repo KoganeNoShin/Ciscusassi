@@ -4,6 +4,7 @@ import OrdineService from '../Services/ordineService';
 import Ordine from '../Models/ordine';
 import Cliente from '../Models/cliente';
 import { idPrenotazioneValidator } from './prenotazioneValidator';
+import { numeroCartaValidator } from './clienteValidator';
 
 // Funzioni
 export function idOrdineValidator(chain: ValidationChain, operazione: string): ValidationChain {
@@ -81,22 +82,6 @@ function dataOraPagamentoValidator(chain: ValidationChain): ValidationChain {
         });
  }
 
-function ref_clienteValidator(chain: ValidationChain): ValidationChain {
-  return chain
-        .optional({ nullable: true })
-        .isInt({ gt: 0 }).withMessage('L\'ID cliente, se presente, deve essere un numero positivo')
-        .bail()
-        .custom(async (valore) => {
-            if (valore == null) return true;
-
-            const cliente = await Cliente.getByNumeroCarta(valore);
-            if (!cliente) {
-                throw new Error('Cliente non trovato');
-            }
-            return true;
-        });
-}
-
 function username_ordinanteValidator(chain: ValidationChain): ValidationChain {
   return chain
         .trim()
@@ -107,7 +92,7 @@ function username_ordinanteValidator(chain: ValidationChain): ValidationChain {
 // Validator
 export const addOrdineValidator = [
     idPrenotazioneValidator(body('ref_prenotazione')),
-    ref_clienteValidator(body('ref_cliente')), // Da cambiare con idClienteValidator
+    numeroCartaValidator(body('ref_cliente')),
     username_ordinanteValidator(body('username_ordinante')),
 ];
 
