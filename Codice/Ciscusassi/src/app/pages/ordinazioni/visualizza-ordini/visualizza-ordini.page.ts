@@ -17,6 +17,7 @@ import { ListaOrdiniComponent } from '../../../components/lista-ordini/lista-ord
 import { Observable, of, firstValueFrom } from 'rxjs';
 import { OrdineService } from 'src/app/core/services/ordine.service';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
+import { ToastController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-visualizza-ordini',
@@ -46,14 +47,33 @@ export class VisualizzaOrdiniPage implements OnInit {
 	constructor(
 		private router: Router,
 		private ordineService: OrdineService,
-		private tavoloService: TavoloService
+		private tavoloService: TavoloService,
+		private toastController: ToastController
 	) {}
 
 	// Metodo per terminare il servizio e passare al pagamento
 	terminaServizio() {
 		// TODO: implementare logica che verifica se tutti i prodotti sono stati consegnati,
 		// altrimenti mostrare messaggio di errore con toast
-		this.router.navigate(['/pagamento-tavolo']); // Naviga alla pagina di pagamento tavolo
+		let count = 0;
+		this.prodotti$.subscribe(prodotti => {
+			for (const prodotto of prodotti) {
+				if (prodotto.stato != "consegnato"){
+					count++;
+				}
+			}
+
+			if (count == 0){
+				this.router.navigate(['/pagamento-tavolo']); // Naviga alla pagina di pagamento tavolo
+			} else {
+				this.toastController.create({
+					message: 'Per procedere al pagamento tutti i prodotti devono essere stati consegnati',
+					duration: 2000,
+					color: 'warning'
+				}).then(toast => toast.present());
+			}
+		});
+		
 	}
 
 	// Metodo lifecycle Angular chiamato all'inizializzazione del componente
