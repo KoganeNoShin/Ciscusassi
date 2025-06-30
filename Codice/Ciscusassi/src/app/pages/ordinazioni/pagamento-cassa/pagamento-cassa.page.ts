@@ -24,7 +24,10 @@ import {
 	IonCardContent,
 	IonButton,
 	IonImg,
+	IonSpinner,
 } from '@ionic/angular/standalone';
+import { TavoloService } from 'src/app/core/services/tavolo.service';
+import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 
 @Component({
 	selector: 'app-pagamento-cassa',
@@ -32,6 +35,7 @@ import {
 	styleUrls: ['./pagamento-cassa.page.scss'],
 	standalone: true,
 	imports: [
+		IonSpinner,
 		IonContent,
 		CommonModule,
 		FormsModule,
@@ -46,24 +50,43 @@ export class PagamentoCassaPage implements OnInit {
 	// Totale dell’ordine
 	totale: number = 0;
 
+	isLoading: boolean = true;
+
 	// Numero del tavolo (può essere usato in seguito)
-	numeroTavolo: number = 0;
+	numeroTavolo: number | null = null;
 
 	// Prodotti nel carrello (da usare o popolare in futuro)
-	prodottiNelCarrello: ProdottoRecord[] = [];
+	prodotti: OrdProdEstended[] = [];
 
 	// Codice ricevuto dalla query string della URL
 	codice: string = '';
 
 	// Costruttore con ActivatedRoute per leggere i parametri GET dalla URL
-	constructor(private route: ActivatedRoute) {
+	constructor(
+		private route: ActivatedRoute,
+		private tavoloService: TavoloService
+	) {
 		// Sottoscrizione ai parametri della route per ottenere il codice
 		this.route.queryParams.subscribe((params) => {
 			this.codice = params['codice'] || '';
+			this.totale = params['totale'] || '';
 			console.log('Codice ricevuto:', this.codice);
+			console.log('Totale ricevuto', this.totale);
 		});
 	}
 
 	// Hook di inizializzazione, attualmente vuoto
-	ngOnInit() {}
+	ngOnInit() {
+		this.ngViewWillEnter();
+	}
+
+	ngViewWillEnter() {
+		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
+		this.totale = this.tavoloService.getTotale();
+		this.prodotti = this.tavoloService.getOrdini();
+		// Genera un codice univoco concatenando "P" con gli ID dei prodotti
+		this.codice = this.prodotti
+			.map((p) => 'P' + p.id_prodotto)
+			.join('');
+	}
 }

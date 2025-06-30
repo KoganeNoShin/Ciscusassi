@@ -53,8 +53,6 @@ export class VisualizzaOrdiniPage implements OnInit {
 
 	// Metodo per terminare il servizio e passare al pagamento
 	terminaServizio() {
-		// TODO: implementare logica che verifica se tutti i prodotti sono stati consegnati,
-		// altrimenti mostrare messaggio di errore con toast
 		let count = 0;
 		this.prodotti$.subscribe(prodotti => {
 			for (const prodotto of prodotti) {
@@ -64,6 +62,9 @@ export class VisualizzaOrdiniPage implements OnInit {
 			}
 
 			if (count == 0){
+				this.prodotti$.subscribe(prodottiArray => {
+					this.tavoloService.setOrdini(prodottiArray);
+				});
 				this.router.navigate(['/pagamento-tavolo']); // Naviga alla pagina di pagamento tavolo
 			} else {
 				this.toastController.create({

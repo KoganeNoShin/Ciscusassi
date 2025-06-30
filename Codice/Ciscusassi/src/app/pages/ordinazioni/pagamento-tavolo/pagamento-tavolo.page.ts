@@ -16,6 +16,8 @@ import {
 	IonButton,
 	IonText,
 } from '@ionic/angular/standalone';
+import { TavoloService } from 'src/app/core/services/tavolo.service';
+import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 
 @Component({
 	selector: 'app-pagamento-tavolo',
@@ -40,6 +42,7 @@ import {
 export class PagamentoTavoloPage implements OnInit {
 	// Proprietà per il totale dell’ordine
 	totale: number = 0;
+	prodotti: OrdProdEstended[] = [];
 
 	// Codice generato per il pagamento
 	codice: string = '';
@@ -47,26 +50,12 @@ export class PagamentoTavoloPage implements OnInit {
 	// Costruttore: inietta il servizio carrello e il router
 	constructor(
 		private servizioCarrello: CarrelloService,
-		private router: Router
+		private router: Router,
+		private tavoloService: TavoloService
 	) {}
 
 	// Metodo chiamato all’inizializzazione del componente
-	ngOnInit() {}
-
-	// Metodo che gestisce il pagamento alla cassa
-	pagaCassa() {
-		// Stampa i prodotti attualmente presenti nel carrello
-		console.log(this.servizioCarrello.getProdotti());
-
-		// Genera un codice univoco concatenando "P" con gli ID dei prodotti
-		this.codice = this.servizioCarrello
-			.getProdotti()
-			.map((p) => 'P' + p.id_prodotto)
-			.join('');
-
-		// Naviga alla pagina di pagamento, passando il codice come parametro
-		this.router.navigate(['/pagamento-cassa'], {
-			queryParams: { codice: this.codice },
-		});
+	ngOnInit() {
+		this.totale = this.tavoloService.getTotale();
 	}
 }

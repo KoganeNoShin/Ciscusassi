@@ -40,7 +40,7 @@ export class OrdineService {
 	): Observable<ApiResponse<any>> {
 		const body = {
 			id_ordine: id_ordine,
-			importo: importo,
+			pagamento_importo: importo,
 			data_ora_pagamento: data_ora_pagamento,
 		};
 
