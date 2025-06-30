@@ -38,7 +38,6 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 	tavolo: Tavolo | null = null;
 	private intervalAggiornamento: any;
 
-	// Stato caricamento
 	isLoading = false;
 
 	constructor(
@@ -58,7 +57,6 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 
 	ngViewWillEnter() {
 		this.loadOrdini();
-
 		this.intervalAggiornamento = setInterval(
 			() => this.loadOrdini(),
 			30000
@@ -123,23 +121,8 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 					.cambiaStato('consegnato', prodotto.id_ord_prod)
 					.subscribe({
 						next: () => {
-							// Crea un nuovo oggetto con stato aggiornato
-							const updatedProdotto: OrdProdEstended = {
-								...prodotto,
-								stato: 'consegnato',
-							};
-
-							// Sostituisci il prodotto aggiornato nella lista
-							const nuoviProdotti = this.prodottiSubject
-								.getValue()
-								.map((p) =>
-									p.id_ord_prod === prodotto.id_ord_prod
-										? updatedProdotto
-										: p
-								);
-
-							// Emetti nuova lista per notificare i componenti figli
-							this.prodottiSubject.next(nuoviProdotti);
+							// Una volta aggiornato, ricarico i dati dal backend
+							this.loadOrdini();
 						},
 						error: (err) => {
 							console.error('Errore nel cambiare stato:', err);

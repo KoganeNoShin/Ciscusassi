@@ -136,8 +136,8 @@ export class MenuTavoloPage implements OnInit {
 
 		if (this.numeroOrdine === 0) {
 			return this.mostraToast(
-				'Errore: numero ordine non disponibile.',
-				'danger'
+				'Non hai ancora effettuato ordini!',
+				'warning'
 			);
 		}
 
@@ -177,8 +177,8 @@ export class MenuTavoloPage implements OnInit {
 	async visualizzaOrdini() {
 		if (this.numeroOrdine === 0) {
 			return this.mostraToast(
-				'Errore: numero ordine non disponibile.',
-				'danger'
+				'Non hai ancora effettuato ordini!',
+				'warning'
 			);
 		}
 

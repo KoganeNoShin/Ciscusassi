@@ -123,18 +123,8 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 					.cambiaStato('in-consegna', prodotto.id_ord_prod)
 					.subscribe({
 						next: () => {
-							const updatedProdotto: OrdProdEstended = {
-								...prodotto,
-								stato: 'in-consegna',
-							};
-							const nuoviProdotti = this.prodottiSubject
-								.getValue()
-								.map((p) =>
-									p.id_ord_prod === prodotto.id_ord_prod
-										? updatedProdotto
-										: p
-								);
-							this.prodottiSubject.next(nuoviProdotti);
+							// Stato aggiornato sul backend, ricarico i dati per evitare inconsistenze
+							this.loadOrdini();
 						},
 						error: (err) => {
 							console.error('Errore nel cambiare stato:', err);
@@ -153,18 +143,8 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 					.cambiaStato('in-lavorazione', prodotto.id_ord_prod)
 					.subscribe({
 						next: () => {
-							const updatedProdotto: OrdProdEstended = {
-								...prodotto,
-								stato: 'in-lavorazione',
-							};
-							const nuoviProdotti = this.prodottiSubject
-								.getValue()
-								.map((p) =>
-									p.id_ord_prod === prodotto.id_ord_prod
-										? updatedProdotto
-										: p
-								);
-							this.prodottiSubject.next(nuoviProdotti);
+							// Stato aggiornato sul backend, ricarico i dati
+							this.loadOrdini();
 						},
 						error: (err) => {
 							console.error('Errore nel cambiare stato:', err);
