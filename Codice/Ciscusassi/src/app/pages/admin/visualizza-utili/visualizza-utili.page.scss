@@ -106,6 +106,16 @@ ion-col {
 	vertical-align: middle;
 }
 
+ion-row:first-child {
+	ion-col:first-child {
+		width: 300px !important;
+	}
+
+	ion-col {
+		width: 200px !important;
+	}
+}
+
 /* Ultima colonna senza bordo destro */
 ion-col:last-child {
 	border-right: none;
