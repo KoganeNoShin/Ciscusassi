@@ -41,11 +41,11 @@ function categoriaProdottoValidator(chain: ValidationChain): ValidationChain {
 export function idProdottoValidator(chain: ValidationChain): ValidationChain {
   return chain
         .notEmpty().withMessage('ID prodotto è obbligatorio!')
-        .isInt({ min: 1 }).withMessage('ID filiale non valido')
+        .isInt({ min: 1 }).withMessage('ID prodotto non valido')
         .toInt()
         .custom(async (value) => {
               const esiste = await Prodotto.getByID(value);
-              if (!esiste) throw new Error('La filiale specificata non esiste');
+              if (!esiste) throw new Error('Il prodotto specificato non esiste');
               return true;
             });
 }
