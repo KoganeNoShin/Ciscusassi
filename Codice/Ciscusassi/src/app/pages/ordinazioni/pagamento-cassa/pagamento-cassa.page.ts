@@ -85,8 +85,7 @@ export class PagamentoCassaPage implements OnInit {
 		this.totale = this.tavoloService.getTotale();
 		this.prodotti = this.tavoloService.getOrdini();
 		// Genera un codice univoco concatenando "P" con gli ID dei prodotti
-		this.codice = this.prodotti
-			.map((p) => 'P' + p.id_prodotto)
-			.join('');
+		const numeroOrdine = this.tavoloService.getNumeroOrdine();
+		this.codice = numeroOrdine !== null && numeroOrdine !== undefined ? `ordine: ${numeroOrdine}` : '';
 	}
 }
