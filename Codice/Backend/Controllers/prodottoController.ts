@@ -43,7 +43,7 @@ class ProdottoController {
 	static async deleteProdotto(req: Request, res: Response): Promise<void> {
 		try {
 			await ProdottoService.deleteProdotto(
-				parseInt(req.params.id_prodotto)
+				Number(req.params.id_prodotto)
 			);
 
 			res.json({ success: true, message: 'Piatto eliminato con successo' });

@@ -248,7 +248,7 @@ router.delete(
 	'/menu/deleteProdotto/:id_prodotto',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
-	idProdottoValidator(param(':id_prodotto')),
+	idProdottoValidator(param('id_prodotto')),
 	validate,
 	ProdottoController.deleteProdotto
 );
