@@ -8,6 +8,8 @@ ion-content {
 
 .page-wrapper {
 	margin-top: 50px;
+	display: flex;
+	flex-direction: column;
 }
 
 .input-div {
@@ -20,13 +22,13 @@ ion-searchbar {
 	border-radius: 12px;
 	overflow: hidden;
 	--background: var(--ion-color-bianconeve);
-
 	--color: black;
 	color: black;
 	--border-radius: 12px;
-	width: 100%;
 	width: 30%;
-	min-width: 400px;
+	min-width: 300px;
+	display: flex;
+	justify-content: center;
 }
 
 .grid-container {
@@ -34,6 +36,8 @@ ion-searchbar {
 	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 	gap: 16px;
 	padding: 50px;
+	justify-items: center;
+	width: 100%;
 }
 
 .button-wrapper {
@@ -53,5 +57,12 @@ ion-searchbar {
 		align-items: center;
 		justify-content: center;
 		font-size: 40px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.grid-container {
+		padding: 10px !important;
+		margin: 0 !important;
 	}
 }
