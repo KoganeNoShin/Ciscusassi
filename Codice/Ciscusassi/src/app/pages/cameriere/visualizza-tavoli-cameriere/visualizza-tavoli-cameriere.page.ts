@@ -105,6 +105,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	checkOrariApertura() {
 		const now = new Date();
+		const giornoSettimana = now.getDay(); // 0=Dom, 1=Lun, 2=Mar, ..., 6=Sab
+
 		const isInRange = (
 			startH: number,
 			startM: number,
@@ -115,7 +117,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			start.setHours(startH, startM, 0, 0);
 
 			const end = new Date(now);
-			if (endH === 0) {
+			if (endH === 0 && endM === 0) {
+				// Se fine è mezzanotte, consideriamo il giorno dopo
 				end.setDate(end.getDate() + 1);
 				end.setHours(0, 0, 0, 0);
 			} else {
@@ -127,10 +130,15 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 		const eraApertoPrima = this.localeAperto;
 
-		this.localeAperto =
-			isInRange(0, 0, 23, 59) || isInRange(19, 20, 0, 0); //DA MODIFICARE
-
-			//INSERIRE MARTEDI CHIUSI
+		// Locale chiuso il martedì (giorno 2)
+		if (giornoSettimana === 2) {
+			this.localeAperto = false;
+		} else {
+			// Qui definisci gli orari di apertura del locale
+			// Esempio: aperto sempre (00:00-23:59) oppure aperto solo dalle 19:20 a mezzanotte
+			this.localeAperto =
+				isInRange(0, 0, 23, 59) || isInRange(19, 20, 0, 0);
+		}
 
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
@@ -391,6 +399,19 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return d;
 		};
 
+		// Funzione per formattare la data nel formato "YYYY-MM-DD HH:mm"
+		const toLocalFormattedString = (date: Date): string => {
+			const pad = (n: number) => n.toString().padStart(2, '0');
+
+			const year = date.getFullYear();
+			const month = pad(date.getMonth() + 1); // Mese da 0-11
+			const day = pad(date.getDate());
+			const hours = pad(date.getHours());
+			const minutes = pad(date.getMinutes());
+
+			return `${year}-${month}-${day} ${hours}:${minutes}`;
+		};
+
 		for (let i = 0; i < fasce.length; i++) {
 			const fascia = fasce[i];
 			const inizioFascia = toDate(fascia.inizio);
@@ -403,18 +424,17 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 			const minutiInizio =
 				(now.getTime() - inizioFascia.getTime()) / 60000;
-
 			const dentroFascia = now >= inizioFascia && now <= fineFascia;
 
 			if (!forceNextFascia) {
 				if (dentroFascia && minutiInizio <= 10) {
-					return this.toLocalISOString(inizioFascia);
+					return toLocalFormattedString(inizioFascia);
 				}
 				if (!dentroFascia && now < inizioFascia) {
 					const diffMinuti =
 						(inizioFascia.getTime() - now.getTime()) / 60000;
 					if (diffMinuti >= 0 && diffMinuti <= 10) {
-						return this.toLocalISOString(inizioFascia);
+						return toLocalFormattedString(inizioFascia);
 					}
 				}
 			} else if (
@@ -422,7 +442,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 				prossimaFascia &&
 				now < inizioProssima!
 			) {
-				return this.toLocalISOString(inizioProssima!);
+				return toLocalFormattedString(inizioProssima!);
 			}
 		}
 
@@ -430,8 +450,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	}
 
 	toLocalISOString(date: Date): string {
-		const offsetMs = date.getTimezoneOffset() * 60000;
-		return new Date(date.getTime() - offsetMs).toISOString().slice(0, 19);
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		const hours = String(date.getHours()).padStart(2, '0');
+		const minutes = String(date.getMinutes()).padStart(2, '0');
+		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 
 	annulla() {
