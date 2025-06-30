@@ -7,8 +7,3 @@ export function idTorrettaValidator(chain: ValidationChain): ValidationChain {
     .toInt()
     .isInt({ gt: 0 }).withMessage('ID Torretta non valido')
 }
-
-// Validatori
-const getTorrettaByIDValidator = [
-    idTorrettaValidator(param('id_torretta'))
-];
