@@ -20,7 +20,7 @@ import { addOrdineValidator, addPagamentoValidator, getIDOrdineByPrenotazioneAnd
 import { cambiaStatoProdottoValidator, ordProdArrayValidator } from '../Validators/ordprodValidator';
 import { annoPagamentoValidator } from '../Validators/pagamentoValidator';
 import { addProdottoValidator, idProdottoValidator, updateProdottoValidator } from '../Validators/prodottoValidator';
-import { checkOTPValidator, idPrenotazioneValidator, prenotazioneInputValidator, prenotazioneUpdateValidator } from '../Validators/prenotazioneValidator';
+import { checkOTPValidator, idPrenotazioneValidator, prenotazioneInputLocoValidator, prenotazioneInputValidator, prenotazioneUpdateValidator } from '../Validators/prenotazioneValidator';
 import { idTorrettaValidator } from '../Validators/torrettaValidator';
 import { loginValidator } from '../Validators/authValidator';
 import { addImpiegatoValidator, matricolaImpiegatoValidator, updateImpiegatoValidator } from '../Validators/impiegatoValidator';
@@ -288,7 +288,7 @@ router.post(
 
 router.post(
 	'/prenotaLoco',
-	prenotazioneInputValidator,
+	prenotazioneInputLocoValidator,
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere']),

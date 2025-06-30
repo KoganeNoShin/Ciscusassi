@@ -49,8 +49,9 @@ function numuroPersoneValidator(chain: ValidationChain): ValidationChain {
 
 export function idPrenotazioneValidator(chain: ValidationChain): ValidationChain {
   return chain
-        .toInt()
+        .notEmpty().withMessage('ID Prenotazione obbligatorio')
         .isInt({ min: 1 }).withMessage('ID Prenotazione non valido')
+        .toInt()
         .bail()
         .custom(async (value) => {
             const esiste = await Prenotazione.getById(value);
@@ -70,6 +71,22 @@ export const prenotazioneInputValidator = [
 	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	idFilialeValidator(body('ref_filiale')),
 	numeroCartaValidator(body('ref_cliente')),
+	numuroPersoneValidator(body('numero_persone'))
+];
+
+export const prenotazioneInputLocoValidator = [
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
+	idFilialeValidator(body('ref_filiale')),
+	body('ref_cliente')
+        .optional(true)
+		.isInt({ gt: 0 }).withMessage('Numero carta non valido')
+		.bail()
+		.toInt()
+		.custom(async (numero: number) => {
+			const cliente = await Cliente.getByNumeroCarta(numero);
+			if (!cliente) throw new Error('Cliente non trovato nel database');
+			return true;
+		}),
 	numuroPersoneValidator(body('numero_persone'))
 ];
 
