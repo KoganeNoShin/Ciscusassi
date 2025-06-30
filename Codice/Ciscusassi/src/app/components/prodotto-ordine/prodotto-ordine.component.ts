@@ -18,7 +18,7 @@ import { OrdineService } from 'src/app/core/services/ordine.service';
 	templateUrl: './prodotto-ordine.component.html',
 	styleUrls: ['./prodotto-ordine.component.scss'],
 	standalone: true,
-	imports: [IonCheckbox, IonButton, CommonModule, IonItem],
+	imports: [IonCheckbox, IonButton, CommonModule],
 })
 export class ProdottoOrdineComponent implements OnInit, OnDestroy, OnChanges {
 	private authSub!: Subscription;

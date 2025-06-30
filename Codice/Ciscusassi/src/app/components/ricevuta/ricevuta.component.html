@@ -17,19 +17,30 @@
 					<span class="text-black">{{ elemento.prodotto.nome }}</span>
 					<span class="text-black">{{ elemento.quantita }}</span>
 					<span class="text-black"
-						>€
+						>
 						{{
 							(
 								elemento.prodotto.costo * elemento.quantita
 							).toFixed(2)
-						}}</span
+						}}€</span
 					>
 				</div>
 			}
+		
+
+		@if (this.servizio == 'tavolo') {
+			<div class="riga">
+			<span class="text-black">sconti applicati (fidelity) e prodotti divisi alla romana</span>
+					<span class="text-black"></span>
+					<span class="text-black">
+						-{{ (totale - totaleQuery) | number }}€
+					</span>
+			</div>
+		}
 		</div>
 
-		<div class="pdf-section totale">Totale: € {{ totale }}</div>
-
+		<div class="pdf-section totale">Totale: € {{ totaleQuery }}</div>
+		
 		<div class="pdf-section footer">
 			&copy; Ciscusassi 2025 - Tutti i diritti riservati<br />
 			Leonardo Giovanni Caiezza<br />

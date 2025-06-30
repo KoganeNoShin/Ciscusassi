@@ -28,6 +28,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
+import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 
 @Component({
 	selector: 'app-pagamento-cassa',
@@ -49,6 +50,7 @@ import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 export class PagamentoCassaPage implements OnInit {
 	// Totale dell’ordine
 	totale: number = 0;
+	numeroOrdine: number | null = null;
 
 	isLoading: boolean = true;
 
@@ -63,17 +65,9 @@ export class PagamentoCassaPage implements OnInit {
 
 	// Costruttore con ActivatedRoute per leggere i parametri GET dalla URL
 	constructor(
-		private route: ActivatedRoute,
-		private tavoloService: TavoloService
-	) {
-		// Sottoscrizione ai parametri della route per ottenere il codice
-		this.route.queryParams.subscribe((params) => {
-			this.codice = params['codice'] || '';
-			this.totale = params['totale'] || '';
-			console.log('Codice ricevuto:', this.codice);
-			console.log('Totale ricevuto', this.totale);
-		});
-	}
+		private tavoloService: TavoloService,
+		private prenotazioneService: PrenotazioneService
+	) { }
 
 	// Hook di inizializzazione, attualmente vuoto
 	ngOnInit() {
@@ -82,9 +76,15 @@ export class PagamentoCassaPage implements OnInit {
 
 	ngViewWillEnter() {
 		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
-		this.totale = this.tavoloService.getTotale();
+		this.numeroOrdine = this.tavoloService.getNumeroOrdine();
+		if (this.numeroOrdine !== null && this.numeroOrdine !== undefined) {
+			this.prenotazioneService.getTotaleByOrdine(this.numeroOrdine).subscribe((response: any) => {
+				this.totale = response?.data?.totale ?? 0;
+			});
+		} else {
+			this.totale = 0;
+		}
 		this.prodotti = this.tavoloService.getOrdini();
-		// Genera un codice univoco concatenando "P" con gli ID dei prodotti
 		const numeroOrdine = this.tavoloService.getNumeroOrdine();
 		this.codice = numeroOrdine !== null && numeroOrdine !== undefined ? `ordine: ${numeroOrdine}` : '';
 	}

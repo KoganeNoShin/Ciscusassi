@@ -92,7 +92,7 @@ export class TavoloService {
 	}
 
 	setOrdini(prodotti: OrdProdEstended[]) {
-    this.totale = 0;
+    	this.totale = 0;
 		this.prodotti = prodotti;
 		for (let prodotto of this.prodotti) {
 			this.totale = this.totale + prodotto.costo;

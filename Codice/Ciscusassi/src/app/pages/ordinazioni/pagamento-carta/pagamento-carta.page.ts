@@ -55,6 +55,7 @@ export class PagamentoCartaPage implements OnInit {
 		// Passa i dati necessari al componente dinamico
 		componentRef.instance.carrello = this.carrello;
 		componentRef.instance.logo = 'assets/icon/logo.png';
+		componentRef.instance.servizio = 'tavolo';
 
 		// Rende effettivi i cambiamenti nel componente
 		componentRef.changeDetectorRef.detectChanges();

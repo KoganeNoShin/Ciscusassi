@@ -68,6 +68,15 @@ export class PrenotazioneService {
 		);
 	}
 
+	
+	getTotaleByOrdine(
+		idOrdine: number
+	): Observable<ApiResponse<any>> {
+		return this.http.get<ApiResponse<any>>(
+			`${this.apiURL}/prenotazione/ordine/${idOrdine}/totale`
+		);
+	}
+
 	getPrenotazioniDelGiornoFiliale(
 		filialeId: number
 	): Observable<ApiResponse<PrenotazioneRecord[]>> {

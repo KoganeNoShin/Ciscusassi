@@ -18,6 +18,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
+import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 
 @Component({
 	selector: 'app-pagamento-tavolo',
@@ -51,11 +52,20 @@ export class PagamentoTavoloPage implements OnInit {
 	constructor(
 		private servizioCarrello: CarrelloService,
 		private router: Router,
-		private tavoloService: TavoloService
+		private tavoloService: TavoloService,
+		private prenotazioneService: PrenotazioneService
 	) {}
 
 	// Metodo chiamato all’inizializzazione del componente
 	ngOnInit() {
-		this.totale = this.tavoloService.getTotale();
+		const numeroOrdine = this.tavoloService.getNumeroOrdine();
+		if (numeroOrdine !== null && numeroOrdine !== undefined) {
+			this.prenotazioneService.getTotaleByOrdine(numeroOrdine).subscribe((response: any) => {
+				// Assumendo che il totale sia in response.data.totale, modificare se necessario
+				this.totale = response.data?.totale ?? 0;
+			});
+		} else {
+			this.totale = 0;
+		}
 	}
 }
