@@ -78,6 +78,20 @@ export class OrdineService {
 		);
 	}
 
+	cambiaRomana(
+		id_ordprod: number,
+		isRomana: boolean
+	): Observable<ApiResponse<any>> {
+		const body = {
+			isRomana: isRomana
+		}
+		return this.http.put<ApiResponse<any>>(
+			`${this.apiURL}/prenotazione/ordine/prodotto/${id_ordprod}/isRomana`,
+			body,
+			{ headers: { 'Content-Type': 'application/json' } }
+		);
+	}
+
 	getProdottiOrdinatiByNumeroOrdine(
 		id: number
 	): Observable<ApiResponse<OrdProdEstended[]>> {

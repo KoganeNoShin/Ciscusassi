@@ -18,7 +18,7 @@ import { OrdineService } from 'src/app/core/services/ordine.service';
 	templateUrl: './prodotto-ordine.component.html',
 	styleUrls: ['./prodotto-ordine.component.scss'],
 	standalone: true,
-	imports: [IonCheckbox, IonButton, CommonModule],
+	imports: [IonCheckbox, IonButton, CommonModule, IonItem],
 })
 export class ProdottoOrdineComponent implements OnInit, OnDestroy, OnChanges {
 	private authSub!: Subscription;
@@ -77,5 +77,20 @@ export class ProdottoOrdineComponent implements OnInit, OnDestroy, OnChanges {
 			.cambiaStato('non-in-lavorazione', this.prodotto.id_ord_prod)
 			.subscribe();
 		this.statoPiatto = 'non-in-lavorazione';
+	}
+
+	cambiaRomana() {
+		const nuovoValore = !this.prodotto.is_romana;
+
+		this.ordineService
+			.cambiaRomana(this.prodotto.id_ord_prod, nuovoValore)
+			.subscribe({
+				next: () => {
+					this.prodotto.is_romana = nuovoValore;
+				},
+				error: (err) => {
+					console.error('Errore nel cambiare romana:', err);
+				},
+			});
 	}
 }

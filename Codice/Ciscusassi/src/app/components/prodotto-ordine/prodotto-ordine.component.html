@@ -56,8 +56,13 @@
 		</div>
 	} @else if (this.ruolo == 'cliente') {
 		<h3>{{ prodotto.costo }}€</h3>
-			<ion-checkbox [checked]="prodotto.is_romana" label-placement="stacked" alignment="center"
-				>ROMANA?</ion-checkbox
-			>
+		<ion-checkbox
+			slot="start"
+			[checked]="prodotto.is_romana"
+			(ionChange)="cambiaRomana()"
+			label-placement="stacked"
+			alignment="center"
+			>ROMANA?</ion-checkbox
+		>
 	}
 </div>
