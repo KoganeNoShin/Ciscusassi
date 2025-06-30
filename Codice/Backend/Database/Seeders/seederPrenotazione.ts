@@ -1,104 +1,55 @@
-import prenotazione from '../../Models/prenotazione';
-import torretta from '../../Models/torretta';
-import cliente, { ClienteRecord } from '../../Models/cliente';
-import ordine from '../../Models/ordine';
-import prodotto from '../../Models/prodotto';
-import ord_prod from '../../Models/ord_prod';
-import pagamento from '../../Models/pagamento';
-
-import { faker } from '@faker-js/faker';
 import Filiale from '../../Models/filiale';
-import PrenotazioneService from '../../Services/prenotazioneService';
+import Cliente, { ClienteRecord } from '../../Models/cliente';
+import Torretta from '../../Models/torretta';
+import Prenotazione from '../../Models/prenotazione';
+import Ordine from '../../Models/ordine';
+import OrdProd from '../../Models/ord_prod';
+import Prodotto from '../../Models/prodotto';
+import Pagamento from '../../Models/pagamento';
+import { faker } from '@faker-js/faker';
 
-export async function generatePrenotazione(count: number): Promise<string> {
+const ORARI_VALIDI = ['12:00', '13:30', '19:30', '21:00'];
+
+export async function generatePrenotazioni(count: number): Promise<string> {
 	try {
 		const filiali = await Filiale.getAll();
-		const clienti: ClienteRecord[] | null = await cliente.findAll();
-		if (!clienti || clienti.length === 0)
-			throw new Error('Nessun cliente trovato');
+		const clienti: ClienteRecord[] = await Cliente.getAll();
+		if (!clienti.length) throw new Error('Nessun cliente trovato');
 
-		const perTipo = {
+		const distribuzionePrenotazioni = {
 			passato: Math.max(0, count - 20),
 			oggi: Math.min(10, count),
 			futuro: Math.min(10, count - 10),
 		};
 
-		const getDataPrenotazione = (tipo: keyof typeof perTipo): Date => {
-			if (tipo === 'oggi') {
-				const d = new Date();
-				d.setHours(13, 30, 0, 0);
-				return d;
-			} else if (tipo === 'futuro') {
-				return faker.date.soon({ days: 5 });
-			} else {
-				return faker.date.past({ years: 2 });
-			}
-		};
-
-		for (const filialeScelta of filiali) {
-			for (const tipo of Object.keys(
-				perTipo
-			) as (keyof typeof perTipo)[]) {
-				for (let i = 0; i < perTipo[tipo]; i++) {
+		for (const filiale of filiali) {
+			for (const tipo of Object.keys(distribuzionePrenotazioni) as (keyof typeof distribuzionePrenotazioni)[]) {
+				for (let i = 0; i < distribuzionePrenotazioni[tipo]; i++) {
 					const dataPren = getDataPrenotazione(tipo);
-					const torretteLibere = await torretta.getTorretteLibere(
-						filialeScelta.id_filiale,
-						dataPren.toISOString()
-					);
+					const torretteLibere = await Torretta.getTorretteLibere(filiale.id_filiale, dataPren.toISOString());
 
-					if (torretteLibere.length === 0) {
-						console.warn(
-							`⚠️ Nessuna torretta libera per ${filialeScelta.indirizzo} alle ${dataPren.toISOString()}`
-						);
+					if (!torretteLibere.length) {
+						console.warn(`⚠️ Nessuna torretta libera per ${filiale.indirizzo} alle ${dataPren}`);
 						continue;
 					}
 
 					const numero_persone = faker.number.int({ min: 1, max: 8 });
-					const ref_cliente_prenotazione =
-						faker.number.int({ min: 0, max: 2 }) > 0
-							? faker.helpers.arrayElement(clienti)
-							: null;
-					const ref_torretta =
-						faker.helpers.arrayElement(torretteLibere).id_torretta;
-					const otp = faker.string.alphanumeric({ length: 6 });
+					const clientePrenotazione = faker.number.int({ min: 0, max: 2 }) > 0 ? faker.helpers.arrayElement(clienti) : null;
+					const torrettaSelezionata = faker.helpers.arrayElement(torretteLibere);
 
-					let id_prenotazione: number;
+					const id_prenotazione = await Prenotazione.create({
+						numero_persone,
+						data_ora_prenotazione: dataPren.toISOString(),
+						ref_cliente: clientePrenotazione ? clientePrenotazione.numero_carta : null,
+						ref_torretta: torrettaSelezionata.id_torretta,
+					});
 
-					if (ref_cliente_prenotazione) {
-						id_prenotazione = await PrenotazioneService.prenotaLoco({
-							numero_persone,
-							data_ora_prenotazione: dataPren.toString(),
-							ref_cliente: ref_cliente_prenotazione.numero_carta,
-							ref_filiale: filialeScelta.id_filiale,
-						});
+					console.log(`✅ Prenotazione ${tipo} creata con ID ${id_prenotazione}`);
+
+					if (tipo === 'passato') {
+						await generateOrdini(clientePrenotazione, id_prenotazione, dataPren, numero_persone, clienti);
 					} else {
-						id_prenotazione = await PrenotazioneService.prenotaLoco(
-							{
-								numero_persone,
-								data_ora_prenotazione: dataPren.toString(),
-								ref_cliente: null,
-								ref_filiale: filialeScelta.id_filiale,
-							}
-						);
-					}
-
-					console.log(
-						`Prenotazione ${tipo} - ${id_prenotazione} per ${numero_persone} persone (${ref_torretta})`
-					);
-
-					if (tipo !== 'futuro') {
-						await generateOrdini(
-							ref_cliente_prenotazione,
-							id_prenotazione,
-							dataPren,
-							numero_persone,
-							clienti,
-							tipo // <- AGGIUNTO tipo prenotazione
-						);
-					} else {
-						console.log(
-							`🕒 Prenotazione futura: nessun ordine per ${id_prenotazione}`
-						);
+						console.log(`🕒 Nessun ordine per prenotazione ${tipo} ID ${id_prenotazione}`);
 					}
 				}
 			}
@@ -106,136 +57,60 @@ export async function generatePrenotazione(count: number): Promise<string> {
 
 		return 'Prenotazioni generate con successo';
 	} catch (err) {
-		console.error(`Errore globale: ${err}`);
+		console.error(`❌ Errore nella generazione prenotazioni:`, err);
 		throw err;
 	}
+}
+
+function getDataPrenotazione(tipo: 'passato' | 'oggi' | 'futuro'): Date {
+	const data = new Date();
+	const orario = faker.helpers.arrayElement(ORARI_VALIDI).split(':').map(Number);
+
+	data.setHours(orario[0], orario[1], 0, 0);
+
+	if (tipo === 'futuro') data.setDate(data.getDate() + faker.number.int({ min: 1, max: 5 }));
+	else if (tipo === 'passato') data.setDate(data.getDate() - faker.number.int({ min: 30, max: 730 }));
+
+	return data;
 }
 
 async function generateOrdini(
-	ref_cliente: ClienteRecord | null,
+	clientePrenotazione: ClienteRecord | null,
 	id_prenotazione: number,
-	data_ora_prenotazione: Date,
+	dataPrenotazione: Date,
 	numero_persone: number,
-	clienti: ClienteRecord[],
-	tipo: 'passato' | 'oggi' | 'futuro' // Aggiunto parametro
+	clienti: ClienteRecord[]
 ): Promise<void> {
-	let id_ordine: number;
+	const numeroOrdini = faker.number.int({ min: 1, max: numero_persone });
+	const prodotti = await Prodotto.getAll();
 
-	const creaOrdine = async (
-		username: string,
-		ref_cliente_val: number | null
-	) => {
-		id_ordine = await ordine.create({
+	for (let i = 0; i < numeroOrdini; i++) {
+		const cliente = clientePrenotazione || faker.helpers.arrayElement(clienti);
+		const username = `${cliente.nome}.${cliente.cognome}`;
+
+		const id_ordine = await Ordine.create({
 			username_ordinante: username,
 			ref_prenotazione: id_prenotazione,
-			ref_pagamento: null,
-			ref_cliente: ref_cliente_val,
+			ref_cliente: cliente.numero_carta,
 		});
-		await ordine.addPagamento(
-			await generateOrdProd(id_ordine, data_ora_prenotazione, tipo),
-			id_ordine
-		);
-		console.log(
-			`🛎️  Ordine creato per ${username} (prenotazione ${id_prenotazione})`
-		);
-	};
 
-	if (ref_cliente == null) {
-		for (
-			let j = 0;
-			j < faker.number.int({ min: 1, max: numero_persone });
-			j++
-		) {
-			const nome = faker.person.firstName();
-			const cognome = faker.person.lastName();
-			await creaOrdine(`${nome}.${cognome}`, null);
-		}
-	} else {
-		await creaOrdine(
-			`${ref_cliente.nome}.${ref_cliente.cognome}`,
-			ref_cliente.numero_carta
-		);
+		const ordProdInput = Array.from({ length: faker.number.int({ min: 3, max: 8 }) }, () => ({
+			ref_ordine: id_ordine,
+			ref_prodotto: faker.helpers.arrayElement(prodotti).id_prodotto,
+			is_romana: false,
+			stato: 'consegnato',
+		}));
 
-		for (
-			let j = 1;
-			j < faker.number.int({ min: 1, max: numero_persone });
-			j++
-		) {
-			if (faker.number.int({ min: 0, max: 2 }) === 0) {
-				const nome = faker.person.firstName();
-				const cognome = faker.person.lastName();
-				await creaOrdine(`${nome}.${cognome}`, null);
-			} else {
-				const altroCliente = faker.helpers.arrayElement(clienti);
-				await creaOrdine(
-					`${altroCliente.nome}.${altroCliente.cognome}`,
-					altroCliente.numero_carta
-				);
-			}
-		}
+		await Promise.all(ordProdInput.map(op => OrdProd.create(op)));
+		const importoTotale = ordProdInput.reduce((sum, op) => sum + prodotti.find(p => p.id_prodotto === op.ref_prodotto)!.costo, 0);
+		const id_pagamento = await Pagamento.create({
+			importo: importoTotale,
+			data_ora_pagamento: dataPrenotazione.toISOString(),
+		});
+
+		await Ordine.addPagamento(id_pagamento, id_ordine);
+		console.log(`🛎️ Ordine creato per ${username} (ID prenotazione: ${id_prenotazione})`);
 	}
 }
 
-async function generateOrdProd(
-	id_ordine: number,
-	data_ora_base: Date,
-	tipo: 'passato' | 'oggi' | 'futuro'
-): Promise<number> {
-	const prodotti = await prodotto.getAll();
-	if (!prodotti || prodotti.length === 0)
-		throw new Error('Nessun prodotto trovato');
-
-	const numProdotti = faker.number.int({ min: 3, max: 8 });
-	let importo = 0;
-	let data_ora = new Date(data_ora_base);
-
-	for (let i = 0; i < numProdotti; i++) {
-		const prod = faker.helpers.arrayElement(prodotti);
-		importo += prod.costo;
-		data_ora = new Date(data_ora.getTime() + 60 * 60 * 1000); // +1h
-
-		let stato: string;
-		if (tipo === 'passato') {
-			stato = 'in-consegna';
-		} else if (tipo === 'oggi') {
-			stato = faker.helpers.arrayElement([
-				'in-consegna',
-				'preparazione',
-				'consegnato',
-			]);
-		} else {
-			stato = 'attesa'; // fallback se mai chiamato (ma non verrà)
-		}
-
-		try {
-			await ord_prod.create({
-				ref_ordine: id_ordine,
-				ref_prodotto: prod.id_prodotto,
-				is_romana: false,
-				stato,
-			});
-			console.log(
-				`🧾 Prodotto ${prod.nome} aggiunto all’ordine ${id_ordine}`
-			);
-		} catch (err) {
-			console.error(`❌ Errore su prodotto ${prod.nome}:`, err);
-			throw err;
-		}
-	}
-
-	try {
-		const id_pagamento = await pagamento.create({
-			importo,
-			data_ora_pagamento: data_ora.toISOString(),
-		});
-		return id_pagamento;
-	} catch (err) {
-		console.error(
-			`❌ Errore creazione pagamento ordine ${id_ordine}:`,
-			err
-		);
-		throw err;
-	}
-}
-
-export default generatePrenotazione;
+export default generatePrenotazioni;

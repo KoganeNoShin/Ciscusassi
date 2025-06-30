@@ -5,10 +5,11 @@ import cliente from '../../Models/cliente';
 import prodotto from '../../Models/prodotto';
 import filiale from '../../Models/filiale';
 import { faker } from '@faker-js/faker';
+import { format } from 'date-fns';
 
 export async function generateAsporto(count: number): Promise<string> {
 	try {
-		const clienti = await cliente.findAll();
+		const clienti = await cliente.getAll();
 		if (!clienti || clienti.length === 0) throw new Error("Nessun cliente trovato");
 		const idClienti = clienti.map((c) => c.numero_carta);
 
@@ -23,26 +24,31 @@ export async function generateAsporto(count: number): Promise<string> {
 		for (let a = 2023; a <= 2025; a++) {
 			for (let m = 0; m < 12; m++) {
 				for (let i = 0; i < count; i++) {
-					let data_ora_consegna: string;
+					let rawDate: Date;
+
 					if (a < 2025) {
-						data_ora_consegna = new Date(a, m, faker.number.int({ min: 1, max: 28 }),
-							faker.number.int({ min: 0, max: 23 }),
-							faker.number.int({ min: 0, max: 59 }),
-							faker.number.int({ min: 0, max: 59 })
-						).toISOString();
-					} else {
-						data_ora_consegna = new Date(a,
-							faker.number.int({ min: 1, max: 6 }),
+						rawDate = new Date(
+							a,
+							m,
 							faker.number.int({ min: 1, max: 28 }),
 							faker.number.int({ min: 0, max: 23 }),
 							faker.number.int({ min: 0, max: 59 }),
-							faker.number.int({ min: 0, max: 59 })
-						).toISOString();
+							0
+						);
+					} else {
+						rawDate = new Date(
+							a,
+							faker.number.int({ min: 0, max: 5 }),
+							faker.number.int({ min: 1, max: 28 }),
+							faker.number.int({ min: 0, max: 23 }),
+							faker.number.int({ min: 0, max: 59 }),
+							0
+						);
 					}
 
+					const data_ora_consegna = format(rawDate, 'yyyy-MM-dd HH:mm');
 					const indirizzo = faker.location.street() + ' ' + faker.location.secondaryAddress();
 					const ref_cliente = faker.helpers.arrayElement(idClienti);
-
 					const importo = faker.number.float({ min: 8, max: 50, fractionDigits: 2 });
 					const data_ora_pagamento = data_ora_consegna;
 					const ref_pagamento = await pagamento.create({ importo, data_ora_pagamento });
@@ -57,7 +63,7 @@ export async function generateAsporto(count: number): Promise<string> {
 							data_ora_consegna,
 							ref_cliente,
 							ref_pagamento,
-							ref_filiale,
+							ref_filiale
 						});
 
 						console.log(`🏍️  Abbiamo consegnato d'asporto in via ${indirizzo} ed in data ${data_ora_consegna}!`);
@@ -84,6 +90,5 @@ export async function generateAsporto(count: number): Promise<string> {
 		throw err;
 	}
 }
-
 
 export default generateAsporto;

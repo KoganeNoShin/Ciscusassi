@@ -67,7 +67,7 @@ async function seedDB() {
 	// 4. Asporto e Prenotazioni possono partire in parallelo, se usano dati già pronti
 	await Promise.all([
 		generateAsporto(50), // Toccalo e ti uccido
-		//generatePrenotazione(50)
+		generatePrenotazione(50)
 	]);
 	console.log('✅ Database seed completato con successo!');
 }
