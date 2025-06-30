@@ -148,6 +148,26 @@ export class OrdProd {
 			);
 		});
 	}
+
+	static async aggiornaStatoRomana(idOrdProd: number, isRomana: boolean): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE ord_prod SET is_romana = ? WHERE id_ord_prod = ?',
+				[isRomana, idOrdProd],
+				function (this: RunResult, err: Error | null) {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante l\'aggiornamento dello stato di romane:', err.message);
+						reject(err);
+					} else if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessuna riga aggiornata per id_ord_prod: ${idOrdProd}`);
+						reject(new Error('Nessuna riga aggiornata'));
+					} else {
+						resolve();
+					}
+				}
+			);
+		});
+	}
 }
 
 

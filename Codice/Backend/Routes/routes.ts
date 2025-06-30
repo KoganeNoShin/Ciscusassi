@@ -17,7 +17,7 @@ import OrdineController from '../Controllers/ordineController';
 import { addAsportoValidator } from '../Validators/asportoValidator';
 import { addFilialeValidator, idFilialeValidator, updateFilialeValidator } from '../Validators/filialeValidator';
 import { addOrdineValidator, addPagamentoValidator, getIDOrdineByPrenotazioneAndUsername, idOrdineValidator } from '../Validators/ordineValidator';
-import { cambiaStatoProdottoValidator, ordProdArrayValidator } from '../Validators/ordprodValidator';
+import { cambiaStatoProdottoValidator, CambioRomanaValidator, ordProdArrayValidator } from '../Validators/ordprodValidator';
 import { annoPagamentoValidator } from '../Validators/pagamentoValidator';
 import { addProdottoValidator, idProdottoValidator, updateProdottoValidator } from '../Validators/prodottoValidator';
 import { checkOTPValidator, idPrenotazioneValidator, prenotazioneInputLocoValidator, prenotazioneInputValidator, prenotazioneUpdateValidator } from '../Validators/prenotazioneValidator';
@@ -165,6 +165,13 @@ router.put(
 	cambiaStatoProdottoValidator,
 	validate,
 	OrdProdController.cambiaStatoProdottoOrdine
+);
+
+router.put(
+	'/prenotazione/ordine/prodotto/:id_ordprod/isRomana',
+	CambioRomanaValidator,
+	validate,
+	OrdProdController.aggiornaStatoRomana
 );
 
 // Route per i Pagamenti

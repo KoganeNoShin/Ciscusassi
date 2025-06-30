@@ -93,3 +93,8 @@ export const ordProdArrayValidator = [
     statoProdottoValidator(body('*.stato')),
     is_romanaValidator(body('*.is_romana'))
 ];
+
+export const CambioRomanaValidator = [
+    idOrdProdValidator(param('id_ordprod')),
+    is_romanaValidator(body('isRomana'))
+];

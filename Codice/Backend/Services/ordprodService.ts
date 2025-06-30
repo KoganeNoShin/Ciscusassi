@@ -82,6 +82,14 @@ class OrdProdService {
             throw error;
         }
     }
+
+    static async aggiornaStatoRomana(idOrdProd: number, isRomana: boolean): Promise<void> {
+        try {
+            await OrdProd.aggiornaStatoRomana(idOrdProd, isRomana);
+        } catch (error) {
+            throw new Error(`Errore durante l'aggiornamento dello stato di romane: ${error}`);
+        }
+    }
 }
 
 export default OrdProdService;

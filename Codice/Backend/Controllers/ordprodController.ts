@@ -59,6 +59,25 @@ class OrdProdController {
             res.status(500).json({ success: false, message: 'Errore interno del server' });
         }
     }
+
+    static async aggiornaStatoRomana(req: Request, res: Response): Promise<void> {
+        const idOrdProd = Number(req.params.id_ordprod);
+        const { isRomana } = req.body;
+
+        try {
+            await OrdProdService.aggiornaStatoRomana(idOrdProd, isRomana);
+            res.json({
+                success: true,
+                message: 'Stato is_romana aggiornato con successo'
+            });
+        } catch (error) {
+            console.error('❌ [Controller] Errore durante l\'aggiornamento dello stato:', error);
+            res.status(500).json({
+                success: false,
+                message: `Errore durante l'aggiornamento dello stato: ${error}`
+            });
+        }
+    }
 }
 
 export default OrdProdController;
