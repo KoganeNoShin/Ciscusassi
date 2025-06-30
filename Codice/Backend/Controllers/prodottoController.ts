@@ -57,9 +57,9 @@ class ProdottoController {
 		}
 	}
 
-	static async chargePiattoDelGiorno(req: Request, res: Response): Promise<void> {
+	static async changePiattoDelGiorno(req: Request, res: Response): Promise<void> {
 		try {
-			await ProdottoService.chargePiattoDelGiorno(
+			await ProdottoService.changePiattoDelGiorno(
 				Number(req.params.id_prodotto)
 			);
 

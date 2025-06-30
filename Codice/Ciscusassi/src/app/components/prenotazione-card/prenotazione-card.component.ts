@@ -5,8 +5,6 @@ import {
 	IonIcon,
 	IonText,
 	IonButton,
-	AlertController,
-	ToastController,
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -44,6 +42,7 @@ export class PrenotazioneCardComponent implements OnInit {
 		}
 
 		const pad = (n: number) => n.toString().padStart(2, '0');
+
 		return `${pad(date.getDate())}/${pad(
 			date.getMonth() + 1
 		)}/${pad(date.getFullYear())} - ${pad(date.getHours())}:${pad(

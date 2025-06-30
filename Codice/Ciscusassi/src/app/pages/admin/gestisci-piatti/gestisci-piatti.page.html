@@ -1,78 +1,104 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title> Titolo della Pagina </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content
+	[fullscreen]="true"
+	class="ion-justify-content-center ion-align-items-center"
+	color="bianco"
+>
+	<div class="page-wrapper">
+		<ion-text class="ion-text-center ion-padding">
+			<h2>Gestisci Piatti</h2>
+		</ion-text>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <div class="page-title">
-    Gestisci piatti
+		<!-- Div dei filtri -->
+		<div
+			class="ion-justify-content-center ion-align-items-center ion-text-center ion-padding"
+		>
+			<ion-chip
+				color="rosso"
+				[outline]="selectedCategoria !== 'Antipasto'"
+				(click)="filterByCategory('Antipasto')"
+				>Antipasti</ion-chip
+			>
+			<ion-chip
+				color="arancione"
+				[outline]="selectedCategoria !== 'Primo'"
+				(click)="filterByCategory('Primo')"
+				>Primi</ion-chip
+			>
+			<ion-chip
+				color="salmone"
+				[outline]="selectedCategoria !== 'Bevanda'"
+				(click)="filterByCategory('Bevanda')"
+				>Bevande</ion-chip
+			>
+			<ion-chip
+				color="senape"
+				[outline]="selectedCategoria !== 'Dolce'"
+				(click)="filterByCategory('Dolce')"
+				>Dolci</ion-chip
+			>
+			<ion-chip
+				color="verdechiaro"
+				[outline]="selectedCategoria !== 'PiattoDelGiorno'"
+				(click)="filterByCategory('PiattoDelGiorno')"
+				>Piatto del giorno</ion-chip
+			>
+			<ion-chip
+				color="celeste"
+				[outline]="selectedCategoria !== 'Tutti'"
+				(click)="filterByCategory('Tutti')"
+				>Tutti</ion-chip
+			>
+		</div>
 
-    <ion-chip color="primary" [outline]="selectedCategoria !== 'Antipasti'" (click)="filterAntipasti()">Antipasti</ion-chip>
-    <ion-chip color="secondary" [outline]="selectedCategoria !== 'Primi'" (click)="filterPrimi()">Primi</ion-chip>
-    <ion-chip color="success" [outline]="selectedCategoria !== 'Bevande'" (click)="filterBevande()">Bevande</ion-chip>
-    <ion-chip color="warning" [outline]="selectedCategoria !== 'Dolci'" (click)="filterDolci()">Dolci</ion-chip>
-    <ion-chip color="danger" [outline]="selectedCategoria !== 'Tutti'" (click)="filterTutti()">Tutti</ion-chip>
-    <ion-chip color="medium" [outline]="selectedCategoria !== 'PiattoDelGiorno'" (click)="filterPiattoDelGiorno()">Piatto del giorno</ion-chip>
-  </div>
+		<!-- Div della barra di ricerca -->
 
-  <div class="input-row">
-    <div class="input-wrapper">
-      <ion-input placeholder="Cerca un piatto..." [(ngModel)]="searchTerm" (ionInput)="applyFilters()"></ion-input>
-    </div>
-  </div>
+		<div class="input-div ion-padding">
+			<ion-searchbar
+				placeholder="Cerca un piatto..."
+				inputmode="text"
+				type="text"
+				(ionInput)="applyFilters()"
+				[(ngModel)]="searchTerm"
+				[debounce]="250"
+				animated="true"
+				show-clear-button="focus"
+				class="ion-padding-horizontal"
+			></ion-searchbar>
+		</div>
 
-  <div class="grid-container">
-    <div class="center-container">
-      <ion-button [routerLink]="['/aggiungi-piatti']" class="circle-button">+<ion-icon name="add"></ion-icon></ion-button>
-    </div>
+		<!-- Div dei piatti -->
 
-    @for (p of filteredPiatti; track p.id_prodotto) {
-      <ion-card>
-        <ion-icon
-          [name]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'star' : 'star-outline'"
-          [color]="piattoDelGiorno?.id_prodotto === p.id_prodotto ? 'warning' : 'medium'"
-          (click)="selezionaPiattoDelGiorno(p)"
-          class="star-icon"
-        ></ion-icon>
+		@if (loading){
+		<div class="ion-text-center ion-padding ion-margin">
+			<ion-spinner name="circular" color="rosso"></ion-spinner>
+		</div>
+		} @else{ @if(error){
+		<ion-text class="ion-text-center">
+			<h2 class="text-color-rosso">
+				ERRORE: Per piacere riprova tra poco!
+			</h2>
+		</ion-text>
+		} @else {
+		<div class="grid-container ion-margin">
+			<div class="button-wrapper">
+				<ion-button
+					[routerLink]="['/aggiungi-piatti']"
+					class="circle-button text-color-bianco"
+					color="verdechiaro"
+					>+<ion-icon name="add"></ion-icon
+				></ion-button>
+			</div>
 
-        <ion-img [src]="p.immagine" alt="Immagine del piatto" class="immagine-rotante"></ion-img>
+			@for (prodotto of filteredPiatti; track prodotto.id_prodotto) {
+			<app-piatto-amministratore
+				[prodotto]="prodotto"
+				(changePiattoDelGiornoEmitter)="changePiattoDelGiorno($event)"
+				(showAlertDeletePiattoEmitter)="showAlertDeletePiatto($event)"
+				[idPiattoDelGiorno]="piattoDelGiorno!.id_prodotto"
+			></app-piatto-amministratore>
 
-        <ion-card-header>
-          <ion-card-title>{{ p.nome }} - {{ p.costo }} €</ion-card-title>
-          Categoria: {{ p.categoria }}<br />
-          Id prodotto: {{ p.id_prodotto }}<br />
-        </ion-card-header>
-
-        <ion-card-content>
-          <p>{{ p.descrizione }}</p>
-          <div class="button-vertical">
-            <!-- ✅ RouterLink aggiornato con stato -->
-            <ion-button
-              expand="block"
-              [routerLink]="['/modifica-piatti']"
-              [state]="{ piatto: p }"
-              color="secondary"
-            >
-              Modifica piatto
-            </ion-button>
-
-            <ion-button (click)="showAlert(p)" expand="block" color="primary">
-              Cancella piatto
-            </ion-button>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    }
-  </div>
-
-  <!-- Alert -->
-  <ion-alert
-    [isOpen]="isAlertOpen"
-    header="Conferma"
-    [message]="'Vuoi licenziare il dipendente: ' + (selectedProdotto?.nome || '') + '?'"
-    [buttons]="alertButtons"
-    (didDismiss)="isAlertOpen = false"
-  >
-  </ion-alert>
+			}
+		</div>
+		} }
+	</div>
 </ion-content>

@@ -15,26 +15,56 @@ import OrdProdController from '../Controllers/ordprodController';
 import TorrettaController from '../Controllers/torrettaController';
 import OrdineController from '../Controllers/ordineController';
 import { addAsportoValidator } from '../Validators/asportoValidator';
-import { addFilialeValidator, idFilialeValidator, updateFilialeValidator } from '../Validators/filialeValidator';
-import { addOrdineValidator, addPagamentoValidator, getIDOrdineByPrenotazioneAndUsername, idOrdineValidator } from '../Validators/ordineValidator';
-import { cambiaStatoProdottoValidator, CambioRomanaValidator, ordProdArrayValidator } from '../Validators/ordprodValidator';
+import {
+	addFilialeValidator,
+	idFilialeValidator,
+	updateFilialeValidator,
+} from '../Validators/filialeValidator';
+import {
+	addOrdineValidator,
+	addPagamentoValidator,
+	getIDOrdineByPrenotazioneAndUsername,
+	idOrdineValidator,
+} from '../Validators/ordineValidator';
+import {
+	cambiaStatoProdottoValidator,
+	CambioRomanaValidator,
+	ordProdArrayValidator,
+} from '../Validators/ordprodValidator';
 import { annoPagamentoValidator } from '../Validators/pagamentoValidator';
-import { addProdottoValidator, idProdottoValidator, updateProdottoValidator } from '../Validators/prodottoValidator';
-import { checkOTPValidator, idPrenotazioneValidator, prenotazioneInputLocoValidator, prenotazioneInputValidator, prenotazioneUpdateValidator } from '../Validators/prenotazioneValidator';
+import {
+	addProdottoValidator,
+	idProdottoValidator,
+	updateProdottoValidator,
+} from '../Validators/prodottoValidator';
+import {
+	checkOTPValidator,
+	idPrenotazioneValidator,
+	prenotazioneInputLocoValidator,
+	prenotazioneInputValidator,
+	prenotazioneUpdateValidator,
+} from '../Validators/prenotazioneValidator';
 import { idTorrettaValidator } from '../Validators/torrettaValidator';
 import { loginValidator } from '../Validators/authValidator';
-import { addImpiegatoValidator, matricolaImpiegatoValidator, updateImpiegatoValidator } from '../Validators/impiegatoValidator';
-
+import {
+	addImpiegatoValidator,
+	matricolaImpiegatoValidator,
+	updateImpiegatoValidator,
+} from '../Validators/impiegatoValidator';
 
 const router = express.Router();
 
-export const validate = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;
-    }
-    next();
+export const validate = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+): void => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		res.status(400).json({ errors: errors.array() });
+		return;
+	}
+	next();
 };
 
 // Route per Asporto
@@ -153,7 +183,7 @@ router.post(
 router.get(
 	'/prenotazione/ordine/:id_ordine/prodotti/',
 	authMiddleware,
-	idOrdineValidator(param('id_ordine'), "EsistenzaOrdine"),
+	idOrdineValidator(param('id_ordine'), 'EsistenzaOrdine'),
 	validate,
 	OrdProdController.getProdottiByOrdine
 );
@@ -224,18 +254,19 @@ router.delete(
 );
 
 router.put(
-	'/menu/chargePiattoDelGiorno/:id_prodotto',
+	'/menu/changePiattoDelGiorno/:id_prodotto',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	idProdottoValidator(param('id_prodotto')),
 	validate,
-	ProdottoController.chargePiattoDelGiorno
+	ProdottoController.changePiattoDelGiorno
 );
 
 // Route per i Prenotazioni
 router.get('/prenotazioni', PrenotazioneController.getAllPrenotazioni);
 
-router.get('/prenotazione/:id_prenotazione', 
+router.get(
+	'/prenotazione/:id_prenotazione',
 	idPrenotazioneValidator(param('id_prenotazione')),
 	validate,
 	PrenotazioneController.getPrenotazioneById
@@ -252,7 +283,7 @@ router.get(
 	'/filiale/:id_filiale/prenotazioni',
 	authMiddleware,
 	idFilialeValidator(param('id_filiale')),
-    validate,
+	validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );
 
@@ -261,7 +292,7 @@ router.get(
 	idFilialeValidator(param('id_filiale')),
 	validate,
 	authMiddleware,
-	PrenotazioneController.getTavoliInUso,
+	PrenotazioneController.getTavoliInUso
 );
 
 router.get(
@@ -272,10 +303,10 @@ router.get(
 );
 
 router.post(
-    '/prenotazione/check-otp',
+	'/prenotazione/check-otp',
 	checkOTPValidator,
 	validate,
-    PrenotazioneController.checkOTP,
+	PrenotazioneController.checkOTP
 );
 
 router.get(
@@ -327,7 +358,7 @@ router.delete(
 
 router.post(
 	'/prenotazione/conferma',
-	idPrenotazioneValidator(body("id_prenotazione")),
+	idPrenotazioneValidator(body('id_prenotazione')),
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere']),
@@ -342,7 +373,6 @@ router.get(
 	TorrettaController.getTorrettaByID
 );
 
-
 /* ESEMPIO DI COME PROTEGGERE LE ROTTE 
 router.post(
 	'/testAuth',
@@ -356,12 +386,7 @@ router.post(
 //router.post('/register', AuthValidator.registerValidator, AuthValidator.validate, ClienteController.register);
 
 // Login
-router.post(
-	'/login',
-	loginValidator,
-	validate,
-	AuthController.login
-);
+router.post('/login', loginValidator, validate, AuthController.login);
 
 router.get('/logout', authMiddleware, AuthController.logout);
 

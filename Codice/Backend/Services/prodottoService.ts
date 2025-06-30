@@ -28,7 +28,7 @@ class ProdottoService {
 		}
 	}
 
-	static async chargePiattoDelGiorno(id: number): Promise<void> {
+	static async changePiattoDelGiorno(id: number): Promise<void> {
 		try {
 			await Prodotto.disattivaPiattoDelGiorno();
 

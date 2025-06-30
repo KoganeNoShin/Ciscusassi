@@ -25,9 +25,9 @@ export class ProdottoService {
 		);
 	}
 
-	chargePiattoDelGiorno(id: number): Observable<ApiResponse<ProdottoRecord>> {
+	changePiattoDelGiorno(id: number): Observable<ApiResponse<ProdottoRecord>> {
 		return this.http.put<ApiResponse<ProdottoRecord>>(
-			`${this.apiURL}/menu/chargePiattoDelGiorno/${id}`,
+			`${this.apiURL}/menu/changePiattoDelGiorno/${id}`,
 			{}
 		);
 	}
@@ -38,8 +38,11 @@ export class ProdottoService {
 			prodotto
 		);
 	}
-	
-	updateProdotto(id: number, prodotto: ProdottoInput): Observable<ApiResponse<void>> {
+
+	updateProdotto(
+		id: number,
+		prodotto: ProdottoInput
+	): Observable<ApiResponse<void>> {
 		return this.http.put<ApiResponse<void>>(
 			`${this.apiURL}/menu/updateProdotto/${id}`,
 			prodotto

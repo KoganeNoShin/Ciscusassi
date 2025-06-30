@@ -1,0 +1,73 @@
+<ion-card
+	color="bianconeve"
+	[class.sfondo-verde]="idPiattoDelGiorno === prodotto.id_prodotto"
+>
+	<ion-icon
+		[name]="
+			idPiattoDelGiorno === prodotto.id_prodotto ? 'star' : 'star-outline'
+		"
+		[color]="
+			idPiattoDelGiorno === prodotto.id_prodotto ? 'warning' : 'medium'
+		"
+		(click)="changePiattoDelGiorno()"
+		class="star-icon"
+	></ion-icon>
+
+	<ion-img
+		[src]="prodotto.immagine"
+		[class.piatto-rotante]="idPiattoDelGiorno === prodotto.id_prodotto"
+		alt="Immagine del piatto"
+	></ion-img>
+
+	<ion-card-header>
+		<ion-card-title>
+			<ion-text class="ion-text-center">
+				<h6>
+					{{ prodotto.nome }}
+				</h6>
+			</ion-text>
+			<ion-text class="ion-text-center">
+				<h6>{{ prodotto.costo }} €</h6>
+			</ion-text>
+		</ion-card-title>
+	</ion-card-header>
+
+	<ion-card-content>
+		<ion-text class="ion-text-center">
+			<p>Categoria: {{ prodotto.categoria }}</p>
+		</ion-text>
+
+		<ion-text class="ion-text-center">
+			<p class="ion-padding-top">{{ prodotto.descrizione }}</p>
+		</ion-text>
+	</ion-card-content>
+
+	<div class="ion-padding-top button-div">
+		<ion-button
+			[routerLink]="['/modifica-piatti']"
+			[state]="{ piatto: prodotto }"
+			size="default"
+			fill="solid"
+			shape="round"
+			color="verdechiaro"
+			expand="block"
+			type="submit"
+			class="ion-padding-vertical ion-padding-horizontal"
+		>
+			Modifica piatto
+		</ion-button>
+
+		<ion-button
+			(click)="showAlertDeletePiatto()"
+			size="default"
+			fill="solid"
+			shape="round"
+			color="rosso"
+			expand="block"
+			type="submit"
+			class="ion-padding-vertical ion-padding-horizontal"
+		>
+			Cancella piatto
+		</ion-button>
+	</div>
+</ion-card>

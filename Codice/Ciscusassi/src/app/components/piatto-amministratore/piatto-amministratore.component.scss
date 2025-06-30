@@ -1,0 +1,74 @@
+ion-card {
+	min-width: 250px;
+	max-width: 300px;
+	height: 100%; // In modo tale da uniformare la lunghezza in tutte le card
+	border-radius: 12px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transition:
+		background-color 0.2s ease-in-out,
+		transform 0.2s ease-in-out;
+	position: relative; // Dobbiamo impostare la posizione relative per poi poter usare la absolute nei bottoni
+}
+
+ion-card {
+	padding-bottom: 150px; // In modo tale  da fare entrare i bottoni
+
+	.ion-card-title {
+		font-weight: bold;
+	}
+
+	ion-card-content {
+		p {
+			font-family: 'Isocpeur-Regular', sans-serif;
+			color: #6c757d;
+			font-size: 1rem;
+			line-height: 1.4; // Spaziatura verticale tra righe del testo
+		}
+	}
+
+	.button-div {
+		position: absolute; // Siccome devono essere quanto più in basso possibile, dobbiamo usare absolute
+		bottom: 0; // Mettiamo i bottoni al di sotto di tutto il resto
+		width: 100%; // Assicura che i bottoni occupino tutta la larghezza della card
+	}
+}
+
+ion-card:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.star-icon {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 28px;
+	color: #444;
+	cursor: pointer;
+	transition: color 0.3s ease;
+
+	:hover {
+		color: gold;
+	}
+
+	:active {
+		color: gold;
+	}
+}
+
+.piatto-rotante {
+	animation: rotazione 20s linear infinite;
+}
+
+.sfondo-verde {
+	background-color: #d6fcdb !important;
+}
+
+@keyframes rotazione {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
