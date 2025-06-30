@@ -82,6 +82,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		private tavoloService: TavoloService
 	) {}
 
+	// Inizializza la pagina: se il locale è aperto carica i tavoli e imposta aggiornamento ogni 30 secondi.
+	// Avvia anche il controllo ricorrente degli orari di apertura.
 	ngOnInit(): void {
 		if (this.localeAperto) {
 			this.loadTavoli();
@@ -93,7 +95,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			30000
 		);
 	}
-
+	// Pulisce gli intervalli temporali per evitare memory leak quando il componente viene distrutto.
 	ngOnDestroy(): void {
 		if (this.intervalTavoli) {
 			clearInterval(this.intervalTavoli);
@@ -102,7 +104,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			clearInterval(this.intervalApertura);
 		}
 	}
-
+	// Controlla se il locale è aperto in base al giorno della settimana e agli orari predefiniti.
+	// Se il locale passa da chiuso ad aperto, carica i tavoli e avvia l'aggiornamento periodico.
 	checkOrariApertura() {
 		const now = new Date();
 		const giornoSettimana = now.getDay(); // 0=Dom, 1=Lun, 2=Mar, ..., 6=Sab
@@ -146,7 +149,10 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.intervalTavoli = setInterval(() => this.loadTavoli(), 30000);
 		}
 	}
-
+	// Carica la lista delle prenotazioni/tavoli dal servizio.
+	// Se il locale è chiuso, svuota la lista.
+	// Per ogni prenotazione recupera lo stato e costruisce l'array di tavoli con info complete.
+	// Applica il filtro attivo sui tavoli caricati.
 	async loadTavoli() {
 		if (!this.localeAperto) {
 			// Non carichiamo tavoli se il locale è chiuso
@@ -208,7 +214,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.tavoliFiltrati = [];
 		}
 	}
-
+	// Formattta una data ISO in una stringa HH:mm per visualizzare l'orario della prenotazione.
 	formattaOrario(dataOra: string): string {
 		const d = new Date(dataOra);
 		return `${d.getHours().toString().padStart(2, '0')}:${d
@@ -216,7 +222,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			.toString()
 			.padStart(2, '0')}`;
 	}
-
+	// Mostra il popup per aggiungere una nuova prenotazione solo se il locale è aperto.
+	// Altrimenti mostra un messaggio di avviso.
 	add() {
 		if (!this.localeAperto) {
 			this.presentToast(
@@ -228,12 +235,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		this.showPopup = true;
 		this.resetPopup();
 	}
-
+	// Seleziona un numero predefinito di persone per la prenotazione.
 	selezionaPersone(n: number) {
 		this.personeSelezionate = n;
 		this.inputManuale = n;
 	}
-
+	// Aggiorna la selezione del numero di persone in base all'input manuale, solo se valido.
 	onInputChange() {
 		if (
 			this.inputManuale !== null &&
@@ -244,7 +251,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.personeSelezionate = null;
 		}
 	}
-
+	// Conferma la creazione di una nuova prenotazione.
+	// Valida input persone e ref cliente.
+	// Verifica prenotazioni future esistenti per il cliente.
 	async conferma() {
 		const persone = this.personeSelezionate ?? this.inputManuale;
 		let refCliente: number | null = null;
