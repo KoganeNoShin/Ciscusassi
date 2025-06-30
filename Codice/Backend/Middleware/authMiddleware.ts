@@ -11,20 +11,16 @@ export interface AuthenticatedRequest extends Request {
 	};
 }
 
-const authMiddleware = (
-	req: AuthenticatedRequest,
-	res: Response,
-	next: NextFunction
-): void => {
+const authMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
 	const authHeader = req.headers.authorization;
 
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
-		res.status(401).json({ message: 'Token mancante o non valido' });
+		res.status(401).json({ success: false, message: 'Token mancante o non valido' });
 		return;
 	}
 
 	const token = authHeader.split(' ')[1];
-	var expiredToken = false;
+	let expiredToken = false;
 
 	try {
 		AuthService.verifyToken(token);
@@ -32,68 +28,53 @@ const authMiddleware = (
 		expiredToken = true;
 	}
 
-	Cliente.findByToken(token)
-		.then((cliente) => {
-			if (cliente) {
-				req.user = {
-					...cliente,
-					id: cliente.numero_carta,
-					ruolo: 'cliente',
-				};
+	try {
+		const cliente = await Cliente.getByToken(token);
 
-				if (expiredToken) {
-					Cliente.invalidateToken(cliente.numero_carta);
-					res.status(401).json({
-						success: false,
-						message: 'Il token è scaduto!',
-					});
+		if (cliente) {
+			req.user = {
+				...cliente,
+				id: cliente.numero_carta,
+				ruolo: 'cliente'
+			};
 
-					return;
-				}
-
-				next();
-			} else {
-				// Non cliente, cerco impiegato
-				return Impiegato.getByToken(token).then((impiegato) => {
-					if (impiegato) {
-						req.user = {
-							...impiegato,
-							id: impiegato.matricola,
-							ruolo: impiegato.ruolo.toLowerCase() as
-								| 'cliente'
-								| 'chef'
-								| 'amministratore'
-								| 'cameriere',
-						};
-						console.log('Utente caricato:', req.user);
-
-						if (expiredToken) {
-							Impiegato.invalidateToken(impiegato.matricola);
-							res.status(401).json({
-								success: false,
-								message: 'Il token è scaduto!',
-							});
-
-							return;
-						}
-
-						next();
-					} else {
-						res.status(401).json({
-							success: false,
-							message: 'Token non valido',
-						});
-					}
-				});
+			if (expiredToken) {
+				await Cliente.invalidateToken(cliente.numero_carta);
+				res.status(401).json({ success: false, message: 'Il token è scaduto!' });
+				return;
 			}
-		})
-		.catch((err) => {
-			console.error('Errore authMiddleware:', err);
-			res.status(500).json({
-				success: false,
-				message: 'Errore del server ' + err,
-			});
-		});
+
+			next();
+			return;
+		}
+
+		const impiegato = await Impiegato.getByToken(token);
+
+		if (impiegato) {
+			req.user = {
+				...impiegato,
+				id: impiegato.matricola,
+				ruolo: impiegato.ruolo.toLowerCase() as 'cliente' | 'chef' | 'amministratore' | 'cameriere'
+			};
+
+			if (expiredToken) {
+				await Impiegato.invalidateToken(impiegato.matricola);
+				res.status(401).json({ success: false, message: 'Il token è scaduto!' });
+				return;
+			}
+
+			next();
+			return;
+		}
+
+		res.status(401).json({ success: false, message: 'Token non valido' });
+		return;
+
+	} catch (err) {
+		console.error('❌ [AUTH ERROR] authMiddleware:', err);
+		res.status(500).json({ success: false, message: 'Errore del server: ' + err });
+		return;
+	}
 };
 
 export default authMiddleware;

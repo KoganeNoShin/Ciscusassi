@@ -9,7 +9,7 @@ class OrdineService {
     static async creaOrdine(data: OrdineInput): Promise<number> {
         try {
             if (data.ref_cliente != null) {
-                const cliente = await Cliente.findByNumeroCarta(data.ref_cliente);
+                const cliente = await Cliente.getByNumeroCarta(data.ref_cliente);
 
                 if (!cliente) {
                     throw new Error('Cliente non trovato');

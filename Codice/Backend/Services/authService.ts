@@ -1,149 +1,107 @@
-import Cliente, {
-	ClienteCredentials,
-	ClienteData,
-	ClienteRecord,
-} from '../Models/cliente';
+import Cliente, { ClienteData } from '../Models/cliente';
+import Impiegato, { ImpiegatoRecord } from '../Models/impiegato';
+import jwt, { Secret, SignOptions } from 'jsonwebtoken';
+
 import {
 	credentials,
 	LoginRecord,
-	OurTokenPayload,
+	OurTokenPayload
 } from '../Models/credentials';
-import Impiegato, { ImpiegatoRecord } from '../Models/impiegato';
-
-import jwt, { Secret, SignOptions } from 'jsonwebtoken';
 
 class AuthService {
+	// Genera un token JWT per l'utente
 	static generateToken(payload: OurTokenPayload): string {
-		// Impostazioni del token
-		const secretKey: Secret =
-			process.env.JWT_SECRET_KEY || 'PasswordDelJWT';
-
-		const options: SignOptions = {
-			expiresIn: '1d', // Impostiamo che ogni token dura un giorno
-		};
-
+		const secretKey: Secret = process.env.JWT_SECRET_KEY || 'PasswordDelJWT';
+		const options: SignOptions = { expiresIn: '1d' };
 		return jwt.sign(payload, secretKey, options);
 	}
 
-	static verifyToken(token: string) {
+	// Verifica la validità del token
+	static verifyToken(token: string): OurTokenPayload {
 		try {
-			const decoded = jwt.verify(
-				token,
-				process.env.JWT_SECRET_KEY || 'PasswordDelJWT'
-			);
-
-			return decoded;
+			return jwt.verify(token, process.env.JWT_SECRET_KEY || 'PasswordDelJWT') as OurTokenPayload;
 		} catch (err) {
 			throw new Error('Token non valido o scaduto!');
 		}
 	}
 
-	static async register(input: ClienteData) {
-		const existing = await Cliente.findByEmail(input.email!);
-
+	// Registra un nuovo cliente
+	static async register(input: ClienteData): Promise<number> {
+		const existing = await Cliente.getByEmail(input.email);
 		if (existing) {
+			console.error('❌ [AUTH ERROR] register: email già registrata:', input.email);
 			throw new Error('Email già registrata');
 		}
 
-		const clienteData: ClienteData = {
-			nome: input.nome,
-			cognome: input.cognome,
-			data_nascita: input.data_nascita,
-			email: input.email,
-			password: input.password,
-			image: input.image,
-		};
-
-		return await Cliente.create(clienteData);
+		return await Cliente.create(input);
 	}
 
+	// Login per cliente o impiegato
 	static async login(input: credentials): Promise<LoginRecord | undefined> {
-		const user = await Cliente.findByEmail(input.email);
+		// Tentativo di login come cliente
+		const user = await Cliente.getByEmail(input.email);
 
 		if (user) {
-			const passwordMatch = await Cliente.comparePassword(
-				input.password,
-				user.password
-			);
-
+			const passwordMatch = await Cliente.comparePassword(input.password, user.password);
 			if (!passwordMatch) return;
 
-			const anno = user.data_nascita.slice(0, 4); // Prende le ultime due cifre dell'anno
-
+			const anno = user.data_nascita.slice(0, 4);
 			const tokenPayload: OurTokenPayload = {
 				id_utente: user.numero_carta,
 				ruolo: 'cliente',
-				username: `${user.nome}.${user.cognome}.${anno}`
-					.toLowerCase()
-					.replace(/\s+/g, ''),
+				username: `${user.nome}.${user.cognome}.${anno}`.toLowerCase().replace(/\s+/g, '')
 			};
 
 			const token = this.generateToken(tokenPayload);
-
 			await Cliente.updateToken(user.numero_carta, token);
 
-			const loginRecord: LoginRecord = {
-				token: token,
-				avatar: user.image,
+			return {
+				token,
+				avatar: user.image
 			};
-
-			return loginRecord;
 		}
 
+		// Tentativo di login come impiegato
 		const impiegatoCredentials = await Impiegato.getPassword(input.email);
-
 		if (impiegatoCredentials) {
-			const passwordMatch = await Impiegato.comparePassword(
-				input.password,
-				impiegatoCredentials.password
-			);
-
+			const passwordMatch = await Impiegato.comparePassword(input.password, impiegatoCredentials.password);
 			if (!passwordMatch) return;
 
 			const impiegato = await Impiegato.getByEmail(input.email);
+			if (!impiegato) {
+				console.error('❌ [AUTH ERROR] login: impiegato non trovato per email:', input.email);
+				throw new Error('Impiegato non trovato');
+			}
 
-			if (!impiegato) throw new Error('Impiegato non trovato');
-
-			const anno = impiegato.data_nascita.slice(0, 4); // Prende le ultime due cifre dell'anno
-
+			const anno = impiegato.data_nascita.slice(0, 4);
 			const tokenPayload: OurTokenPayload = {
 				id_utente: impiegato.matricola,
-				ruolo: impiegato.ruolo.toLowerCase() as
-					| 'chef'
-					| 'cameriere'
-					| 'amministratore',
-				username: `${impiegato.nome}.${impiegato.cognome}.${anno}`
-					.toLowerCase()
-					.replace(/\s+/g, ''),
-				id_filiale: impiegato.ref_filiale,
+				ruolo: impiegato.ruolo.toLowerCase() as 'chef' | 'cameriere' | 'amministratore',
+				username: `${impiegato.nome}.${impiegato.cognome}.${anno}`.toLowerCase().replace(/\s+/g, ''),
+				id_filiale: impiegato.ref_filiale
 			};
 
 			const token = this.generateToken(tokenPayload);
-
 			await Impiegato.updateToken(impiegato.matricola, token);
 
-			const loginRecord: LoginRecord = {
-				token: token,
-				avatar: impiegato.foto,
+			return {
+				token,
+				avatar: impiegato.foto
 			};
-
-			return loginRecord;
 		}
 
 		return;
 	}
 
+	// Logout di un utente (cliente o impiegato)
 	static async logout(token: string): Promise<boolean> {
-		// Tipizza req come AuthenticatedRequest per accedere a req.user
-		const cliente = await Cliente.findByToken(token);
-
+		const cliente = await Cliente.getByToken(token);
 		if (cliente) {
 			await Cliente.invalidateToken(cliente.numero_carta);
 			return true;
 		}
 
 		const impiegato = await Impiegato.getByToken(token);
-
 		if (impiegato) {
 			await Impiegato.invalidateToken(impiegato.matricola);
 			return true;

@@ -34,7 +34,7 @@ function ref_clienteValidator(chain: ValidationChain): ValidationChain {
         .bail()
         .toInt()
         .custom(async (value: number) => {
-            const cliente = await Cliente.findByNumeroCarta(value);
+            const cliente = await Cliente.getByNumeroCarta(value);
             if(!cliente) throw new Error('Cliente inesistente, ricontrolla ID!');
             return true;
         });

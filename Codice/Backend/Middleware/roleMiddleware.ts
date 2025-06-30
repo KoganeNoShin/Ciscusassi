@@ -2,15 +2,11 @@ import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from './authMiddleware';
 
 const roleMiddleware = (allowedRoles: string[]) => {
-	return (
-		req: AuthenticatedRequest,
-		res: Response,
-		next: NextFunction
-	): void => {
+	return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
 		if (!req.user) {
 			res.status(401).json({
 				success: false,
-				message: 'Non autenticato',
+				message: 'Non autenticato'
 			});
 			return;
 		}
@@ -20,7 +16,7 @@ const roleMiddleware = (allowedRoles: string[]) => {
 		if (ruolo === 'cliente') {
 			res.status(403).json({
 				success: false,
-				message: 'Accesso negato per i clienti',
+				message: 'Accesso negato per i clienti'
 			});
 			return;
 		}
@@ -28,7 +24,7 @@ const roleMiddleware = (allowedRoles: string[]) => {
 		if (!allowedRoles.includes(ruolo)) {
 			res.status(403).json({
 				success: false,
-				message: `Ruolo non autorizzato: ${ruolo}`,
+				message: `Ruolo non autorizzato: ${ruolo}`
 			});
 			return;
 		}

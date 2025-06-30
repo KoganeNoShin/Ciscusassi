@@ -1,17 +1,14 @@
-// importo il db
 import { RunResult } from 'sqlite3';
 import db from '../db';
-import crypto from 'crypto';
-
-// importo il modulo bcryptjs per la gestione delle password
 import bcrypt from 'bcryptjs';
 
+// Modello delle credenziali per login
 export interface ClienteCredentials {
 	email: string;
 	password: string;
 }
 
-// Definiamo il modello del nostro Cliente
+// Input per la creazione di un nuovo cliente
 export interface ClienteData extends ClienteCredentials {
 	nome: string;
 	cognome: string;
@@ -19,12 +16,14 @@ export interface ClienteData extends ClienteCredentials {
 	image: string;
 }
 
+// Record completo del cliente
 export interface ClienteRecord extends ClienteData {
 	numero_carta: number;
 	punti: number;
 }
 
 class Cliente {
+	// Crea un nuovo Cliente nel database
 	static async create(data: ClienteData): Promise<number> {
 		const { nome, cognome, data_nascita, email, password, image } = data;
 
@@ -36,130 +35,122 @@ class Cliente {
 				'INSERT INTO clienti (nome, cognome, data_nascita, email, password, punti, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
 				[nome, cognome, data_nascita, email, hashedPassword, 0, image],
 				function (this: RunResult, err: Error) {
-					if (err) return reject(err);
-					else resolve(this.lastID);
+					if (err) {
+						console.error('❌ [DB ERROR] createCliente:', err.message, '| Params:', data);
+						return reject(err);
+					}
+					resolve(this.lastID);
 				}
 			);
 		});
 	}
 
-	static async updateToken(
-		numeroCarta: number,
-		token: string
-	): Promise<string> {
+	// Aggiorna il token del cliente
+	static async updateToken(numeroCarta: number, token: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
 				[token, numeroCarta],
 				function (this: RunResult, err: Error) {
-					if (err) return reject(err);
+					if (err) {
+						console.error('❌ [DB ERROR] updateToken:', err.message, '| Params:', { numeroCarta, token });
+						return reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] updateToken: Nessun token aggiornato per cliente con numero carta ${numeroCarta}`);
+						return reject(new Error(`Nessun cliente trovato con numero carta ${numeroCarta}`));
+					}
 					resolve(token);
 				}
 			);
 		});
 	}
 
-	// definisco il metodo per creare un nuovo utente
-
-	// definiamo il metodo per ritornare tutti i clienti
-	static async findAll(): Promise<ClienteRecord[] | null> {
+	// Restituisce tutti i clienti
+	static async getAll(): Promise<ClienteRecord[]> {
 		return new Promise((resolve, reject) => {
-			db.all(
-				'SELECT * FROM clienti',
-				(err: Error | null, rows: ClienteRecord[]) => {
-					if (err) return reject(err);
-					if (!rows) return resolve(null);
-					return resolve(rows);
+			db.all('SELECT * FROM clienti', (err: Error | null, rows: ClienteRecord[]) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getAll:', err.message);
+					return reject(err);
 				}
-			);
+				if (!rows || rows.length === 0) {
+					console.warn('⚠️ [DB WARNING] getAll: Nessun cliente trovato');
+					return resolve([]);
+				}
+				resolve(rows);
+			});
 		});
 	}
 
-	// definisco il metodo per trovare un utente in base all'username
-	static async findByEmail(email: string): Promise<ClienteRecord | null> {
+	// Restituisce un cliente in base all'email
+	static async getByEmail(email: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT * FROM clienti WHERE email = ?',
-				[email],
-				(err: Error | null, row: ClienteRecord) => {
-					if (err) return reject(err);
-					if (!row) return resolve(null);
-					return resolve(row);
+			db.get('SELECT * FROM clienti WHERE email = ?', [email], (err: Error | null, row: ClienteRecord) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getByEmail:', err.message, '| Email:', email);
+					return reject(err);
 				}
-			);
+				resolve(row || null);
+			});
 		});
 	}
 
-	// ricerca per numero_carta
-	static async findByNumeroCarta(
-		numero_carta: number
-	): Promise<ClienteRecord | null> {
+	// Restituisce un cliente in base al numero carta
+	static async getByNumeroCarta(numero_carta: number): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT * FROM clienti WHERE numero_carta = ?',
-				[numero_carta],
-				(err: Error, row: ClienteRecord) => {
-					if (err) return reject(err);
-					if (!row) return resolve(null);
-					return resolve(row);
+			db.get('SELECT * FROM clienti WHERE numero_carta = ?', [numero_carta], (err: Error, row: ClienteRecord) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getByNumeroCarta:', err.message, '| Numero Carta:', numero_carta);
+					return reject(err);
 				}
-			);
+				resolve(row || null);
+			});
 		});
 	}
 
-	static async findByToken(token: string): Promise<ClienteRecord | null> {
+	// Restituisce un cliente in base al token
+	static async getByToken(token: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT * FROM clienti WHERE token = ?',
-				[token],
-				(err: Error, row: ClienteRecord) => {
-					if (err) return reject(err);
-					if (!row) return resolve(null);
-					return resolve(row);
+			db.get('SELECT * FROM clienti WHERE token = ?', [token], (err: Error, row: ClienteRecord) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getByToken:', err.message, '| Token:', token);
+					return reject(err);
 				}
-			);
+				resolve(row || null);
+			});
 		});
 	}
 
+	// Invalida il token del cliente
 	static async invalidateToken(numero_carta: number): Promise<void> {
 		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE clienti SET token = NULL WHERE numero_carta = ?',
-				[numero_carta],
-				(err: Error | null) => {
-					if (err) reject(err);
-					else resolve();
+			db.run('UPDATE clienti SET token = NULL WHERE numero_carta = ?', [numero_carta], (err: Error | null) => {
+				if (err) {
+					console.error('❌ [DB ERROR] invalidateToken:', err.message, '| Numero Carta:', numero_carta);
+					return reject(err);
 				}
-			);
+				resolve();
+			});
 		});
 	}
 
-	// confronta la password inserita con quella salvata nel db
-	static async comparePassword(
-		candidatePassword: string,
-		hash: string
-	): Promise<boolean> {
+	// Confronta la password inserita con quella salvata
+	static async comparePassword(candidatePassword: string, hash: string): Promise<boolean> {
 		return bcrypt.compare(candidatePassword, hash);
 	}
 
-	static async login(email: string, password: string) {
-		const user = await this.findByEmail(email);
-
-		if (!user)
-			// Se l'utente non esiste ritorna falso
-			return false;
-
-		// Se la password è corretta ritorna vero
+	// Effettua il login controllando email e password
+	static async login(email: string, password: string): Promise<boolean> {
+		const user = await this.getByEmail(email);
+		if (!user) return false;
 		return this.comparePassword(password, user.password);
 	}
 
+	// Restituisce i punti accumulati in base al token
 	static async getPoints(token: string): Promise<number> {
-		const user = await this.findByToken(token);
-
-		if (!user) {
-			throw new Error('Utente non trovato o token non valido');
-		}
-
+		const user = await this.getByToken(token);
+		if (!user) throw new Error('Utente non trovato o token non valido');
 		return user.punti;
 	}
 }

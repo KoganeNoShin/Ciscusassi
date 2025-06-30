@@ -55,7 +55,7 @@ export class Pagamento {
 		});
 	}
 
-	// Selezione dei pagamenti per Anno
+	/*// Selezione dei pagamenti per Anno
 	static async getByYear(year: number): Promise<PagamentoRecord[]> {
 		return new Promise((resolve, reject) => {
 			const start = `${year}-01-01 00:00:00`;
@@ -77,7 +77,7 @@ export class Pagamento {
 				}
 			);
 		});
-	}
+	}*/
 
 	// Selezione dei pagamenti ordini per Anno
 	static async getPagamentiOrdiniByYear(year: number): Promise<PagamentoMensile[]> {

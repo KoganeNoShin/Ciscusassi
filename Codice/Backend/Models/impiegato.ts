@@ -5,8 +5,6 @@ import db from '../db';
 // importo il modulo bcryptjs per la gestione delle password
 import bcrypt from 'bcryptjs';
 
-import crypto from 'crypto';
-
 // Definiamo il modello dell'impiegato
 export interface ImpiegatoData {
 	nome: string;
@@ -158,103 +156,63 @@ export class Impiegato {
 	//------------------ ZONA CREDENZIALI ------------------//
 
 	// Aggiornamento Token Impiegato
-	static async updateToken(
-		matricola: number,
-		token: string
-	): Promise<string> {
+	static async updateToken(matricola: number, token: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE impiegati SET token = ? WHERE matricola = ?',
-				[token, matricola],
-				function (this: RunResult, err: Error) {
-					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante UPDATE:',
-							err.message
-						);
-						console.error('🧾 Query params:', matricola);
-						reject(err);
-					}
-					if (this.changes === 0) {
-						console.warn(
-							`⚠️ [DB WARNING] Nessun Token aggiornato con Impiegato matricola ${matricola}`
-						);
-						return reject(
-							new Error(
-								`Nessun Token aggiornato con Impiegato matricola ${matricola}`
-							)
-						);
-					} else return resolve(token);
+			db.run('UPDATE impiegati SET token = ? WHERE matricola = ?', [token, matricola], function (this: RunResult, err: Error) {
+				if (err) {
+					console.error('❌ [DB ERROR] updateToken:', err.message, '| Params:', { matricola, token });
+					return reject(err);
 				}
-			);
+				if (this.changes === 0) {
+					console.warn(`⚠️ [DB WARNING] updateToken: Nessun token aggiornato per impiegato con matricola ${matricola}`);
+					return reject(new Error(`Nessun token aggiornato per impiegato con matricola ${matricola}`));
+				}
+				return resolve(token);
+			});
 		});
 	}
 
 	// Seleziona le credenziali dell'impiegato in base al token
 	static async getByToken(token: string): Promise<ImpiegatoRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT * FROM impiegati WHERE token = ?',
-				[token],
-				(err: Error, row: ImpiegatoRecord) => {
-					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante SELECT:',
-							err.message
-						);
-						return reject(err);
-					}
-					if (!row) return resolve(null);
-					return resolve(row);
+			db.get('SELECT * FROM impiegati WHERE token = ?', [token], (err: Error, row: ImpiegatoRecord) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getByToken:', err.message, '| Token:', token);
+					return reject(err);
 				}
-			);
+				return resolve(row || null);
+			});
 		});
 	}
 
 	// Seleziona le credenziali dell'impiegato in base all'email
-	static async getPassword(
-		email: string
-	): Promise<ImpiegatoCredentials | null> {
+	static async getPassword(email: string): Promise<ImpiegatoCredentials | null> {
 		return new Promise((resolve, reject) => {
-			db.get(
-				'SELECT impiegati.email, impiegati.password FROM impiegati WHERE email = ?',
-				[email],
-				(err: Error | null, row: ImpiegatoCredentials) => {
-					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante SELECT:',
-							err.message
-						);
-						return reject(err);
-					}
-					if (!row) return resolve(null);
-					return resolve(row);
+			db.get('SELECT impiegati.email, impiegati.password FROM impiegati WHERE email = ?', [email], (err: Error, row: ImpiegatoCredentials) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getPassword:', err.message, '| Email:', email);
+					return reject(err);
 				}
-			);
+				return resolve(row || null);
+			});
 		});
 	}
 
 	// Invalida il token dell'impiegato
 	static async invalidateToken(matricola: number): Promise<void> {
 		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE impiegati SET token = NULL WHERE matricola = ?',
-				[matricola],
-				(err: Error | null) => {
-					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante SELECT:',
-							err.message
-						);
-						return reject(err);
-					} else resolve();
+			db.run('UPDATE impiegati SET token = NULL WHERE matricola = ?', [matricola], (err: Error) => {
+				if (err) {
+					console.error('❌ [DB ERROR] invalidateToken:', err.message, '| Matricola:', matricola);
+					return reject(err);
 				}
-			);
+				resolve();
+			});
 		});
 	}
 
 	// Confronta la password inserita con quella salvata nel database
-	static async comparePassword(candidatePassword: string, hash: string) {
+	static async comparePassword(candidatePassword: string, hash: string): Promise<boolean> {
 		return bcrypt.compare(candidatePassword, hash);
 	}
 }

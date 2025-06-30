@@ -1,8 +1,8 @@
 import AuthService from '../Services/authService';
-
 import { Request, Response } from 'express';
 
 class AuthController {
+	// Gestisce il login per cliente o impiegato
 	static async login(req: Request, res: Response): Promise<void> {
 		try {
 			const logged = await AuthService.login(req.body);
@@ -10,22 +10,25 @@ class AuthController {
 			if (logged) {
 				res.status(200).json({
 					success: true,
-					data: logged,
+					data: logged
 				});
-			} else {
-				res.status(401).json({
-					success: false,
-					message: 'Email o password errata!',
-				});
+				return;
 			}
+
+			res.status(401).json({
+				success: false,
+				message: 'Email o password errata!'
+			});
 		} catch (error: any) {
+			console.error('❌ [AUTH ERROR] login:', error.message);
 			res.status(400).json({
 				success: false,
-				message: 'Errore durante il login: ' + error.message,
+				message: 'Errore durante il login: ' + error.message
 			});
 		}
 	}
 
+	// Gestisce il logout e l'invalidazione del token
 	static async logout(req: Request, res: Response): Promise<void> {
 		try {
 			const token = req.headers.authorization?.replace('Bearer ', '');
@@ -33,7 +36,7 @@ class AuthController {
 			if (!token) {
 				res.status(401).json({
 					success: false,
-					message: 'Non autenticato',
+					message: 'Non autenticato'
 				});
 				return;
 			}
@@ -43,19 +46,19 @@ class AuthController {
 			if (loggedOut) {
 				res.status(200).json({
 					success: true,
-					message: 'Logout effettuato',
+					message: 'Logout effettuato'
 				});
 			} else {
 				res.status(401).json({
-					success: true,
-					message: 'Token non valido o utente non trovato!',
+					success: false,
+					message: 'Token non valido o utente non trovato!'
 				});
 			}
-		} catch (error) {
-			console.error('Errore logout:', error);
+		} catch (error: any) {
+			console.error('❌ [AUTH ERROR] logout:', error.message);
 			res.status(500).json({
 				success: false,
-				message: 'Errore durante il logout',
+				message: 'Errore durante il logout: ' + error.message
 			});
 		}
 	}

@@ -89,7 +89,7 @@ function ref_clienteValidator(chain: ValidationChain): ValidationChain {
         .custom(async (valore) => {
             if (valore == null) return true;
 
-            const cliente = await Cliente.findByNumeroCarta(valore);
+            const cliente = await Cliente.getByNumeroCarta(valore);
             if (!cliente) {
                 throw new Error('Cliente non trovato');
             }

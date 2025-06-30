@@ -21,7 +21,7 @@ function ref_clienteValidator(chain: ValidationChain): ValidationChain {
 		.bail()
 		.custom(async (value: number) => {
 			if (value === null || value === undefined) return true;
-			const esiste = await Cliente.findByNumeroCarta(value);
+			const esiste = await Cliente.getByNumeroCarta(value);
 			if (!esiste) throw new Error('Il cliente specificato non esiste');
 			return true;
 		});
