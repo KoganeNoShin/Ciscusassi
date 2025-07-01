@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../Middleware/authMiddleware';
 import AsportoService, { AsportoData } from '../Services/asportoService';
 
-
 class AsportoController {
-    static async addAsporto(req: Request, res: Response): Promise<void> {
+    static async addAsporto(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const { data_ora_consegna, data_ora_pagamento, importo, indirizzo, prodotti, ref_filiale } = req.body;
 
@@ -14,7 +14,7 @@ class AsportoController {
             indirizzo,
             prodotti,
             ref_filiale,
-            ref_cliente: Number(req.headers.host)
+            ref_cliente: Number(req.user?.id)
             };
 
             const result = await AsportoService.addAsporto(data);
