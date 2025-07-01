@@ -293,7 +293,6 @@ router.get(
 
 router.get(
 	'/filiale/tavoli-in-uso',
-	idFilialeValidator(param('id_filiale')),
 	validate,
 	authMiddleware,
 	PrenotazioneController.getTavoliInUso
