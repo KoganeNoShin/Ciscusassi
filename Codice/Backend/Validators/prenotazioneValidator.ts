@@ -70,14 +70,13 @@ function OTPValidator(chain: ValidationChain): ValidationChain {
 export const prenotazioneInputValidator = [
 	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	idFilialeValidator(body('ref_filiale')),
-	numeroCartaValidator(body('ref_cliente')),
 	numuroPersoneValidator(body('numero_persone'))
 ];
 
 export const prenotazioneInputLocoValidator = [
-	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
-	idFilialeValidator(body('ref_filiale')),
-	body('ref_cliente')
+	...prenotazioneInputValidator,
+	numeroCartaValidator(body('ref_cliente').optional({ nullable: true }))
+	/*body('ref_cliente')
         .optional(true)
 		.isInt({ gt: 0 }).withMessage('Numero carta non valido')
 		.bail()
@@ -86,14 +85,7 @@ export const prenotazioneInputLocoValidator = [
 			const cliente = await Cliente.getByNumeroCarta(numero);
 			if (!cliente) throw new Error('Cliente non trovato nel database');
 			return true;
-		}),
-	numuroPersoneValidator(body('numero_persone'))
-];
-
-export const prenotazioneUpdateValidator = [
-	idPrenotazioneValidator(body('id_prenotazione')),
-	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
-	numuroPersoneValidator(body('numero_persone'))
+		})*/
 ];
 
 export const checkOTPValidator = [

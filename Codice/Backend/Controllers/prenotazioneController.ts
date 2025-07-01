@@ -1,10 +1,19 @@
 import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../Middleware/authMiddleware';
-import PrenotazioneService from '../Services/prenotazioneService';
+import PrenotazioneService, { PrenotazioneRequest } from '../Services/prenotazioneService';
 
 class PrenotazioneController {
-    static async prenota(req: Request, res: Response): Promise<void> {
+    static async prenota(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
+            const {ref_filiale, data_ora_prenotazione, numero_persone} = req.body
+            const ref_cliente = Number(req.user?.id);
+            
+            const prenotazioneInput: PrenotazioneRequest = {
+                ref_filiale,
+                data_ora_prenotazione,
+                numero_persone,
+                ref_cliente
+            }
             const prenotazione = await PrenotazioneService.prenota(req.body);
 
             if(prenotazione) res.status(201).json({ success: true, data: req.body });
@@ -186,7 +195,7 @@ class PrenotazioneController {
             }
 
             // Recupera le prenotazioni per la filiale e la data
-            const id_Filiale = Number(req.user?.ref_filiale); 
+            const id_Filiale = Number(req.user?.id_filiale); 
             const prenotazioni = await PrenotazioneService.getPrenotazioniDataAndFiliale(id_Filiale, dataFormattata);
 
             if (prenotazioni && prenotazioni.length > 0) {
@@ -208,7 +217,7 @@ class PrenotazioneController {
     }
 
 
-	static async getTavoliInUso(req: Request, res: Response) {
+	static async getTavoliInUso(req: AuthenticatedRequest, res: Response) {
 		try {
             const { data } = req.query;
             let dataFormattata: string;
@@ -225,8 +234,8 @@ class PrenotazioneController {
                 dataFormattata = data as string;
             }
 
-
-			const tavoli = await PrenotazioneService.calcolaTavoliInUso(parseInt(req.params.id_filiale), dataFormattata);
+            const id_Filiale = Number(req.user?.id_filiale); 
+			const tavoli = await PrenotazioneService.calcolaTavoliInUso(id_Filiale, dataFormattata);
 			res.status(200).json(tavoli);
 		} catch (error) {
 			console.error('❌ Errore durante il calcolo dei tavoli:', error);

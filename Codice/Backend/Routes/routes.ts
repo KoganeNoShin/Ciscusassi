@@ -41,8 +41,7 @@ import {
 	checkOTPValidator,
 	idPrenotazioneValidator,
 	prenotazioneInputLocoValidator,
-	prenotazioneInputValidator,
-	prenotazioneUpdateValidator,
+	prenotazioneInputValidator
 } from '../Validators/prenotazioneValidator';
 import { idTorrettaValidator } from '../Validators/torrettaValidator';
 import { loginValidator } from '../Validators/authValidator';
@@ -283,7 +282,7 @@ router.get(
 );
 
 router.get(
-	'/filiale/:id_filiale/tavoli-in-uso',
+	'/filiale/tavoli-in-uso',
 	idFilialeValidator(param('id_filiale')),
 	validate,
 	authMiddleware,
@@ -337,7 +336,7 @@ router.post(
 
 router.put(
 	'/modificaPrenotazione',
-	prenotazioneUpdateValidator,
+	prenotazioneInputValidator,
 	validate,
 	authMiddleware,
 	PrenotazioneController.modificaPrenotazione
