@@ -1,8 +1,6 @@
 import AspProd, { AspProdInput } from "../Models/asp_prod";
 import Asporto, { AsportoInput } from "../Models/asporto";
 import Pagamento, { PagamentoInput } from "../Models/pagamento";
-import { format } from 'date-fns';
-import { it } from "date-fns/locale";
 
 export interface AsportoData {
     indirizzo: string,
@@ -16,16 +14,6 @@ export interface AsportoData {
 
 class AsportoService {
     static async addAsporto(data: AsportoData): Promise<number> {
-        if (data.data_ora_consegna) {
-            const dataFormattata = format(new Date(data.data_ora_consegna), 'yyyy-MM-dd HH:mm:ss', { locale: it });
-            data.data_ora_consegna = dataFormattata;
-        }
-
-        if (data.data_ora_pagamento) {
-            const dataFormattata = format(new Date(data.data_ora_pagamento), 'yyyy-MM-dd HH:mm:ss', { locale: it });
-            data.data_ora_pagamento = dataFormattata;
-        }
-
         const pagamentoData = {importo: data.importo, data_ora_pagamento: data.data_ora_pagamento} as PagamentoInput;
         const id_pagamento = await Pagamento.create(pagamentoData);
         if(!id_pagamento) {
