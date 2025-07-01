@@ -2,9 +2,7 @@ import { body, param, ValidationChain } from 'express-validator'
 import OrdProd from '../Models/ord_prod';
 import OrdineService from '../Services/ordineService';
 import Ordine from '../Models/ordine';
-import Cliente from '../Models/cliente';
 import { idPrenotazioneValidator } from './prenotazioneValidator';
-import { numeroCartaValidator } from './clienteValidator';
 
 // Funzioni
 export function idOrdineValidator(chain: ValidationChain, operazione: string): ValidationChain {
@@ -92,7 +90,6 @@ function username_ordinanteValidator(chain: ValidationChain): ValidationChain {
 // Validator
 export const addOrdineValidator = [
     idPrenotazioneValidator(body('ref_prenotazione')),
-    numeroCartaValidator(body('ref_cliente')),
     username_ordinanteValidator(body('username_ordinante')),
 ];
 

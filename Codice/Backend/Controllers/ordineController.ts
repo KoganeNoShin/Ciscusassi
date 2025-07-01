@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../Middleware/authMiddleware';
 import OrdineService from '../Services/ordineService';
+import { OrdineInput } from '../Models/ordine';
 
 class OrdineController {
-    static async addOrdine(req: Request, res: Response): Promise<void> {
+    static async addOrdine(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
-            const ordine = await OrdineService.creaOrdine(req.body);
+            const {ref_prenotazione, username_ordinante} = req.body;
+            const ref_cliente = Number(req.user?.id);
+
+            const ordineInput: OrdineInput = {ref_prenotazione, username_ordinante, ref_cliente};
+            const ordine = await OrdineService.creaOrdine(ordineInput);
             if(ordine) res.status(201).json({ 
                 success: true, 
                 data: {
