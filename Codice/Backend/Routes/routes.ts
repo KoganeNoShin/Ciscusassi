@@ -50,6 +50,7 @@ import {
 	matricolaImpiegatoValidator,
 	updateImpiegatoValidator,
 } from '../Validators/impiegatoValidator';
+import { numeroCartaValidator } from '../Validators/clienteValidator';
 
 const router = express.Router();
 
@@ -163,7 +164,7 @@ router.get(
 	'/prenotazione/:id_prenotazione/ordini/:username',
 	getIDOrdineByPrenotazioneAndUsername,
 	validate,
-	OrdineController.getIDOrdineByPrenotazioneAndUsername
+	OrdineController.getOrdineByPrenotazioneAndUsername
 );
 
 // Route per OrdProd
@@ -269,6 +270,15 @@ router.get(
 router.get(
 	'/prenotazioni/cliente',
 	authMiddleware,
+	validate,
+	PrenotazioneController.getPrenotazioniByCliente
+);
+
+router.get(
+	'/prenotazioni/cameriere/:id_cliente',
+	authMiddleware,
+	roleMiddleware(['amministratore', 'cameriere']),
+	numeroCartaValidator(param('id_cliente')),
 	validate,
 	PrenotazioneController.getPrenotazioniByCliente
 );

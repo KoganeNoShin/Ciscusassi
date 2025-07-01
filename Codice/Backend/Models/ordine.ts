@@ -153,10 +153,10 @@ export class Ordine {
 	}
 
 	// Selezione di Ordini per Prenotazione e Username (Copia univoca tramite validate)
-	static async getIDOrdineByPrenotazioneAndUsername(prenotazioneID: number, username: string): Promise<number | null> {
+	static async getOrdineByPrenotazioneAndUsername(prenotazioneID: number, username: string): Promise<number | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
-				`SELECT id_ordine
+				`SELECT *
 				FROM ordini
 				WHERE ref_prenotazione = ? AND
 					username_ordinante = ?`, 

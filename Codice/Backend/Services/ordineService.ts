@@ -27,7 +27,7 @@ class OrdineService {
                 }
             }
 
-            const ordineEsistente = await Ordine.getIDOrdineByPrenotazioneAndUsername(data.ref_prenotazione, data.username_ordinante);
+            const ordineEsistente = await Ordine.getOrdineByPrenotazioneAndUsername(data.ref_prenotazione, data.username_ordinante);
 
             if(ordineEsistente){
                 throw new Error('Esiste già un ordine con questo username per la stessa prenotazione');
@@ -99,9 +99,9 @@ class OrdineService {
         }
     }
 
-    static async getIDOrdineByPrenotazioneAndUsername(prenotazioneID: number, username: string): Promise<number | null> {
+    static async getOrdineByPrenotazioneAndUsername(prenotazioneID: number, username: string): Promise<number | null> {
         try {
-            return await Ordine.getIDOrdineByPrenotazioneAndUsername(prenotazioneID, username);
+            return await Ordine.getOrdineByPrenotazioneAndUsername(prenotazioneID, username);
         }catch (error) {
             console.error('❌ [OrdineService] Errore durante il recupero dell\'ordine per prenotazione ed Username:', error);
             throw error;

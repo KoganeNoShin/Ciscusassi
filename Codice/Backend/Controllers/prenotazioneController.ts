@@ -7,7 +7,7 @@ class PrenotazioneController {
         try {
             const {ref_filiale, data_ora_prenotazione, numero_persone} = req.body
             const ref_cliente = Number(req.user?.id);
-            
+
             const prenotazioneInput: PrenotazioneRequest = {
                 ref_filiale,
                 data_ora_prenotazione,
@@ -163,6 +163,25 @@ class PrenotazioneController {
     static async getPrenotazioniByCliente(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(Number(req.user?.id));
+
+            if (prenotazioni) res.json({ success: true, data: prenotazioni });
+            else res.status(404).json({
+                success: false,
+                message: 'Nessuna prenotazione trovata per questo cliente',
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                success: false,
+                message: 'Errore interno del server',
+                error: (err instanceof Error ? err.message : String(err))
+            });
+        }
+    }
+
+    static async getPrenotazioniCameriereByCliente(req: AuthenticatedRequest, res: Response): Promise<void> {
+        try {
+            const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(Number(req.params.id_cliente));
 
             if (prenotazioni) res.json({ success: true, data: prenotazioni });
             else res.status(404).json({

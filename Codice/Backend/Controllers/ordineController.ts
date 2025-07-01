@@ -46,11 +46,11 @@ class OrdineController {
         }
     }
 
-    static async getIDOrdineByPrenotazioneAndUsername(req: Request, res: Response): Promise<void> {
+    static async getOrdineByPrenotazioneAndUsername(req: Request, res: Response): Promise<void> {
         try{
             const idPrenotazione: number = Number(req.params.id_prenotazione);
             const username = req.params.username;
-            const idOrdine = await OrdineService.getIDOrdineByPrenotazioneAndUsername(idPrenotazione, username);
+            const idOrdine = await OrdineService.getOrdineByPrenotazioneAndUsername(idPrenotazione, username);
 
             if(idOrdine) res.status(201).json({ 
                 success: true, 
