@@ -17,7 +17,6 @@ import {
 	IonToolbar,
 	ToastController,
 } from '@ionic/angular/standalone';
-import { HttpClientModule } from '@angular/common/http';
 
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ProdottoInput } from 'src/app/core/interfaces/Prodotto';
@@ -44,7 +43,6 @@ import { ProdottoService } from 'src/app/core/services/prodotto.service';
 		IonSelectOption,
 		CommonModule,
 		FormsModule,
-		HttpClientModule,
 	],
 })
 export class AggiungiPiattiPage implements OnInit {

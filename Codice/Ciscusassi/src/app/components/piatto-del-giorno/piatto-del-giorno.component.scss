@@ -102,6 +102,9 @@ img {
 	border-radius: 100%;
 	width: clamp(40%, 50vw, 80%);
 	max-width: 300px;
+	border-radius: 100%;
+	aspect-ratio: 1/1;
+	object-fit: cover;
 }
 
 @media (max-width: 768px) {

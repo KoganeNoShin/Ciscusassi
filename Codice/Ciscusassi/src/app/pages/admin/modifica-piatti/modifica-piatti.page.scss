@@ -1,100 +1,106 @@
-.page-title {
-	text-align: center;
-	font-size: 2rem;
-	margin-bottom: 1rem;
-	font-family: 'LucidaCalligraphy';
-	font-style: normal;
-	font-weight: lighter;
-	color: black;
-	padding: 0.5rem;
-}
-
 .custom-card {
 	background-color: #eae1e1;
 	border-radius: 25px;
-	padding: 1.5rem;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
 
-	/* NUOVO: dimensioni più piccole e centratura */
-	max-width: 700px;
-	margin: 0 auto;
-
-	.card-content {
-		display: flex;
-		flex-direction: row;
-		gap: 1rem;
-		align-items: center;
-		flex-wrap: wrap;
-	}
+	overflow: visible;
 
 	.image-upload {
-		flex: 1;
-		min-width: 200px;
-		min-height: 200px;
-		border: 2px solid #aaa;
-		border-radius: 20px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		max-width: 400px;
+		border: 2px solid black;
+		border-radius: 25px;
 		cursor: pointer;
-		background-color: #f0eaea;
-		transition: background-color 0.3s;
+		transition: all 0.3s ease-in-out;
 
 		ion-icon {
 			font-size: 60px;
 			color: #888;
 		}
 
+		ion-img {
+			width: 100%;
+			object-fit: cover; // Ritagliamo l'immagine se necessario
+			border-radius: 25px;
+			aspect-ratio: 1/1; // Impostiamo l'aspect ration quadrato
+		}
+
+		ion-img::part(image) {
+			border-radius: 22px !important; // Arrotondiamo anche l'immagine interna dell'ion-img
+		}
+
 		&:hover {
-			background-color: #e2dcdc;
+			filter: brightness(85%);
 		}
 	}
 
 	.form-fields {
-		flex: 1;
-		min-width: 250px;
+		min-width: 500px;
+		gap: 0.5em;
+
+		height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
-		font-family: 'LucidaCalligraphy';
-		font-style: normal;
-		display: flex;
+		justify-content: space-between;
 
 		ion-input,
-		ion-textarea {
-			--background: #ffffff;
-			--color: #000000;
+		ion-textarea,
+		ion-select {
+			--background: var(--ion-color-bianco);
+			--color: black;
 			border-radius: 10px;
 			width: 100%;
-			--border-radius: 10px !important;
-			text-justify: auto;
-			font-family: 'Times New Roman', Times, serif;
-			--padding-start: 0.4rem; /* sposta il testo verso destra */
 			font-size: 1.2rem;
-		}
-
-		ion-button {
-			margin-top: 0.5rem;
-			border-radius: 12px;
-			font-weight: bold;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-			color: #2dd36f;
-			font-family: 'LucidaCalligraphy';
 		}
 	}
 }
+
 ion-content {
-	--background: #ffffff;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	min-height: 100vh;
 }
 
-h1 {
-	text-align: center; /* centra il testo */
-	font-family: 'Lucida Calligraphy', cursive; /* font elegante */
-	font-size: 2.5rem; /* dimensione grande */
-	font-weight: lighter; /* peso leggero */
-	color: #333333; /* colore grigio scuro */
-	margin-bottom: 1.5rem; /* spazio sotto */
-	padding: 0.5rem 1rem; /* padding intorno */
-	border-radius: 15px; /* bordi arrotondati */
+.page-wrapper {
+	margin-top: 50px;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+}
+
+.campo-form {
+	border-radius: 12px;
+	overflow: hidden;
+	--background: white;
+	color: black;
+	--color: black;
+	--border-radius: 12px;
+	--inner-border: none;
+	--border: none;
+	width: 100%;
+}
+
+@media (max-width: 1024px) {
+	.image-upload {
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 30px;
+		max-width: 300px !important;
+		width: fit-content;
+	}
+
+	.page-wrapper {
+		margin-bottom: 50px;
+		overflow: scroll;
+	}
+
+	.form-fields {
+		min-width: 300px !important;
+		gap: 1rem;
+	}
+}
+
+ion-textarea .textarea-wrapper-inner.sc-ion-textarea-md {
+	height: 125px !important;
 }
