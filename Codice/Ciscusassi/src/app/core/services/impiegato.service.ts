@@ -21,7 +21,7 @@ export class ImpiegatoService {
 		impiegato: ImpiegatoInput
 	): Observable<ApiResponse<ImpiegatoRecord>> {
 		return this.http.post<ApiResponse<ImpiegatoRecord>>(
-			`${this.apiURL}/addImpiegato`,
+			`${this.apiURL}/filiale/addImpiegato`,
 			impiegato
 		);
 	}
@@ -31,14 +31,14 @@ export class ImpiegatoService {
 		impiegato: ImpiegatoData
 	): Observable<ApiResponse<ImpiegatoRecord>> {
 		return this.http.put<ApiResponse<ImpiegatoRecord>>(
-			`${this.apiURL}/updateImpiegato/${matricola}`,
+			`${this.apiURL}/filiale/updateImpiegato/${matricola}`,
 			impiegato
 		);
 	}
 
 	DeleteImpiegato(matricola: number): Observable<ApiResponse<void>> {
 		return this.http.delete<ApiResponse<void>>(
-			`${this.apiURL}/deleteImpiegato/${matricola}`
+			`${this.apiURL}/filiale/deleteImpiegato/${matricola}`
 		);
 	}
 
@@ -46,7 +46,7 @@ export class ImpiegatoService {
 		filialeId: number
 	): Observable<ApiResponse<ImpiegatoRecord[]>> {
 		return this.http.get<ApiResponse<ImpiegatoRecord[]>>(
-			`${this.apiURL}/impiegati/${filialeId}`
+			`${this.apiURL}/filiale/${filialeId}/impiegati`
 		);
 	}
 }

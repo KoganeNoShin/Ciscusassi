@@ -119,8 +119,7 @@ export class MenuTavoloPage implements OnInit {
 				const ordineResponse = await firstValueFrom(
 					this.ordineService.addOrdine(
 						this.nomeUtente,
-						prenotazione,
-						this.servizioAutenticazione.getIdUtente()
+						prenotazione
 					)
 				);
 				this.numeroOrdine = ordineResponse.data.id_ordine;

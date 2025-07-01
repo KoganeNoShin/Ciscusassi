@@ -18,12 +18,10 @@ export class OrdineService {
 	addOrdine(
 		username: string,
 		ref_prenotazione: number,
-		ref_cliente: number | null
 	): Observable<ApiResponse<any>> {
 		const body = {
 			username_ordinante: username,
 			ref_prenotazione: ref_prenotazione,
-			ref_cliente: ref_cliente,
 		};
 
 		return this.http.post<ApiResponse<any>>(
