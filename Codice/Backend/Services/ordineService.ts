@@ -40,9 +40,9 @@ class OrdineService {
         }
     }
 
-    static async aggiungiPagamento(importo: number, data_ora_pagamento: string, id_ordine: number): Promise<void> {
+    static async aggiungiPagamento(i: number, d: string, id_ordine: number): Promise<void> {
         try {
-            const pagamentoData = {importo, data_ora_pagamento} as PagamentoInput;
+            const pagamentoData = {importo: i, data_ora_pagamento: d} as PagamentoInput;
             const id_pagamento = await Pagamento.create(pagamentoData);
             if(!id_pagamento) {
                 throw new Error("Creazione del pagamento fallita.");
