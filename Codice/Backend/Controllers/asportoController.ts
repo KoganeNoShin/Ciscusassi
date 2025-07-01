@@ -5,8 +5,18 @@ import AsportoService, { AsportoData } from '../Services/asportoService';
 class AsportoController {
     static async addAsporto(req: Request, res: Response): Promise<void> {
         try {
-            const data: AsportoData = req.body;
-            
+            const { data_ora_consegna, data_ora_pagamento, importo, indirizzo, prodotti, ref_filiale } = req.body;
+
+            const data: AsportoData = {
+            data_ora_consegna,
+            data_ora_pagamento,
+            importo,
+            indirizzo,
+            prodotti,
+            ref_filiale,
+            ref_cliente: Number(req.headers.host)
+            };
+
             const result = await AsportoService.addAsporto(data);
 
             if(result) res.status(201).json({ success: true, data: req.body });

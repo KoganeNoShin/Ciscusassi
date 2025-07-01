@@ -27,19 +27,6 @@ function dataOraConsegnaValidator(chain: ValidationChain): ValidationChain {
         });
 }
 
-function ref_clienteValidator(chain: ValidationChain): ValidationChain {
-  return chain
-        .notEmpty().withMessage('Cliente obbligatorio!')
-        .isInt({ min: 1}).withMessage('Riferimento non valido, deve essere un numero intero positivo')
-        .bail()
-        .toInt()
-        .custom(async (value: number) => {
-            const cliente = await Cliente.getByNumeroCarta(value);
-            if(!cliente) throw new Error('Cliente inesistente, ricontrolla ID!');
-            return true;
-        });
-}
-
 function importoValidator(chain: ValidationChain): ValidationChain {
   return chain
         .notEmpty().withMessage('L\'importo è obbligatorio')
@@ -79,7 +66,6 @@ function prodottiValidator(chain: ValidationChain): ValidationChain {
 export const addAsportoValidator = [
     indirizzoValidator(body('indirizzo')),
     dataOraConsegnaValidator(body('data_ora_consegna')),
-    ref_clienteValidator(body('ref_cliente')), // da cambiare in idCliente
     idFilialeValidator(body('ref_filiale')),
     importoValidator(body('importo')),
     dataOraPagamentoValidator(body('data_ora_pagamento')),
