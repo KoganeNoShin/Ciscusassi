@@ -139,7 +139,7 @@ class OrdineService {
             }
         }
 
-        totaleRomana = totaleNotRomana / prenotazione.numero_persone;
+        totaleRomana = totaleRomana / prenotazione.numero_persone;
         const totale = totaleNotRomana + totaleRomana;
         return Math.round(totale * 100) / 100;
     }
