@@ -26,6 +26,7 @@ export class TavoloService {
 	totale: number = 0;
 	haOrdinato: boolean = false;
 	totaleQuery: number = 0;
+	haPagato: number | null = null;
 
 	setNumeroTavolo(numero: number): void {
 		if (this.tavolo) {
@@ -57,6 +58,14 @@ export class TavoloService {
 		this.tavolo = tavolo;
 	}
 
+	setHaPagato(haPagato: number | null){
+		this.haPagato = haPagato;
+	}
+
+	getHaPagato(): number | null{
+		return this.haPagato;
+	}
+	
 	getTavolo(): Tavolo | null {
 		return this.tavolo;
 	}

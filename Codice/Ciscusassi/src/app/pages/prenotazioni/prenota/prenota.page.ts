@@ -129,9 +129,8 @@ export class PrenotaPage implements OnInit {
 	// Carica le prenotazioni del cliente con ID 1 e filtra solo quelle future
 	private caricaPrenotazioniCliente(): void {
 		this.loadingPrenotazioni = true;
-		const idCliente = 1;
 
-		this.prenotazioneService.getPrenotazioniByCliente(idCliente).subscribe({
+		this.prenotazioneService.getPrenotazioniByCliente().subscribe({
 			next: (res) => {
 				if (res.success && res.data) {
 					const now = new Date();

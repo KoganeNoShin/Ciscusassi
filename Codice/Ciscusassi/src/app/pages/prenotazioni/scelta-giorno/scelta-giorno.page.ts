@@ -184,7 +184,7 @@ export class SceltaGiornoPage implements OnInit {
 		this.quartaFasciaNonDisponibile = true;
 
 		this.prenotazioneService
-			.tavoliInUso(this.idFiliale, this.dataSelezionata)
+			.tavoliInUso(this.dataSelezionata)
 			.pipe(take(1))
 			.subscribe({
 				next: (response) => {
@@ -266,7 +266,7 @@ export class SceltaGiornoPage implements OnInit {
 
 		return new Promise((resolve, reject) => {
 			this.prenotazioneService
-				.getPrenotazioniByCliente(idCliente)
+				.getPrenotazioniByCliente()
 				.subscribe({
 					next: (res) => {
 						if (res.success && res.data) {

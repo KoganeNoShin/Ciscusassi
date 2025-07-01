@@ -54,27 +54,29 @@ export class VisualizzaOrdiniPage implements OnInit {
 	// Metodo per terminare il servizio e passare al pagamento
 	terminaServizio() {
 		let count = 0;
-		this.prodotti$.subscribe(prodotti => {
+		this.prodotti$.subscribe((prodotti) => {
 			for (const prodotto of prodotti) {
-				if (prodotto.stato != "consegnato"){
+				if (prodotto.stato != 'consegnato') {
 					count++;
 				}
 			}
 
-			if (count == 0){
-				this.prodotti$.subscribe(prodottiArray => {
+			if (count == 0) {
+				this.prodotti$.subscribe((prodottiArray) => {
 					this.tavoloService.setOrdini(prodottiArray);
 				});
 				this.router.navigate(['/pagamento-tavolo']); // Naviga alla pagina di pagamento tavolo
 			} else {
-				this.toastController.create({
-					message: 'Per procedere al pagamento tutti i prodotti devono essere stati consegnati',
-					duration: 2000,
-					color: 'warning'
-				}).then(toast => toast.present());
+				this.toastController
+					.create({
+						message:
+							'Per procedere al pagamento tutti i prodotti devono essere stati consegnati',
+						duration: 2000,
+						color: 'warning',
+					})
+					.then((toast) => toast.present());
 			}
 		});
-		
 	}
 
 	// Metodo lifecycle Angular chiamato all'inizializzazione del componente

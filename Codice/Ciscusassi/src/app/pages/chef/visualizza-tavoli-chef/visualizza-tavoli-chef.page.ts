@@ -128,9 +128,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		try {
 			const filiale = this.authService.getFiliale();
 			const response = await lastValueFrom(
-				this.prenotazioneService.getPrenotazioniDelGiornoFiliale(
-					filiale
-				)
+				this.prenotazioneService.getPrenotazioniDelGiornoFiliale()
 			);
 
 			if (response.success && response.data?.length) {

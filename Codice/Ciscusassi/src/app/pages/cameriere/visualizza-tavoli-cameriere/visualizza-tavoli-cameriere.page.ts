@@ -135,7 +135,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 		// Locale chiuso il martedì (giorno 2)
 		if (giornoSettimana === 2) {
-			this.localeAperto = false;
+			this.localeAperto = true; //DA CAMBIARE IN FALSE
 		} else {
 			// Qui definisci gli orari di apertura del locale
 			// Esempio: aperto sempre (00:00-23:59) oppure aperto solo dalle 19:20 a mezzanotte
@@ -164,9 +164,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		try {
 			const filiale = this.authService.getFiliale();
 			const resp = await lastValueFrom(
-				this.prenotazioneService.getPrenotazioniDelGiornoFiliale(
-					filiale
-				)
+				this.prenotazioneService.getPrenotazioniDelGiornoFiliale()
 			);
 
 			if (resp.success && resp.data?.length) {
@@ -302,7 +300,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		if (refCliente !== null) {
 			try {
 				const cliResp = await lastValueFrom(
-					this.prenotazioneService.getPrenotazioniByCliente(
+					this.prenotazioneService.getPrenotazioniByClienteCameriere(
 						refCliente
 					)
 				);

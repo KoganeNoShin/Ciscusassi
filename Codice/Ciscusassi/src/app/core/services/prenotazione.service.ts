@@ -61,14 +61,20 @@ export class PrenotazioneService {
 	}
 
 	getPrenotazioniByCliente(
-		clienteId: number
 	): Observable<ApiResponse<PrenotazioneWithFiliale[]>> {
 		return this.http.get<ApiResponse<PrenotazioneWithFiliale[]>>(
-			`${this.apiURL}/prenotazioni/cliente/${clienteId}`
+			`${this.apiURL}/prenotazioni/cliente/`
 		);
 	}
 
-	
+	getPrenotazioniByClienteCameriere(
+		clienteId: number
+	): Observable<ApiResponse<PrenotazioneWithFiliale[]>> {
+		return this.http.get<ApiResponse<PrenotazioneWithFiliale[]>>(
+			`${this.apiURL}/prenotazioni/cameriere/${clienteId}/`
+		);
+	}
+
 	getTotaleByOrdine(
 		idOrdine: number
 	): Observable<ApiResponse<any>> {
@@ -78,10 +84,9 @@ export class PrenotazioneService {
 	}
 
 	getPrenotazioniDelGiornoFiliale(
-		filialeId: number
 	): Observable<ApiResponse<PrenotazioneRecord[]>> {
 		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(
-			`${this.apiURL}/filiale/${filialeId}/prenotazioni`
+			`${this.apiURL}/filiale/prenotazioni`
 		);
 	}
 
@@ -135,13 +140,12 @@ export class PrenotazioneService {
 		);
 	}
 	tavoliInUso(
-		id_filiale: number,
 		data: string
 	): Observable<ApiResponse<any>> {
 		return this.http
 			.get<{
 				[fascia: string]: number;
-			}>(`${this.apiURL}/filiale/${id_filiale}/tavoli-in-uso?data=${data}`)
+			}>(`${this.apiURL}/filiale/tavoli-in-uso?data=${data}`)
 			.pipe(
 				// Wrap the response in an ApiResponse object
 				map((data) => ({

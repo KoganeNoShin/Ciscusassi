@@ -45,7 +45,7 @@ export class MenuTavoloPage implements OnInit {
 	prodottiNelCarrello: ProdottoRecord[] = [];
 	totale: number = 0;
 	numeroOrdine: number = 0; // variabile locale per il numero ordine
-	pagato: boolean = false;
+	haPagato: number | null = null;
 
 	constructor(
 		private servizioCarrello: CarrelloService,
@@ -92,7 +92,25 @@ export class MenuTavoloPage implements OnInit {
 	}
 
 	async checkTotale() {
-		if (this.pagato) {
+		const prenotazione = this.tavoloService.getPrenotazione();
+		if (prenotazione !== null) {
+			try {
+				const response = await firstValueFrom(
+					this.ordineService.getProdottiOrdinatiByUsername(
+						prenotazione,
+						this.nomeUtente
+					)
+				);
+				if (response?.data?.id_ordine) {
+					this.haPagato = response.data.ref_pagamento;
+				}
+			} catch (error) {
+				console.error('Errore nel recupero del numero ordine:', error);
+				this.numeroOrdine = 0;
+				this.tavoloService.setNumeroOrdine(0);
+			}
+		}
+		if (this.haPagato != null) {
 			return this.mostraToast('Hai già pagato!', 'warning');
 		} else {
 			this.prodottiNelCarrello = this.servizioCarrello.getProdotti();
@@ -180,18 +198,36 @@ export class MenuTavoloPage implements OnInit {
 	}
 
 	async visualizzaOrdini() {
-		if (this.pagato) {
-			return this.mostraToast('Hai già pagato!', 'warning');
-		} else {
-			if (this.numeroOrdine === 0) {
-				return this.mostraToast(
-					'Non hai ancora effettuato ordini!',
-					'warning'
-				);
-			}
-
+		const prenotazione = this.tavoloService.getPrenotazione();
+		if (prenotazione !== null) {
 			try {
 				const response = await firstValueFrom(
+					this.ordineService.getProdottiOrdinatiByUsername(
+						prenotazione,
+						this.nomeUtente
+					)
+				);
+				if (response?.data?.id_ordine) {
+					this.haPagato = response.data.ref_pagamento;
+				}
+			} catch (error) {
+				console.error('Errore nel recupero del numero ordine:', error);
+				this.numeroOrdine = 0;
+				this.tavoloService.setNumeroOrdine(0);
+			}
+		}
+		if (this.numeroOrdine === 0) {
+			return this.mostraToast(
+				'Non hai ancora effettuato ordini!',
+				'warning'
+			);
+		}
+
+		if (this.haPagato != null) {
+			return this.mostraToast('Hai già pagato!', 'warning');
+		} else {
+			try {
+				const response: any = await firstValueFrom(
 					this.ordineService.getProdottiOrdinatiByNumeroOrdine(
 						this.numeroOrdine
 					)
