@@ -1,6 +1,7 @@
 import Cliente, { ClienteData } from '../Models/cliente';
 import AuthService from '../Services/authService';
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../Middleware/authMiddleware';
 
 class ClienteController {
 	// Registra un nuovo cliente
@@ -24,19 +25,11 @@ class ClienteController {
 	}
 
 	// Restituisce i punti accumulati da un cliente autenticato
-	static async getPoints(req: Request, res: Response): Promise<void> {
-		const token = req.headers.authorization?.replace('Bearer ', '');
-
-		if (!token) {
-			res.status(403).json({
-				success: false,
-				message: 'Token mancante'
-			});
-			return;
-		}
+	static async getPoints(req: AuthenticatedRequest, res: Response): Promise<void> {
+		const id_utente = req.user?.id;
 
 		try {
-			const punti = await Cliente.getPoints(token);
+			const punti = await Cliente.getPuntiCliente(Number(id_utente));
 			res.status(200).json({
 				success: true,
 				data: punti
