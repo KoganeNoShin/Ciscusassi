@@ -1,5 +1,5 @@
 ion-card {
-	min-width: 250px;
+	min-width: 300px;
 	max-width: 300px;
 	height: 100%; // In modo tale da uniformare la lunghezza in tutte le card
 	border-radius: 12px;
@@ -9,7 +9,7 @@ ion-card {
 		transform 0.2s ease-in-out;
 	position: relative; // Dobbiamo impostare la posizione relative per poi poter usare la absolute nei bottoni
 
-	padding-bottom: 150px; // In modo tale  da fare entrare i bottoni
+	padding-bottom: 250px; // In modo tale  da fare entrare i bottoni
 
 	display: flex;
 	flex-direction: column;
@@ -30,7 +30,7 @@ ion-card {
 	}
 
 	.button-div {
-		position: absolute; // Siccome devono essere quanto più in basso possibile, dobbiamo usare absolute
+		position: absolute; // Siccome devono essere quanto più in basso possibile, dobbiamo usare sticky
 		bottom: 0; // Mettiamo i bottoni al di sotto di tutto il resto
 		width: 100%; // Assicura che i bottoni occupino tutta la larghezza della card
 	}
@@ -41,45 +41,10 @@ ion-card {
 	}
 }
 
-.star-icon {
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	font-size: 28px;
-	color: #444;
-	cursor: pointer;
-	transition: color 0.3s ease;
-
-	:hover {
-		color: gold;
-	}
-
-	:active {
-		color: gold;
-	}
-}
-
-.piatto-rotante {
-	animation: rotazione 20s linear infinite;
-}
-
-.sfondo-verde {
-	background-color: #d6fcdb !important;
-}
-
-@keyframes rotazione {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
 ion-img {
 	padding: 20px;
-	min-width: 200px;
-	max-width: 300px;
+	min-width: 100px;
+	max-width: 200px;
 }
 
 ion-img::part(image) {

@@ -1,0 +1,65 @@
+<ion-card color="bianconeve">
+	<ion-img [src]="filiale.immagine" alt="Immagine della filiale" />
+
+	<ion-card-header>
+		<ion-card-title>
+			<ion-text class="ion-text-center">
+				<h6>{{ filiale.indirizzo }}</h6>
+			</ion-text>
+
+			<ion-text class="ion-text-center">
+				<h6>Località: {{ filiale.comune }}</h6>
+			</ion-text>
+		</ion-card-title>
+	</ion-card-header>
+
+	<ion-card-content>
+		<ion-text class="ion-text-center">
+			<p>Numero di tavoli totali: {{ filiale.num_tavoli }}<br /></p>
+		</ion-text>
+	</ion-card-content>
+
+	<div class="ion-padding-top button-div">
+		<ion-button
+			[routerLink]="['/modifica-filiali']"
+			[state]="{ filiale: filiale }"
+			size="default"
+			fill="solid"
+			shape="round"
+			color="verdechiaro"
+			expand="block"
+			type="submit"
+			class="ion-padding-vertical ion-padding-horizontal"
+		>
+			Modifica filiale
+		</ion-button>
+		<!-- Modificato: passiamo filialeId anche come query param -->
+		<ion-button
+			[routerLink]="['/modifica-dipendenti']"
+			[state]="{ filialeId: filiale.id_filiale }"
+			[queryParams]="{ id_filiale: filiale.id_filiale }"
+			size="default"
+			fill="solid"
+			shape="round"
+			color="verdechiaro"
+			expand="block"
+			type="submit"
+			class="ion-padding-vertical ion-padding-horizontal"
+		>
+			Modifica dipendenti
+		</ion-button>
+
+		<ion-button
+			(click)="showAlertDeleteFiliale()"
+			size="default"
+			fill="solid"
+			shape="round"
+			color="verdechiaro"
+			expand="block"
+			type="submit"
+			class="ion-padding-vertical ion-padding-horizontal"
+		>
+			Rimuovi filiale
+		</ion-button>
+	</div>
+</ion-card>

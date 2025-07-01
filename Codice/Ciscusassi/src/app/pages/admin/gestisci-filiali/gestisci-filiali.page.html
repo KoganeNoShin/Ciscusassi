@@ -1,89 +1,57 @@
-<ion-header>
-	<ion-toolbar color="primary">
-		<ion-title> Titolo della Pagina </ion-title>
-	</ion-toolbar>
-</ion-header>
+<ion-content
+	[fullscreen]="true"
+	class="ion-justify-content-center ion-align-items-center"
+	color="bianco"
+>
+	<div class="page-wrapper">
+		<ion-text class="ion-text-center ion-padding">
+			<h2>Gestisci Filiali</h2>
+		</ion-text>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-	<div class="page-title">
-		Gestisci Filiali
-		<ion-chip color="secondary" (click)="filterTutti()"  [outline]="selectedCategoria !== 'Tutte'">Visualizza tutte </ion-chip>
-	</div>
-	<div class="input-row">
-		<div class="input-wrapper">
-			<ion-input placeholder="Cerca una filiale..."
-				 [(ngModel)]="searchTerm"
-  					(ionInput)="applyFilters()"
-				 ></ion-input>
+		<!-- Div della barra di ricerca -->
+
+		<div class="input-div ion-padding ion-margin">
+			<ion-searchbar
+				placeholder="Cerca una filiale..."
+				inputmode="text"
+				type="text"
+				(ionInput)="applyFilters()"
+				[(ngModel)]="searchTerm"
+				[debounce]="250"
+				animated="true"
+				show-clear-button="focus"
+				class="ion-padding-horizontal"
+			></ion-searchbar>
 		</div>
-		<!-- Puoi aggiungere altri elementi qui, se vuoi -->
-	</div>
-	<div class="grid-container">
-		<div class="center-container">
-			<ion-button
-				[routerLink]="['/aggiungi-filiali']"
-				class="circle-button"
-				>+<ion-icon name="add"></ion-icon>
-			</ion-button>
+
+		@if (loading){
+		<div class="ion-text-center ion-padding ion-margin">
+			<ion-spinner name="circular" color="rosso"></ion-spinner>
 		</div>
-		@for (f of filialiFiltered; track f.id_filiale) {
-		<ion-card>
-			<ion-img
-				[src]="f.immagine"
-				alt="Immagine della filiale"
-				class="immagine-rotante"
-			></ion-img>
-
-			<ion-card-header>
-				<ion-card-title
-					>{{ f.indirizzo }} <br />
-					Località: {{ f.comune}}
-				</ion-card-title>
-				Numero di tavoli totali: {{ f.num_tavoli }}<br />
-				Id filiale: {{f.id_filiale}}<br />
-				latitudine: {{f.latitudine}}<br />
-				longitudine: {{f.longitudine}}<br />
-			</ion-card-header>
-
-			<ion-card-content>
-				<div class="button-vertical">
-					<ion-button
-						[routerLink]="['/modifica-filiali']"
-						[state]="{ filiale: f }"
-						expand="block"
-						color="secondary"
-						>Modifica filiale</ion-button
-					>
-					<!-- Modificato: passiamo filialeId anche come query param -->
-					<ion-button
-						[routerLink]="['/modifica-dipendenti']"
-						[state]="{ filialeId: f.id_filiale }"
-						[queryParams]="{ id_filiale: f.id_filiale }"
-						expand="block"
-						color="secondary"
-						>Modifica dipendenti</ion-button
-					>
-
-					<ion-button
-						(click)="showAlert(f)"
-						expand="block"
-						color="primary"
-						>Rimuovi filiale</ion-button
-					>
-					
-				</div>
-			</ion-card-content>
-		</ion-card>
+		}@else if(error){
+		<ion-text class="ion-text-center">
+			<h2 class="text-color-rosso">
+				ERRORE: Per piacere riprova tra poco!
+			</h2>
+		</ion-text>
+		}@else {
+		<div class="grid-container">
+			<div class="button-wrapper">
+				<ion-button
+					[routerLink]="['/aggiungi-filiali']"
+					class="circle-button text-color-bianco"
+					color="verdechiaro"
+				>
+					<ion-icon name="add" size="large" />
+				</ion-button>
+			</div>
+			@for (filiale of filialiFiltered; track filiale.id_filiale) {
+			<app-filiale-amministratore
+				[filiale]="filiale"
+				(showAlertDeleteFilialeEmitter)="showAlertDeleteFiliale($event)"
+			/>
+			}
+		</div>
 		}
 	</div>
-
-	<!-- Alert fuori dal ciclo -->
-	<ion-alert
-		[isOpen]="isAlertOpen"
-		header="Conferma"
-		[message]="'Vuoi rimuovere la filiale: ' + (selectedFiliale?.indirizzo || '') + '?'"
-		[buttons]="alertButtons"
-		(didDismiss)="isAlertOpen = false"
-	>
-	</ion-alert>
 </ion-content>

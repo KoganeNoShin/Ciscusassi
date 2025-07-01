@@ -2,26 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-	IonCard,
-	IonCardContent,
-	IonCardHeader,
-	IonCardTitle,
-	IonAlert,
-	IonInput,
 	IonContent,
-	IonHeader,
-	IonImg,
-	IonTitle,
-	IonToolbar,
 	IonButton,
 	IonIcon,
-	IonChip,
 	ToastController,
+	IonSearchbar,
+	IonText,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { RouterModule, Router } from '@angular/router';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { FilialeAmministratoreComponent } from 'src/app/components/filiale-amministratore/filiale-amministratore.component';
+
+import { AlertController } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { add } from 'ionicons/icons';
 
 @Component({
 	selector: 'app-gestisci-filiali',
@@ -29,23 +26,16 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 	styleUrls: ['./gestisci-filiali.page.scss'],
 	standalone: true,
 	imports: [
+		IonText,
 		IonContent,
 		RouterModule,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
-		IonAlert,
-		IonInput,
+		FilialeAmministratoreComponent,
 		CommonModule,
 		FormsModule,
-		IonCard,
-		IonImg,
-		IonChip,
-		IonCardHeader,
-		IonCardTitle,
-		IonCardContent,
+		IonSearchbar,
 		IonButton,
 		IonIcon,
+		IonSpinner,
 	],
 })
 export class GestisciFilialiPage implements OnInit {
@@ -64,8 +54,11 @@ export class GestisciFilialiPage implements OnInit {
 	constructor(
 		private filialeService: FilialeService,
 		private toastController: ToastController,
+		private alertController: AlertController,
 		private router: Router
-	) {}
+	) {
+		addIcons({ add });
+	}
 
 	ngOnInit() {
 		// Recupera tutte le filiali da backend
@@ -107,13 +100,46 @@ export class GestisciFilialiPage implements OnInit {
 	}
 
 	// Mostra alert di conferma eliminazione filiale
-	showAlert(filiale: FilialeRecord) {
+	async showAlertDeleteFiliale(filiale: FilialeRecord) {
 		this.selectedFiliale = filiale;
 		this.isAlertOpen = true;
+
+		const alert = await this.alertController.create({
+			header: 'Conferma cancellazione',
+			message: `Sei sicuro di voler cancellare la filiale ${this.selectedFiliale.indirizzo}?`,
+			buttons: [
+				{
+					text: 'Annulla',
+					role: 'cancel',
+					handler: async () => {
+						this.cancellaEliminaFiliale();
+					},
+					cssClass: [
+						'alert-button-cancel',
+						'bg-color-rosso',
+						'text-color-bianco',
+					],
+				},
+				{
+					text: 'Conferma',
+					handler: async () => {
+						this.confermaEliminaFiliale();
+					},
+					cssClass: [
+						'alert-button-confirm',
+						'bg-color-verdechiaro',
+						'text-color-bianco',
+					],
+				},
+			],
+			cssClass: ['custom-alert', 'text-color-bianco'],
+		});
+
+		await alert.present();
 	}
 
 	// Conferma eliminazione filiale chiamando il servizio
-	async onConfirm() {
+	async confermaEliminaFiliale() {
 		if (this.selectedFiliale) {
 			const id = this.selectedFiliale.id_filiale;
 			this.filialeService.deleteFiliale(id).subscribe({
@@ -149,24 +175,10 @@ export class GestisciFilialiPage implements OnInit {
 	}
 
 	// Annulla l'azione di eliminazione e chiude alert
-	onCancel() {
+	cancellaEliminaFiliale() {
 		this.isAlertOpen = false;
 		this.selectedFiliale = null;
 	}
-
-	// Pulsanti da mostrare nell'alert di conferma
-	alertButtons = [
-		{
-			text: 'Annulla',
-			role: 'cancel',
-			handler: () => this.onCancel(),
-		},
-		{
-			text: 'OK',
-			role: 'confirm',
-			handler: () => this.onConfirm(),
-		},
-	];
 
 	// Naviga alla pagina di modifica passando la filiale selezionata
 	modificaFiliale(filiale: FilialeRecord) {
