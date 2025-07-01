@@ -66,6 +66,43 @@ class Cliente {
 		});
 	}
 
+	// Restituisce i punti di un cliente dato l'ID
+	static async getPuntiCliente(idCliente: number): Promise<number> {
+		return new Promise((resolve, reject) => {
+			const query = 'SELECT punti FROM clienti WHERE id_cliente = ?';
+			db.get(query, [idCliente], (err: Error | null, row: { punti: number }) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getPuntiCliente:', err.message);
+					return reject(err);
+				}
+				if (!row) {
+					console.warn('⚠️ [DB WARNING] getPuntiCliente: Cliente non trovato');
+					return resolve(0); // Restituisce 0 se il cliente non esiste
+				}
+				resolve(row.punti);
+			});
+		});
+	}
+
+	// Aggiorna i punti di un cliente dato l'ID
+	static async setPuntiCliente(idCliente: number, nuoviPunti: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const query = 'UPDATE clienti SET punti = ? WHERE id_cliente = ?';
+			db.run(query, [nuoviPunti, idCliente], function (err: Error | null) {
+				if (err) {
+					console.error('❌ [DB ERROR] setPuntiCliente:', err.message);
+					return reject(err);
+				}
+				if (this.changes === 0) {
+					console.warn('⚠️ [DB WARNING] setPuntiCliente: Cliente non trovato');
+					return reject('Cliente non trovato');
+				}
+				resolve();
+			});
+		});
+	}
+
+
 	// Restituisce tutti i clienti
 	static async getAll(): Promise<ClienteRecord[]> {
 		return new Promise((resolve, reject) => {
@@ -145,13 +182,6 @@ class Cliente {
 		const user = await this.getByEmail(email);
 		if (!user) return false;
 		return this.comparePassword(password, user.password);
-	}
-
-	// Restituisce i punti accumulati in base al token
-	static async getPoints(token: string): Promise<number> {
-		const user = await this.getByToken(token);
-		if (!user) throw new Error('Utente non trovato o token non valido');
-		return user.punti;
 	}
 }
 

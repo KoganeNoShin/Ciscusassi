@@ -109,6 +109,7 @@ class OrdineService {
     }
 
     static async calcolaImportoTotale(ordineId: number): Promise<number> {
+        let ordinatoPiattoDelGiorno = false;
         // Recupero Ordine
         const ordine = await Ordine.getById(ordineId);
         if(ordine == null) {
@@ -128,6 +129,9 @@ class OrdineService {
                 if(!prodotto) {
                     throw new Error(`Prodotto con ID ${prod_asp.ref_prodotto} non trovato`);
                 }
+                if(prodotto.is_piatto_giorno) {
+                    ordinatoPiattoDelGiorno = true;
+                }
                 totaleNotRomana += prodotto.costo;
             }
         }
@@ -141,12 +145,28 @@ class OrdineService {
                 if(!prodotto) {
                     throw new Error(`Prodotto con ID ${prod_asp.ref_prodotto} non trovato`);
                 }
+                if(prodotto.is_piatto_giorno) {
+                    ordinatoPiattoDelGiorno = true;
+                }
                 totaleRomana += prodotto.costo;
             }
         }
 
         totaleRomana = totaleRomana / prenotazione.numero_persone;
-        const totale = totaleNotRomana + totaleRomana;
+        let totale = totaleNotRomana + totaleRomana;
+
+        if(ordine.ref_cliente != null) {
+            let punti = Number(Cliente.getPuntiCliente(ordine.ref_cliente));
+            if(punti >= 50) {
+                totale = totale * 90 / 100; // sconto 10%
+                punti -= 50;
+            }
+            punti = Math.round(totale/10);
+            if(ordinatoPiattoDelGiorno) {
+                punti += 10;
+            }
+            Cliente.setPuntiCliente(ordine.ref_cliente, punti);
+        }
         return Math.round(totale * 100) / 100;
     }
 }

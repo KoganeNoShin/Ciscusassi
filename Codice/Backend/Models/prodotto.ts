@@ -13,6 +13,7 @@ export interface ProdottoInput {
 
 export interface ProdottoRecord extends ProdottoInput {
 	id_prodotto: number;
+	is_piatto_giorno?: boolean;
 }
 
 export class Prodotto {
