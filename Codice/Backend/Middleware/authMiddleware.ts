@@ -7,6 +7,7 @@ export interface AuthenticatedRequest extends Request {
 	user?: {
 		id: number | string;
 		ruolo: 'cliente' | 'chef' | 'amministratore' | 'cameriere';
+		id_filiale?: number;
 		[key: string]: any;
 	};
 }
@@ -54,7 +55,8 @@ const authMiddleware = async (req: AuthenticatedRequest, res: Response, next: Ne
 			req.user = {
 				...impiegato,
 				id: impiegato.matricola,
-				ruolo: impiegato.ruolo.toLowerCase() as 'cliente' | 'chef' | 'amministratore' | 'cameriere'
+				ruolo: impiegato.ruolo.toLowerCase() as 'chef' | 'amministratore' | 'cameriere',
+				id_filiale: impiegato.ref_filiale
 			};
 
 			if (expiredToken) {
