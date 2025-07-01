@@ -7,7 +7,7 @@ class OrdineController {
     static async addOrdine(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const {ref_prenotazione, username_ordinante} = req.body;
-            const ref_cliente = Number(req.user?.id);
+            const ref_cliente = req.user?.id ? Number(req.user.id) : null;
 
             const ordineInput: OrdineInput = {ref_prenotazione, username_ordinante, ref_cliente};
             const ordine = await OrdineService.creaOrdine(ordineInput);
