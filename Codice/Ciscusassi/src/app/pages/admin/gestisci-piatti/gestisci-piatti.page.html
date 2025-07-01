@@ -72,7 +72,7 @@
 		<div class="ion-text-center ion-padding ion-margin">
 			<ion-spinner name="circular" color="rosso"></ion-spinner>
 		</div>
-		} @else{ @if(error){
+		} @else if(error){
 		<ion-text class="ion-text-center">
 			<h2 class="text-color-rosso">
 				ERRORE: Per piacere riprova tra poco!
@@ -85,8 +85,9 @@
 					[routerLink]="['/aggiungi-piatti']"
 					class="circle-button text-color-bianco"
 					color="verdechiaro"
-					>+<ion-icon name="add"></ion-icon
-				></ion-button>
+				>
+					<ion-icon name="add" size="large" />
+				</ion-button>
 			</div>
 
 			@for (prodotto of filteredPiatti; track prodotto.id_prodotto) {
@@ -95,10 +96,10 @@
 				(changePiattoDelGiornoEmitter)="changePiattoDelGiorno($event)"
 				(showAlertDeletePiattoEmitter)="showAlertDeletePiatto($event)"
 				[idPiattoDelGiorno]="piattoDelGiorno!.id_prodotto"
-			></app-piatto-amministratore>
+			/>
 
 			}
 		</div>
-		} }
+		}
 	</div>
 </ion-content>

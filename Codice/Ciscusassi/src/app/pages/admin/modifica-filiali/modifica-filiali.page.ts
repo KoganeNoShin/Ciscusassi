@@ -3,16 +3,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonCard,
-	IonIcon,
 	IonInput,
 	IonButton,
 	ToastController,
 	IonList,
 	IonItem,
+	IonText,
+	IonCardContent,
+	IonGrid,
+	IonCol,
+	IonRow,
+	IonImg,
 } from '@ionic/angular/standalone';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeInput } from 'src/app/core/interfaces/Filiale';
@@ -24,19 +26,20 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 	styleUrls: ['./modifica-filiali.page.scss'],
 	standalone: true,
 	imports: [
+		IonImg,
+		IonCol,
+		IonGrid,
+		IonCardContent,
+		IonText,
 		IonContent,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
 		CommonModule,
 		FormsModule,
 		IonCard,
-		IonIcon,
 		IonInput,
 		IonButton,
-		HttpClientModule,
 		IonList,
 		IonItem,
+		IonRow,
 	],
 })
 export class ModificaFilialiPage implements OnInit {
@@ -69,6 +72,7 @@ export class ModificaFilialiPage implements OnInit {
 	}
 
 	onFileSelected(event: any): void {
+		console.log('File selezionato:', event.target.files[0]); // Log per verificare se l'evento viene attivato
 		// Gestione selezione file immagine e conversione in base64 per anteprima/salvataggio
 		const file = event.target.files[0];
 		if (file && file.type.startsWith('image/')) {
@@ -78,7 +82,7 @@ export class ModificaFilialiPage implements OnInit {
 			};
 			reader.readAsDataURL(file);
 		} else {
-			this.presentToast('Seleziona un file immagine valido.', 'warning');
+			this.presentToast('Seleziona un file immagine valida.', 'warning');
 		}
 	}
 

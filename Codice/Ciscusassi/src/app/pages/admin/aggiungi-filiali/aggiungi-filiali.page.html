@@ -1,85 +1,107 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Aggiungi Filiale</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content
+	[fullscreen]="true"
+	class="ion-justify-content-center ion-align-items-center"
+	color="bianco"
+>
+	<div class="page-wrapper ion-padding">
+		<ion-text class="ion-text-center">
+			<h2>Aggiungi Filiale</h2>
+		</ion-text>
+		<ion-card class="ion-padding ion-margin">
+			<ion-card-content>
+				<ion-grid fixed>
+					<ion-row>
+						<ion-col size="12" sizeLg="6">
+							<!-- Box immagine cliccabile -->
+							<div
+								class="image-upload bg-color-bianconeve"
+								(click)="fileInput.click()"
+							>
+								<input
+									#fileInput
+									type="file"
+									accept="image/jpg, image/png, image/jpeg, image/webp"
+									hidden
+									(change)="onFileSelected($event)"
+								/>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <div class="page-title">AGGIUNGI FILIALE</div>
+								<ion-img
+									[src]="immagineBase64 ? immagineBase64 : 'assets/PlaceholderImage.jpg'"
+									alt="Anteprima immagine"
+								/>
+							</div>
+						</ion-col>
+						<ion-col size="12" sizeLg="6">
+							<!-- Campi form -->
+							<div class="form-fields">
+								<ion-item class="campo-form" lines="none">
+									<ion-input
+										placeholder="Inserisci l'indirizzo della filiale..."
+										label="Indirizzo"
+										[(ngModel)]="indirizzo"
+										(ionInput)="onIndirizzoInput()"
+										[debounce]="250"
+										class="ion-padding-horizontal"
+									/>
+								</ion-item>
 
-  <ion-card class="custom-card">
-    <div class="card-content">
-      <!-- Box immagine cliccabile -->
-      <div
-        class="image-upload"
-        (click)="fileInput.click()"
-        style="cursor: pointer; text-align: center"
-      >
-        <input
-          #fileInput
-          type="file"
-          accept="image/*"
-          hidden
-          (change)="onFileSelected($event)"
-        />
+								@if(suggestions.length > 0){
+								<div class="autocomplete-wrapper">
+									<ion-list>
+										@for(suggestion of suggestions; track
+										suggestion){
+										<ion-item
+											(click)="selectSuggestion(suggestion)"
+											button
+										>
+											{{ suggestion }}
+										</ion-item>
+										}
+									</ion-list>
+								</div>
+								}
 
-        <ng-container *ngIf="immagineBase64; else placeholder">
-          <img
-            [src]="immagineBase64"
-            alt="Anteprima Immagine Filiale"
-            style="
-              max-width: 100%;
-              border-radius: 8px;
-              margin-bottom: 10px;
-            "
-          />
-        </ng-container>
+								<!-- Suggerimenti indirizzo -->
 
-        <ng-template #placeholder>
-          <h1>Inserisci un'immagine per la filiale</h1>
-          <ion-icon name="image-outline" size="large"></ion-icon>
-        </ng-template>
-      </div>
+								<ion-item class="campo-form" lines="none">
+									<ion-input
+										type="text"
+										label="Comune"
+										color="rosso"
+										placeholder="Inserisci il comune della filiale..."
+										[(ngModel)]="comune"
+									/>
+								</ion-item>
 
-      <!-- Campi form -->
-      <div class="form-fields">
-        <!-- INPUT con autocomplete -->
-        <ion-input
-          placeholder="Inserisci l'indirizzo"
-          [(ngModel)]="indirizzo"
-          (ionInput)="onIndirizzoInput()"
-        ></ion-input>
+								<ion-item class="campo-form" lines="none">
+									<ion-input
+										type="number"
+										label="Tavoli"
+										color="rosso"
+										placeholder="Inserisci il numero dei tavoli..."
+										[(ngModel)]="numTavoli"
+										min="1"
+									/>
+								</ion-item>
 
-        <!-- Suggerimenti indirizzo -->
-        <ion-list *ngIf="suggestions.length > 0">
-          <ion-item
-            *ngFor="let suggestion of suggestions"
-            (click)="selectSuggestion(suggestion)"
-            button
-          >
-            {{ suggestion }}
-          </ion-item>
-        </ion-list>
-
-        <ion-input
-          placeholder="Inserisci il comune"
-          [(ngModel)]="comune"
-        ></ion-input>
-
-        <ion-input
-          type="number"
-          placeholder="Inserisci il numero di tavoli"
-          [(ngModel)]="numTavoli"
-        ></ion-input>
-
-        <ion-button
-          expand="block"
-          color="success"
-          (click)="creaFiliale()"
-        >
-          CREA FILIALE
-        </ion-button>
-      </div>
-    </div>
-  </ion-card>
+								<ion-button
+									size="default"
+									fill="solid"
+									shape="round"
+									color="verdechiaro"
+									expand="block"
+									type="submit"
+									class="ion-padding-vertical"
+									(click)="creaFiliale()"
+									[disabled]="!immagineBase64 || !indirizzo || !comune || !numTavoli || numTavoli <= 0"
+								>
+									CREA FILIALE
+								</ion-button>
+							</div>
+						</ion-col>
+					</ion-row>
+				</ion-grid>
+			</ion-card-content>
+		</ion-card>
+	</div>
 </ion-content>

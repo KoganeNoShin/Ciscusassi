@@ -4,7 +4,7 @@
 	color="bianco"
 >
 	<div class="page-wrapper">
-		<ion-text class="ion-text-center">
+		<ion-text class="ion-text-center ion-padding">
 			<h2>Crea Piatto</h2>
 		</ion-text>
 		<ion-card class="ion-padding ion-margin">
@@ -58,6 +58,7 @@
 								<ion-item class="campo-form" lines="none">
 									<ion-input
 										type="number"
+										min="0.1"
 										label="Costo"
 										color="rosso"
 										placeholder="Inserisci il costo del piatto..."
@@ -91,6 +92,7 @@
 									type="submit"
 									class="ion-padding-vertical"
 									(click)="creaPiatto()"
+									[disabled]="!immagineBase64 || !nome || !descrizione || !costo || !categoria"
 								>
 									CREA PIATTO
 								</ion-button>
