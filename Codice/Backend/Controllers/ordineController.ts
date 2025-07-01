@@ -34,7 +34,7 @@ class OrdineController {
 
     static async addPagamento(req: Request, res: Response): Promise<void> {
         try {
-            await OrdineService.aggiungiPagamento(req.body.ref_pagamento, req.body.id_ordine);
+            await OrdineService.aggiungiPagamento(req.body.ref_pagamento, req.body.data_ora_pagamento, req.body.id_ordine);
             res.json({ success: true, message: 'Pagamento aggiunto con successo' });
         } catch (err) {
             console.error(err);

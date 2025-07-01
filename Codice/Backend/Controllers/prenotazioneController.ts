@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../Middleware/authMiddleware';
 import PrenotazioneService from '../Services/prenotazioneService';
 
 class PrenotazioneController {
@@ -150,9 +151,9 @@ class PrenotazioneController {
         }
     }
 
-    static async getPrenotazioniByCliente(req: Request, res: Response): Promise<void> {
+    static async getPrenotazioniByCliente(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
-            const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(parseInt(req.params.id_cliente));
+            const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(Number(req.user?.id));
 
             if (prenotazioni) res.json({ success: true, data: prenotazioni });
             else res.status(404).json({
@@ -169,7 +170,7 @@ class PrenotazioneController {
         }
     }
 
-    static async getPrenotazioniDelGiornoFiliale(req: Request, res: Response): Promise<void> {
+    static async getPrenotazioniDelGiornoFiliale(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const { data } = req.query;
             let dataFormattata: string;
@@ -185,7 +186,8 @@ class PrenotazioneController {
             }
 
             // Recupera le prenotazioni per la filiale e la data
-            const prenotazioni = await PrenotazioneService.getPrenotazioniDataAndFiliale(parseInt(req.params.id_filiale), dataFormattata);
+            const id_Filiale = Number(req.user?.ref_filiale); 
+            const prenotazioni = await PrenotazioneService.getPrenotazioniDataAndFiliale(id_Filiale, dataFormattata);
 
             if (prenotazioni && prenotazioni.length > 0) {
                 res.json({ success: true, data: prenotazioni });

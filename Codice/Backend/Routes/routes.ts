@@ -268,16 +268,16 @@ router.get(
 );
 
 router.get(
-	'/prenotazioni/cliente/:id_cliente',
+	'/prenotazioni/cliente',
 	authMiddleware,
 	validate,
 	PrenotazioneController.getPrenotazioniByCliente
 );
 
 router.get(
-	'/filiale/:id_filiale/prenotazioni',
+	'/filiale/prenotazioni',
 	authMiddleware,
-	idFilialeValidator(param('id_filiale')),
+	roleMiddleware(['amministratore', 'chef', 'cameriere']),
 	validate,
 	PrenotazioneController.getPrenotazioniDelGiornoFiliale
 );

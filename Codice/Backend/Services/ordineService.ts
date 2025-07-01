@@ -3,6 +3,7 @@ import Prenotazione from "../Models/prenotazione";
 import OrdProd from "../Models/ord_prod";
 import Prodotto from "../Models/prodotto";
 import Cliente from "../Models/cliente";
+import Pagamento, { PagamentoInput } from "../Models/pagamento";
 
 class OrdineService {
     static async creaOrdine(data: OrdineInput): Promise<number> {
@@ -39,9 +40,14 @@ class OrdineService {
         }
     }
 
-    static async aggiungiPagamento(ref_pagamento: number, id_ordine: number): Promise<void> {
+    static async aggiungiPagamento(importo: number, data_ora_pagamento: string, id_ordine: number): Promise<void> {
         try {
-            return await Ordine.addPagamento(ref_pagamento, id_ordine);
+            const pagamentoData = {importo, data_ora_pagamento} as PagamentoInput;
+            const id_pagamento = await Pagamento.create(pagamentoData);
+            if(!id_pagamento) {
+                throw new Error("Creazione del pagamento fallita.");
+            }
+            return await Ordine.addPagamento(id_pagamento, id_ordine);
         } catch (error) {
             console.error('❌ [OrdineService] Errore durante l\'aggiunta del pagamento all\'ordine:', error);
             throw error;
