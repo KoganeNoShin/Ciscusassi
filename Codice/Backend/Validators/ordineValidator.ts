@@ -54,7 +54,7 @@ function importoPagamentoValidator(chain: ValidationChain): ValidationChain {
                 throw new Error("ID ordine non valido");
             }
 
-            const importoMinimo = await OrdineService.calcolaImportoTotale(id_ordine);
+            const importoMinimo = await OrdineService.calcolaImportoTotale(id_ordine, false);
 
             if (parseFloat(valore) < importoMinimo) {
                 throw new Error(`L'importo non può essere inferiore a ${importoMinimo.toFixed(2)}€`);

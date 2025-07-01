@@ -43,6 +43,11 @@ class OrdineService {
     static async aggiungiPagamento(i: number, d: string, id_ordine: number): Promise<void> {
         try {
             const pagamentoData = {importo: i, data_ora_pagamento: d} as PagamentoInput;
+            const importo_minimo = await this.calcolaImportoTotale(id_ordine, true);
+            if(importo_minimo > pagamentoData.importo) {
+                throw new Error("Importi diversi nella service");
+            }
+
             const id_pagamento = await Pagamento.create(pagamentoData);
             if(!id_pagamento) {
                 throw new Error("Creazione del pagamento fallita.");
@@ -108,7 +113,7 @@ class OrdineService {
         }
     }
 
-    static async calcolaImportoTotale(ordineId: number): Promise<number> {
+    static async calcolaImportoTotale(ordineId: number, pagamento: boolean): Promise<number> {
         let ordinatoPiattoDelGiorno = false;
         // Recupero Ordine
         const ordine = await Ordine.getById(ordineId);
@@ -165,7 +170,9 @@ class OrdineService {
             if(ordinatoPiattoDelGiorno) {
                 punti += 10;
             }
-            Cliente.setPuntiCliente(ordine.ref_cliente, punti);
+            if(pagamento) { // Cambia i punti solo se paga
+                Cliente.setPuntiCliente(ordine.ref_cliente, punti);
+            }
         }
         return Math.round(totale * 100) / 100;
     }

@@ -74,7 +74,7 @@ class OrdineController {
         const ordineId  = Number(req.params.idOrdine);
 
         try {
-            const totale = await OrdineService.calcolaImportoTotale(ordineId);
+            const totale = await OrdineService.calcolaImportoTotale(ordineId, false);
 
             res.json({
                 success: true,
