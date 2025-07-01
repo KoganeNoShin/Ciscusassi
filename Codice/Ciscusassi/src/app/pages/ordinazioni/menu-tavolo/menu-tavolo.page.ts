@@ -45,6 +45,7 @@ export class MenuTavoloPage implements OnInit {
 	prodottiNelCarrello: ProdottoRecord[] = [];
 	totale: number = 0;
 	numeroOrdine: number = 0; // variabile locale per il numero ordine
+	pagato: boolean = false;
 
 	constructor(
 		private servizioCarrello: CarrelloService,
@@ -91,117 +92,126 @@ export class MenuTavoloPage implements OnInit {
 	}
 
 	async checkTotale() {
-		this.prodottiNelCarrello = this.servizioCarrello.getProdotti();
-		this.totale = parseFloat(
-			this.prodottiNelCarrello
-				.reduce((acc, p) => acc + p.costo, 0)
-				.toFixed(2)
-		);
-
-		if (this.totale === 0) {
-			return this.mostraToast(
-				'Devi selezionare almeno un prodotto',
-				'warning'
+		if (this.pagato) {
+			return this.mostraToast('Hai già pagato!', 'warning');
+		} else {
+			this.prodottiNelCarrello = this.servizioCarrello.getProdotti();
+			this.totale = parseFloat(
+				this.prodottiNelCarrello
+					.reduce((acc, p) => acc + p.costo, 0)
+					.toFixed(2)
 			);
-		}
 
-		const prenotazione = this.tavoloService.getPrenotazione();
-		if (!prenotazione) {
-			return this.mostraToast(
-				'Errore: prenotazione non trovata.',
-				'danger'
-			);
-		}
-
-		if (this.numeroOrdine === 0) {
-			// Creo un nuovo ordine
-			try {
-				const ordineResponse = await firstValueFrom(
-					this.ordineService.addOrdine(
-						this.nomeUtente,
-						prenotazione
-					)
-				);
-				this.numeroOrdine = ordineResponse.data.id_ordine;
-				this.tavoloService.setNumeroOrdine(ordineResponse.data.id_ordine);
-			} catch (error) {
-				console.error(error);
+			if (this.totale === 0) {
 				return this.mostraToast(
-					"Errore: l'ordine non è stato creato",
-					'danger'
-				);
-			}
-		}
-
-		if (this.numeroOrdine === 0) {
-			return this.mostraToast(
-				'Non hai ancora effettuato ordini!',
-				'warning'
-			);
-		}
-
-		// Preparo i prodotti da inviare
-		const ordProdInputArray: OrdProdInput[] = this.prodottiNelCarrello.map(
-			(prodotto) => ({
-				is_romana: false,
-				stato: 'non-in-lavorazione',
-				ref_prodotto: prodotto.id_prodotto,
-				ref_ordine: this.numeroOrdine,
-			})
-		);
-
-		// Invio prodotti all'ordine
-		try {
-			await firstValueFrom(
-				this.ordineService.ordineAddProdotti(ordProdInputArray)
-			);
-		} catch (error) {
-			console.error(error);
-			return this.mostraToast(
-				"Errore: prodotti non aggiunti all'ordine",
-				'danger'
-			);
-		}
-
-		// Reset carrello e totale
-		this.servizioCarrello.svuotaCarrello();
-		this.totale = 0;
-
-		return this.mostraToast(
-			'Ordine inviato con successo. Premi "VISUALIZZA ORDINI" per lo stato.',
-			'success'
-		);
-	}
-
-	async visualizzaOrdini() {
-		if (this.numeroOrdine === 0) {
-			return this.mostraToast(
-				'Non hai ancora effettuato ordini!',
-				'warning'
-			);
-		}
-
-		try {
-			const response = await firstValueFrom(
-				this.ordineService.getProdottiOrdinatiByNumeroOrdine(
-					this.numeroOrdine
-				)
-			);
-
-			if (!response.success || !response.data) {
-				return this.mostraToast(
-					'Non hai ancora effettuato ordini',
+					'Devi selezionare almeno un prodotto',
 					'warning'
 				);
 			}
 
-			this.router.navigate(['/visualizza-ordini']);
-		} catch (error) {
-			console.error(error);
+			const prenotazione = this.tavoloService.getPrenotazione();
+			if (!prenotazione) {
+				return this.mostraToast(
+					'Errore: prenotazione non trovata.',
+					'danger'
+				);
+			}
+
+			if (this.numeroOrdine === 0) {
+				// Creo un nuovo ordine
+				try {
+					const ordineResponse = await firstValueFrom(
+						this.ordineService.addOrdine(
+							this.nomeUtente,
+							prenotazione
+						)
+					);
+					this.numeroOrdine = ordineResponse.data.id_ordine;
+					this.tavoloService.setNumeroOrdine(
+						ordineResponse.data.id_ordine
+					);
+				} catch (error) {
+					console.error(error);
+					return this.mostraToast(
+						"Errore: l'ordine non è stato creato",
+						'danger'
+					);
+				}
+			}
+
+			if (this.numeroOrdine === 0) {
+				return this.mostraToast(
+					'Non hai ancora effettuato ordini!',
+					'warning'
+				);
+			}
+
+			// Preparo i prodotti da inviare
+			const ordProdInputArray: OrdProdInput[] =
+				this.prodottiNelCarrello.map((prodotto) => ({
+					is_romana: false,
+					stato: 'non-in-lavorazione',
+					ref_prodotto: prodotto.id_prodotto,
+					ref_ordine: this.numeroOrdine,
+				}));
+
+			// Invio prodotti all'ordine
+			try {
+				await firstValueFrom(
+					this.ordineService.ordineAddProdotti(ordProdInputArray)
+				);
+			} catch (error) {
+				console.error(error);
+				return this.mostraToast(
+					"Errore: prodotti non aggiunti all'ordine",
+					'danger'
+				);
+			}
+
+			// Reset carrello e totale
+			this.servizioCarrello.svuotaCarrello();
+			this.totale = 0;
+
 			return this.mostraToast(
-				'Errore nel recupero degli ordini.',
-				'danger'
+				'Ordine inviato con successo. Premi "VISUALIZZA ORDINI" per lo stato.',
+				'success'
 			);
+		}
+	}
+
+	async visualizzaOrdini() {
+		if (this.pagato) {
+			return this.mostraToast('Hai già pagato!', 'warning');
+		} else {
+			if (this.numeroOrdine === 0) {
+				return this.mostraToast(
+					'Non hai ancora effettuato ordini!',
+					'warning'
+				);
+			}
+
+			try {
+				const response = await firstValueFrom(
+					this.ordineService.getProdottiOrdinatiByNumeroOrdine(
+						this.numeroOrdine
+					)
+				);
+
+				if (!response.success || !response.data) {
+					return this.mostraToast(
+						'Non hai ancora effettuato ordini',
+						'warning'
+					);
+				}
+
+				this.router.navigate(['/visualizza-ordini']);
+			} catch (error) {
+				console.error(error);
+				return this.mostraToast(
+					'Errore nel recupero degli ordini.',
+					'danger'
+				);
+			}
 		}
 	}
 

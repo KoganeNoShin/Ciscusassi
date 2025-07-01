@@ -127,7 +127,7 @@ export class PagamentoAsportoPage implements OnInit {
 		// Ricalcola orari aggiornati al momento della conferma
 		const now = new Date();
 		const consegna = new Date(now);
-		consegna.setMinutes(now.getMinutes() + this.tempo + 2);
+		consegna.setMinutes(now.getMinutes() + this.tempo + 30);
 
 		this.ora_attuale = this.formatDateNoSeconds(now);
 		this.ora_consegna = this.formatDateNoSeconds(consegna);
