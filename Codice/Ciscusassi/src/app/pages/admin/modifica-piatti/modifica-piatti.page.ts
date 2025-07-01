@@ -6,7 +6,6 @@ import {
 	IonButton,
 	IonCard,
 	IonContent,
-	IonIcon,
 	IonInput,
 	IonTextarea,
 	IonItem,
@@ -40,7 +39,6 @@ import { ProdottoInput } from 'src/app/core/interfaces/Prodotto';
 		IonContent,
 		IonCard,
 		IonItem,
-		IonIcon,
 		IonInput,
 		IonTextarea,
 		IonSelect,
@@ -106,7 +104,7 @@ export class ModificaPiattiPage implements OnInit {
 							duration: 2000,
 							color: 'success',
 						});
-						toast.present();
+						await toast.present();
 						this.router.navigateBack(['/gestisci-piatti']);
 					} else {
 						const toast = await this.toastCtrl.create({
