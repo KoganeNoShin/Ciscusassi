@@ -104,7 +104,7 @@ router.delete(
 
 // Route per i Impiegati
 router.post(
-	'/addImpiegato',
+	'/filiale/addImpiegato',
 	addImpiegatoValidator,
 	validate,
 	authMiddleware,
@@ -113,7 +113,7 @@ router.post(
 );
 
 router.put(
-	'/updateImpiegato/:matricola',
+	'/filiale/updateImpiegato/:matricola',
 	updateImpiegatoValidator,
 	validate,
 	authMiddleware,
@@ -122,7 +122,7 @@ router.put(
 );
 
 router.delete(
-	'/deleteImpiegato/:matricola',
+	'/filiale/deleteImpiegato/:matricola',
 	matricolaImpiegatoValidator(param('matricola')),
 	validate,
 	authMiddleware,
@@ -131,7 +131,7 @@ router.delete(
 );
 
 router.get(
-	'/impiegati/:id_filiale',
+	'/filiale/id_filiale/impiegati',
 	idFilialeValidator(param('id_filiale')),
 	validate,
 	authMiddleware,
