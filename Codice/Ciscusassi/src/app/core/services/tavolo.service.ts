@@ -25,6 +25,7 @@ export class TavoloService {
 	numeroOrdine: number | null = null;
 	totale: number = 0;
 	haOrdinato: boolean = false;
+	totaleQuery: number = 0;
 
 	setNumeroTavolo(numero: number): void {
 		if (this.tavolo) {
@@ -88,6 +89,7 @@ export class TavoloService {
 		this.setNumeroOrdine(0);
 		this.setNumeroTavolo(0);
 		this.setOrdini([]);
+		this.setTotaleQuery(0);
 		this.setPrenotazione(0);
 	}
 
@@ -97,6 +99,14 @@ export class TavoloService {
 		for (let prodotto of this.prodotti) {
 			this.totale = this.totale + prodotto.costo;
 		}
+	}
+
+	setTotaleQuery(totaleQuery: number){
+		this.totaleQuery = totaleQuery;
+	}
+
+	getTotaleQuery(): number{
+		return this.totaleQuery;
 	}
 
 	getOrdini(): OrdProdEstended[] {

@@ -6,16 +6,34 @@ import { ApiResponse } from '../interfaces/ApiResponse';
 import { PagamentoMensile } from '../interfaces/Pagamento';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class PagamentoService {
 	private apiURL = environment.apiURL;
 
-  constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient) {}
 
-  GetUtiliMensili(year: number): Observable<ApiResponse<PagamentoMensile[]>> {
-      return this.http.get<ApiResponse<PagamentoMensile[]>>(
-        `${this.apiURL}/pagamenti/${year}`
-      );
-  }
+	GetUtiliMensili(year: number): Observable<ApiResponse<PagamentoMensile[]>> {
+		return this.http.get<ApiResponse<PagamentoMensile[]>>(
+			`${this.apiURL}/pagamenti/${year}`
+		);
+	}
+
+	ordinePay(
+		id_ordine: number,
+		importo: number,
+		data_ora_pagamento: string
+	): Observable<ApiResponse<any>> {
+		const body = {
+			id_ordine: id_ordine,
+			pagamento_importo: importo,
+			data_ora_pagamento: data_ora_pagamento,
+		};
+
+		return this.http.post<ApiResponse<any>>(
+			`${this.apiURL}/prenotazione/ordine/pay`,
+			body,
+			{ headers: { 'Content-Type': 'application/json' } }
+		);
+	}
 }

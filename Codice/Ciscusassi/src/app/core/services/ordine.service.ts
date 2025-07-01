@@ -32,25 +32,6 @@ export class OrdineService {
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
 	}
-
-	ordinePay(
-		id_ordine: number,
-		importo: number,
-		data_ora_pagamento: string
-	): Observable<ApiResponse<any>> {
-		const body = {
-			id_ordine: id_ordine,
-			pagamento_importo: importo,
-			data_ora_pagamento: data_ora_pagamento,
-		};
-
-		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazione/ordine/pay`,
-			body,
-			{ headers: { 'Content-Type': 'application/json' } }
-		);
-	}
-
 	cambiaStato(
 		stato: string,
 		id: number

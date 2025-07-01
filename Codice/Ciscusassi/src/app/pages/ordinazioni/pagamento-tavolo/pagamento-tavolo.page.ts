@@ -19,6 +19,7 @@ import {
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
+import { PagamentoService } from 'src/app/core/services/pagamento.service';
 
 @Component({
 	selector: 'app-pagamento-tavolo',
@@ -53,19 +54,103 @@ export class PagamentoTavoloPage implements OnInit {
 		private servizioCarrello: CarrelloService,
 		private router: Router,
 		private tavoloService: TavoloService,
-		private prenotazioneService: PrenotazioneService
+		private prenotazioneService: PrenotazioneService,
+		private pagamentoService: PagamentoService
 	) {}
 
 	// Metodo chiamato all’inizializzazione del componente
 	ngOnInit() {
 		const numeroOrdine = this.tavoloService.getNumeroOrdine();
+		console.log('Numero ordine:', numeroOrdine);
+
 		if (numeroOrdine !== null && numeroOrdine !== undefined) {
-			this.prenotazioneService.getTotaleByOrdine(numeroOrdine).subscribe((response: any) => {
-				// Assumendo che il totale sia in response.data.totale, modificare se necessario
-				this.totale = response.data?.totale ?? 0;
+			this.prenotazioneService.getTotaleByOrdine(numeroOrdine).subscribe({
+				next: (response: any) => {
+					console.log('Risposta completa:', response);
+					this.totale = response?.totale ?? 0;
+					this.tavoloService.setTotaleQuery(response?.totale ?? 0);
+					console.log('Totale ricevuto e assegnato:', this.totale);
+				},
+				error: (err) => {
+					console.error('Errore durante la chiamata:', err);
+					this.totale = 0;
+				},
 			});
 		} else {
+			console.warn('Numero ordine non valido.');
 			this.totale = 0;
+		}
+	}
+
+	private getFormattedDate(): string {
+		const now = new Date();
+		return (
+			now.getFullYear() +
+			'-' +
+			String(now.getMonth() + 1).padStart(2, '0') +
+			'-' +
+			String(now.getDate()).padStart(2, '0') +
+			' ' +
+			String(now.getHours()).padStart(2, '0') +
+			':' +
+			String(now.getMinutes()).padStart(2, '0')
+		);
+	}
+
+	pagaCassa() {
+		const data = this.getFormattedDate();
+		const numeroOrdine = this.tavoloService.getNumeroOrdine();
+		if (numeroOrdine !== null && numeroOrdine !== undefined) {
+			this.pagamentoService
+				.ordinePay(
+					numeroOrdine,
+					this.tavoloService.getTotaleQuery(),
+					data
+				)
+				.subscribe({
+					next: (response) => {
+						console.log('Pagamento a cassa effettuato:', response);
+						this.router.navigate(['/pagamento-cassa']);
+					},
+					error: (err) => {
+						console.error(
+							'Errore durante il pagamento a cassa:',
+							err
+						);
+					},
+				});
+		} else {
+			console.error('Numero ordine non valido per il pagamento.');
+		}
+	}
+
+	pagaCarta() {
+		const data = this.getFormattedDate();
+		const numeroOrdine = this.tavoloService.getNumeroOrdine();
+		if (numeroOrdine !== null && numeroOrdine !== undefined) {
+			this.pagamentoService
+				.ordinePay(
+					numeroOrdine,
+					this.tavoloService.getTotaleQuery(),
+					data
+				)
+				.subscribe({
+					next: (response) => {
+						console.log(
+							'Pagamento con carta effettuato:',
+							response
+						);
+						this.router.navigate(['/pagamento-carta']);
+					},
+					error: (err) => {
+						console.error(
+							'Errore durante il pagamento con carta:',
+							err
+						);
+					},
+				});
+		} else {
+			console.error('Numero ordine non valido per il pagamento.');
 		}
 	}
 }

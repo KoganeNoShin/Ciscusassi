@@ -64,7 +64,6 @@ export class PagamentoAsportoPage implements OnInit {
 	nuovoAsporto: AsportoInput = {
 		indirizzo: '',
 		data_ora_consegna: '',
-		ref_cliente: 1,
 		importo: 0,
 		data_ora_pagamento: '',
 		prodotti: [],

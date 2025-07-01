@@ -10,14 +10,15 @@
 						<p>Dovrai pagare {{ totale }}€</p>
 
 						<!-- Bottone finale -->
-						<ion-button [routerLink]="['/pagamento-carta']" fill="solid" shape="round">
+						<ion-button (click)="pagaCarta()" fill="solid" shape="round">
 							<ion-text
 								color="light"
 								>PAGA CON CARTA</ion-text
 							>
 						</ion-button>
 						<ion-button
-							[routerLink]="['/pagamento-cassa']"
+							(click)="pagaCassa()"
+
 							fill="solid"
 							shape="round"
 						>
