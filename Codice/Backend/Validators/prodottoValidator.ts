@@ -23,7 +23,6 @@ function costoProdottoValidator(chain: ValidationChain): ValidationChain {
 function immagineProdottoValidator(chain: ValidationChain): ValidationChain {
   return chain
 		.notEmpty().withMessage('L\'immagine del prodotto è obbligatorio!')
-		// Diego lascialo così perché altrimenti non controlla il prefisso data image
 		.matches(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/).withMessage('Formato immagine non valido!');
 }
 
