@@ -1,21 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NavController } from '@ionic/angular';
 import {
 	IonButton,
 	IonCard,
 	IonContent,
-	IonHeader,
-	IonIcon,
 	IonInput,
 	IonTextarea,
-	IonTitle,
-	IonToolbar,
 	IonItem,
-	IonLabel,
 	IonSelect,
 	IonSelectOption,
 	ToastController,
+	IonText,
+	IonCardContent,
+	IonImg,
+	IonGrid,
+	IonRow,
+	IonCol,
 } from '@ionic/angular/standalone';
 
 import { ProdottoService } from 'src/app/core/services/prodotto.service';
@@ -28,16 +30,17 @@ import { ProdottoInput } from 'src/app/core/interfaces/Prodotto';
 	styleUrls: ['./modifica-piatti.page.scss'],
 	standalone: true,
 	imports: [
+		IonCol,
+		IonRow,
+		IonGrid,
+		IonImg,
+		IonCardContent,
+		IonText,
 		IonContent,
-		IonHeader,
 		IonCard,
-		IonLabel,
 		IonItem,
-		IonIcon,
 		IonInput,
 		IonTextarea,
-		IonTitle,
-		IonToolbar,
 		IonSelect,
 		IonSelectOption,
 		CommonModule,
@@ -61,7 +64,8 @@ export class ModificaPiattiPage implements OnInit {
 
 	constructor(
 		private prodottoService: ProdottoService,
-		private toastCtrl: ToastController
+		private toastCtrl: ToastController,
+		private router: NavController
 	) {}
 
 	ngOnInit() {
@@ -100,7 +104,8 @@ export class ModificaPiattiPage implements OnInit {
 							duration: 2000,
 							color: 'success',
 						});
-						toast.present();
+						await toast.present();
+						this.router.navigateBack(['/gestisci-piatti']);
 					} else {
 						const toast = await this.toastCtrl.create({
 							message:

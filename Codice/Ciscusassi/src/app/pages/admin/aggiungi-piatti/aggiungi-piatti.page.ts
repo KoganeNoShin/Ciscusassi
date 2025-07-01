@@ -5,21 +5,22 @@ import {
 	IonButton,
 	IonCard,
 	IonContent,
-	IonHeader,
-	IonIcon,
 	IonInput,
 	IonItem,
-	IonLabel,
 	IonSelect,
 	IonSelectOption,
 	IonTextarea,
-	IonTitle,
-	IonToolbar,
 	ToastController,
+	IonText,
+	IonCardContent,
+	IonGrid,
+	IonCol,
+	IonRow,
+	IonImg,
 } from '@ionic/angular/standalone';
-import { HttpClientModule } from '@angular/common/http';
 
-import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
+import { NavController } from '@ionic/angular';
+
 import { ProdottoInput } from 'src/app/core/interfaces/Prodotto';
 import { ProdottoService } from 'src/app/core/services/prodotto.service';
 
@@ -29,22 +30,22 @@ import { ProdottoService } from 'src/app/core/services/prodotto.service';
 	styleUrls: ['./aggiungi-piatti.page.scss'],
 	standalone: true,
 	imports: [
+		IonImg,
+		IonRow,
+		IonCol,
+		IonGrid,
+		IonCardContent,
+		IonText,
 		IonContent,
-		IonHeader,
 		IonCard,
-		IonIcon,
 		IonInput,
 		IonTextarea,
-		IonTitle,
-		IonToolbar,
 		IonButton,
 		IonItem,
-		IonLabel,
 		IonSelect,
 		IonSelectOption,
 		CommonModule,
 		FormsModule,
-		HttpClientModule,
 	],
 })
 export class AggiungiPiattiPage implements OnInit {
@@ -66,7 +67,8 @@ export class AggiungiPiattiPage implements OnInit {
 
 	constructor(
 		private prodottoService: ProdottoService,
-		private toastCtrl: ToastController
+		private toastCtrl: ToastController,
+		private router: NavController
 	) {}
 
 	ngOnInit(): void {}
@@ -128,6 +130,8 @@ export class AggiungiPiattiPage implements OnInit {
 
 				// Resetta i campi del form dopo l'aggiunta
 				this.resetForm();
+
+				this.router.navigateBack(['/gestisci-piatti']);
 			},
 			error: async (err) => {
 				console.error('❌ Errore HTTP:', err);
