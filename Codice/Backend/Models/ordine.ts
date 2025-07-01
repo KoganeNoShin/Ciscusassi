@@ -99,7 +99,7 @@ export class Ordine {
 	static async getById(id: number): Promise<OrdineRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
-				'SELECT * FROM pagamenti WHERE id_pagamento = ?',
+				'SELECT * FROM ordini WHERE id_ordine = ?',
 				[id],
 				(err: Error | null, row: OrdineRecord) => {
 					if (err) {

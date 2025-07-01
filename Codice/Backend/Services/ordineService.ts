@@ -1,4 +1,3 @@
-import { th } from "@faker-js/faker/.";
 import Ordine, { OrdineInput, OrdineRecord } from "../Models/ordine";
 import Prenotazione from "../Models/prenotazione";
 import OrdProd from "../Models/ord_prod";
@@ -105,14 +104,14 @@ class OrdineService {
 
     static async calcolaImportoTotale(ordineId: number): Promise<number> {
         // Recupero Ordine
-        const ordine = await this.getOrdineById(ordineId);
-        if(!ordine) {
+        const ordine = await Ordine.getById(ordineId);
+        if(ordine == null) {
             throw new Error(`Ordine con ID ${ordineId} non trovato`);
         }
         // Recupero prenotazione associata
         const prenotazione = await Prenotazione.getById(ordine.ref_prenotazione);
         if (!prenotazione) {
-            throw new Error(`Prenotazione con ID ${ordine.ref_prenotazione} non trovata`);
+            throw new Error(`Prenotazione con ID ${ordine.ref_prenotazione} non trovata per ordine`);
         }
         // Prodotti non alla romana dell'ordine
         const prodottiNotRomana = await OrdProd.getByOrdineAndRomana(ordineId, false);
