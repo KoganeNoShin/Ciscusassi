@@ -50,7 +50,7 @@ class ImpiegatoController {
 
 	static async getAllImpiegati(req: Request, res: Response): Promise<void> {
 		try {
-			const idFiliale = parseInt(req.params.id);
+			const idFiliale = Number(req.params.id_filiale);
 			if (isNaN(idFiliale)) {
 				res.status(400).json({
 					success: false,

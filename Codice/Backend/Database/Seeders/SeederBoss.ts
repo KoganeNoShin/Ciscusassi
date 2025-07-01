@@ -150,42 +150,33 @@ export async function generateUtentiFissi(): Promise<string> {
 		}
 
 		const ClientiFissi = [
-			// Amministratori
 			{
 				nome: 'Diego',
 				cognome: 'Corona',
 				email: 'diego.corona@community.unipa.it',
 				data_nascita: '2003-07-09',
-				ruolo: 'Amministratore',
-				fotoUrl: './DiegoCorona.jpg',
-				ref_filiale: filiali[3].id_filiale,
+				fotoUrl: './DiegoCorona.jpg'
 			},
 			{
 				nome: 'Daniele Orazio',
 				cognome: 'Susino',
 				email: 'danieleorazio.susino@community.unipa.it',
 				data_nascita: '1985-03-10',
-				ruolo: 'Amministratore',
-				fotoUrl: './DanieleOrazioSusino.jpg',
-				ref_filiale: filiali[2].id_filiale,
+				fotoUrl: './DanieleOrazioSusino.jpg'
 			},
 			{
 				nome: 'Leonardo Giovanni',
 				cognome: 'Caiezza',
 				email: 'leonardogiovanni.caiezza@community.unipa.it',
 				data_nascita: '1992-07-20',
-				ruolo: 'Amministratore',
-				fotoUrl: './LeonardoGiovanniCaiezza.jpg',
-				ref_filiale: filiali[1].id_filiale,
+				fotoUrl: './LeonardoGiovanniCaiezza.jpg'
 			},
 			{
 				nome: 'Luca',
 				cognome: 'Gaetani',
 				email: 'luca.gaetani@community.unipa.it',
 				data_nascita: '1996-11-15',
-				ruolo: 'Amministratore',
-				fotoUrl: './LucaGaetani.jpg',
-				ref_filiale: filiali[0].id_filiale,
+				fotoUrl: './LucaGaetani.jpg'
 			}
 		];
 
@@ -201,7 +192,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				data_nascita: cliente.data_nascita
 			});
 			console.log(
-				`✅ ${cliente.nome} ${cliente.cognome} (${cliente.ruolo}) aggiunto con successo.`
+				`✅ ${cliente.nome} ${cliente.cognome} aggiunto con successo.`
 			);
 		}
 

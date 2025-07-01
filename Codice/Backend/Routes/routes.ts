@@ -138,8 +138,8 @@ router.get(
 	'/impiegati/:id_filiale',
 	idFilialeValidator(param('id_filiale')),
 	validate,
-	authMiddleware,
-	roleMiddleware(['amministratore']),
+	//authMiddleware,
+	//roleMiddleware(['amministratore']),
 	ImpiegatoController.getAllImpiegati
 );
 
