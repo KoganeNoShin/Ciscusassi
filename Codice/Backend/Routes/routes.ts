@@ -87,7 +87,7 @@ router.get('/filiali', FilialeController.getAllFiliali);
 
 router.post(
 	'/addFiliale',
-	updateFilialeValidator,
+	addFilialeValidator,
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),
@@ -96,7 +96,7 @@ router.post(
 
 router.put(
 	'/updateFiliale/:id_filiale',
-	addFilialeValidator,
+	updateFilialeValidator,
 	validate,
 	authMiddleware,
 	roleMiddleware(['amministratore']),

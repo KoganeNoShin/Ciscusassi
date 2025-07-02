@@ -28,7 +28,6 @@ class ClienteController {
 	// Restituisce i punti accumulati da un cliente autenticato
 	static async getPoints(req: AuthenticatedRequest, res: Response): Promise<void> {
 		const id_utente = req.user?.id;
-
 		try {
 			const punti = await Cliente.getPuntiCliente(Number(id_utente));
 			res.status(200).json({

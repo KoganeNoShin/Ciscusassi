@@ -23,44 +23,6 @@ export interface ClienteRecord extends ClienteData {
 }
 
 class Cliente {
-	// Crea un nuovo Cliente nel database
-	static async create(data: ClienteData): Promise<number> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'INSERT INTO clienti (nome, cognome, data_nascita, email, password, punti, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
-				[data.nome, data.cognome, data.data_nascita, data.email, data.password, 0, data.image],
-				function (this: RunResult, err: Error) {
-					if (err) {
-						console.error('❌ [DB ERROR] createCliente:', err.message, '| Params:', data);
-						return reject(err);
-					}
-					resolve(this.lastID);
-				}
-			);
-		});
-	}
-
-	// Aggiorna il token del cliente
-	static async updateToken(numeroCarta: number, token: string): Promise<string> {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
-				[token, numeroCarta],
-				function (this: RunResult, err: Error) {
-					if (err) {
-						console.error('❌ [DB ERROR] updateToken:', err.message, '| Params:', { numeroCarta, token });
-						return reject(err);
-					}
-					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] updateToken: Nessun token aggiornato per cliente con numero carta ${numeroCarta}`);
-						return reject(new Error(`Nessun cliente trovato con numero carta ${numeroCarta}`));
-					}
-					resolve(token);
-				}
-			);
-		});
-	}
-
 	// Restituisce i punti di un cliente dato l'ID
 	static async getPuntiCliente(idCliente: number): Promise<number> {
 		return new Promise((resolve, reject) => {
@@ -97,7 +59,6 @@ class Cliente {
 		});
 	}
 
-
 	// Restituisce tutti i clienti
 	static async getAll(): Promise<ClienteRecord[]> {
 		return new Promise((resolve, reject) => {
@@ -115,6 +76,36 @@ class Cliente {
 		});
 	}
 
+	// Restituisce un cliente in base al numero carta
+	static async getByNumeroCarta(numero_carta: number): Promise<ClienteRecord | null> {
+		return new Promise((resolve, reject) => {
+			db.get('SELECT numero_carta, nome, cognome, data_nascita, email, punti, image FROM clienti WHERE numero_carta = ?', [numero_carta], (err: Error, row: ClienteRecord) => {
+				if (err) {
+					console.error('❌ [DB ERROR] getByNumeroCarta:', err.message, '| Numero Carta:', numero_carta);
+					return reject(err);
+				}
+				resolve(row || null);
+			});
+		});
+	}
+//----------------------------------- ZONA CREDENZIALI ---------------------------------------------------------------
+	// Crea un nuovo Cliente nel database
+	static async create(data: ClienteData): Promise<number> {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO clienti (nome, cognome, data_nascita, email, password, punti, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
+				[data.nome, data.cognome, data.data_nascita, data.email, data.password, 0, data.image],
+				function (this: RunResult, err: Error) {
+					if (err) {
+						console.error('❌ [DB ERROR] createCliente:', err.message, '| Params:', data);
+						return reject(err);
+					}
+					resolve(this.lastID);
+				}
+			);
+		});
+	}
+
 	// Restituisce un cliente in base all'email
 	static async getByEmail(email: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
@@ -128,16 +119,24 @@ class Cliente {
 		});
 	}
 
-	// Restituisce un cliente in base al numero carta
-	static async getByNumeroCarta(numero_carta: number): Promise<ClienteRecord | null> {
+	// Aggiorna il token del cliente
+	static async updateToken(numeroCarta: number, token: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			db.get('SELECT numero_carta, nome, cognome, data_nascita, email, punti, image FROM clienti WHERE numero_carta = ?', [numero_carta], (err: Error, row: ClienteRecord) => {
-				if (err) {
-					console.error('❌ [DB ERROR] getByNumeroCarta:', err.message, '| Numero Carta:', numero_carta);
-					return reject(err);
+			db.run(
+				'UPDATE clienti SET token = ? WHERE numero_carta = ?',
+				[token, numeroCarta],
+				function (this: RunResult, err: Error) {
+					if (err) {
+						console.error('❌ [DB ERROR] updateToken:', err.message, '| Params:', { numeroCarta, token });
+						return reject(err);
+					}
+					if (this.changes === 0) {
+						console.warn(`⚠️ [DB WARNING] updateToken: Nessun token aggiornato per cliente con numero carta ${numeroCarta}`);
+						return reject(new Error(`Nessun cliente trovato con numero carta ${numeroCarta}`));
+					}
+					resolve(token);
 				}
-				resolve(row || null);
-			});
+			);
 		});
 	}
 
