@@ -171,6 +171,7 @@ class OrdineService {
                 punti += 10;
             }
             if(pagamento) { // Cambia i punti solo se paga
+                console.log(`${ordine.ref_cliente} ${ordine.username_ordinante} nuovi punti: ${punti}`)
                 Cliente.setPuntiCliente(ordine.ref_cliente, punti);
             }
         }
