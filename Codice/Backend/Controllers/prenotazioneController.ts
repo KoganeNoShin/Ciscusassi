@@ -44,7 +44,7 @@ class PrenotazioneController {
             }
             const prenotazione = await PrenotazioneService.prenotaLoco(prenotazioneInput);
 
-            if(prenotazione) res.status(201).json({ success: true, data: req.body });
+            if(prenotazione) res.status(201).json({ success: true, data: prenotazione });
             else res.status(400).json({
                     success: false,
 					message: 'Errore durante l\'aggiunta della prenotazione locale',
