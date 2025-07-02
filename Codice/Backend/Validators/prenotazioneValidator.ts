@@ -23,8 +23,11 @@ function numuroPersoneValidator(chain: ValidationChain): ValidationChain {
 		.bail()
 		.custom(async (numeroPersone: number, { req }) => {
 			const data = req.body.data_ora_prenotazione;
-			const filialeId = req.body.ref_filiale;
+			let filialeId = req.body.ref_filiale;
 
+			if (!filialeId && req.user) {
+				filialeId = Number(req.user?.id_Filiale); // Supponendo che `user` abbia un campo `filialeId`
+			}
 			if (!data || !filialeId) {
 				throw new Error('Data e filiale sono obbligatorie per controllare i tavoli disponibili');
 			}
