@@ -142,6 +142,7 @@ router.get(
 // Route per Ordine
 router.post(
 	'/prenotazione/addOrdine',
+	authMiddleware,
 	validate,
 	OrdineController.addOrdine
 );
