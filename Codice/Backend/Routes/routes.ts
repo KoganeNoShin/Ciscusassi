@@ -39,6 +39,7 @@ import {
 } from '../Validators/prodottoValidator';
 import {
 	checkOTPValidator,
+	getPrenotazioniByDataCliente,
 	idPrenotazioneValidator,
 	prenotazioneInputLocoValidator,
 	prenotazioneInputValidator
@@ -275,10 +276,10 @@ router.get(
 );
 
 router.get(
-	'/prenotazioni/cameriere/:id_cliente',
+	'/prenotazioni/cameriere/:id_cliente/:data',
 	authMiddleware,
 	roleMiddleware(['amministratore', 'cameriere']),
-	numeroCartaValidator(param('id_cliente')),
+	getPrenotazioniByDataCliente,
 	validate,
 	PrenotazioneController.getPrenotazioniByCliente
 );

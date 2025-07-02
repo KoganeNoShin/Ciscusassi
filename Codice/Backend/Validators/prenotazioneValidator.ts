@@ -76,20 +76,15 @@ export const prenotazioneInputValidator = [
 export const prenotazioneInputLocoValidator = [
 	...prenotazioneInputValidator,
 	numeroCartaValidator(body('ref_cliente').optional({ nullable: true }))
-	/*body('ref_cliente')
-        .optional(true)
-		.isInt({ gt: 0 }).withMessage('Numero carta non valido')
-		.bail()
-		.toInt()
-		.custom(async (numero: number) => {
-			const cliente = await Cliente.getByNumeroCarta(numero);
-			if (!cliente) throw new Error('Cliente non trovato nel database');
-			return true;
-		})*/
 ];
 
 export const checkOTPValidator = [
     OTPValidator(body('otp')),
     data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
     idTorrettaValidator(body('ref_torretta'))
+];
+
+export const getPrenotazioniByDataCliente = [
+	data_ora_prenotazioneValidator(param('data')),
+	numeroCartaValidator(param('id_cliente'))
 ];

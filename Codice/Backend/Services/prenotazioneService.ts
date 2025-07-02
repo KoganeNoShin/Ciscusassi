@@ -266,6 +266,18 @@ class PrenotazioneService {
 		}
 	}
 
+	static async getPrenotazioniByClienteDelGiorno(clienteId: number, date: string): Promise<PrenotazioneRecord[] | null> {
+		try {
+			return await Prenotazione.getByClienteData(clienteId, date);
+		} catch (error) {
+			console.error(
+				'❌ [PrenotazioneService] Errore durante il recupero delle prenotazioni per cliente:',
+				error
+			);
+			throw error;
+		}
+	}
+
 	static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneRecord[] | null> {
 		try {
 			return await Prenotazione.getPrenotazioniDataAndFiliale(id_filiale, data);

@@ -181,6 +181,42 @@ export class Prenotazione {
 		});
 	}
 
+	// Recupera prenotazioni per cliente del giorno
+	static async getByClienteData(ref_cliente: number, date: string): Promise<PrenotazioneWithFiliale[]> {
+		return new Promise((resolve, reject) => {
+			db.all(`
+				SELECT 
+					p.id_prenotazione, 
+					p.numero_persone, 
+					p.data_ora_prenotazione, 
+					p.ref_cliente, 
+					p.ref_torretta, 
+					p.otp, 
+					f.id_filiale, 
+					f.indirizzo, 
+					f.comune
+				FROM 
+					prenotazioni p
+				JOIN 
+					torrette t ON p.ref_torretta = t.id_torretta
+				JOIN 
+					filiali f ON t.ref_filiale = f.id_filiale
+				WHERE 
+					p.ref_cliente = ? && DATE(p.data_ora_prenotazione) = ?
+				`,[ref_cliente, date],
+				(err: Error | null, rows: PrenotazioneWithFiliale[]) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!rows || rows.length === 0) {
+						console.warn(`⚠️ [DB WARNING] Nessuna prenotazione trovata per cliente ${ref_cliente}`);
+						resolve([]);
+					} else resolve(rows);
+				}
+			);
+		});
+	}
+
 	// Recupera prenotazioni del giorno per filiale
 	static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneWithUtente[]> {
 		return new Promise((resolve, reject) => {
