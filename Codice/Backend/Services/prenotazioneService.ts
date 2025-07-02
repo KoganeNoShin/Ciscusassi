@@ -63,7 +63,7 @@ class PrenotazioneService {
 			if (!filiale) throw new Error('Filiale non trovata');
 			
 			const tavoliTotali = filiale.num_tavoli;
-			const tavoliInUso = await this.calcolaTavoliInUso(filiale.id_filiale,format(data.data_ora_prenotazione, 'yyyy-MM-dd'));
+			const tavoliInUso = await this.calcolaTavoliInUso(filiale.id_filiale,format(dataPrenotazione, 'yyyy-MM-dd'));
 			const tavoliOccupati = tavoliInUso[data.data_ora_prenotazione] ?? 0;
 			
 			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(data.numero_persone);
@@ -135,7 +135,7 @@ class PrenotazioneService {
 			if (!filiale) throw new Error('Filiale non trovata');
 			
 			const tavoliTotali = filiale.num_tavoli;
-			const tavoliInUso = await this.calcolaTavoliInUso(filiale.id_filiale, format(data.data_ora_prenotazione, 'yyyy-MM-dd'));
+			const tavoliInUso = await this.calcolaTavoliInUso(filiale.id_filiale, format(dataPrenotazione, 'yyyy-MM-dd'));
 			const tavoliOccupati = tavoliInUso[data.data_ora_prenotazione] ?? 0;
 			
 			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(data.numero_persone);
