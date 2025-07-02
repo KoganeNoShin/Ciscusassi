@@ -1,19 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonCard,
-	IonIcon,
 	IonInput,
 	IonButton,
 	IonSelect,
 	IonSelectOption,
 	ToastController,
+	IonText,
+	IonCardContent,
+	IonGrid,
+	IonRow,
+	IonCol,
+	IonItem,
+	IonImg,
 } from '@ionic/angular/standalone';
 
 import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
@@ -22,26 +24,29 @@ import { ImpiegatoInput } from 'src/app/core/interfaces/Impiegato';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 
 @Component({
-	selector: 'app-aggiungi-dipendenti',
-	templateUrl: './aggiungi-dipendenti.page.html',
-	styleUrls: ['./aggiungi-dipendenti.page.scss'],
+	selector: 'app-aggiungi-impegati',
+	templateUrl: './aggiungi-impiegati.page.html',
+	styleUrls: ['./aggiungi-impiegati.page.scss'],
 	standalone: true,
 	imports: [
+		IonImg,
+		IonCol,
+		IonItem,
+		IonRow,
+		IonGrid,
+		IonCardContent,
 		IonContent,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
+		IonText,
 		CommonModule,
 		FormsModule,
 		IonCard,
-		IonIcon,
 		IonInput,
 		IonButton,
 		IonSelect,
 		IonSelectOption,
 	],
 })
-export class AggiungiDipendentiPage implements OnInit {
+export class AggiungiImpiegatiPage implements OnInit {
 	// Proprietà legate al form per l'aggiunta di un dipendente
 	nome: string = '';
 	cognome: string = '';
@@ -113,16 +118,7 @@ export class AggiungiDipendentiPage implements OnInit {
 	}
 
 	// Metodo chiamato al submit del form per aggiungere un nuovo dipendente
-	aggiungiDipendente() {
-		// Validazioni preliminari
-		if (this.password.length < 8) {
-			this.presentToast(
-				'La password deve contenere almeno 8 caratteri.',
-				'danger'
-			);
-			return;
-		}
-
+	aggiungiImpiegato() {
 		if (!this.isValidEmail(this.email)) {
 			this.presentToast('Inserisci un indirizzo email valido.', 'danger');
 			return;
@@ -141,7 +137,6 @@ export class AggiungiDipendentiPage implements OnInit {
 			ruolo: this.ruolo,
 			email: this.email,
 			foto: this.foto,
-			password: this.password,
 			ref_filiale: this.ref_filiale,
 		};
 

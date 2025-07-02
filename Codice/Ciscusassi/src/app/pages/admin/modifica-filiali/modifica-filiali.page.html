@@ -7,7 +7,6 @@
 		<ion-text class="ion-text-center ion-padding">
 			<h2>Modifica Filiale</h2>
 		</ion-text>
-
 		<ion-card class="ion-padding ion-margin">
 			<ion-card-content>
 				<ion-grid fixed>
@@ -20,6 +19,7 @@
 							>
 								<input
 									#fileInput
+									type="file"
 									accept="image/jpg, image/png, image/jpeg, image/webp"
 									hidden
 									(change)="onFileSelected($event)"
@@ -91,7 +91,7 @@
 									type="submit"
 									class="ion-padding-vertical"
 									(click)="modificaFiliale()"
-									[disabled]="loading ||  filiale.indirizzo == null || filiale.display_name == null || filiale.num_tavoli == null"
+									[disabled]="loading ||  filiale.immagine == null || filiale.indirizzo == '' || filiale.comune == '' || filiale.num_tavoli < 1"
 								>
 									MODIFICA FILIALE
 								</ion-button>

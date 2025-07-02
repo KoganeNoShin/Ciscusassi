@@ -32,7 +32,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				nome: 'Daniele Orazio',
 				cognome: 'Susino',
 				email: 'danieleorazio.susino@amministratore.it',
-				data_nascita: '1985-03-10',
+				data_nascita: '2003-17-11',
 				ruolo: 'Amministratore',
 				fotoUrl: './DanieleOrazioSusino.jpg',
 				ref_filiale: filiali[2].id_filiale,
@@ -69,7 +69,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				nome: 'Daniele Orazio',
 				cognome: 'Susino',
 				email: 'danieleorazio.susino@chef.it',
-				data_nascita: '1985-03-10',
+				data_nascita: '2003-17-11',
 				ruolo: 'Chef',
 				fotoUrl: './DanieleOrazioSusino.jpg',
 				ref_filiale: filiali[2].id_filiale,
@@ -106,7 +106,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				nome: 'Daniele Orazio',
 				cognome: 'Susino',
 				email: 'danieleorazio.susino@cameriere.it',
-				data_nascita: '1985-03-10',
+				data_nascita: '2003-17-11',
 				ruolo: 'Cameriere',
 				fotoUrl: './DanieleOrazioSusino.jpg',
 				ref_filiale: filiali[2].id_filiale,
@@ -128,7 +128,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				ruolo: 'Cameriere',
 				fotoUrl: './LucaGaetani.jpg',
 				ref_filiale: filiali[0].id_filiale,
-			}
+			},
 		];
 
 		for (const utente of utentiFissi) {
@@ -155,32 +155,32 @@ export async function generateUtentiFissi(): Promise<string> {
 				cognome: 'Corona',
 				email: 'diego.corona@community.unipa.it',
 				data_nascita: '2003-07-09',
-				fotoUrl: './DiegoCorona.jpg'
+				fotoUrl: './DiegoCorona.jpg',
 			},
 			{
 				nome: 'Daniele Orazio',
 				cognome: 'Susino',
 				email: 'danieleorazio.susino@community.unipa.it',
 				data_nascita: '1985-03-10',
-				fotoUrl: './DanieleOrazioSusino.jpg'
+				fotoUrl: './DanieleOrazioSusino.jpg',
 			},
 			{
 				nome: 'Leonardo Giovanni',
 				cognome: 'Caiezza',
 				email: 'leonardogiovanni.caiezza@community.unipa.it',
 				data_nascita: '1992-07-20',
-				fotoUrl: './LeonardoGiovanniCaiezza.jpg'
+				fotoUrl: './LeonardoGiovanniCaiezza.jpg',
 			},
 			{
 				nome: 'Luca',
 				cognome: 'Gaetani',
 				email: 'luca.gaetani@community.unipa.it',
 				data_nascita: '1996-11-15',
-				fotoUrl: './LucaGaetani.jpg'
-			}
+				fotoUrl: './LucaGaetani.jpg',
+			},
 		];
 
-		for(const cliente of ClientiFissi) {
+		for (const cliente of ClientiFissi) {
 			const foto = getBase64FromFile(cliente.fotoUrl);
 
 			await Cliente.create({
@@ -189,7 +189,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				image: foto,
 				password: password,
 				email: cliente.email,
-				data_nascita: cliente.data_nascita
+				data_nascita: cliente.data_nascita,
 			});
 			console.log(
 				`✅ ${cliente.nome} ${cliente.cognome} aggiunto con successo.`

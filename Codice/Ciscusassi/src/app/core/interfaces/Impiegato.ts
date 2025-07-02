@@ -12,7 +12,9 @@ export interface ImpiegatoCredentials {
 	password: string;
 }
 
-export interface ImpiegatoInput extends ImpiegatoData, ImpiegatoCredentials {}
+export interface ImpiegatoInput extends ImpiegatoData {
+	email: string;
+}
 
 export interface ImpiegatoRecord extends ImpiegatoData {
 	email: string;

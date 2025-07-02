@@ -18,7 +18,7 @@ import {
 } from '@ionic/angular/standalone';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeInput } from 'src/app/core/interfaces/Filiale';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
 	selector: 'app-modifica-filiali',

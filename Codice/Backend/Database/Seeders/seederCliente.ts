@@ -37,8 +37,10 @@ async function generateCliente(count: number): Promise<string> {
 				firstName: nome,
 				lastName: cognome,
 			});
-			let data_nascita = faker.date.birthdate().toISOString();
-			let punti = faker.number.int({ min: 0, max: 1000000 });
+			let data_nascita = faker.date
+				.birthdate()
+				.toISOString()
+				.split('T')[0]; // Per rimuovere il tempo, siccome non ci interessa
 			let imageBase64 = await getBase64(
 				faker.image.personPortrait({ sex: sex, size: 512 })
 			);

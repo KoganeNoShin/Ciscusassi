@@ -86,7 +86,10 @@ export async function generateFiliale(): Promise<string> {
 				firstName: chef_nome,
 				lastName: chef_cognome,
 			});
-			let chef_data_nascita = faker.date.birthdate().toISOString();
+			let chef_data_nascita = faker.date
+				.birthdate()
+				.toISOString()
+				.split('T')[0]; // Per rimuovere il tempo, siccome non ci interessa
 			let chef_imageBase64 = await getBase64(
 				faker.image.personPortrait({ sex: chef_sex, size: 512 })
 			);
@@ -123,7 +126,10 @@ export async function generateFiliale(): Promise<string> {
 					firstName: waiter_nome,
 					lastName: waiter_cognome,
 				});
-				let waiter_data_nascita = faker.date.birthdate().toISOString();
+				let waiter_data_nascita = faker.date
+					.birthdate()
+					.toISOString()
+					.split('T')[0]; // Per rimuovere il tempo, siccome non ci interessa;
 				let waiter_imageBase64 = await getBase64(
 					faker.image.personPortrait({ sex: waiter_sex, size: 512 })
 				);

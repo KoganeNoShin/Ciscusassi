@@ -13,6 +13,13 @@ import {
 	IonSelect,
 	IonSelectOption,
 	ToastController,
+	IonText,
+	IonCardContent,
+	IonGrid,
+	IonCol,
+	IonRow,
+	IonImg,
+	IonItem,
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 
@@ -22,27 +29,29 @@ import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { ImpiegatoData } from 'src/app/core/interfaces/Impiegato';
 
 @Component({
-	selector: 'app-modifica-dati-dipendenti', // nome componente per il template
-	templateUrl: './modifica-dati-dipendenti.page.html', // file html associato
-	styleUrls: ['./modifica-dati-dipendenti.page.scss'], // file css/scss associato
+	selector: 'app-modifica-impiegati', // nome componente per il template
+	templateUrl: './modifica-impiegati.page.html', // file html associato
+	styleUrls: ['./modifica-impiegati.page.scss'], // file css/scss associato
 	standalone: true, // componente standalone, non in un modulo Angular tradizionale
 	imports: [
-		// moduli/ionic components necessari per il template
+		IonItem,
+		IonImg,
+		IonRow,
+		IonCol,
+		IonGrid,
+		IonCardContent,
 		IonContent,
 		IonButton,
 		IonCard,
-		IonIcon,
 		IonInput,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
 		CommonModule,
+		IonText,
 		FormsModule,
 		IonSelect,
 		IonSelectOption,
 	],
 })
-export class ModificaDatiDipendentiPage implements OnInit {
+export class ModificaImpiegatiPage implements OnInit {
 	// proprietà che contengono i dati del dipendente
 	nome: string = '';
 	cognome: string = '';
@@ -69,10 +78,11 @@ export class ModificaDatiDipendentiPage implements OnInit {
 			navigation.extras.state['dipendente']
 		) {
 			const dip = navigation.extras.state['dipendente'];
+			console.log(dip);
 			this.matricola = dip.matricola; // matricola obbligatoria per update
 			this.nome = dip.nome || ''; // assegno nome o stringa vuota se mancante
 			this.cognome = dip.cognome || '';
-			this.dataNascita = dip.data_nascita || dip.dataNascita || ''; // gestisco possibili nomi diversi
+			this.dataNascita = dip.data_nascita || ''; // gestisco possibili nomi diversi
 			this.ruolo = dip.ruolo || '';
 			this.foto = dip.foto || dip.image || ''; // immagine, base64 o url
 			this.ref_filiale = dip.ref_filiale; // id filiale associata
@@ -162,9 +172,9 @@ export class ModificaDatiDipendentiPage implements OnInit {
 			.UpdateImpiegato(this.matricola, datiModificati)
 			.subscribe({
 				next: (res) => {
-					console.log('Dipendente aggiornato con successo:', res);
+					console.log('Impiegato aggiornato con successo:', res);
 					this.presentToast(
-						'Dipendente aggiornato con successo!',
+						'Impiegato aggiornato con successo!',
 						'success'
 					);
 					// eventualmente potresti fare un redirect o reset form qui
