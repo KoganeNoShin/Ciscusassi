@@ -239,7 +239,7 @@ class OrdineService {
 		let totale = totaleNotRomana + totaleRomana;
 
 		if (ordine.ref_cliente != null) {
-			let punti = Number(Cliente.getPuntiCliente(ordine.ref_cliente));
+			let punti = await Cliente.getPuntiCliente(ordine.ref_cliente);
 			if (punti >= 50) {
 				totale = (totale * 90) / 100; // sconto 10%
 				punti -= 50;
