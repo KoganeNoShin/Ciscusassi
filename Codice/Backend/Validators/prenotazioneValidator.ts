@@ -51,7 +51,25 @@ export const prenotazioneInputValidator = [
 export const prenotazioneInputLocoValidator = [
 	numuroPersoneValidator(body('numero_persone')),
 	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
-	numeroCartaValidator(body('ref_cliente').optional({ nullable: true }))
+	numeroCartaValidator(body('ref_cliente')
+    .optional({ nullable: true })
+    .bail()
+    .custom(async (numeroCarta: number, { req }) => {
+      // Verifica se il cliente ha già una prenotazione futura
+      const cliente = await Prenotazione.getByCliente(numeroCarta);
+
+      // Ottieni la data attuale
+      const adesso = new Date();
+
+      // Controlla se esiste una prenotazione futura per questo cliente
+      const prenotazioniFuturo = cliente.filter(p => new Date(p.data_ora_prenotazione) > adesso);
+
+      if (prenotazioniFuturo.length > 0) {
+        throw new Error('Il cliente ha già una prenotazione futura. Non è possibile fare una nuova prenotazione.');
+      }
+
+      return true;
+    }))
 ];
 
 export const checkOTPValidator = [
