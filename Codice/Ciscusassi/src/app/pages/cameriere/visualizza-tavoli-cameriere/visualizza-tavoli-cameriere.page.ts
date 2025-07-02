@@ -162,7 +162,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		}
 
 		try {
-			const filiale = this.authService.getFiliale();
 			const resp = await lastValueFrom(
 				this.prenotazioneService.getPrenotazioniDelGiornoFiliale()
 			);
