@@ -199,7 +199,7 @@ export class Prenotazione {
 			LEFT JOIN 
 				clienti c ON p.ref_cliente = c.numero_carta
 			WHERE 
-				DATE(p.data_ora_prenotazione) = ?
+				DATE(p.data_ora_prenotazione) = DATE(?)
 				AND t.ref_filiale = ?
 			`,[data, id_filiale],
 				(err: Error | null, rows: PrenotazioneWithUtente[]) => {

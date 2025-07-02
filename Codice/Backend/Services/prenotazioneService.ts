@@ -330,12 +330,12 @@ class PrenotazioneService {
 				);
 			tavoliPerOrario[data_orario] = 0;
 			for (const p of prenotazioni) {
-				const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
-
-				tavoliPerOrario[data_orario] += tavoli;
+				if(p.data_ora_prenotazione == data_orario) {
+					const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
+					tavoliPerOrario[data_orario] += tavoli;
+				}
 			}
 		}
-
 		return tavoliPerOrario;
 	}
 
