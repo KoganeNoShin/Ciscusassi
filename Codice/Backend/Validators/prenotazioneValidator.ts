@@ -84,8 +84,3 @@ export const checkOTPValidator = [
     data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
     idTorrettaValidator(body('ref_torretta'))
 ];
-
-export const getPrenotazioniByDataCliente = [
-	data_ora_prenotazioneValidator(param('data')),
-	numeroCartaValidator(param('id_cliente'))
-];
