@@ -27,8 +27,15 @@ class PrenotazioneService {
 	}
 
 	static calcolaTavoliRichiesti(numeroPersone: number): number {
-		if (numeroPersone <= 0) return 0;
-		return Math.ceil((numeroPersone - 2) / 2);
+		let numeroTavoliRichiesti = 0;
+		for (let t = 2; t <= numeroPersone; t++) {
+        	const postiDisponibili = 2 * t + 2;
+			if (postiDisponibili >= numeroPersone) {
+				numeroTavoliRichiesti = t;
+				break;
+			}
+      	}
+		return numeroTavoliRichiesti;
 	}
 
 	static async prenota(data: PrenotazioneRequest): Promise<number> {
