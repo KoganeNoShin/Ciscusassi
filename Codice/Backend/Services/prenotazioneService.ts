@@ -278,24 +278,22 @@ class PrenotazioneService {
 		}
 	}
 
-	static async calcolaTavoliInUso(
-		id_filiale: number,
-		data: string
-	): Promise<Record<string, number>> {
+	static async calcolaTavoliInUso(id_filiale: number, data: string): Promise<Record<string, number>> {
 		const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
 		const tavoliPerOrario: Record<string, number> = {};
 
 		for (const orario of orariValidi) {
+			const data_orario = `${data} ${orario}`;
 			const prenotazioni =
 				await Prenotazione.getPrenotazioniDataAndFiliale(
 					id_filiale,
-					data
+					data_orario
 				);
-			tavoliPerOrario[data] = 0;
+			tavoliPerOrario[data_orario] = 0;
 			for (const p of prenotazioni) {
 				const tavoli = this.calcolaTavoliRichiesti(p.numero_persone);
 
-				tavoliPerOrario[data] += tavoli;
+				tavoliPerOrario[data_orario] += tavoli;
 			}
 		}
 
