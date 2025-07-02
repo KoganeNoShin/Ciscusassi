@@ -166,7 +166,7 @@ class OrdineService {
                 totale = totale * 90 / 100; // sconto 10%
                 punti -= 50;
             }
-            punti += Math.round(totale/10);
+            punti += Math.floor(totale/10);
             if(ordinatoPiattoDelGiorno) {
                 punti += 10;
             }
