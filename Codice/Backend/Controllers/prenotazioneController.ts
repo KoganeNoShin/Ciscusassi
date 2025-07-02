@@ -14,7 +14,7 @@ class PrenotazioneController {
                 numero_persone,
                 ref_cliente
             }
-            const prenotazione = await PrenotazioneService.prenota(req.body);
+            const prenotazione = await PrenotazioneService.prenota(prenotazioneInput);
 
             if(prenotazione) res.status(201).json({ success: true, data: req.body });
             else res.status(400).json({
