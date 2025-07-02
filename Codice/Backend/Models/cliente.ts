@@ -87,7 +87,7 @@ class Cliente {
 	// Aggiorna i punti di un cliente dato l'ID
 	static async setPuntiCliente(idCliente: number, nuoviPunti: number): Promise<void> {
 		return new Promise((resolve, reject) => {
-			const query = 'UPDATE clienti SET punti = ? WHERE id_cliente = ?';
+			const query = 'UPDATE clienti SET punti = ? WHERE numero_carta = ?';
 			db.run(query, [nuoviPunti, idCliente], function (err: Error | null) {
 				if (err) {
 					console.error('❌ [DB ERROR] setPuntiCliente:', err.message);
