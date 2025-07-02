@@ -69,7 +69,7 @@ class Cliente {
 	// Restituisce i punti di un cliente dato l'ID
 	static async getPuntiCliente(idCliente: number): Promise<number> {
 		return new Promise((resolve, reject) => {
-			const query = 'SELECT punti FROM clienti WHERE id_cliente = ?';
+			const query = 'SELECT punti FROM clienti WHERE numero_carta = ?';
 			db.get(query, [idCliente], (err: Error | null, row: { punti: number }) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getPuntiCliente:', err.message);
