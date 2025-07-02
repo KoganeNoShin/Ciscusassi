@@ -56,7 +56,7 @@ import {
 	matricolaImpiegatoValidator,
 	updateImpiegatoValidator,
 } from '../Validators/impiegatoValidator';
-import { numeroCartaValidator } from '../Validators/clienteValidator';
+import { addClienteValidator, numeroCartaValidator } from '../Validators/clienteValidator';
 
 const router = express.Router();
 
@@ -397,7 +397,11 @@ router.post(
  */
 
 // Registrazione
-//router.post('/register', AuthValidator.registerValidator, AuthValidator.validate, ClienteController.register);
+router.post('/register',
+	addClienteValidator, 
+	validate, 
+	ClienteController.register
+);
 
 // Login
 router.post('/login', loginValidator, validate, AuthController.login);

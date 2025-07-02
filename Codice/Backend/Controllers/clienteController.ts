@@ -2,13 +2,14 @@ import Cliente, { ClienteData } from '../Models/cliente';
 import AuthService from '../Services/authService';
 import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../Middleware/authMiddleware';
+import ClienteService from '../Services/clienteService';
 
 class ClienteController {
-	// Registra un nuovo cliente
+	// Registrazione Cliente
 	static async register(req: Request, res: Response): Promise<void> {
 		try {
 			const data: ClienteData = req.body;
-			const result = await AuthService.register(data);
+			const result = await ClienteService.register(data);
 
 			res.status(200).json({
 				success: true,

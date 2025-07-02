@@ -25,15 +25,10 @@ export interface ClienteRecord extends ClienteData {
 class Cliente {
 	// Crea un nuovo Cliente nel database
 	static async create(data: ClienteData): Promise<number> {
-		const { nome, cognome, data_nascita, email, password, image } = data;
-
-		const salt = await bcrypt.genSalt(10);
-		const hashedPassword = await bcrypt.hash(password, salt);
-
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO clienti (nome, cognome, data_nascita, email, password, punti, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
-				[nome, cognome, data_nascita, email, hashedPassword, 0, image],
+				[data.nome, data.cognome, data.data_nascita, data.email, data.password, 0, data.image],
 				function (this: RunResult, err: Error) {
 					if (err) {
 						console.error('❌ [DB ERROR] createCliente:', err.message, '| Params:', data);

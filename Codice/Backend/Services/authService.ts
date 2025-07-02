@@ -25,17 +25,6 @@ class AuthService {
 		}
 	}
 
-	// Registra un nuovo cliente
-	static async register(input: ClienteData): Promise<number> {
-		const existing = await Cliente.getByEmail(input.email);
-		if (existing) {
-			console.error('❌ [AUTH ERROR] register: email già registrata:', input.email);
-			throw new Error('Email già registrata');
-		}
-
-		return await Cliente.create(input);
-	}
-
 	// Login per cliente o impiegato
 	static async login(input: credentials): Promise<LoginRecord | undefined> {
 		// Tentativo di login come cliente
