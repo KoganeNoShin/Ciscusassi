@@ -126,7 +126,6 @@ export class PrenotaPage implements OnInit {
 		return new Date(year, month - 1, day, hour, minute, second || 0, 0);
 	}
 
-	// Carica le prenotazioni del cliente con ID 1 e filtra solo quelle future
 	private caricaPrenotazioniCliente(): void {
 		this.loadingPrenotazioni = true;
 

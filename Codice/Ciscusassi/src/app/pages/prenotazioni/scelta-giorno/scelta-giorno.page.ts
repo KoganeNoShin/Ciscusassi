@@ -55,7 +55,6 @@ export class SceltaGiornoPage implements OnInit {
 	prenotazione: PrenotazioneRequest = {
 		numero_persone: 0,
 		data_ora_prenotazione: '',
-		ref_cliente: null,
 		ref_filiale: 0,
 	};
 	prenotazioni: PrenotazioneWithFiliale[] = [];
@@ -262,7 +261,6 @@ export class SceltaGiornoPage implements OnInit {
 
 	// Ritorna una Promise con le prenotazioni del cliente
 	private caricaPrenotazioniCliente(): Promise<PrenotazioneWithFiliale[]> {
-		const idCliente = 1;
 
 		return new Promise((resolve, reject) => {
 			this.prenotazioneService
@@ -302,9 +300,14 @@ export class SceltaGiornoPage implements OnInit {
 		this.prenotazione.numero_persone = this.persone || 0;
 		this.prenotazione.data_ora_prenotazione = `${this.dataSelezionata} ${ora}`;
 		this.prenotazione.ref_filiale = this.idFiliale;
-		this.prenotazione.ref_cliente = 1;
 
-		const prenotazioni = await this.caricaPrenotazioniCliente();
+		let prenotazioni: PrenotazioneWithFiliale[] = [];
+		await new Promise<void>((resolve) => {
+			this.caricaPrenotazioniCliente().then((result) => {
+				prenotazioni = result;
+				resolve();
+			});
+		});
 
 		if (prenotazioni.length > 0) {
 			const toast = await this.toastController.create({

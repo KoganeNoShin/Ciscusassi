@@ -356,7 +356,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		const pren: PrenotazioneRequest = {
 			numero_persone: numeroPersoneFinale,
 			data_ora_prenotazione: dataPrenotazione,
-			ref_cliente: refCliente,
+			...(refCliente !== null ? { ref_cliente: refCliente } : {}),
 			ref_filiale: filialeId,
 		};
 

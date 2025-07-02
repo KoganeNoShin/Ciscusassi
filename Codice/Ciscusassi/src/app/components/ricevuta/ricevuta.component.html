@@ -40,7 +40,11 @@
 			}
 		</div>
 
-		<div class="pdf-section totale">Totale: € {{ totaleQuery}}</div>
+		@if (this.servizio == 'tavolo'){
+			<div class="pdf-section totale">Totale: € {{ totaleQuery}}</div>
+		} @else if (this.servizio == 'asporto'){
+			<div class="pdf-section totale">Totale: € {{ totale}}</div>
+		}
 
 		<div class="pdf-section footer">
 			&copy; Ciscusassi 2025 - Tutti i diritti riservati<br />
