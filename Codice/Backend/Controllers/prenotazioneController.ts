@@ -31,9 +31,18 @@ class PrenotazioneController {
         }
     }
 
-    static async prenotaLoco(req: Request, res: Response): Promise<void> {
+    static async prenotaLoco(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
-            const prenotazione = await PrenotazioneService.prenotaLoco(req.body);
+            const {ref_cliente, data_ora_prenotazione, numero_persone} = req.body
+            const ref_filiale = Number(req.user?.id_filiale);
+
+            const prenotazioneInput: PrenotazioneRequest = {
+                ref_filiale,
+                data_ora_prenotazione,
+                numero_persone,
+                ref_cliente
+            }
+            const prenotazione = await PrenotazioneService.prenotaLoco(prenotazioneInput);
 
             if(prenotazione) res.status(201).json({ success: true, data: req.body });
             else res.status(400).json({

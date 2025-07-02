@@ -74,7 +74,8 @@ export const prenotazioneInputValidator = [
 ];
 
 export const prenotazioneInputLocoValidator = [
-	...prenotazioneInputValidator,
+	numuroPersoneValidator(body('numero_persone')),
+	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	numeroCartaValidator(body('ref_cliente').optional({ nullable: true }))
 ];
 
