@@ -1,4 +1,4 @@
-import Pagamento, { PagamentoInput , PagamentoMensile } from "../Models/pagamento";
+import Pagamento, { PagamentoMensile } from "../Models/pagamento";
 import Filiale from "../Models/filiale";
 
 class PagamentoService {

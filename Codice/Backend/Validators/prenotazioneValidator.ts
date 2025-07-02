@@ -1,11 +1,8 @@
 import { body, ValidationChain } from 'express-validator'
-import Filiale from '../Models/filiale';
-import PrenotazioneService from '../Services/prenotazioneService';
 import Prenotazione from '../Models/prenotazione';
 import { idFilialeValidator } from './filialeValidator';
 import { idTorrettaValidator } from './torrettaValidator';
 import { numeroCartaValidator } from './clienteValidator';
-import { AuthenticatedRequest } from '../Middleware/authMiddleware';
 
 
 // Funzioni
