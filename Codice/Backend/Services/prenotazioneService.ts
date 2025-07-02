@@ -28,7 +28,7 @@ class PrenotazioneService {
 
 	static calcolaTavoliRichiesti(numeroPersone: number): number {
 		let numeroTavoliRichiesti = 0;
-		for (let t = 2; t <= numeroPersone; t++) {
+		for (let t = 1; t <= numeroPersone; t++) {
         	const postiDisponibili = 2 * t + 2;
 			if (postiDisponibili >= numeroPersone) {
 				numeroTavoliRichiesti = t;

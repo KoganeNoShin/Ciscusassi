@@ -277,20 +277,11 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		let numeroPersoneFinale = Math.min(persone, MAX_PERSONE);
 		let numeroTavoliRichiesti = 0;
 
-		for (let t = 2; t <= numeroPersoneFinale; t++) {
+		for (let t = 1; t <= numeroPersoneFinale; t++) {
 			if (2 * t + 2 >= numeroPersoneFinale) {
 				numeroTavoliRichiesti = t;
 				break;
 			}
-		}
-
-		const numTavoliDisponibili = 20;
-		if (numeroTavoliRichiesti > numTavoliDisponibili) {
-			await this.presentToast(
-				'Non ci sono abbastanza tavoli disponibili per il numero di persone selezionato.',
-				'danger'
-			);
-			return;
 		}
 
 		const filialeId = this.authService.getFiliale();
@@ -359,7 +350,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		};
 
 		try {
-			let result: any;
 			this.prenotazioneService.prenotaLoco(pren).subscribe({
 				next: async (res) => {
 					// gestisci la risposta (successo)
@@ -380,10 +370,17 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 				error: async (err) => {
 					// gestisci l'errore
 					console.error('Errore nella prenotazione:', err);
-					await this.presentToast(
-						'Errore, non ci sono abbastanza tavoli disponibili',
-						'danger'
-					);
+					if (refCliente !== null) {
+						await this.presentToast(
+							'Il cliente risulta già prenotato',
+							'danger'
+						);
+					} else {
+						await this.presentToast(
+							'Non ci sono abbastanza tavoli disponibili',
+							'danger'
+						);
+					}
 				},
 			});
 		} catch (e) {
@@ -393,7 +390,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 				'danger'
 			);
 		}
-		
 
 		this.showPopup = false;
 		this.resetPopup();
