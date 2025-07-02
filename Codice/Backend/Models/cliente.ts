@@ -106,7 +106,7 @@ class Cliente {
 	// Restituisce tutti i clienti
 	static async getAll(): Promise<ClienteRecord[]> {
 		return new Promise((resolve, reject) => {
-			db.all('SELECT * FROM clienti', (err: Error | null, rows: ClienteRecord[]) => {
+			db.all('SELECT nome, cognome, data_nascita, email, punti, image FROM clienti', (err: Error | null, rows: ClienteRecord[]) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getAll:', err.message);
 					return reject(err);
@@ -123,7 +123,7 @@ class Cliente {
 	// Restituisce un cliente in base all'email
 	static async getByEmail(email: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get('SELECT * FROM clienti WHERE email = ?', [email], (err: Error | null, row: ClienteRecord) => {
+			db.get('SELECT nome, cognome, data_nascita, email, punti, image FROM clienti WHERE email = ?', [email], (err: Error | null, row: ClienteRecord) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getByEmail:', err.message, '| Email:', email);
 					return reject(err);
@@ -136,7 +136,7 @@ class Cliente {
 	// Restituisce un cliente in base al numero carta
 	static async getByNumeroCarta(numero_carta: number): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get('SELECT * FROM clienti WHERE numero_carta = ?', [numero_carta], (err: Error, row: ClienteRecord) => {
+			db.get('SELECT nome, cognome, data_nascita, email, punti, image FROM clienti WHERE numero_carta = ?', [numero_carta], (err: Error, row: ClienteRecord) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getByNumeroCarta:', err.message, '| Numero Carta:', numero_carta);
 					return reject(err);
@@ -149,7 +149,7 @@ class Cliente {
 	// Restituisce un cliente in base al token
 	static async getByToken(token: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get('SELECT * FROM clienti WHERE token = ?', [token], (err: Error, row: ClienteRecord) => {
+			db.get('SELECT nome, cognome, data_nascita, email, punti, image FROM clienti WHERE token = ?', [token], (err: Error, row: ClienteRecord) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getByToken:', err.message, '| Token:', token);
 					return reject(err);

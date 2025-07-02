@@ -98,7 +98,7 @@ export class Impiegato {
 	static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
-				'SELECT * FROM impiegati WHERE ref_filiale = ?',
+				'SELECT nome, cognome, ruolo, foto, email, data_nascita, ref_filiale FROM impiegati WHERE ref_filiale = ?',
 				[id_filiale],
 				(err: Error | null, rows: ImpiegatoRecord[]) => {
 					if (err) {
@@ -117,7 +117,7 @@ export class Impiegato {
 	static async getByEmail(email: string): Promise<ImpiegatoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
-				'SELECT * FROM impiegati WHERE email = ?',
+				'SELECT nome, cognome, ruolo, foto, email, data_nascita, ref_filiale FROM impiegati WHERE email = ?',
 				[email],
 				(err: Error | null, row: ImpiegatoRecord) => {
 					if (err) {
@@ -136,7 +136,7 @@ export class Impiegato {
 	static async getByMatricola(id: number): Promise<ImpiegatoData | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
-				`SELECT nome, cognome, ruolo, foto, data_nascita, ref_filiale 
+				`SELECT nome, cognome, ruolo, foto, email, data_nascita, ref_filiale 
 				FROM impiegati 
 				WHERE matricola = ?`,
 				[id],
@@ -175,7 +175,7 @@ export class Impiegato {
 	// Seleziona le credenziali dell'impiegato in base al token
 	static async getByToken(token: string): Promise<ImpiegatoRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get('SELECT * FROM impiegati WHERE token = ?', [token], (err: Error, row: ImpiegatoRecord) => {
+			db.get('SELECT nome, cognome, ruolo, foto, email, data_nascita, ref_filiale FROM impiegati WHERE token = ?', [token], (err: Error, row: ImpiegatoRecord) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getByToken:', err.message, '| Token:', token);
 					return reject(err);
