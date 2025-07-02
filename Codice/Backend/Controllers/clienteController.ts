@@ -44,6 +44,40 @@ class ClienteController {
 			});
 		}
 	}
+
+	// Aggiornamento dati personali
+	static async aggiornaDatiPersonali(req: AuthenticatedRequest, res: Response): Promise<void> {
+		try {
+			const idCliente = Number(req.user?.id);
+
+			await ClienteService.aggiornaDatiPersonali(idCliente, req.body);
+
+			res.status(200).json({
+				success: true,
+				message: 'Dati personali aggiornati con successo'
+			});
+		} catch (err) {
+			console.error('❌ [CLIENTE ERROR] aggiornaDatiPersonali:', err);
+			res.status(400).json({ success: false, message: String((err as Error).message) });
+		}
+	}
+
+	// Aggiorna password
+	static async aggiornaPassword(req: AuthenticatedRequest, res: Response): Promise<void> {
+		try {
+			const idCliente = Number(req.user?.id);
+
+			await ClienteService.aggiornaPassword(idCliente, req.body.nuovaPassword);
+
+			res.status(200).json({
+				success: true,
+				message: 'Password aggiornata con successo'
+			});
+		} catch (err) {
+			console.error('❌ [CLIENTE ERROR] aggiornaPassword:', err);
+			res.status(400).json({ success: false, message: String((err as Error).message) });
+		}
+	}
 }
 
 export default ClienteController;

@@ -23,6 +23,26 @@ export interface ClienteRecord extends ClienteData {
 }
 
 class Cliente {
+	// Aggiorna i dati personali del cliente
+	static async update(idCliente: number, data: Partial<ClienteData>): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(`
+				UPDATE clienti
+				SET nome = ?, cognome = ?, email = ?, data_nascita = ?, image = ?
+				WHERE numero_carta = ?
+				`,
+				[data.nome, data.cognome, data.email, data.data_nascita, data.image, 
+				idCliente],function (err: Error | null) {
+					if (err) {
+						console.error('❌ [ClienteModel ERROR] update:', err.message);
+						return reject(err);
+					}
+					resolve();
+				}
+			);
+		});
+	}
+
 	// Restituisce i punti di un cliente dato l'ID
 	static async getPuntiCliente(idCliente: number): Promise<number> {
 		return new Promise((resolve, reject) => {
@@ -103,6 +123,24 @@ class Cliente {
 					resolve(this.lastID);
 				}
 			);
+		});
+	}
+
+	// Aggiorna la password del cliente
+	static async aggiornaPassword(idCliente: number, nuovaPassword: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(`
+				UPDATE clienti
+				SET password = ?
+				WHERE numero_carta = ?
+			`, [nuovaPassword, idCliente], 
+			function (err: Error | null) {
+				if (err) {
+					console.error('❌ [ClienteModel ERROR] aggiornaPassword:', err.message);
+					return reject(err);
+				}
+				resolve();
+			});
 		});
 	}
 

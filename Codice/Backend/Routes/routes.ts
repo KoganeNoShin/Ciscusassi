@@ -56,7 +56,7 @@ import {
 	matricolaImpiegatoValidator,
 	updateImpiegatoValidator,
 } from '../Validators/impiegatoValidator';
-import { addClienteValidator, numeroCartaValidator } from '../Validators/clienteValidator';
+import { addClienteValidator, aggiornaPasswordValidator, numeroCartaValidator, updateClienteValidator } from '../Validators/clienteValidator';
 
 const router = express.Router();
 
@@ -80,6 +80,23 @@ router.post(
 	validate,
 	authMiddleware,
 	AsportoController.addAsporto
+);
+
+// Route per Clienti
+
+router.put(
+	'/cliente/updateDati',
+	authMiddleware,
+	updateClienteValidator,
+	validate,
+	ClienteController.aggiornaDatiPersonali);
+
+router.put(
+	'/cliente/nuova_password',
+	authMiddleware,
+	aggiornaPasswordValidator,
+	validate,
+	ClienteController.aggiornaPassword
 );
 
 // Route per le Filiali

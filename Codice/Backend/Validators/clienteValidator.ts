@@ -80,17 +80,31 @@ export function numeroCartaValidator(chain: ValidationChain): ValidationChain {
 }
 
 // Validatori principali
+export const aggiornaPasswordValidator: ValidationChain[] = [
+	passwordClienteValidator(body('nuovaPassword')),
+	body('confermaPassword')
+		.notEmpty().withMessage('La conferma password è obbligatoria')
+		.custom((value, { req }) => {
+			if (value !== req.body.nuovaPassword) {
+				throw new Error('Le password non coincidono');
+			}
+			return true;
+		})
+];
 
 export const addClienteValidator = [
 	nomeClienteValidator(body('nome')),
 	cognomeClienteValidator(body('cognome')),
 	emailClienteValidator(body('email')),
-	passwordClienteValidator(body('password')),
+	...aggiornaPasswordValidator,
 	imageClienteValidator(body('image')),
 	dataNascitaClienteValidator(body('data_nascita'))
 ];
 
 export const updateClienteValidator = [
-	...addClienteValidator,
-	numeroCartaValidator(param('numero_carta'))
+	nomeClienteValidator(body('nome')),
+	cognomeClienteValidator(body('cognome')),
+	emailClienteValidator(body('email')),
+	imageClienteValidator(body('image')),
+	dataNascitaClienteValidator(body('data_nascita'))
 ];

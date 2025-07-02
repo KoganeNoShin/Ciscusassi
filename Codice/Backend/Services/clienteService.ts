@@ -24,6 +24,36 @@ class ClienteService {
             throw new Error('Errore durante il recupero dei punti del cliente');
         }
     }
+
+    static async aggiornaDatiPersonali(idCliente: number, data: Partial<ClienteData>): Promise<void> {
+        try {
+            const cliente = await Cliente.getByNumeroCarta(idCliente); // serve per verificare che abbia cambiato email
+            if (!cliente) throw new Error('Cliente non trovato');
+
+            // Se viene passata una nuova email, controlla che non sia già usata da altri
+            if (data.email && data.email !== cliente.email) {
+                const altro = await Cliente.getByEmail(data.email);
+                if (altro) throw new Error('Email già in uso da un altro cliente');
+            }
+
+            await Cliente.update(idCliente, data);
+        } catch (err) {
+            console.error('❌ [ClienteService Error] aggiornaDatiPersonali:', err);
+            throw new Error('Errore durante l\'aggiornamento dei dati personali');
+        }
+    }
+
+    static async aggiornaPassword(idCliente: number, passwordChiara: string): Promise<void> {
+        try {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(passwordChiara, salt);
+
+            await Cliente.aggiornaPassword(idCliente, hashedPassword);
+        } catch (err) {
+            console.error('❌ [ClienteService Error] aggiornaPassword:', err);
+            throw new Error('Errore durante l\'aggiornamento della password');
+        }
+    }
 }
 
 export default ClienteService;
