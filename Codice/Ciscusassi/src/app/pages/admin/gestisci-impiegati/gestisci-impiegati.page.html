@@ -1,0 +1,90 @@
+<ion-content
+	[fullscreen]="true"
+	class="ion-justify-content-center ion-align-items-center"
+	color="bianco"
+>
+	<div class="page-wrapper">
+		<ion-text class="ion-text-center ion-padding">
+			<h2>Gestisci impiegati</h2>
+		</ion-text>
+
+		<!-- Div dei filtri -->
+		<div
+			class="ion-justify-content-center ion-align-items-center ion-text-center ion-padding"
+		>
+			<ion-chip
+				color="rosso"
+				[outline]="ruoloSelezionato !== 'Chef'"
+				(click)="filterByRuolo('Chef')"
+				>Chef</ion-chip
+			>
+			<ion-chip
+				color="arancione"
+				[outline]="ruoloSelezionato !== 'camerieri'"
+				(click)="filterByRuolo('Cameriere')"
+				>Camerieri</ion-chip
+			>
+			<ion-chip
+				color="verdechiaro"
+				[outline]="ruoloSelezionato !== 'Amministratori'"
+				(click)="filterByRuolo('Amministratore')"
+				>Amministratori</ion-chip
+			>
+			<ion-chip
+				color="celeste"
+				[outline]="ruoloSelezionato !== 'Tutti'"
+				(click)="filterByRuolo('Tutti')"
+				>Tutti</ion-chip
+			>
+		</div>
+
+		<!-- Div della barra di ricerca -->
+
+		<div class="input-div ion-padding ion-margin">
+			<ion-searchbar
+				placeholder="Cerca un dipendente..."
+				inputmode="text"
+				type="text"
+				(ionInput)="applyFilters()"
+				[(ngModel)]="searchTerm"
+				[debounce]="250"
+				animated="true"
+				show-clear-button="focus"
+				class="ion-padding-horizontal"
+			></ion-searchbar>
+		</div>
+
+		<!-- Div dei dipendenti -->
+
+		@if (loading){
+		<div class="ion-text-center ion-padding ion-margin">
+			<ion-spinner name="circular" color="rosso"></ion-spinner>
+		</div>
+		} @else if(error){
+		<ion-text class="ion-text-center">
+			<h2 class="text-color-rosso">
+				ERRORE: Per piacere riprova tra poco!
+			</h2>
+		</ion-text>
+		} @else {
+
+		<div class="grid-container ion-margin">
+			<div class="button-wrapper">
+				<ion-button
+					[routerLink]="['/aggiungi-impiegati']"
+					class="circle-button text-color-bianco"
+					color="verdechiaro"
+				>
+					<ion-icon name="add" size="large" />
+				</ion-button>
+			</div>
+			@for (impiegato of impiegatiFiltrati; track impiegato.matricola ){
+			<app-impiegato-amministratore
+				[impiegato]="impiegato"
+				(showAlertDeleteImpiegatoEmitter)="showAlertDeleteImpiegato($event)"
+			/>
+			}
+		</div>
+		}
+	</div>
+</ion-content>

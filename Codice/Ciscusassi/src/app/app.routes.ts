@@ -134,11 +134,11 @@ export const routes: Routes = [
 			),
 	},
 	{
-		path: 'modifica-dipendenti',
+		path: 'gestisci-impiegati',
 		loadComponent: () =>
 			import(
-				'./pages/admin/modifica-dipendenti/modifica-dipendenti.page'
-			).then((m) => m.ModificaDipendentiPage),
+				'./pages/admin/gestisci-impiegati/gestisci-impiegati.page'
+			).then((m) => m.GestisciImpiegatiPage),
 	},
 	{
 		path: 'menu-tavolo',
@@ -173,18 +173,18 @@ export const routes: Routes = [
 		canActivate: [authGuard(['cliente'])],
 	},
 	{
-		path: 'aggiungi-dipendenti',
+		path: 'aggiungi-impiegati',
 		loadComponent: () =>
 			import(
-				'./pages/admin/aggiungi-dipendenti/aggiungi-dipendenti.page'
-			).then((m) => m.AggiungiDipendentiPage),
+				'./pages/admin/aggiungi-impiegati/aggiungi-impiegati.page'
+			).then((m) => m.AggiungiImpiegatiPage),
 	},
 	{
-		path: 'modifica-dati-dipendenti',
+		path: 'modifica-impiegati',
 		loadComponent: () =>
 			import(
-				'./pages/admin/modifica-dati-dipendenti/modifica-dati-dipendenti.page'
-			).then((m) => m.ModificaDatiDipendentiPage),
+				'./pages/admin/modifica-impiegati/modifica-impiegati.page'
+			).then((m) => m.ModificaImpiegatiPage),
 	},
 	{
 		path: 'dati-account',

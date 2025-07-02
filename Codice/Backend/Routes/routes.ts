@@ -15,34 +15,40 @@ import OrdProdController from '../Controllers/ordprodController';
 import TorrettaController from '../Controllers/torrettaController';
 import OrdineController from '../Controllers/ordineController';
 import { addAsportoValidator } from '../Validators/asportoValidator';
+
 import {
 	addFilialeValidator,
 	idFilialeValidator,
 	updateFilialeValidator,
 } from '../Validators/filialeValidator';
+
 import {
-	addOrdineValidator,
 	addPagamentoValidator,
 	getIDOrdineByPrenotazioneAndUsername,
 	idOrdineValidator,
 } from '../Validators/ordineValidator';
+
 import {
 	cambiaStatoProdottoValidator,
 	CambioRomanaValidator,
 	ordProdArrayValidator,
 } from '../Validators/ordprodValidator';
+
 import { annoPagamentoValidator } from '../Validators/pagamentoValidator';
+
 import {
 	addProdottoValidator,
 	idProdottoValidator,
 	updateProdottoValidator,
 } from '../Validators/prodottoValidator';
+
 import {
 	checkOTPValidator,
 	idPrenotazioneValidator,
 	prenotazioneInputLocoValidator,
-	prenotazioneInputValidator
+	prenotazioneInputValidator,
 } from '../Validators/prenotazioneValidator';
+
 import { idTorrettaValidator } from '../Validators/torrettaValidator';
 import { loginValidator } from '../Validators/authValidator';
 import {
@@ -54,7 +60,11 @@ import { numeroCartaValidator } from '../Validators/clienteValidator';
 
 const router = express.Router();
 
-export const validate = (req: Request, res: Response, next: NextFunction): void => {
+export const validate = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+): void => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		res.status(400).json({ errors: errors.array() });
@@ -131,7 +141,7 @@ router.delete(
 );
 
 router.get(
-	'/filiale/id_filiale/impiegati',
+	'/filiale/:id_filiale/impiegati',
 	idFilialeValidator(param('id_filiale')),
 	validate,
 	authMiddleware,

@@ -4,19 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonChip,
-	IonInput,
 	IonButton,
 	IonIcon,
 	IonAlert,
-	IonCard,
-	IonImg,
-	IonCardHeader,
-	IonCardTitle,
-	IonCardContent,
+	IonText,
+	IonSearchbar,
+	IonSpinner,
+	AlertController,
 } from '@ionic/angular/standalone';
 
 import { ToastController } from '@ionic/angular';
@@ -25,57 +20,59 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ImpiegatoRecord } from 'src/app/core/interfaces/Impiegato';
 import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
 
+import { addIcons } from 'ionicons';
+import { add } from 'ionicons/icons';
+import { ImpiegatoAmministratoreComponent } from 'src/app/components/impiegato-amministratore/impiegato-amministratore.component';
+
 @Component({
-	selector: 'app-modifica-dipendenti',
-	templateUrl: './modifica-dipendenti.page.html',
-	styleUrls: ['./modifica-dipendenti.page.scss'],
+	selector: 'app-gestisci-impiegati',
+	templateUrl: './gestisci-impiegati.page.html',
+	styleUrls: ['./gestisci-impiegati.page.scss'],
 	standalone: true,
 	imports: [
+		ImpiegatoAmministratoreComponent,
+		IonText,
 		IonContent,
 		RouterLink,
-		IonHeader,
-		IonTitle,
 		IonButton,
-		IonToolbar,
 		CommonModule,
 		FormsModule,
 		IonChip,
-		IonInput,
-		IonAlert,
 		IonButton,
 		IonIcon,
-		IonCard,
-		IonImg,
-		IonCardHeader,
-		IonCardTitle,
-		IonCardContent,
+		IonSearchbar,
+		IonSpinner,
+		IonIcon,
 	],
 })
-export class ModificaDipendentiPage implements OnInit {
-	dipendenti: ImpiegatoRecord[] = []; // Lista completa di dipendenti caricata da API
+export class GestisciImpiegatiPage implements OnInit {
+	impiegati: ImpiegatoRecord[] = []; // Lista completa di impiegati caricata da API
 	loading: boolean = true; // Flag per indicare caricamento dati
 	error: boolean = false; // Flag per indicare errore caricamento
-	selectedCategoria: string = 'Tutti'; // Categoria filtro selezionata (Ruolo dipendente)
+	ruoloSelezionato: string = 'Tutti'; // ruoloSelezionato filtro selezionata (Ruolo impieagato)
 	searchTerm: string = ''; // Termini di ricerca inseriti dall’utente
-	filteredDipendenti: ImpiegatoRecord[] = []; // Lista filtrata in base a categoria e ricerca
-	id_filiale: number = 0; // ID della filiale da cui caricare i dipendenti
+	impiegatiFiltrati: ImpiegatoRecord[] = []; // Lista filtrata in base a ruoloSelezionato e ricerca
+	id_filiale: number = 0; // ID della filiale da cui caricare i impiegati
 
 	isAlertOpen = false; // Controlla apertura alert conferma eliminazione
-	selectedDipendente: ImpiegatoRecord | null = null; // Dipendente selezionato per azioni (es. eliminazione)
+	selectedImpiegato: ImpiegatoRecord | null = null; // impieagato selezionato per azioni (es. eliminazione)
 
 	constructor(
-		private impiegatoService: ImpiegatoService, // Servizio per chiamate API dipendenti
+		private impiegatoService: ImpiegatoService, // Servizio per chiamate API impiegati
 		private route: ActivatedRoute, // Per leggere parametri query string da URL
 		private router: Router, // Per gestione navigazione e stato
-		private toastController: ToastController // Per mostrare messaggi toast all’utente
-	) {}
+		private toastController: ToastController, // Per mostrare messaggi toast all’utente
+		private alertController: AlertController
+	) {
+		addIcons({ add });
+	}
 
 	ngOnInit() {
 		// Sottoscrizione ai parametri query per ottenere id_filiale
 		this.route.queryParams.subscribe((params) => {
 			const idFromQuery = +params['id_filiale'] || 0;
 			if (idFromQuery) {
-				// Se id_filiale è presente nei parametri, lo utilizziamo per caricare i dipendenti
+				// Se id_filiale è presente nei parametri, lo utilizziamo per caricare i impiegati
 				this.id_filiale = idFromQuery;
 				this.fetchImpiegati(this.id_filiale);
 			} else {
@@ -90,7 +87,7 @@ export class ModificaDipendentiPage implements OnInit {
 					this.loading = false;
 					this.error = true;
 					console.error(
-						'ID filiale non passato alla pagina modifica dipendenti.'
+						'ID filiale non passato alla pagina modifica impiegati.'
 					);
 				}
 			}
@@ -98,7 +95,7 @@ export class ModificaDipendentiPage implements OnInit {
 	}
 
 	private fetchImpiegati(filialeId: number) {
-		// Chiamata API per ottenere i dipendenti di una filiale
+		// Chiamata API per ottenere i impiegati di una filiale
 		this.impiegatoService.GetImpiegati(filialeId).subscribe({
 			next: (response) => this.handleResponse(response),
 			error: (err) => {
@@ -113,8 +110,9 @@ export class ModificaDipendentiPage implements OnInit {
 	private handleResponse(response: ApiResponse<ImpiegatoRecord[]>): void {
 		// Gestione risposta API
 		if (response.success && response.data) {
-			this.dipendenti = response.data; // Salvo i dipendenti ricevuti
-			this.filterTutti(); // Inizializzo lista filtrata con tutti i dipendenti
+			this.impiegati = response.data; // Salvo i impiegati ricevuti
+			this.filterByRuolo('Tutti'); // Inizializzo lista filtrata con tutti i impiegati
+			console.log(this.impiegati);
 		} else {
 			// In caso di errore nella risposta API
 			console.error(response.message || 'Errore sconosciuto');
@@ -124,114 +122,122 @@ export class ModificaDipendentiPage implements OnInit {
 		this.loading = false; // Finito caricamento dati
 	}
 
-	filterAmministratori() {
-		// Filtro per ruolo Amministratore
-		this.selectedCategoria = 'Amministratori';
-		this.filteredDipendenti = this.dipendenti.filter(
-			(p) => p.ruolo === 'Amministratore'
-		);
-	}
+	// Funzione che applica il filtro in base alla ruoloSelezionato
+	filterByRuolo(ruolo: string) {
+		// Imposta la ruoloSelezionato selezionata
+		this.ruoloSelezionato = ruolo;
 
-	filterCamerieri() {
-		// Filtro per ruolo Cameriere
-		this.selectedCategoria = 'camerieri';
-		this.filteredDipendenti = this.dipendenti.filter(
-			(p) => p.ruolo === 'Cameriere'
-		);
-	}
-
-	filterChef() {
-		// Filtro per ruolo Chef
-		this.selectedCategoria = 'Chef';
-		this.filteredDipendenti = this.dipendenti.filter(
-			(p) => p.ruolo === 'Chef'
-		);
-	}
-
-	filterTutti() {
-		// Mostra tutti i dipendenti senza filtri di ruolo
-		this.selectedCategoria = 'Tutti';
-		this.filteredDipendenti = this.dipendenti;
+		// Se la ruoloSelezionato è "Tutti", mostriamo tutti i piatti
+		if (ruolo === 'Tutti') {
+			this.impiegatiFiltrati = this.impiegati;
+		}
+		// Se la ruoloSelezionato è una ruoloSelezionato specifica, filtriamo per quella ruoloSelezionato
+		else {
+			this.impiegatiFiltrati = this.impiegati.filter(
+				(d) => d.ruolo === ruolo
+			);
+		}
 	}
 
 	applyFilters() {
-		// Applica filtri combinati (categoria + ricerca testo)
-		const categoria = this.selectedCategoria.toLowerCase();
+		// Applica filtri combinati (ruoloSelezionato + ricerca testo)
+		const ruoloSelezionato = this.ruoloSelezionato.toLowerCase();
 		const term = this.searchTerm.trim().toLowerCase();
 
-		this.filteredDipendenti = this.dipendenti.filter((p) => {
+		this.impiegatiFiltrati = this.impiegati.filter((p) => {
 			const ruolo = p.ruolo?.toLowerCase() || '';
 			const nomeCompleto = `${p.nome} ${p.cognome}`.toLowerCase();
 			const email = p.email?.toLowerCase() || '';
 
-			// Verifica se il dipendente corrisponde alla categoria o se è 'tutti'
-			const matchCategoria = categoria === 'tutti' || ruolo === categoria;
+			// Verifica se il impieagato corrisponde alla ruoloSelezionato o se è 'tutti'
+			const matchRuoloSelezionato =
+				ruoloSelezionato === 'tutti' || ruolo === ruoloSelezionato;
 			// Verifica se la ricerca testuale è contenuta nel nome completo o email
 			const matchSearch =
 				nomeCompleto.includes(term) || email.includes(term);
 
-			return matchCategoria && matchSearch;
+			return matchRuoloSelezionato && matchSearch;
 		});
 	}
 
-	showAlert(dipendente: ImpiegatoRecord) {
-		// Mostra alert conferma eliminazione per il dipendente selezionato
-		this.selectedDipendente = dipendente;
+	async showAlertDeleteImpiegato(impieagato: ImpiegatoRecord) {
+		// Mostra alert conferma eliminazione per l' impieagato selezionato
+		this.selectedImpiegato = impieagato;
 		this.isAlertOpen = true;
+
+		const alert = await this.alertController.create({
+			header: 'Conferma cancellazione',
+			message: `Sei sicuro di voler licenziare ${this.selectedImpiegato.nome} ${this.selectedImpiegato.cognome}?`,
+			buttons: [
+				{
+					text: 'Annulla',
+					role: 'cancel',
+					handler: async () => {
+						this.annullaEliminaImpiegato();
+					},
+					cssClass: [
+						'alert-button-cancel',
+						'bg-color-rosso',
+						'text-color-bianco',
+					],
+				},
+				{
+					text: 'Conferma',
+					handler: async () => {
+						this.confermaEliminaImpiegato();
+					},
+					cssClass: [
+						'alert-button-confirm',
+						'bg-color-verdechiaro',
+						'text-color-bianco',
+					],
+				},
+			],
+			cssClass: ['custom-alert', 'text-color-bianco'],
+		});
+
+		await alert.present();
 	}
 
-	onConfirm() {
-		// Azione conferma eliminazione dipendente
-		if (this.selectedDipendente) {
-			const matricolaToDelete = this.selectedDipendente.matricola;
+	confermaEliminaImpiegato() {
+		// Azione conferma eliminazione impieagato
+		if (this.selectedImpiegato) {
+			const matricolaToDelete = this.selectedImpiegato.matricola;
 
 			// Rimozione ottimistica dalla lista visualizzata
-			this.dipendenti = this.dipendenti.filter(
+			this.impiegati = this.impiegati.filter(
 				(d) => d.matricola !== matricolaToDelete
 			);
 			this.applyFilters(); // Aggiorna lista filtrata dopo rimozione
 
-			// Chiamata API per eliminare il dipendente lato server
+			// Chiamata API per eliminare il impieagato lato server
 			this.impiegatoService.DeleteImpiegato(matricolaToDelete).subscribe({
 				next: () => {
 					// Notifica successo eliminazione
 					this.showToastMessage(
-						'Dipendente eliminato con successo',
+						'impieagato licenziato con successo',
 						'success'
 					);
 				},
 				error: (err) => {
 					// Gestione errore eliminazione: log e notifica all’utente
-					console.error('Errore durante la cancellazione:', err);
+					console.error('Errore durante il licenziamento:', err);
 					this.showToastMessage(
-						'Errore durante la cancellazione',
+						'Errore durante il licenziamento',
 						'danger'
 					);
 				},
 			});
 		}
 		this.isAlertOpen = false; // Chiudo alert
-		this.selectedDipendente = null; // Reset dipendente selezionato
+		this.selectedImpiegato = null; // Reset impieagato selezionato
 	}
 
-	onCancel() {
+	annullaEliminaImpiegato() {
 		// Azione annulla eliminazione (chiusura alert)
 		this.isAlertOpen = false;
-		this.selectedDipendente = null;
+		this.selectedImpiegato = null;
 	}
-
-	alertButtons = [
-		{
-			text: 'Annulla',
-			role: 'cancel',
-			handler: () => this.onCancel(),
-		},
-		{
-			text: 'OK',
-			role: 'confirm',
-			handler: () => this.onConfirm(),
-		},
-	];
 
 	private async showToastMessage(
 		message: string,

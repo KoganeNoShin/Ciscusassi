@@ -47,6 +47,13 @@
 }
 
 @font-face {
+	font-family: 'Caveat';
+	src: url('assets/fonts/Caveat.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
 	font-family: 'LucidaCalligraphy';
 	src: url('/assets/fonts/LucidaUnicodeCalligraphy.ttf') format('truetype');
 	font-weight: normal;
@@ -95,19 +102,19 @@ h3 {
 }
 
 h4 {
-	font-family: 'LucidaCalligraphy', sans-serif;
+	font-family: 'Caveat', sans-serif;
 	font-size: clamp(1.1rem, 2vw, 1.5rem);
 	color: var(--ion-color-primary-contrast);
 }
 
 h5 {
-	font-family: 'LucidaCalligraphy', sans-serif;
+	font-family: 'Caveat', sans-serif;
 	font-size: clamp(1rem, 1.8vw, 1.3rem);
 	color: var(--ion-color-primary-contrast);
 }
 
 h6 {
-	font-family: 'LucidaCalligraphy', sans-serif;
+	font-family: 'Caveat', sans-serif;
 	font-size: clamp(0.9rem, 1.5vw, 1.1rem);
 	color: var(--ion-color-primary-contrast);
 }
@@ -117,7 +124,7 @@ p,
 a,
 ion-label,
 ion-text {
-	font-family: 'LucidaCalligraphy', sans-serif;
+	font-family: 'Caveat', sans-serif;
 	font-size: clamp(0.6rem, 1vw, 1rem);
 	color: var(--ion-color-primary-contrast);
 }
@@ -127,7 +134,7 @@ a {
 }
 
 ion-button {
-	font-family: 'Isocpeur-Regular', sans-serif;
+	font-family: 'Caveat', sans-serif;
 	font-size: clamp(1rem, 1.3vw, 1.2rem);
 	color: var(--ion-color-bianco);
 	border-radius: 8px;

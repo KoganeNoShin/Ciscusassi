@@ -4,11 +4,11 @@
 	<ion-card-header>
 		<ion-card-title>
 			<ion-text class="ion-text-center">
-				<h6>{{ filiale.indirizzo }}</h6>
+				<h4>{{ filiale.indirizzo }}</h4>
 			</ion-text>
 
 			<ion-text class="ion-text-center">
-				<h6>Località: {{ filiale.comune }}</h6>
+				<h5>Località: {{ filiale.comune }}</h5>
 			</ion-text>
 		</ion-card-title>
 	</ion-card-header>
@@ -26,7 +26,7 @@
 			size="default"
 			fill="solid"
 			shape="round"
-			color="verdechiaro"
+			color="arancione"
 			expand="block"
 			type="submit"
 			class="ion-padding-vertical ion-padding-horizontal"
@@ -35,18 +35,18 @@
 		</ion-button>
 		<!-- Modificato: passiamo filialeId anche come query param -->
 		<ion-button
-			[routerLink]="['/modifica-dipendenti']"
+			[routerLink]="['/gestisci-impiegati']"
 			[state]="{ filialeId: filiale.id_filiale }"
 			[queryParams]="{ id_filiale: filiale.id_filiale }"
 			size="default"
 			fill="solid"
 			shape="round"
-			color="verdechiaro"
+			color="arancione"
 			expand="block"
 			type="submit"
 			class="ion-padding-vertical ion-padding-horizontal"
 		>
-			Modifica dipendenti
+			Gestisci impiegati
 		</ion-button>
 
 		<ion-button
@@ -54,7 +54,7 @@
 			size="default"
 			fill="solid"
 			shape="round"
-			color="verdechiaro"
+			color="rosso"
 			expand="block"
 			type="submit"
 			class="ion-padding-vertical ion-padding-horizontal"

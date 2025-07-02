@@ -16,7 +16,7 @@ import migrationAspProd from './Database/Migrations/migrationAspProd';
 
 import generateCliente from './Database/Seeders/seederCliente';
 import generateFiliale from './Database/Seeders/seederFiliale';
-import generateUtentiFissi from './Database/Seeders/SeederBoss';
+import generateUtentiFissi from './Database/Seeders/seederBoss';
 import generateProdotto from './Database/Seeders/seederProdotto';
 import generateAsporto from './Database/Seeders/seederAsporto';
 import generatePrenotazione from './Database/Seeders/seederPrenotazione';
@@ -53,10 +53,7 @@ async function createTables() {
 
 async function seedDB() {
 	// 1. Avvia in parallelo clienti e filiali
-	const [_, __] = await Promise.all([
-		generateCliente(15),
-		generateFiliale()
-	]);
+	const [_, __] = await Promise.all([generateCliente(15), generateFiliale()]);
 
 	// 2. Utenti fissi ha bisogno delle filiali già esistenti
 	await generateUtentiFissi();
@@ -67,7 +64,7 @@ async function seedDB() {
 	// 4. Asporto e Prenotazioni possono partire in parallelo, se usano dati già pronti
 	await Promise.all([
 		generateAsporto(50), // Toccalo e ti uccido
-	//generatePrenotazione(50)
+		//generatePrenotazione(50)
 	]);
 	console.log('✅ Database seed completato con successo!');
 }
