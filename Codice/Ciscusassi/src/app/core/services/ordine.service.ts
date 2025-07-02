@@ -17,7 +17,7 @@ export class OrdineService {
 
 	addOrdine(
 		username: string,
-		ref_prenotazione: number,
+		ref_prenotazione: number
 	): Observable<ApiResponse<any>> {
 		const body = {
 			username_ordinante: username,
@@ -26,22 +26,17 @@ export class OrdineService {
 
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/addOrdine`,
-			body,
-			{ headers: { 'Content-Type': 'application/json' } }
+			body
 		);
 	}
-	cambiaStato(
-		stato: string,
-		id: number
-	): Observable<ApiResponse<any>> {
+	cambiaStato(stato: string, id: number): Observable<ApiResponse<any>> {
 		const body = {
-			stato: stato
+			stato: stato,
 		};
 
 		return this.http.put<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/ordine/prodotto/${id}/cambiaStato`,
-			body,
-			{ headers: { 'Content-Type': 'application/json' } }
+			body
 		);
 	}
 
@@ -62,8 +57,8 @@ export class OrdineService {
 		isRomana: boolean
 	): Observable<ApiResponse<any>> {
 		const body = {
-			isRomana: isRomana
-		}
+			isRomana: isRomana,
+		};
 		return this.http.put<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/ordine/prodotto/${id_ordprod}/isRomana`,
 			body,
