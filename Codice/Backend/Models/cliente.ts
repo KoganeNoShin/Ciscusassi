@@ -123,7 +123,7 @@ class Cliente {
 	// Restituisce un cliente in base all'email
 	static async getByEmail(email: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get('SELECT numero_carta, nome, cognome, data_nascita, email, punti, image FROM clienti WHERE email = ?', [email], (err: Error | null, row: ClienteRecord) => {
+			db.get('SELECT numero_carta, nome, cognome, data_nascita, email, punti, password, image FROM clienti WHERE email = ?', [email], (err: Error | null, row: ClienteRecord) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getByEmail:', err.message, '| Email:', email);
 					return reject(err);
@@ -149,7 +149,7 @@ class Cliente {
 	// Restituisce un cliente in base al token
 	static async getByToken(token: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
-			db.get('SELECT numero_carta, nome, cognome, data_nascita, email, punti, password, image FROM clienti WHERE token = ?', [token], (err: Error, row: ClienteRecord) => {
+			db.get('SELECT numero_carta, nome, cognome, data_nascita, email, punti, image FROM clienti WHERE token = ?', [token], (err: Error, row: ClienteRecord) => {
 				if (err) {
 					console.error('❌ [DB ERROR] getByToken:', err.message, '| Token:', token);
 					return reject(err);
