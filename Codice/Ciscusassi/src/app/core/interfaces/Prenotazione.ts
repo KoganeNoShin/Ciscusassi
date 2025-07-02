@@ -14,7 +14,7 @@ export interface PrenotazioneRequest {
 	numero_persone: number;
 	data_ora_prenotazione: string;
 	ref_cliente?: number;
-	ref_filiale: number;
+	ref_filiale?: number;
 }
 
 export interface PrenotazioneWithFiliale extends PrenotazioneRecord {

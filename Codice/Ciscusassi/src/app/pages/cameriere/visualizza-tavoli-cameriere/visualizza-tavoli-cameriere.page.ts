@@ -356,32 +356,44 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			numero_persone: numeroPersoneFinale,
 			data_ora_prenotazione: dataPrenotazione,
 			...(refCliente !== null ? { ref_cliente: refCliente } : {}),
-			ref_filiale: filialeId,
 		};
 
 		try {
-			const result = await lastValueFrom(
-				this.prenotazioneService.prenotaLoco(pren)
-			);
-			if (result.success) {
-				await this.presentToast(
-					'Prenotazione creata con successo',
-					'success'
-				);
-				await this.loadTavoli();
-			} else {
-				await this.presentToast(
-					'Errore nella creazione della prenotazione',
-					'danger'
-				);
-			}
-		} catch (err) {
-			console.error(err);
+			let result: any;
+			this.prenotazioneService.prenotaLoco(pren).subscribe({
+				next: async (res) => {
+					// gestisci la risposta (successo)
+					console.log('Prenotazione riuscita:', res);
+					if (res.success) {
+						await this.presentToast(
+							'Prenotazione creata con successo',
+							'success'
+						);
+						await this.loadTavoli();
+					} else {
+						await this.presentToast(
+							'Errore nella creazione della prenotazione',
+							'danger'
+						);
+					}
+				},
+				error: async (err) => {
+					// gestisci l'errore
+					console.error('Errore nella prenotazione:', err);
+					await this.presentToast(
+						'Errore, non ci sono abbastanza tavoli disponibili',
+						'danger'
+					);
+				},
+			});
+		} catch (e) {
+			console.error('Errore nella prenotazione:', e);
 			await this.presentToast(
-				'Errore, non ci sono abbastanza tavoli disponibili',
+				'Errore durante la creazione della prenotazione',
 				'danger'
 			);
 		}
+		
 
 		this.showPopup = false;
 		this.resetPopup();

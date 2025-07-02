@@ -62,7 +62,7 @@ export const prenotazioneInputLocoValidator = [
       const adesso = new Date();
 
       // Controlla se esiste una prenotazione futura per questo cliente
-      const prenotazioniFuturo = cliente.filter(p => new Date(p.data_ora_prenotazione) > adesso);
+      const prenotazioniFuturo = cliente.filter(p => new Date(p.data_ora_prenotazione) >= adesso);
 
       if (prenotazioniFuturo.length > 0) {
         throw new Error('Il cliente ha già una prenotazione futura. Non è possibile fare una nuova prenotazione.');
