@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tavolo, TavoloService } from 'src/app/core/services/tavolo.service';
+import { TavoloService } from 'src/app/core/services/tavolo.service';
 
 import {
 	IonContent,
@@ -17,7 +17,6 @@ import {
 	IonChip,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
-import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { lastValueFrom } from 'rxjs';
 import { PrenotazioneRequest } from 'src/app/core/interfaces/Prenotazione';
@@ -77,7 +76,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	constructor(
 		private toastController: ToastController,
-		private authService: AuthenticationService,
 		private prenotazioneService: PrenotazioneService,
 		private router: Router,
 		private tavoloService: TavoloService,
@@ -298,26 +296,19 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 
-		// Calcolo tavoli richiesti
-		let numeroTavoliRichiesti = 0;
-		for (let t = 1; t <= numeroPersoneFinale; t++) {
-			if (2 * t + 2 >= numeroPersoneFinale) {
-				numeroTavoliRichiesti = t;
-				break;
-			}
-		}
-
 		if (this.refClienteInput?.trim() !== '') {
 			const parsed = parseInt(this.refClienteInput.trim(), 10);
 			if (!isNaN(parsed)) {
 				refCliente = parsed;
 			} else {
-				await this.presentToast('ref_cliente non valido', 'warning');
+				await this.presentToast(
+					'Il numero della carta non è valido',
+					'warning'
+				);
 				return;
 			}
 		}
 
-		const filialeId = this.authService.getFiliale();
 		let dataPrenotazione = this.getLocalIsoString();
 
 		if (refCliente !== null) {
