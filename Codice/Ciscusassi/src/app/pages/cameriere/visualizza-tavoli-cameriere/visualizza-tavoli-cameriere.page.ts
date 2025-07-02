@@ -16,6 +16,7 @@ import {
 	ToastController,
 	IonChip,
 } from '@ionic/angular/standalone';
+import { AlertController } from '@ionic/angular/standalone';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { lastValueFrom } from 'rxjs';
@@ -79,7 +80,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		private authService: AuthenticationService,
 		private prenotazioneService: PrenotazioneService,
 		private router: Router,
-		private tavoloService: TavoloService
+		private tavoloService: TavoloService,
+		private AlertController: AlertController
 	) {}
 
 	// Inizializza la pagina: se il locale è aperto carica i tavoli e imposta aggiornamento ogni 30 secondi.
@@ -251,6 +253,27 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	// Conferma la creazione di una nuova prenotazione.
 	// Valida input persone e ref cliente.
 	// Verifica prenotazioni future esistenti per il cliente.
+	async mostraConfermaFasciaOraria(): Promise<boolean> {
+		return new Promise(async (resolve) => {
+			const alert = await this.AlertController.create({
+				header: 'Fascia oraria non disponibile',
+				message: 'Vuoi prenotare per la prossima fascia disponibile?',
+				buttons: [
+					{
+						text: 'Annulla',
+						role: 'cancel',
+						handler: () => resolve(false),
+					},
+					{
+						text: 'Conferma',
+						handler: () => resolve(true),
+					},
+				],
+			});
+			await alert.present();
+		});
+	}
+
 	async conferma() {
 		const persone = this.personeSelezionate ?? this.inputManuale;
 		let refCliente: number | null = null;
@@ -263,24 +286,34 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 
-		if (this.refClienteInput.trim() !== '') {
+		const MAX_PERSONE = 999999;
+		const numeroPersoneFinale = Math.min(persone, MAX_PERSONE);
+
+		// Controllo massimo 20 persone
+		if (numeroPersoneFinale > 20) {
+			await this.presentToast(
+				'Una prenotazione può avere al massimo 20 persone',
+				'danger'
+			);
+			return;
+		}
+
+		// Calcolo tavoli richiesti
+		let numeroTavoliRichiesti = 0;
+		for (let t = 1; t <= numeroPersoneFinale; t++) {
+			if (2 * t + 2 >= numeroPersoneFinale) {
+				numeroTavoliRichiesti = t;
+				break;
+			}
+		}
+
+		if (this.refClienteInput?.trim() !== '') {
 			const parsed = parseInt(this.refClienteInput.trim(), 10);
 			if (!isNaN(parsed)) {
 				refCliente = parsed;
 			} else {
 				await this.presentToast('ref_cliente non valido', 'warning');
 				return;
-			}
-		}
-
-		const MAX_PERSONE = 999999;
-		let numeroPersoneFinale = Math.min(persone, MAX_PERSONE);
-		let numeroTavoliRichiesti = 0;
-
-		for (let t = 1; t <= numeroPersoneFinale; t++) {
-			if (2 * t + 2 >= numeroPersoneFinale) {
-				numeroTavoliRichiesti = t;
-				break;
 			}
 		}
 
@@ -324,11 +357,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			}
 		}
 
-		// Se non è disponibile nessuna fascia ora, chiedi per la prossima
 		if (dataPrenotazione === '') {
-			const conferma = window.confirm(
-				'Non è disponibile una fascia oraria in questo momento. Vuoi prenotare per la prossima fascia disponibile?'
-			);
+			const conferma = await this.mostraConfermaFasciaOraria();
 			if (!conferma) {
 				return;
 			}
@@ -352,8 +382,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		try {
 			this.prenotazioneService.prenotaLoco(pren).subscribe({
 				next: async (res) => {
-					// gestisci la risposta (successo)
-					console.log('Prenotazione riuscita:', res);
 					if (res.success) {
 						await this.presentToast(
 							'Prenotazione creata con successo',
@@ -368,7 +396,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 					}
 				},
 				error: async (err) => {
-					// gestisci l'errore
 					console.error('Errore nella prenotazione:', err);
 					if (refCliente !== null) {
 						await this.presentToast(
