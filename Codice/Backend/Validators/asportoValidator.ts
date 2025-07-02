@@ -1,5 +1,4 @@
 import { body, ValidationChain } from 'express-validator'
-import Cliente from '../Models/cliente';
 import Prodotto from '../Models/prodotto';
 import { idFilialeValidator } from './filialeValidator';
 

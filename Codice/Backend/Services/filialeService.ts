@@ -1,4 +1,4 @@
-import Filiale, { FilialeInput, FilialeRecord } from '../Models/filiale';
+import Filiale, { FilialeRecord } from '../Models/filiale';
 
 class FilialeService {
 	static async addFiliale(data: FilialeRecord): Promise<number | null> {

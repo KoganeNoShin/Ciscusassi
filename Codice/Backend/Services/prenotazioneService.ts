@@ -1,3 +1,4 @@
+import Filiale from '../Models/filiale';
 import OrdProd from '../Models/ord_prod';
 import Ordine from '../Models/ordine';
 import Prenotazione, {
@@ -49,6 +50,21 @@ class PrenotazioneService {
                 throw new Error('La data e ora della prenotazione non può essere nel passato');
             }
 
+			// Check posto
+			const filiale = await Filiale.getById(Number(data.ref_filiale));
+			if (!filiale) throw new Error('Filiale non trovata');
+			
+			const tavoliTotali = filiale.num_tavoli;
+			const tavoliInUso = await this.calcolaTavoliInUso(filiale.id_filiale, data.data_ora_prenotazione);
+			const tavoliOccupati = tavoliInUso[data.data_ora_prenotazione] ?? 0;
+			
+			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(data.numero_persone);
+			
+			if (tavoliOccupati + tavoliRichiesti > tavoliTotali) {
+					const disponibili = tavoliTotali - tavoliOccupati;
+					throw new Error(`Non ci sono abbastanza tavoli disponibili in quell'orario. Tavoli disponibili: ${disponibili}`);
+			}
+			
 			// Recupera torrette libere alla data e filiale specificate
 			const torretteLibere = await Torretta.getTorretteLibere(
 				data.ref_filiale,
@@ -104,6 +120,21 @@ class PrenotazioneService {
 				if(adesso > limiteMassimo) {
 					throw new Error('La data e ora della prenotazione deve essere entro 10 minuti da adesso');
 				}
+			}
+
+			// Check posto
+			const filiale = await Filiale.getById(Number(data.ref_filiale));
+			if (!filiale) throw new Error('Filiale non trovata');
+			
+			const tavoliTotali = filiale.num_tavoli;
+			const tavoliInUso = await this.calcolaTavoliInUso(filiale.id_filiale, data.data_ora_prenotazione);
+			const tavoliOccupati = tavoliInUso[data.data_ora_prenotazione] ?? 0;
+			
+			const tavoliRichiesti = PrenotazioneService.calcolaTavoliRichiesti(data.numero_persone);
+			
+			if (tavoliOccupati + tavoliRichiesti > tavoliTotali) {
+					const disponibili = tavoliTotali - tavoliOccupati;
+					throw new Error(`Non ci sono abbastanza tavoli disponibili in quell'orario. Tavoli disponibili: ${disponibili}`);
 			}
 
 			// Recupera torrette libere alla data e filiale specificate
