@@ -35,6 +35,9 @@ export function idOrdineValidator(chain: ValidationChain, operazione: string): V
                                 throw new Error("L'ordine contiene prodotti non ancora consegnati.");
                             }
                         }
+                        if(ordine.ref_pagamento != null) {
+                            throw new Error("L'ordine è gia stato pagato."); // Io avrei permesso più pagamenti, business
+                        }
                     }
                 }
             }
