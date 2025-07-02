@@ -17,8 +17,21 @@
 		class="immagine-rotante"
 	/>
 	<div class="plateInfo">
-		<h2>{{ prodotto.nome }}</h2>
-		<h3>{{ prodotto.descrizione }}</h3>
+		<ion-text class="ion-text-center">
+			<h2 class="text-color-bianco">{{ prodotto.nome }}</h2>
+		</ion-text>
+
+		@if (prodotto.descrizione != '') {
+			<ion-text class="ion-text-left">
+				<h4 class="text-color-bianco">{{ prodotto.descrizione }}</h4>
+			</ion-text>
+		}
+
+		@if (this.ruolo == 'cliente') {
+			<ion-text class="ion-text-center">
+				<h4 class="text-color-bianco">{{ prodotto.costo }}€</h4>
+			</ion-text>
+		}
 	</div>
 
 	@if (this.ruolo == 'chef') {
@@ -47,22 +60,30 @@
 					>CESTINA</ion-button
 				>
 			} @else if (this.statoPiatto == 'non-in-lavorazione') {
-				<p>NON IN LAVORAZIONE</p>
+				<ion-text class="ion-text-center">
+					<p>NON IN LAVORAZIONE</p>
+				</ion-text>
 			} @else if (this.statoPiatto == 'in-lavorazione') {
-				<p>IN LAVORAZIONE</p>
+				<ion-text class="ion-text-center">
+					<p>IN LAVORAZIONE</p>
+				</ion-text>
 			} @else if (this.statoPiatto == 'consegnato') {
-				<p>CONSEGNATO</p>
+				<ion-text class="ion-text-center">
+					<p>CONSEGNATO</p>
+				</ion-text>
 			}
 		</div>
 	} @else if (this.ruolo == 'cliente') {
-		<h3>{{ prodotto.costo }}€</h3>
 		<ion-checkbox
 			slot="start"
 			[checked]="prodotto.is_romana"
 			(ionChange)="cambiaRomana()"
 			label-placement="stacked"
 			alignment="center"
-			>ROMANA?</ion-checkbox
+			color="bianco"
+			[ngClass]="{ selected: prodotto.is_romana }"
 		>
+			ROMANA?
+		</ion-checkbox>
 	}
 </div>

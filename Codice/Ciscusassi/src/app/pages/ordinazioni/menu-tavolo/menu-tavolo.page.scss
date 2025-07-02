@@ -1,14 +1,14 @@
-ion-button {
+.bottoni-bottom {
 	position: fixed;
-	font-size: 1rem;
 	bottom: 9%;
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: 1000;
-	--background: var(--ion-color-arancione);
-}
+	width: 100vw;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 1em;
 
-.visualizza {
-	bottom: 15%;
-	--background: var(--ion-color-senape);
+	ion-button {
+		z-index: 100;
+	}
 }

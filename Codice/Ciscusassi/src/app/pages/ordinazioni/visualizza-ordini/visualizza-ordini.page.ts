@@ -8,6 +8,7 @@ import {
 	IonToolbar,
 	IonButton,
 	IonSpinner,
+	IonText,
 } from '@ionic/angular/standalone';
 import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
@@ -31,6 +32,7 @@ import { ToastController } from '@ionic/angular';
 		CommonModule,
 		FormsModule,
 		ListaOrdiniComponent,
+		IonText,
 	],
 })
 export class VisualizzaOrdiniPage implements OnInit {

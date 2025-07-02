@@ -1,43 +1,69 @@
-<ion-content [fullscreen]="true">
+<ion-content
+	[fullscreen]="true"
+	class="ion-justify-content-center ion-align-items-center"
+	color="senape"
+>
+	<div class="page-wrapper">
+		<div class="status-container">
+			<div class="status">
+				<div class="circle non-lavorazione"></div>
+				<ion-text class="ion-text-center">
+					<p class="text-color-bianco">NON IN LAVORAZIONE</p>
+				</ion-text>
+			</div>
+			<div class="status">
+				<div class="circle in-lavorazione"></div>
 
-	<div class="status-container">
-		<div class="status">
-			<div class="circle non-lavorazione"></div>
-			<div class="label">NON IN LAVORAZIONE</div>
+				<ion-text class="ion-text-center">
+					<p class="text-color-bianco">IN LAVORAZIONE</p>
+				</ion-text>
+			</div>
+			<div class="status">
+				<div class="circle in-consegna"></div>
+				<ion-text class="ion-text-center">
+					<p class="text-color-bianco">IN CONSEGNA</p>
+				</ion-text>
+			</div>
+			<div class="status">
+				<div class="circle consegnato"></div>
+				<ion-text class="ion-text-center">
+					<p class="text-color-bianco">CONSEGNATO</p>
+				</ion-text>
+			</div>
 		</div>
-		<div class="status">
-			<div class="circle in-lavorazione"></div>
-			<div class="label">IN LAVORAZIONE</div>
+
+		@if(isLoading){
+		<ion-spinner
+			name="crescent"
+			style="display: block; margin: 2rem auto"
+		></ion-spinner>
+		} @else {
+		<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+
+		<div class="bottoni-bottom">
+			<ion-button
+				[routerLink]="['/menu-tavolo']"
+				color="verdechiaro"
+				size="default"
+				fill="solid"
+				shape="round"
+				expand="block"
+				type="submit"
+				class="ion-padding-vertical"
+				>CONTINUA A ORDINARE</ion-button
+			>
+			<ion-button
+				(click)="terminaServizio()"
+				size="default"
+				fill="solid"
+				shape="round"
+				expand="block"
+				type="submit"
+				class="ion-padding-vertical"
+				color="rosso"
+				>TERMINA SERVIZIO</ion-button
+			>
 		</div>
-		<div class="status">
-			<div class="circle in-consegna"></div>
-			<div class="label">IN CONSEGNA</div>
-		</div>
-		<div class="status">
-			<div class="circle consegnato"></div>
-			<div class="label">CONSEGNATO</div>
-		</div>
+		}
 	</div>
-
-	<ion-spinner
-		*ngIf="isLoading"
-		name="crescent"
-		style="display: block; margin: 2rem auto"
-	></ion-spinner>
-	@if (!isLoading){
-	<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
-
-	<div class="button-group">
-		<ion-button
-			[routerLink]="['/menu-tavolo']"
-			style="--background: var(--ion-color-verdechiaro)"
-			>CONTINUA A ORDINARE</ion-button
-		>
-		<ion-button
-			(click)="terminaServizio()"
-			style="--background: var(--ion-color-rosso)"
-			>TERMINA SERVIZIO</ion-button
-		>
-	</div>
-	}
 </ion-content>
