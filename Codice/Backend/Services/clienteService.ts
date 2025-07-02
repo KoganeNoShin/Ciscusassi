@@ -14,6 +14,16 @@ class ClienteService {
 		input.password = await bcrypt.hash(input.password, salt); /// Encrypting Password
 		return await Cliente.create(input);
 	}
+
+    // Ottenimento punti Cliente
+    static async getPuntiCliente(idCliente: number): Promise<number> {
+        try {
+            return await Cliente.getPuntiCliente(idCliente);
+        } catch (err) {
+            console.error('❌ [ClienteService Error] getPuntiCliente:', err);
+            throw new Error('Errore durante il recupero dei punti del cliente');
+        }
+    }
 }
 
 export default ClienteService;

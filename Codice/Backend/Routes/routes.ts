@@ -408,7 +408,7 @@ router.post('/login', loginValidator, validate, AuthController.login);
 
 router.get('/logout', authMiddleware, AuthController.logout);
 
-router.get('/points', authMiddleware, ClienteController.getPoints);
+router.get('/points', authMiddleware, ClienteController.getPuntiCliente);
 
 // Logout
 //router.post('/logout', ClienteController.logout);
