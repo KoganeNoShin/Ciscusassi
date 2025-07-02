@@ -282,7 +282,7 @@ class PrenotazioneService {
 		id_filiale: number,
 		data: string
 	): Promise<Record<string, number>> {
-		const orariValidi = ['12:00:00', '13:30:00', '19:30:00', '21:00:00'];
+		const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
 		const tavoliPerOrario: Record<string, number> = {};
 
 		for (const orario of orariValidi) {
