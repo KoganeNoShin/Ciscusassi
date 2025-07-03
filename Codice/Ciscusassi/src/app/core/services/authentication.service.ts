@@ -74,9 +74,12 @@ export class AuthenticationService {
 	}
 
 	cambiaEmail(nuovaEmail: string): Observable<ApiResponse<any>> {
-		return this.http.put<ApiResponse<any>>(
+		const body = {
+			nuovaEmail: nuovaEmail,
+		};
+		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/cliente/nuova_email`,
-			nuovaEmail
+			body
 		);
 	}
 

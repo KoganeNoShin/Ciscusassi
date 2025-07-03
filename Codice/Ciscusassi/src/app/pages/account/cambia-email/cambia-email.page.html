@@ -1,13 +1,56 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>cambiaEmail</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" color="light">
+	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
+		<ion-row class="ion-align-items-center ion-justify-content-center">
+			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
+				<ion-img
+					[src]="'/assets/illustrations/TizioChiave.png'"
+				></ion-img>
+			</ion-col>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">cambiaEmail</ion-title>
-    </ion-toolbar>
-  </ion-header>
+			<ion-col size="12" sizeXl="6">
+				<ion-card
+					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
+					color="verdechiaro"
+				>
+					<ion-text>
+						<h1 class="text-color-bianco">MODIFICA EMAIL</h1>
+					</ion-text>
+
+					@if (error) {
+					<p class="errorMsg">{{ errorMsg }}</p>
+					}
+
+					<form
+						[formGroup]="formCambiaEmail"
+						(ngSubmit)="onSubmit()"
+					>
+						<ion-item class="campoForm ion-padding-horizontal">
+							<ion-input
+								formControlName="email"
+								type="email"
+								label="Email"
+								color="rosso"
+								placeholder="Inserisci la tua nuova email"
+							></ion-input>
+						</ion-item>
+
+						<ion-button
+							size="default"
+							fill="solid"
+							shape="round"
+							color="arancione"
+							expand="block"
+							type="submit"
+							class="ion-padding-horizontal"
+							[disabled]="formCambiaEmail.invalid || loading"
+						>
+							@if (!loading) { MODIFICA EMAIL } @else {
+							<ion-spinner name="bubbles"></ion-spinner>
+							}
+						</ion-button>
+					</form>
+				</ion-card>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
 </ion-content>
