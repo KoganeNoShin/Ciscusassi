@@ -21,7 +21,7 @@ export class ProdottoService {
 
 	GetPiattoDelGiorno(): Observable<ApiResponse<ProdottoRecord>> {
 		return this.http.get<ApiResponse<ProdottoRecord>>(
-			`${this.apiURL}/menu/PiattoDelGiorno`
+			`${this.apiURL}/menu/piattoDelGiorno`
 		);
 	}
 

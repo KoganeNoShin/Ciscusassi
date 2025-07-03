@@ -25,7 +25,7 @@ export class OrdineService {
 		};
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazione/addOrdine`,
+			`${this.apiURL}/prenotazioni/addOrdine`,
 			body
 		);
 	}
@@ -35,7 +35,7 @@ export class OrdineService {
 		};
 
 		return this.http.put<ApiResponse<any>>(
-			`${this.apiURL}/prenotazione/ordine/prodotto/${id}/cambiaStato`,
+			`${this.apiURL}/prenotazioni/ordine/prodotto/${id}/cambiaStato`,
 			body
 		);
 	}
@@ -46,7 +46,7 @@ export class OrdineService {
 		const body = ref_prodotto;
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazione/ordine/addProdotti`,
+			`${this.apiURL}/prenotazioni/ordine/addProdotti`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
@@ -60,7 +60,7 @@ export class OrdineService {
 			isRomana: isRomana,
 		};
 		return this.http.put<ApiResponse<any>>(
-			`${this.apiURL}/prenotazione/ordine/prodotto/${id_ordprod}/isRomana`,
+			`${this.apiURL}/prenotazioni/ordine/prodotto/${id_ordprod}/isRomana`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
@@ -70,14 +70,14 @@ export class OrdineService {
 		id: number
 	): Observable<ApiResponse<OrdProdEstended[]>> {
 		return this.http.get<ApiResponse<OrdProdEstended[]>>(
-			`${this.apiURL}/prenotazione/ordine/${id}/prodotti`
+			`${this.apiURL}/prenotazioni/ordine/${id}/prodotti`
 		);
 	}
 	getProdottiOrdinatiByPrenotazione(
 		idPrenotazione: number
 	): Observable<ApiResponse<OrdProdEstended[]>> {
 		return this.http.get<ApiResponse<OrdProdEstended[]>>(
-			`${this.apiURL}/prenotazione/${idPrenotazione}/prodotti`
+			`${this.apiURL}/prenotazioni/${idPrenotazione}/prodotti`
 		);
 	}
 
@@ -86,7 +86,7 @@ export class OrdineService {
 		username: string
 	): Observable<ApiResponse<any>> {
 		return this.http.get<ApiResponse<any>>(
-			`${this.apiURL}/prenotazione/${idPrenotazione}/ordini/${username}`
+			`${this.apiURL}/prenotazioni/${idPrenotazione}/ordini/${username}`
 		);
 	}
 

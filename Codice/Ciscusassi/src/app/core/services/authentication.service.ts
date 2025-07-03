@@ -3,7 +3,11 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { ApiResponse } from '../interfaces/ApiResponse';
-import { LoginRecord, OurTokenPayload, RegistrationData } from '../interfaces/Credentials';
+import {
+	LoginRecord,
+	OurTokenPayload,
+	RegistrationData,
+} from '../interfaces/Credentials';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Credentials } from '../interfaces/Credentials';
 
@@ -46,14 +50,14 @@ export class AuthenticationService {
 
 	login(credentials: Credentials): Observable<ApiResponse<LoginRecord>> {
 		return this.http.post<ApiResponse<LoginRecord>>(
-			`${this.apiURL}/login`,
+			`${this.apiURL}/auth/login`,
 			credentials
 		);
 	}
 
 	registrati(credentials: RegistrationData): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/register`,
+			`${this.apiURL}/clienti/register`,
 			credentials
 		);
 	}
@@ -69,15 +73,18 @@ export class AuthenticationService {
 	}
 
 	invalidateToken(): Observable<ApiResponse<string>> {
-		return this.http.get<ApiResponse<string>>(`${this.apiURL}/logout`);
+		return this.http.get<ApiResponse<string>>(`${this.apiURL}/auth/logout`);
 	}
 
 	getPoints(): Observable<ApiResponse<number>> {
-		return this.http.get<ApiResponse<number>>(`${this.apiURL}/points`, {
-			headers: {
-				Authorization: `Bearer ${this.getToken()}`,
-			},
-		});
+		return this.http.get<ApiResponse<number>>(
+			`${this.apiURL}/clienti/points`,
+			{
+				headers: {
+					Authorization: `Bearer ${this.getToken()}`,
+				},
+			}
+		);
 	}
 
 	async init(): Promise<void> {
