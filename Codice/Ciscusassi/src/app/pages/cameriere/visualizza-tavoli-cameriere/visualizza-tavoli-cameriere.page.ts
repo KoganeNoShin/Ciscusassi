@@ -234,7 +234,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 		this.showModaleInserimentoPrenotazione = true;
-		this.chiudiModaleInserimentoPrenotazione();
 	}
 
 	// 	Seleziona un numero predefinito di persone per la prenotazione.
@@ -289,7 +288,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			await alert.present();
 		});
 	}
-
 	async confermaModaleInserimentoPrenotazione() {
 		const persone = this.personeSelezionate ?? this.inputManuale;
 		let refCliente: number | null = null;
@@ -305,7 +303,6 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		const MAX_PERSONE = 999999;
 		const numeroPersoneFinale = Math.min(persone, MAX_PERSONE);
 
-		// Controllo massimo 20 persone
 		if (numeroPersoneFinale > 20) {
 			await this.presentToast(
 				'Una prenotazione può avere al massimo 20 persone',
@@ -314,8 +311,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 
-		// ✅ VALIDAZIONE OBBLIGATORIA CAMPO refClienteInput
-		if (!this.refClienteInput || this.refClienteInput.trim() === '') {
+		const refInput = String(this.refClienteInput || '').trim();
+
+		if (!refInput) {
 			await this.presentToast(
 				'Il numero della carta cliente è obbligatorio.',
 				'warning'
@@ -323,13 +321,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 
-		// Parsing e validazione del numero carta
-		const parsed = parseInt(this.refClienteInput.trim(), 10);
+		const parsed = parseInt(refInput, 10);
 		if (!isNaN(parsed)) {
 			refCliente = parsed;
 		} else {
 			await this.presentToast(
-				'Il numero della carta non è valido',
+				'Il numero della carta cliente non è valido',
 				'warning'
 			);
 			return;
@@ -367,7 +364,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			} catch (e) {
 				console.error('Errore controllo prenotazioni cliente:', e);
 				await this.presentToast(
-					'Errore controllo prenotazioni cliente',
+					'Il cliente non esiste.',
 					'danger'
 				);
 				return;
@@ -376,9 +373,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 		if (dataPrenotazione === '') {
 			const conferma = await this.mostraConfermaFasciaOraria();
-			if (!conferma) {
-				return;
-			}
+			if (!conferma) return;
+
 			dataPrenotazione = this.getLocalIsoString(true);
 
 			if (dataPrenotazione === '') {
@@ -397,47 +393,39 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		};
 
 		try {
-			this.prenotazioneService.prenotaLoco(pren).subscribe({
-				next: async (res) => {
-					if (res.success) {
-						await this.presentToast(
-							'Prenotazione creata con successo',
-							'success'
-						);
-						await this.loadTavoli();
-					} else {
-						await this.presentToast(
-							'Errore nella creazione della prenotazione',
-							'danger'
-						);
-					}
-				},
-				error: async (err) => {
-					console.error('Errore nella prenotazione:', err);
-					if (refCliente !== null) {
-						await this.presentToast(
-							'Il cliente risulta già prenotato',
-							'danger'
-						);
-					} else {
-						await this.presentToast(
-							'Non ci sono abbastanza tavoli disponibili',
-							'danger'
-						);
-					}
-				},
-			});
-		} catch (e) {
-			console.error('Errore nella prenotazione:', e);
-			await this.presentToast(
-				'Errore durante la creazione della prenotazione',
-				'danger'
+			const res = await lastValueFrom(
+				this.prenotazioneService.prenotaLoco(pren)
 			);
+
+			if (res.success) {
+				await this.presentToast(
+					'Prenotazione creata con successo',
+					'success'
+				);
+				await this.loadTavoli();
+			} else {
+				await this.presentToast(
+					'Errore nella creazione della prenotazione',
+					'danger'
+				);
+			}
+		} catch (err) {
+			console.error('Errore nella prenotazione:', err);
+			if (refCliente !== null) {
+				await this.presentToast(
+					'Il cliente risulta già prenotato',
+					'danger'
+				);
+			} else {
+				await this.presentToast(
+					'Non ci sono abbastanza tavoli disponibili',
+					'danger'
+				);
+			}
 		}
 
 		this.showModaleInserimentoPrenotazione = false;
 		this.chiudiModaleInserimentoPrenotazione();
-		this.loadTavoli();
 	}
 
 	getLocalIsoString(forceNextFascia: boolean = false): string {
