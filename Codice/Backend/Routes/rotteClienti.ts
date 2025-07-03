@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { body } from 'express-validator';
 
 // ----- Middlewares -----
 
@@ -17,7 +18,6 @@ import {
 // ----- Controller -----
 
 import ClienteController from '../Controllers/clienteController';
-import { body } from 'express-validator';
 
 const router = Router();
 
@@ -41,7 +41,7 @@ router.put(
 );
 
 router.post(
-	'/cliente/nuova_password',
+	'/nuova_password',
 	authMiddleware,
 	aggiornaPasswordValidator,
 	validateMiddleware,
@@ -49,7 +49,7 @@ router.post(
 );
 
 router.post(
-	'/cliente/nuova_email',
+	'/nuova_email',
 	authMiddleware,
 	emailClienteValidator(body('nuovaEmail')),
 	validateMiddleware,
