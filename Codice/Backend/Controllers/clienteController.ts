@@ -85,7 +85,7 @@ class ClienteController {
 		try {
 			const idCliente = Number(req.user?.id);
 
-			await ClienteService.aggiornaPassword(idCliente, req.body.nuovaEmail);
+			await ClienteService.aggiornaEmail(idCliente, req.body.nuovaEmail);
 
 			res.status(200).json({
 				success: true,
