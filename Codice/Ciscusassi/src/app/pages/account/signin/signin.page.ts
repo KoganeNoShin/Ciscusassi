@@ -12,6 +12,7 @@ import {
 	IonItem,
 	IonSpinner,
 	IonInputPasswordToggle,
+	IonAvatar,
 } from '@ionic/angular/standalone';
 
 import {
@@ -26,16 +27,17 @@ import {
 } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import {
-	RegistrationData,
 	LoginRecord,
 	OurTokenPayload,
+	RegistrationData,
 } from 'src/app/core/interfaces/Credentials';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { IonInput } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 
 import { inject } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
+import { image } from 'ionicons/icons';
 
 @Component({
 	selector: 'app-signin',
@@ -59,60 +61,47 @@ import { NavController } from '@ionic/angular';
 		ReactiveFormsModule,
 		IonInput,
 		IonInputPasswordToggle,
+		IonAvatar
 	],
 })
 export class SigninPage implements OnInit {
 	formRegistrazione: FormGroup = new FormGroup({});
+	formDatiPersonali: FormGroup = new FormGroup({});
 	error: boolean = false;
 	loading: boolean = false;
 	errorMsg: string = '';
+	pagina: number = 0;
+	credenziali: RegistrationData = {
+		nome: '',
+		cognome: '',
+		data_nascita: '',
+		image: '',
+		email: '',
+		nuovaPassword: '',
+		confermaPassword: '',
+	};
 
 	constructor(
 		private fb: FormBuilder,
 		private authenticationService: AuthenticationService,
-		private navigation: NavController
+		private router: Router,
+		private toastController: ToastController,
 	) {}
 
-	private handleResponse(response: ApiResponse<LoginRecord>): void {
+	private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
-
-		if (response.success && response.data) {
-			const risposta: LoginRecord = response.data;
-
-			const tokenPayload: OurTokenPayload =
-				this.authenticationService.decodeTokenPayload(risposta.token);
-
-			Promise.all([
-				this.authenticationService.setIdUtente(tokenPayload.id_utente),
-				this.authenticationService.setToken(risposta.token),
-				this.authenticationService.setRole(tokenPayload.ruolo),
-				this.authenticationService.setUsername(tokenPayload.username),
-				this.authenticationService.setAvatar(risposta.avatar),
-				this.authenticationService.setFiliale(tokenPayload.id_filiale),
-			])
-				.then(() => this.navigation.navigateRoot('/home'))
-				.catch((err) => {
-					console.error(
-						'Errore durante il salvataggio dei dati:',
-						err
-					);
-					this.errorMsg = 'Errore durante il salvataggio dei dati.';
-					this.error = true;
-				});
+		if (response.success) {
+			this.presentToast('Registrazione completata con successo!', 'success');
+			this.router.navigate(['/login']);
 		} else {
-			console.error(response.message || 'Errore sconosciuto');
-			this.errorMsg = response.message || 'Errore sconosciuto';
+			this.errorMsg = response.message || 'Errore durante la registrazione.';
 			this.error = true;
 		}
-
-		this.loading = false;
 	}
-
 	ngOnInit() {
 		this.formRegistrazione = this.fb.group(
 			{
 				email: ['', [Validators.required, Validators.email]],
-				confermaEmail: ['', [Validators.required, Validators.email]],
 				password: [
 					'',
 					[
@@ -125,39 +114,70 @@ export class SigninPage implements OnInit {
 				confermaPassword: ['', Validators.required],
 			},
 			{
-				validators: [this.matchEmail(), this.matchPassword()],
+				validators: this.matchPassword(),
 			}
 		);
+
+		this.formDatiPersonali = this.fb.group({
+			nome: ['', [Validators.required, , Validators.minLength(2)]],
+			cognome: ['', [Validators.required, , Validators.minLength(2)]],
+			dataNascita: [
+				'',
+				[
+					Validators.required,
+					Validators.pattern(
+						'^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
+					),
+				],
+			],
+		});
 	}
 
-	onSubmit() {
+	async onSubmit() {
 		this.loading = true;
 
 		if (this.formRegistrazione.valid) {
-			const credentials: RegistrationData = this.formRegistrazione.value;
+			this.credenziali.email = this.formRegistrazione.value.email;
+			this.credenziali.nuovaPassword =
+				this.formRegistrazione.value.password;
+			this.credenziali.confermaPassword =
+				this.formRegistrazione.value.confermaPassword;
 
-			this.authenticationService.login(credentials).subscribe({
-				next: (response) => this.handleResponse(response),
-				error: (err) => {
-					this.errorMsg =
-						err?.error?.message ||
-						err.message ||
-						'Errore durante il login.';
+			try {
 
-					console.log(err);
-					this.error = true;
-					this.loading = false;
-				},
-			});
+				if (this.credenziali.image === '') {	
+				this.credenziali.image = await this.loadDefaultImage();
+				} 
+				this.authenticationService
+					.registrati(this.credenziali)
+					.subscribe({
+						next: (response) => this.handleResponse(response),
+						error: (err) => {
+							this.errorMsg =
+								err?.error?.message ||
+								err.message ||
+								'Errore durante la registrazione.';
+							console.log(err);
+							this.error = true;
+							this.loading = false;
+						},
+					});
+			} catch (err) {
+				console.error('Errore nel caricamento immagine:', err);
+				this.error = true;
+				this.loading = false;
+			}
 		}
 	}
 
-	matchEmail(): ValidatorFn {
-		return (group: AbstractControl): ValidationErrors | null => {
-			const email = group.get('email')?.value;
-			const confermaEmail = group.get('confermaEmail')?.value;
-			return email === confermaEmail ? null : { emailMismatch: true };
-		};
+	continua() {
+		if (this.formDatiPersonali.valid) {
+			this.credenziali.nome = this.formDatiPersonali.value.nome;
+			this.credenziali.cognome = this.formDatiPersonali.value.cognome;
+			this.credenziali.data_nascita =
+				this.formDatiPersonali.value.dataNascita.trim();
+			this.pagina = 1;
+		}
 	}
 
 	matchPassword(): ValidatorFn {
@@ -166,5 +186,49 @@ export class SigninPage implements OnInit {
 			const conferma = group.get('confermaPassword')?.value;
 			return password === conferma ? null : { passwordMismatch: true };
 		};
+	}
+
+	async loadDefaultImage(): Promise<string> {
+		const response = await fetch('https://ionicframework.com/docs/img/demos/avatar.svg');
+		const blob = await response.blob();
+		return this.convertToBase64(blob);
+	}
+
+	convertToBase64(blob: Blob): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onloadend = () => resolve(reader.result as string);
+			reader.onerror = reject;
+			reader.readAsDataURL(blob); // Converte in base64
+		});
+	}
+
+	async onFileSelected(event: any): Promise<void> {
+		const file = event.target.files[0];
+		if (file && file.type.startsWith('image/')) {
+			const reader = new FileReader();
+			reader.onload = async () => {
+				const image = reader.result as string;
+				this.credenziali.image = await this.convertToBase64(await (await fetch(image)).blob());
+			};
+			reader.readAsDataURL(file);
+		} else {
+			this.presentToast('Seleziona un file immagine valida.', 'warning');
+		}
+	}
+
+
+	async presentToast(
+		message: string,
+		color: 'success' | 'danger' | 'warning'
+	) {
+		// Mostra un toast di notifica con messaggio e colore specificati
+		const toast = await this.toastController.create({
+			message,
+			duration: 2500,
+			position: 'top',
+			color,
+		});
+		toast.present();
 	}
 }

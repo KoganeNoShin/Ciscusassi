@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { ApiResponse } from '../interfaces/ApiResponse';
-import { LoginRecord, OurTokenPayload } from '../interfaces/Credentials';
+import { LoginRecord, OurTokenPayload, RegistrationData } from '../interfaces/Credentials';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Credentials } from '../interfaces/Credentials';
 
@@ -47,6 +47,13 @@ export class AuthenticationService {
 	login(credentials: Credentials): Observable<ApiResponse<LoginRecord>> {
 		return this.http.post<ApiResponse<LoginRecord>>(
 			`${this.apiURL}/login`,
+			credentials
+		);
+	}
+
+	registrati(credentials: RegistrationData): Observable<ApiResponse<any>> {
+		return this.http.post<ApiResponse<any>>(
+			`${this.apiURL}/register`,
 			credentials
 		);
 	}

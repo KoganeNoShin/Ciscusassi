@@ -4,12 +4,14 @@ export interface Credentials {
 }
 
 export interface RegistrationData {
+  nome: string;
+  cognome: string;
+  data_nascita: string;
+  image: string;
   email: string;
-  password: string;
-  confermaEmail?: string;
-  confermaPassword?: string;
+  nuovaPassword: string;
+  confermaPassword: string;
 }
-
 
 export interface OurTokenPayload {
 	id_utente: number;
