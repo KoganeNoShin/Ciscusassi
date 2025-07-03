@@ -38,7 +38,7 @@ export class PrenotazioneService {
 		id: number
 	): Observable<ApiResponse<PrenotazioneRecord>> {
 		return this.http.get<ApiResponse<PrenotazioneRecord>>(
-			`${this.apiURL}/prenotazioni/${id}`
+			`${this.apiURL}/prenotazione/${id}`
 		);
 	}
 
@@ -54,7 +54,7 @@ export class PrenotazioneService {
 		};
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/check-otp`,
+			`${this.apiURL}/prenotazione/check-otp`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
@@ -64,7 +64,7 @@ export class PrenotazioneService {
 		ApiResponse<PrenotazioneWithFiliale[]>
 	> {
 		return this.http.get<ApiResponse<PrenotazioneWithFiliale[]>>(
-			`${this.apiURL}/prenotazioni/cliente/`
+			`${this.apiURL}/prenotazione/cliente/`
 		);
 	}
 
@@ -72,13 +72,13 @@ export class PrenotazioneService {
 		clienteId: number
 	): Observable<ApiResponse<PrenotazioneWithFiliale[]>> {
 		return this.http.get<ApiResponse<PrenotazioneWithFiliale[]>>(
-			`${this.apiURL}/prenotazioni/cameriere/${clienteId}/`
+			`${this.apiURL}/prenotazione/cameriere/${clienteId}/`
 		);
 	}
 
 	getTotaleByOrdine(idOrdine: number): Observable<ApiResponse<any>> {
 		return this.http.get<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/ordine/${idOrdine}/totale`
+			`${this.apiURL}/prenotazione/ordine/${idOrdine}/totale`
 		);
 	}
 
@@ -86,43 +86,43 @@ export class PrenotazioneService {
 		ApiResponse<PrenotazioneRecord[]>
 	> {
 		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(
-			`${this.apiURL}/prenotazioni/filiale`
+			`${this.apiURL}/prenotazione/filiale`
 		);
 	}
 
 	getStatoPrenotazioneCameriere(id: number) {
 		return this.http.get<{ success: boolean; data: string }>(
-			`${this.apiURL}/prenotazioni/${id}/cameriere/stato`
+			`${this.apiURL}/prenotazione/${id}/cameriere/stato`
 		);
 	}
 
 	getStatoPrenotazioneChef(id: number) {
 		return this.http.get<{ success: boolean; data: string }>(
-			`${this.apiURL}/prenotazioni/${id}/chef/stato`
+			`${this.apiURL}/prenotazione/${id}/chef/stato`
 		);
 	}
 
 	getTavoliInUso(): Observable<any> {
-		return this.http.get(`${this.apiURL}/prenotazioni/tavoli-in-uso`);
+		return this.http.get(`${this.apiURL}/prenotazione/tavoli-in-uso`);
 	}
 
 	prenota(data: PrenotazioneRequest): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/prenota`,
+			`${this.apiURL}/prenotazione/prenota`,
 			data
 		);
 	}
 
 	prenotaLoco(data: PrenotazioneRequest): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/prenotaLoco`,
+			`${this.apiURL}/prenotazione/prenotaLoco`,
 			data
 		);
 	}
 
 	confermaPrenotazione(id: number): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/conferma`,
+			`${this.apiURL}/prenotazione/conferma`,
 			{ id_prenotazione: id }
 		);
 	}
@@ -131,21 +131,21 @@ export class PrenotazioneService {
 		data: PrenotazioneRecord
 	): Observable<ApiResponse<any>> {
 		return this.http.put<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/modificaPrenotazione`,
+			`${this.apiURL}/prenotazione/modificaPrenotazione`,
 			data
 		);
 	}
 
 	eliminaPrenotazione(id: number): Observable<ApiResponse<any>> {
 		return this.http.delete<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/eliminaPrenotazione/${id}`
+			`${this.apiURL}/prenotazione/eliminaPrenotazione/${id}`
 		);
 	}
 	tavoliInUso(data: string): Observable<ApiResponse<any>> {
 		return this.http
 			.get<{
 				[fascia: string]: number;
-			}>(`${this.apiURL}/prenotazioni/filiale/tavoli-in-uso?data=${data}`)
+			}>(`${this.apiURL}/prenotazione/filiale/tavoli-in-uso?data=${data}`)
 			.pipe(
 				// Wrap the response in an ApiResponse object
 				map((data) => ({
