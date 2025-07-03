@@ -25,6 +25,7 @@ import {
 
 import FilialeController from '../Controllers/filialeController';
 import ImpiegatoController from '../Controllers/impiegatoController';
+import PrenotazioneController from '../Controllers/prenotazioneController';
 
 const router = Router();
 
@@ -97,4 +98,11 @@ router.get(
 	ImpiegatoController.getAllImpiegati
 );
 
+router.get(
+	'/prenotazioni',
+	authMiddleware,
+	roleMiddleware(['amministratore', 'chef', 'cameriere']),
+	validateMiddleware,
+	PrenotazioneController.getPrenotazioniDelGiornoFiliale
+);
 export default router;
