@@ -62,6 +62,17 @@ export class AuthenticationService {
 		);
 	}
 
+	cambiaPassword(nuovaPassword: string, confermaPassword: string): Observable<ApiResponse<any>> {
+		const body = {
+			nuovaPassword: nuovaPassword,
+			confermaPassword: confermaPassword,
+		};
+		return this.http.put<ApiResponse<any>>(
+			`${this.apiURL}/clienti/nuova_password`,
+			body
+		);
+	}
+
 	decodeTokenPayload(token: string): OurTokenPayload {
 		try {
 			const decoded = jwtDecode<OurTokenPayload>(token);
