@@ -314,17 +314,25 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 
-		if (this.refClienteInput?.trim() !== '') {
-			const parsed = parseInt(this.refClienteInput.trim(), 10);
-			if (!isNaN(parsed)) {
-				refCliente = parsed;
-			} else {
-				await this.presentToast(
-					'Il numero della carta non è valido',
-					'warning'
-				);
-				return;
-			}
+		// ✅ VALIDAZIONE OBBLIGATORIA CAMPO refClienteInput
+		if (!this.refClienteInput || this.refClienteInput.trim() === '') {
+			await this.presentToast(
+				'Il numero della carta cliente è obbligatorio.',
+				'warning'
+			);
+			return;
+		}
+
+		// Parsing e validazione del numero carta
+		const parsed = parseInt(this.refClienteInput.trim(), 10);
+		if (!isNaN(parsed)) {
+			refCliente = parsed;
+		} else {
+			await this.presentToast(
+				'Il numero della carta non è valido',
+				'warning'
+			);
+			return;
 		}
 
 		let dataPrenotazione = this.getLocalIsoString();
@@ -385,7 +393,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		const pren: PrenotazioneRequest = {
 			numero_persone: numeroPersoneFinale,
 			data_ora_prenotazione: dataPrenotazione,
-			...(refCliente !== null ? { ref_cliente: refCliente } : {}),
+			ref_cliente: refCliente,
 		};
 
 		try {
