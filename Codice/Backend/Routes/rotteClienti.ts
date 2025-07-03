@@ -10,12 +10,14 @@ import authMiddleware from '../Middleware/authMiddleware';
 import {
 	addClienteValidator,
 	aggiornaPasswordValidator,
+	emailClienteValidator,
 	updateClienteValidator,
 } from '../Validators/clienteValidator';
 
 // ----- Controller -----
 
 import ClienteController from '../Controllers/clienteController';
+import { body } from 'express-validator';
 
 const router = Router();
 
@@ -38,12 +40,21 @@ router.put(
 	ClienteController.aggiornaDatiPersonali
 );
 
-router.put(
-	'/nuova_password',
+router.post(
+	'/cliente/nuova_password',
 	authMiddleware,
 	aggiornaPasswordValidator,
 	validateMiddleware,
 	ClienteController.aggiornaPassword
 );
+
+router.post(
+	'/cliente/nuova_email',
+	authMiddleware,
+	emailClienteValidator(body('nuovaEmail')),
+	validateMiddleware,
+	ClienteController.aggiornaEmail
+);
+
 
 export default router;
