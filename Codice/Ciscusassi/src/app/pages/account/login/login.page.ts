@@ -29,10 +29,9 @@ import {
 } from 'src/app/core/interfaces/Credentials';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { IonInput } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
-
 import { inject } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
 
 @Component({
 	selector: 'app-login',
@@ -55,6 +54,7 @@ import { NavController } from '@ionic/angular';
 		ReactiveFormsModule,
 		IonInput,
 		IonInputPasswordToggle,
+		RouterModule
 	],
 })
 export class LoginPage implements OnInit {
@@ -66,7 +66,7 @@ export class LoginPage implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private authenticationService: AuthenticationService,
-		private navigation: NavController
+		private navigation: NavController,
 	) {}
 
 	private handleResponse(response: ApiResponse<LoginRecord>): void {

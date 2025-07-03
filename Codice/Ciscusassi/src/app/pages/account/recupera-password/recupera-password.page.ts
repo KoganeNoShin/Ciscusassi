@@ -40,9 +40,9 @@ import { NavController, ToastController } from '@ionic/angular';
 import { image } from 'ionicons/icons';
 
 @Component({
-  selector: 'app-signin',
-  templateUrl: './cambia-email.page.html',
-  styleUrls: ['./cambia-email.page.scss'],
+  selector: 'app-recupera-password',
+  templateUrl: './recupera-password.page.html',
+  styleUrls: ['./recupera-password.page.scss'],
   standalone: true,
   imports: [
     IonSpinner,
@@ -62,13 +62,13 @@ import { image } from 'ionicons/icons';
     IonInput,
   ],
 })
-export class CambiaEmailPage implements OnInit {
-  formCambiaEmail: FormGroup = new FormGroup({});
+export class RecuperaPasswordPage implements OnInit {
+  formRecuperaPassword: FormGroup = new FormGroup({});
   error: boolean = false;
   loading: boolean = false;
   errorMsg: string = '';
   pagina: number = 0;
-  nuovaEmail: string = '';
+  email: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -80,17 +80,25 @@ export class CambiaEmailPage implements OnInit {
   private handleResponse(response: ApiResponse<any>): void {
     console.log(response);
     if (response.success) {
-      this.presentToast('L\'email è stata modificata con successo!', 'success');
+      this.presentToast('Se esiste un account con questa email verrà inviata una password temporaranea', 'success');
       this.loading = false;
       this.error = false;
-      this.router.navigate(['/dati-account']);
+      this.router.navigate(['/login']);
     } else {
       this.errorMsg = response.message || 'Si è verificato un errore durante la modifica dell\'email.';
       this.error = true;
     }
   }
   ngOnInit() {
-    this.formCambiaEmail = this.fb.group(
+    this.ngViewWillEnter();
+  }
+
+  ngViewWillEnter() {
+    this.formRecuperaPassword.reset();
+    this.error = false;
+    this.loading = false;
+    this.errorMsg = '';
+    this.formRecuperaPassword = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
       },
@@ -100,12 +108,12 @@ export class CambiaEmailPage implements OnInit {
   async onSubmit() {
     this.loading = true;
 
-    if (this.formCambiaEmail.valid) {
-      this.nuovaEmail = this.formCambiaEmail.value.email;
-      console.log(this.nuovaEmail);
+    if (this.formRecuperaPassword.valid) {
+      this.email = this.formRecuperaPassword.value.email;
+      console.log(this.email);
 
         this.authenticationService
-          .cambiaEmail(this.nuovaEmail)
+          .recuperaPassword(this.email)
           .subscribe({
             next: (response) => this.handleResponse(response),
             error: (err) => {

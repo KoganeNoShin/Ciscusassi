@@ -73,6 +73,16 @@ export class AuthenticationService {
 		);
 	}
 
+	recuperaPassword(email: string): Observable<ApiResponse<any>> {
+		const body = {
+			email: email
+		};
+		return this.http.post<ApiResponse<any>>(
+			`${this.apiURL}/cliente/recupera_password`,
+			body
+		);
+	}
+
 	cambiaEmail(nuovaEmail: string): Observable<ApiResponse<any>> {
 		const body = {
 			nuovaEmail: nuovaEmail,

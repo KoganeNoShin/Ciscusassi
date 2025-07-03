@@ -285,6 +285,13 @@ export const routes: Routes = [
 			).then((m) => m.VisualizzaOrdiniChefPage),
 		canActivate: [authGuard(['chef'])],
 	},
+	{
+		path: 'recupera-password',
+		loadComponent: () =>
+			import(
+				'./pages/account/recupera-password/recupera-password.page'
+			).then((m) => m.RecuperaPasswordPage),
+	},
 ];
 
 export const AppRoutingModule = provideRouter(routes);
