@@ -98,11 +98,4 @@ router.get(
 	ImpiegatoController.getAllImpiegati
 );
 
-router.get(
-	'/prenotazioni',
-	authMiddleware,
-	roleMiddleware(['amministratore', 'chef', 'cameriere']),
-	validateMiddleware,
-	PrenotazioneController.getPrenotazioniDelGiornoFiliale
-);
 export default router;
