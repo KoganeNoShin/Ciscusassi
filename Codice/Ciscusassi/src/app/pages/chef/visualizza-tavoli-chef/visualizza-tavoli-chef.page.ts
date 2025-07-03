@@ -2,15 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core'; // Aggiunto OnDest
 import { CommonModule } from '@angular/common';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonGrid,
 	IonRow,
 	IonCol,
 	IonChip,
 	ToastController,
-	IonLabel,
+	IonText,
 } from '@ionic/angular/standalone';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
@@ -25,15 +22,12 @@ import { Router } from '@angular/router';
 	standalone: true,
 	imports: [
 		IonContent,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
 		IonGrid,
 		IonRow,
 		IonCol,
 		IonChip,
 		CommonModule,
-		IonLabel,
+		IonText,
 	],
 })
 export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
@@ -54,17 +48,16 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 
 	selectedFilter: string = 'tutti';
 
-	private intervalloAggiornamento: any; // Timer per auto-refresh
 	localeAperto: boolean = false;
-  	private intervalTavoli: any;
+	private intervalTavoli: any;
 	private intervalApertura: any;
 
 	constructor(
 		private toastController: ToastController,
 		private authService: AuthenticationService,
 		private prenotazioneService: PrenotazioneService,
-    private tavoloService: TavoloService,
-    private router: Router
+		private tavoloService: TavoloService,
+		private router: Router
 	) {}
 
 	ngOnInit(): void {
@@ -88,7 +81,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		}
 	}
 
-  checkOrariApertura() {
+	checkOrariApertura() {
 		const now = new Date();
 		const isInRange = (
 			startH: number,
@@ -112,10 +105,9 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 
 		const eraApertoPrima = this.localeAperto;
 
-		this.localeAperto =
-			isInRange(0, 0, 23, 59) || isInRange(19, 20, 0, 0); //DA MODIFICARE
+		this.localeAperto = isInRange(0, 0, 23, 59) || isInRange(19, 20, 0, 0); //DA MODIFICARE
 
-			//INSERIRE MARTEDI CHIUSI
+		//INSERIRE MARTEDI CHIUSI
 
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
@@ -209,11 +201,9 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		toast.present();
 	}
 
-	filtraPerStato(stato: string | null) {
-		if (stato) {
-			this.selectedFilter = stato;
-			this.applicaFiltro();
-		}
+	filtraTavoliPerStato(stato: string) {
+		this.selectedFilter = stato;
+		this.applicaFiltro();
 	}
 
 	applicaFiltro() {
@@ -230,15 +220,8 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		}
 	}
 
-	isCliccabile(tavolo: any): boolean {
-		return true;
-	}
-
 	handleClick(tavolo: any) {
-	    if (this.isCliccabile(tavolo)) {
-			console.log('Hai cliccato sul tavolo:', tavolo);
-			this.tavoloService.setTavolo(tavolo);
-			this.router.navigate(['/visualizza-ordini-chef']);
-		}
+		this.tavoloService.setTavolo(tavolo);
+		this.router.navigate(['/visualizza-ordini-chef']);
 	}
 }

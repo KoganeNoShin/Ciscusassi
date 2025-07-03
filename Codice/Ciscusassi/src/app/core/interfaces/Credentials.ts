@@ -3,6 +3,16 @@ export interface Credentials {
 	password: string;
 }
 
+export interface RegistrationData {
+  nome: string;
+  cognome: string;
+  data_nascita: string;
+  image: string;
+  email: string;
+  nuovaPassword: string;
+  confermaPassword: string;
+}
+
 export interface OurTokenPayload {
 	id_utente: number;
 	ruolo: 'cliente' | 'chef' | 'cameriere' | 'amministratore';

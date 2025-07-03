@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import {
 	IonContent,
 	IonCard,
-	IonIcon,
 	IonInput,
 	IonButton,
 	IonList,

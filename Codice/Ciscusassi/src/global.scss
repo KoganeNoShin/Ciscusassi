@@ -191,3 +191,7 @@ button.alert-button.alert-button-confirm:hover {
 	vertical-align: text-top;
 	margin-top: 10px;
 }
+
+ion-checkbox::part(label) {
+	font-family: 'Isocpeur-Regular', sans-serif;
+}

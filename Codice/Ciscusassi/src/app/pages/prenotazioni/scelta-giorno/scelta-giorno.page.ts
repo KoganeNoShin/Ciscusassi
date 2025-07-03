@@ -352,7 +352,7 @@ export class SceltaGiornoPage implements OnInit {
 						err
 					);
 					const toast = await this.toastController.create({
-						message: 'Errore nella prenotazione',
+						message: 'Errore, non ci sono abbastanza tavoli disponibili nella fascia oraria selezionata',
 						duration: 3000,
 						position: 'bottom',
 						color: 'danger',

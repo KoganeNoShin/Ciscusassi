@@ -7,6 +7,7 @@ import {
 	IonCol,
 	IonButton,
 	IonSpinner,
+	IonText,
 } from '@ionic/angular/standalone';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 import { ListaOrdiniComponent } from 'src/app/components/lista-ordini/lista-ordini.component';
@@ -20,9 +21,8 @@ import { OrdineService } from 'src/app/core/services/ordine.service';
 	styleUrls: ['./visualizza-ordini-cameriere.page.scss'],
 	standalone: true,
 	imports: [
+		IonText,
 		IonButton,
-		IonCol,
-		IonRow,
 		IonContent,
 		IonSpinner,
 		CommonModule,

@@ -38,11 +38,9 @@ import { ImpiegatoAmministratoreComponent } from 'src/app/components/impiegato-a
 		CommonModule,
 		FormsModule,
 		IonChip,
-		IonButton,
 		IonIcon,
 		IonSearchbar,
 		IonSpinner,
-		IonIcon,
 	],
 })
 export class GestisciImpiegatiPage implements OnInit {

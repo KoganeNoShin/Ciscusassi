@@ -15,13 +15,13 @@ export class FilialeService {
 
 	GetSedi(): Observable<ApiResponse<FilialeRecord[]>> {
 		return this.http.get<ApiResponse<FilialeRecord[]>>(
-			`${this.apiURL}/Filiali`
+			`${this.apiURL}/filiali`
 		);
 	}
 
 	addFiliale(filiale: FilialeInput): Observable<ApiResponse<number>> {
 		return this.http.post<ApiResponse<number>>(
-			`${this.apiURL}/addFiliale`,
+			`${this.apiURL}/filiali/addFiliale`,
 			filiale
 		);
 	}
@@ -31,14 +31,14 @@ export class FilialeService {
 		filiale: FilialeInput
 	): Observable<ApiResponse<void>> {
 		return this.http.put<ApiResponse<void>>(
-			`${this.apiURL}/updateFiliale/${id}`,
+			`${this.apiURL}/filiali/updateFiliale/${id}`,
 			filiale
 		);
 	}
 
 	deleteFiliale(id: number): Observable<ApiResponse<void>> {
 		return this.http.delete<ApiResponse<void>>(
-			`${this.apiURL}/deleteFiliale/${id}`
+			`${this.apiURL}/filiali/deleteFiliale/${id}`
 		);
 	}
 }

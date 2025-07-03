@@ -49,8 +49,6 @@ export const prenotazioneInputLocoValidator = [
 	numuroPersoneValidator(body('numero_persone')),
 	data_ora_prenotazioneValidator(body('data_ora_prenotazione')),
 	numeroCartaValidator(body('ref_cliente')
-    .optional({ nullable: true })
-    .bail()
     .custom(async (numeroCarta: number, { req }) => {
       // Verifica se il cliente ha già una prenotazione futura
       const cliente = await Prenotazione.getByCliente(numeroCarta);

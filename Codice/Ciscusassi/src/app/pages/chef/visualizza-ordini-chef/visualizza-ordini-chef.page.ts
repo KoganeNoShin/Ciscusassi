@@ -3,12 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
-	IonCol,
 	IonButton,
 	IonRow,
+	IonText,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 import { ListaOrdiniComponent } from 'src/app/components/lista-ordini/lista-ordini.component';
@@ -23,13 +21,12 @@ import { OrdineService } from 'src/app/core/services/ordine.service';
 	standalone: true,
 	imports: [
 		IonButton,
-		IonCol,
 		IonContent,
 		CommonModule,
 		FormsModule,
-		IonRow,
-		IonCol,
 		ListaOrdiniComponent,
+		IonText,
+		IonSpinner,
 	],
 })
 export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
