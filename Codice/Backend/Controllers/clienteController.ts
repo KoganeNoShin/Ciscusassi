@@ -84,7 +84,8 @@ class ClienteController {
 	static async aggiornaEmail(req: AuthenticatedRequest, res: Response): Promise<void> {
 		try {
 			const idCliente = Number(req.user?.id);
-
+			
+            console.log(`Sto cambiando email con ${req.body.nuovaEmail}`);
 			await ClienteService.aggiornaEmail(idCliente, req.body.nuovaEmail);
 
 			res.status(200).json({
