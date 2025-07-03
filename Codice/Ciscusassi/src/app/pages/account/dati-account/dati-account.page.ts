@@ -109,8 +109,4 @@ export class DatiAccountPage implements OnInit {
 			this.loadingLogout = false;
 		}
 	}
-
-	deleteAccount() {
-		console.log('delete account');
-	}
 }
