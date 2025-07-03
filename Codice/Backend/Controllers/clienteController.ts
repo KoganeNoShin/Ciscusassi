@@ -78,6 +78,23 @@ class ClienteController {
 			res.status(400).json({ success: false, message: String((err as Error).message) });
 		}
 	}
+
+	// Aggiorna Email
+	static async aggiornaEmail(req: AuthenticatedRequest, res: Response): Promise<void> {
+		try {
+			const idCliente = Number(req.user?.id);
+
+			await ClienteService.aggiornaPassword(idCliente, req.body.nuovaEmail);
+
+			res.status(200).json({
+				success: true,
+				message: 'Email aggiornata con successo'
+			});
+		} catch (err) {
+			console.error('❌ [CLIENTE ERROR] aggiornaEmail:', err);
+			res.status(400).json({ success: false, message: String((err as Error).message) });
+		}
+	}
 }
 
 export default ClienteController;

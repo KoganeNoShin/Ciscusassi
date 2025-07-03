@@ -54,6 +54,15 @@ class ClienteService {
             throw new Error('Errore durante l\'aggiornamento della password');
         }
     }
+
+    static async aggiornaEmail(idCliente: number, newEmail: string): Promise<void> {
+		const existing = await Cliente.getByEmail(newEmail);
+		if (existing) {
+			console.error('❌ [ClienteService Error] aggiornaEmail: email già registrata:', newEmail);
+			throw new Error('Email già registrata');
+		}
+		return await Cliente.aggiornaEmail(idCliente, newEmail);
+	}
 }
 
 export default ClienteService;

@@ -17,7 +17,7 @@ function cognomeClienteValidator(chain: ValidationChain): ValidationChain {
 		.isLength({ max: 50 }).withMessage('Il cognome non può superare 50 caratteri');
 }
 
-function emailClienteValidator(chain: ValidationChain): ValidationChain {
+export function emailClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
 		.notEmpty().withMessage("L'email è obbligatoria")

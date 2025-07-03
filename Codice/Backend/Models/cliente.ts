@@ -144,6 +144,24 @@ class Cliente {
 		});
 	}
 
+	// Aggiorna l'email del cliente
+	static async aggiornaEmail(idCliente: number, newEmail: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(`
+				UPDATE clienti
+				SET email = ?
+				WHERE numero_carta = ?
+			`, [newEmail, idCliente], 
+			function (err: Error | null) {
+				if (err) {
+					console.error('❌ [ClienteModel ERROR] aggiornaEmail:', err.message);
+					return reject(err);
+				}
+				resolve();
+			});
+		});
+	}
+
 	// Restituisce un cliente in base all'email
 	static async getByEmail(email: string): Promise<ClienteRecord | null> {
 		return new Promise((resolve, reject) => {
