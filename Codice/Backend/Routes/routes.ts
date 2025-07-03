@@ -32,10 +32,10 @@ const router = express.Router();
 // ----- Rotte con prefissi -----
 
 router.use('/auth', rotteAutenticazione);
-router.use('/clienti', rotteClienti); // tutte le rotte che iniziano con '/clienti'
-router.use('/filiali', rotteFiliali); // tutte le rotte che iniziano con '/filiali'
+router.use('/cliente', rotteClienti); // tutte le rotte che iniziano con '/clienti'
+router.use('/filiale', rotteFiliali); // tutte le rotte che iniziano con '/filiali'
 router.use('/menu', rotteMenu); // tutte le rotte che iniziano con '/menu'
-router.use('/prenotazioni', rottePrenotazioni); // tutte le rotte che iniziano con '/prenotazioni'
+router.use('/prenotazione', rottePrenotazioni); // tutte le rotte che iniziano con '/prenotazioni'
 
 // ----- Rotte senza prefissi -----
 
