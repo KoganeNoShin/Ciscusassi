@@ -31,7 +31,7 @@ export class PagamentoService {
 		};
 
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/prenotazioni/ordine/pay`,
+			`${this.apiURL}/prenotazione/ordine/pay`,
 			body,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);

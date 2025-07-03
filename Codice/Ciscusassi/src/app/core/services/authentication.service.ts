@@ -57,7 +57,7 @@ export class AuthenticationService {
 
 	registrati(credentials: RegistrationData): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/clienti/register`,
+			`${this.apiURL}/cliente/register`,
 			credentials
 		);
 	}
@@ -68,8 +68,15 @@ export class AuthenticationService {
 			confermaPassword: confermaPassword,
 		};
 		return this.http.put<ApiResponse<any>>(
-			`${this.apiURL}/clienti/nuova_password`,
+			`${this.apiURL}/cliente/nuova_password`,
 			body
+		);
+	}
+
+	cambiaEmail(nuovaEmail: string): Observable<ApiResponse<any>> {
+		return this.http.put<ApiResponse<any>>(
+			`${this.apiURL}/cliente/nuova_email`,
+			nuovaEmail
 		);
 	}
 
@@ -89,7 +96,7 @@ export class AuthenticationService {
 
 	getPoints(): Observable<ApiResponse<number>> {
 		return this.http.get<ApiResponse<number>>(
-			`${this.apiURL}/clienti/points`,
+			`${this.apiURL}/cliente/points`,
 			{
 				headers: {
 					Authorization: `Bearer ${this.getToken()}`,
