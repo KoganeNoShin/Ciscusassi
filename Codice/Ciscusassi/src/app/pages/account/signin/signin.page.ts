@@ -154,9 +154,7 @@ export class SigninPage implements OnInit {
 						next: (response) => this.handleResponse(response),
 						error: (err) => {
 							this.errorMsg =
-								err?.error?.message ||
-								err.message ||
-								'Errore durante la registrazione.';
+								'Formato email non valido';
 							console.log(err);
 							this.error = true;
 							this.loading = false;
