@@ -16,10 +16,10 @@ import migrationAspProd from './Database/Migrations/migrationAspProd';
 
 import generateCliente from './Database/Seeders/seederCliente';
 import generateFiliale from './Database/Seeders/seederFiliale';
-import generateUtentiFissi from './Database/Seeders/seederBoss';
 import generateProdotto from './Database/Seeders/seederProdotto';
 import generateAsporto from './Database/Seeders/seederAsporto';
 import generatePrenotazione from './Database/Seeders/seederPrenotazione';
+import generateUtentiFissi from './Database/Seeders/SeederBoss';
 
 const args = process.argv.slice(2);
 
