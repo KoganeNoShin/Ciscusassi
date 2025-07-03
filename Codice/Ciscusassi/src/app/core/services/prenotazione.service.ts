@@ -86,7 +86,7 @@ export class PrenotazioneService {
 		ApiResponse<PrenotazioneRecord[]>
 	> {
 		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(
-			`${this.apiURL}/prenotazione/filiale`
+			`${this.apiURL}/prenotazione/filiale/prenotazioni`
 		);
 	}
 

@@ -100,6 +100,7 @@ export class CambiaEmailPage implements OnInit {
 
     if (this.formCambiaEmail.valid) {
       this.nuovaEmail = this.formCambiaEmail.value.email;
+      console.log(this.nuovaEmail);
 
         this.authenticationService
           .cambiaEmail(this.nuovaEmail)
