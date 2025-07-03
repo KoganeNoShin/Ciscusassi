@@ -8,7 +8,8 @@ class ClienteController {
 	// Registrazione Cliente
 	static async register(req: Request, res: Response): Promise<void> {
 		try {
-			const data: ClienteData = req.body;
+			const { nome, cognome, data_nascita, image, email, nuovaPassword } = req.body;
+			const data: ClienteData = {nome, cognome, data_nascita, image, email, password: nuovaPassword};
 			const result = await ClienteService.register(data);
 
 			res.status(200).json({
