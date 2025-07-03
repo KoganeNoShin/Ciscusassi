@@ -2,6 +2,7 @@ import cliente from '../../Models/cliente';
 
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
+import ClienteService from '../../Services/clienteService';
 
 const password = 'Pwm30L!';
 
@@ -46,7 +47,7 @@ async function generateCliente(count: number): Promise<string> {
 			);
 
 			try {
-				await cliente.create({
+				await ClienteService.register({
 					nome: nome,
 					cognome: cognome,
 					email: email,

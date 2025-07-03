@@ -6,6 +6,7 @@ import { faker } from '@faker-js/faker';
 import axios from 'axios';
 
 import immagini from './immaginiFiliali.json';
+import ImpiegatoService from '../../Services/impiegatoService';
 
 const password = 'Pwm30L!';
 
@@ -96,7 +97,7 @@ export async function generateFiliale(): Promise<string> {
 			let chef_ruolo = 'Chef';
 
 			try {
-				await impiegato.create({
+				await ImpiegatoService.addImpiegato({
 					nome: chef_nome,
 					cognome: chef_cognome,
 					ruolo: chef_ruolo,

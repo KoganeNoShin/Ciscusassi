@@ -1,3 +1,4 @@
+import EmailService from "../Email/emailService";
 import Cliente, { ClienteData } from "../Models/cliente";
 import bcrypt from 'bcryptjs';
 
@@ -56,13 +57,54 @@ class ClienteService {
     }
 
     static async aggiornaEmail(idCliente: number, newEmail: string): Promise<void> {
-		const existing = await Cliente.getByEmail(newEmail);
-		if (existing) {
-			console.error('❌ [ClienteService Error] aggiornaEmail: email già registrata:', newEmail);
-			throw new Error('Email già registrata');
-		}
-		return await Cliente.aggiornaEmail(idCliente, newEmail);
+		try {
+            const existing = await Cliente.getByEmail(newEmail);
+            if (existing) {
+                console.error('❌ [ClienteService Error] aggiornaEmail: email già registrata:', newEmail);
+                throw new Error('Email già registrata');
+            }
+            return await Cliente.aggiornaEmail(idCliente, newEmail);
+        } catch (err) {
+            console.error('❌ [ClienteService Error] aggiornaEmail:', err);
+            throw new Error('Errore durante l\'aggiornamento della email');
+        }
 	}
+
+    static generateRandomPassword(length: number = 6): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?';
+        let password = '';
+        
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            password += characters[randomIndex];
+        }
+        
+        return password;
+    }
+
+    static async recuperaPassword(emailCliente: string): Promise<void> {
+		try {
+            const cliente = await Cliente.getByEmail(emailCliente);
+            if (!cliente) {
+                throw new Error('Cliente non trovato');
+            }
+            const newPassword = this.generateRandomPassword();
+
+            await this.aggiornaPassword(cliente.numero_carta, newPassword);
+
+            const mailOptions = {
+                to: cliente.email,  // Email del cliente
+                subject: 'Recupero Password',
+                text: `Ecco la tua nuova password: ${newPassword}`,
+                html: `Ecco la tua nuova password: ${newPassword}`,
+            };
+
+            await EmailService.sendMail(mailOptions);
+        } catch (err) {
+            console.error('❌ [ClienteService Error] recuperaPassword:', err);
+            throw new Error('Errore durante l\'aggiornamento della password');
+        }
+	} 
 }
 
 export default ClienteService;

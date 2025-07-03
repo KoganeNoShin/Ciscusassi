@@ -3,6 +3,8 @@ import filiale from '../../Models/filiale';
 import fs from 'fs';
 import path from 'path';
 import Cliente from '../../Models/cliente';
+import ClienteService from '../../Services/clienteService';
+import ImpiegatoService from '../../Services/impiegatoService';
 
 function getBase64FromFile(localPath: string): string {
 	const fullPath = path.resolve(__dirname, localPath); // path assoluto
@@ -134,7 +136,7 @@ export async function generateUtentiFissi(): Promise<string> {
 		for (const utente of utentiFissi) {
 			const foto = getBase64FromFile(utente.fotoUrl);
 
-			await impiegato.create({
+			await ImpiegatoService.addImpiegato({
 				nome: utente.nome,
 				cognome: utente.cognome,
 				ruolo: utente.ruolo,
@@ -183,7 +185,7 @@ export async function generateUtentiFissi(): Promise<string> {
 		for (const cliente of ClientiFissi) {
 			const foto = getBase64FromFile(cliente.fotoUrl);
 
-			await Cliente.create({
+			await ClienteService.register({
 				nome: cliente.nome,
 				cognome: cliente.cognome,
 				image: foto,

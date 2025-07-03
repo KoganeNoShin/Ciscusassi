@@ -56,5 +56,12 @@ router.post(
 	ClienteController.aggiornaEmail
 );
 
+router.post(
+	'/recupera_password',
+	emailClienteValidator(body('email')),
+	validateMiddleware,
+	ClienteController.recuperaPassword
+);
+
 
 export default router;
