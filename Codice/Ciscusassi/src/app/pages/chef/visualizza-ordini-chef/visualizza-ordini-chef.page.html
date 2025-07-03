@@ -1,13 +1,51 @@
-<ion-content [fullscreen]="true">
-	<ion-row>
-    <ion-col size="10">
-			<h2>VISUALIZZA COMANDE</h2>
-			<p>TAVOLO {{this.tavolo?.numero}}</p>
-		</ion-col>
-    <ion-col size="2">
-		<ion-button (click)="iniziaLavorazioneTotale()" color="arancione">INIZIA LAVORAZIONE TOTALE</ion-button>
-    <ion-button (click)="fineLavorazioneTotale()"color="rosso">FINE LAVORAZIONE TOTALE</ion-button>
-    </ion-col>
-  </ion-row>
-	<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+<ion-content
+	[fullscreen]="true"
+	class="ion-justify-content-center ion-align-items-center"
+	color="verdechiaro"
+>
+	<div class="page-wrapper">
+		<div class="first-div">
+			<ion-text class="ion-text-center">
+				<h2 class="text-color-bianco">VISUALIZZA COMANDE</h2>
+			</ion-text>
+			<ion-text class="ion-text-center">
+				<h4 class="text-color-bianco">
+					TAVOLO {{ this.tavolo?.numero }}
+				</h4>
+			</ion-text>
+
+			<ion-button
+				(click)="iniziaLavorazioneTotale()"
+				color="arancione"
+				size="default"
+				fill="solid"
+				shape="round"
+				expand="block"
+				type="submit"
+				[disabled]="isLoading"
+			>
+				INIZIA LAVORAZIONE TOTALE
+			</ion-button>
+			<ion-button
+				(click)="fineLavorazioneTotale()"
+				color="rosso"
+				size="default"
+				fill="solid"
+				shape="round"
+				expand="block"
+				type="submit"
+				[disabled]="isLoading"
+			>
+				FINE LAVORAZIONE TOTALE
+			</ion-button>
+		</div>
+
+		@if(isLoading){
+		<!-- Spinner di caricamento -->
+		<ion-spinner color="bianco" name="crescent" />
+		}@else {
+		<!-- Lista ordini visibile solo se NON sto caricando -->
+		<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+		}
+	</div>
 </ion-content>

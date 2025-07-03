@@ -3,7 +3,7 @@
 		@if (this.statoPiatto == 'non-in-lavorazione') {
 			<div class="circle non-lavorazione"></div>
 		} @else if (this.statoPiatto == 'in-lavorazione') {
-			<div class="circle in-lavorazione"></div>
+			<div class="ci\rcle in-lavorazione"></div>
 		} @else if (this.statoPiatto == 'in-consegna') {
 			<div class="circle in-consegna"></div>
 		} @else if (this.statoPiatto == 'consegnato') {
@@ -37,39 +37,59 @@
 	@if (this.ruolo == 'chef') {
 		<div class="bottoni-chef">
 			@if (this.statoPiatto == 'non-in-lavorazione') {
-				<ion-button color="arancione" (click)="iniziaLavorazione()"
-					>INIZIA LAVORAZIONE</ion-button
-				>
+				<ion-button color="arancione" (click)="iniziaLavorazione()">
+					INIZIA LAVORAZIONE
+				</ion-button>
 			} @else if (this.statoPiatto == 'in-lavorazione') {
-				<ion-button color="rosso" (click)="fineLavorazione()"
-					>FINE LAVORAZIONE</ion-button
-				>
+				<ion-button color="rosso" (click)="fineLavorazione()">
+					FINE LAVORAZIONE
+				</ion-button>
 			} @else if (this.statoPiatto == 'in-consegna') {
-				<p>IN CONSEGNA</p>
+				<ion-text class="ion-text-center">
+					<h4 class="text-color-bianco">IN CONSEGNA</h4>
+				</ion-text>
 			} @else if (this.statoPiatto == 'consegnato') {
-				<p>CONSEGNATO</p>
+				<ion-text class="ion-text-center">
+					<h4 class="text-color-bianco">CONSEGNATO</h4>
+				</ion-text>
 			}
 		</div>
 	} @else if (this.ruolo == 'cameriere') {
 		<div class="bottoni-cameriere">
 			@if (this.statoPiatto == 'in-consegna') {
-				<ion-button color="arancione" (click)="consegna()"
-					>CONSEGNA</ion-button
+				<ion-button
+					size="default"
+					fill="solid"
+					shape="round"
+					color="arancione"
+					expand="block"
+					type="submit"
+					(click)="consegna()"
 				>
-				<ion-button color="rosso" (click)="cestina()"
-					>CESTINA</ion-button
+					CONSEGNA
+				</ion-button>
+				<ion-button
+					size="default"
+					fill="solid"
+					shape="round"
+					color="rosso"
+					expand="block"
+					type="submit"
+					(click)="cestina()"
 				>
+					CESTINA
+				</ion-button>
 			} @else if (this.statoPiatto == 'non-in-lavorazione') {
 				<ion-text class="ion-text-center">
-					<p>NON IN LAVORAZIONE</p>
+					<h4 class="text-color-bianco">NON IN LAVORAZIONE</h4>
 				</ion-text>
 			} @else if (this.statoPiatto == 'in-lavorazione') {
 				<ion-text class="ion-text-center">
-					<p>IN LAVORAZIONE</p>
+					<h4 class="text-color-bianco">IN LAVORAZIONE</h4>
 				</ion-text>
 			} @else if (this.statoPiatto == 'consegnato') {
 				<ion-text class="ion-text-center">
-					<p>CONSEGNATO</p>
+					<h4 class="text-color-bianco">CONSEGNATO</h4>
 				</ion-text>
 			}
 		</div>

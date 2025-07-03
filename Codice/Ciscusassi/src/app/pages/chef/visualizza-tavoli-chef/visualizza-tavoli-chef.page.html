@@ -1,74 +1,82 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>VISUALIZZA TAVOLI</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content
+	[fullscreen]="true"
+	class="ion-justify-content-center ion-align-items-center"
+	color="bianco"
+>
+	<div class="page-wrapper">
+		<ion-text class="ion-text-center ion-padding-top">
+			<h2>Visualizza tavoli</h2>
+		</ion-text>
 
-<ion-content [fullscreen]="true" class="custom-content">
+		@if(!localeAperto){
+		<ion-text class="ion-text-center">
+			<h2 class="locale-chiuso text-color-rosso">
+				AL MOMENTO CISCUSASSI È CHIUSO
+			</h2>
+		</ion-text>
+		} @else {
 
-  @if(!localeAperto){
-		<h2 class="locale-chiuso">AL MOMENTO CISCUSASSI È CHIUSO</h2>
-	} @else {
-  <h1 class="titolo-pagina">VISUALIZZA TAVOLI</h1>
+		<!-- Legenda -->
+		<div class="filter-row ion-padding ion-margin">
+			<!-- Filtri -->
 
-  <!-- Chips filtro -->
-  <div class="filtro-chip-container">
-    <ion-chip
-      [outline]="selectedFilter !== 'tutti'"
-      [color]="selectedFilter === 'tutti' ? 'primary' : 'medium'"
-      (click)="filtraPerStato('tutti')"
-    >
-      <ion-label>Tutti</ion-label>
-    </ion-chip>
+			<ion-chip
+				[outline]="selectedFilter !== null"
+				color="medium"
+				(click)="filtraTavoliPerStato('tutti')"
+			>
+				Tutti
+			</ion-chip>
 
-    <ion-chip
-      [outline]="selectedFilter !== 'in-lavorazione'"
-      [color]="selectedFilter === 'in-lavorazione' ? 'primary' : 'medium'"
-      (click)="filtraPerStato('in-lavorazione')"
-    >
-      <ion-label>In lavorazione</ion-label>
-    </ion-chip>
+			<ion-chip
+				[outline]="selectedFilter !== 'non-in-lavorazione'"
+				color="rosso"
+				(click)="filtraTavoliPerStato('non-in-lavorazione')"
+			>
+				Non in lavorazione
+			</ion-chip>
 
-    <ion-chip
-      [outline]="selectedFilter !== 'non-in-lavorazione'"
-      [color]="selectedFilter === 'non-in-lavorazione' ? 'primary' : 'medium'"
-      (click)="filtraPerStato('non-in-lavorazione')"
-    >
-      <ion-label>Non in lavorazione</ion-label>
-    </ion-chip>
-  </div>
+			<ion-chip
+				[outline]="selectedFilter !== 'in-lavorazione'"
+				color="arancione"
+				(click)="filtraTavoliPerStato('in-lavorazione')"
+			>
+				In lavorazione
+			</ion-chip>
+		</div>
 
-  <!-- Legenda -->
-  <div class="legend-styled">
-    <div class="legend-item" *ngFor="let voce of legenda">
-      <div class="dot" [ngClass]="voce.stato"></div>
-      <span class="label">{{ voce.label }}</span>
-    </div>
-  </div>
+		@if(tavoliFiltrati.length === 0){
+		<ion-text class="ion-text-center">
+			<h4 class="text-color-gray">
+				Ancora nessuno ha ordinato qualcosa!
+			</h4>
+		</ion-text>
+		}
 
-  <!-- Messaggio se non ci sono prenotazioni -->
-  <div *ngIf="tavoliFiltrati.length === 0" class="no-prenotazioni">
-    Non ci sono prenotazioni
-  </div>
+		<!-- Tavoli -->
+		<ion-grid fixed>
+			<ion-row class="ion-justify-content-center">
+				@for(tavolo of tavoliFiltrati; track tavolo){
+				<ion-col size="6" size-md="4" sizeLg="3">
+					<div class="tavolo-wrapper" (click)="handleClick(tavolo)">
+						<div class="circle" [ngClass]="tavolo.stato">
+							{{ tavolo.numero }}
+						</div>
 
-  <!-- Tavoli -->
-  <ion-grid *ngIf="tavoliFiltrati.length > 0">
-    <ion-row class="ion-justify-content-center">
-      <ion-col size="6" size-md="4" *ngFor="let tavolo of tavoliFiltrati">
-        <div
-          class="tavolo-wrapper"
-          [class.clickable]="isCliccabile(tavolo)"
-          (click)="handleClick(tavolo)"
-        >
-          <div class="circle" [ngClass]="tavolo.stato">{{ tavolo.numero }}</div>
-          <div class="table-info white-info">
-            <div class="nome">Prenotazione: {{ tavolo.prenotazione }}</div>
-            <div class="orario">{{ tavolo.orario }}</div>
-            <div class="persone">{{ tavolo.persone }} persone</div>
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-}
+						<ion-text class="ion-text-center">
+							<h5>Prenotazione: {{ tavolo.prenotazione }}</h5>
+						</ion-text>
+						<ion-text class="ion-text-center">
+							<h5>{{ tavolo.orario }}</h5>
+						</ion-text>
+						<ion-text class="ion-text-center">
+							<h5>{{ tavolo.persone }} persone</h5>
+						</ion-text>
+					</div>
+				</ion-col>
+				}
+			</ion-row>
+		</ion-grid>
+		}
+	</div>
 </ion-content>

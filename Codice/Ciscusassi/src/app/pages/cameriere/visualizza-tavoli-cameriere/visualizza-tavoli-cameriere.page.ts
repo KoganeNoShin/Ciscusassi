@@ -5,9 +5,6 @@ import { TavoloService } from 'src/app/core/services/tavolo.service';
 
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonGrid,
 	IonRow,
 	IonCol,
@@ -15,6 +12,10 @@ import {
 	IonModal,
 	ToastController,
 	IonChip,
+	IonText,
+	IonItem,
+	IonInput,
+	IonIcon,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
@@ -22,16 +23,19 @@ import { lastValueFrom } from 'rxjs';
 import { PrenotazioneRequest } from 'src/app/core/interfaces/Prenotazione';
 import { Router } from '@angular/router';
 
+import { addIcons } from 'ionicons';
+import { add } from 'ionicons/icons';
+
 @Component({
 	selector: 'app-visualizza-tavoli',
 	templateUrl: './visualizza-tavoli-cameriere.page.html',
 	styleUrls: ['./visualizza-tavoli-cameriere.page.scss'],
 	standalone: true,
 	imports: [
+		IonInput,
+		IonItem,
+		IonText,
 		IonContent,
-		IonHeader,
-		IonTitle,
-		IonToolbar,
 		IonGrid,
 		IonRow,
 		IonCol,
@@ -40,6 +44,7 @@ import { Router } from '@angular/router';
 		IonChip,
 		CommonModule,
 		FormsModule,
+		IonIcon,
 	],
 })
 export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
@@ -51,23 +56,15 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		stato: string;
 	}> = [];
 	tavoliFiltrati: typeof this.tavoli = [];
-	legenda = [
-		{ stato: 'in-consegna', label: 'IN CONSEGNA' },
-		{ stato: 'consegnato', label: 'CONSEGNATO' },
-		{ stato: 'non-in-lavorazione', label: 'NON IN LAVORAZIONE' },
-		{ stato: 'in-lavorazione', label: 'IN LAVORAZIONE' },
-		{ stato: 'senza-ordini', label: 'SENZA ORDINI' },
-		{ stato: 'attesa-arrivo', label: 'ATTESA ARRIVO' },
-	];
 
 	selectedFilter: string | null = null;
-	showPopup = false;
+	showModaleInserimentoPrenotazione = false;
 	personePossibili = [1, 2, 3, 4, 5, 6, 7];
 	personeSelezionate: number | null = null;
 	inputManuale: number | null = null;
 	refClienteInput: string = '';
 
-	showConfermaArrivoPopup = false;
+	showModaleConfermaArrivo = false;
 	tavoloDaConfermare: any = null;
 
 	localeAperto: boolean = false;
@@ -80,10 +77,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		private router: Router,
 		private tavoloService: TavoloService,
 		private AlertController: AlertController
-	) {}
+	) {
+		addIcons({ add });
+	}
 
-	// Inizializza la pagina: se il locale è aperto carica i tavoli e imposta aggiornamento ogni 30 secondi.
-	// Avvia anche il controllo ricorrente degli orari di apertura.
+	/*	Inizializza la pagina: se il locale è aperto carica i tavoli e imposta aggiornamento ogni 30 secondi.
+		Avvia anche il controllo ricorrente degli orari di apertura. */
 	ngOnInit(): void {
 		if (this.localeAperto) {
 			this.loadTavoli();
@@ -95,6 +94,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			30000
 		);
 	}
+
 	// Pulisce gli intervalli temporali per evitare memory leak quando il componente viene distrutto.
 	ngOnDestroy(): void {
 		if (this.intervalTavoli) {
@@ -104,8 +104,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			clearInterval(this.intervalApertura);
 		}
 	}
-	// Controlla se il locale è aperto in base al giorno della settimana e agli orari predefiniti.
-	// Se il locale passa da chiuso ad aperto, carica i tavoli e avvia l'aggiornamento periodico.
+
+	/* 	Controlla se il locale è aperto in base al giorno della settimana e agli orari predefiniti.
+	 	Se il locale passa da chiuso ad aperto, carica i tavoli e avvia l'aggiornamento periodico. */
 	checkOrariApertura() {
 		const now = new Date();
 		const giornoSettimana = now.getDay(); // 0=Dom, 1=Lun, 2=Mar, ..., 6=Sab
@@ -149,10 +150,11 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.intervalTavoli = setInterval(() => this.loadTavoli(), 30000);
 		}
 	}
-	// Carica la lista delle prenotazioni/tavoli dal servizio.
-	// Se il locale è chiuso, svuota la lista.
-	// Per ogni prenotazione recupera lo stato e costruisce l'array di tavoli con info complete.
-	// Applica il filtro attivo sui tavoli caricati.
+
+	/* 	Carica la lista delle prenotazioni/tavoli dal servizio.
+	 	Se il locale è chiuso, svuota la lista.
+	 	Per ogni prenotazione recupera lo stato e costruisce l'array di tavoli con info complete.
+	 	Applica il filtro attivo sui tavoli caricati. */
 	async loadTavoli() {
 		if (!this.localeAperto) {
 			// Non carichiamo tavoli se il locale è chiuso
@@ -200,7 +202,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 				);
 
 				this.tavoli = tavoliComp;
-				this.applicaFiltro();
+				this.applicaFiltroTavoli();
 			} else {
 				this.tavoli = [];
 				this.tavoliFiltrati = [];
@@ -211,7 +213,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.tavoliFiltrati = [];
 		}
 	}
-	// Formattta una data ISO in una stringa HH:mm per visualizzare l'orario della prenotazione.
+
+	// 	Formattta una data ISO in una stringa HH:mm per visualizzare l'orario della prenotazione.
 	formattaOrario(dataOra: string): string {
 		const d = new Date(dataOra);
 		return `${d.getHours().toString().padStart(2, '0')}:${d
@@ -219,9 +222,10 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			.toString()
 			.padStart(2, '0')}`;
 	}
-	// Mostra il popup per aggiungere una nuova prenotazione solo se il locale è aperto.
-	// Altrimenti mostra un messaggio di avviso.
-	add() {
+
+	/* 	Mostra il ModaleInserimentoPrenotazionechiudiModaleInserimentoPrenotazione per aggiungere una nuova prenotazione solo se il locale è aperto.
+	 	Altrimenti mostra un messaggio di avviso. */
+	visualizzaModaleAggiungiPrenotazione() {
 		if (!this.localeAperto) {
 			this.presentToast(
 				'Il locale è chiuso, non è possibile aggiungere prenotazioni.',
@@ -229,15 +233,17 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			);
 			return;
 		}
-		this.showPopup = true;
-		this.resetPopup();
+		this.showModaleInserimentoPrenotazione = true;
+		this.chiudiModaleInserimentoPrenotazione();
 	}
-	// Seleziona un numero predefinito di persone per la prenotazione.
+
+	// 	Seleziona un numero predefinito di persone per la prenotazione.
 	selezionaPersone(n: number) {
 		this.personeSelezionate = n;
 		this.inputManuale = n;
 	}
-	// Aggiorna la selezione del numero di persone in base all'input manuale, solo se valido.
+
+	// 	Aggiorna la selezione del numero di persone in base all'input manuale, solo se valido.
 	onInputChange() {
 		if (
 			this.inputManuale !== null &&
@@ -248,9 +254,10 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			this.personeSelezionate = null;
 		}
 	}
-	// Conferma la creazione di una nuova prenotazione.
-	// Valida input persone e ref cliente.
-	// Verifica prenotazioni future esistenti per il cliente.
+
+	/* 	Conferma la creazione di una nuova prenotazione.
+	 	Valida input persone e ref cliente.
+	 	Verifica prenotazioni future esistenti per il cliente. */
 	async mostraConfermaFasciaOraria(): Promise<boolean> {
 		return new Promise(async (resolve) => {
 			const alert = await this.AlertController.create({
@@ -261,18 +268,29 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 						text: 'Annulla',
 						role: 'cancel',
 						handler: () => resolve(false),
+						cssClass: [
+							'alert-button-cancel',
+							'bg-color-rosso',
+							'text-color-bianco',
+						],
 					},
 					{
 						text: 'Conferma',
 						handler: () => resolve(true),
+						cssClass: [
+							'alert-button-confirm',
+							'bg-color-verdechiaro',
+							'text-color-bianco',
+						],
 					},
 				],
+				cssClass: ['custom-alert', 'text-color-bianco'],
 			});
 			await alert.present();
 		});
 	}
 
-	async conferma() {
+	async confermaModaleInserimentoPrenotazione() {
 		const persone = this.personeSelezionate ?? this.inputManuale;
 		let refCliente: number | null = null;
 
@@ -333,8 +351,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 							'Il cliente ha già una prenotazione futura.',
 							'danger'
 						);
-						this.showPopup = false;
-						this.resetPopup();
+						this.showModaleInserimentoPrenotazione = false;
+						this.chiudiModaleInserimentoPrenotazione();
 						return;
 					}
 				}
@@ -409,8 +427,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			);
 		}
 
-		this.showPopup = false;
-		this.resetPopup();
+		this.showModaleInserimentoPrenotazione = false;
+		this.chiudiModaleInserimentoPrenotazione();
 		this.loadTavoli();
 	}
 
@@ -490,26 +508,22 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 
-	annulla() {
-		this.showPopup = false;
-		this.resetPopup();
+	annullaModaleInserimentoPrenotazione() {
+		this.showModaleInserimentoPrenotazione = false;
+		this.chiudiModaleInserimentoPrenotazione();
 	}
 
-	resetPopup() {
+	chiudiModaleInserimentoPrenotazione() {
 		this.personeSelezionate = null;
 		this.inputManuale = null;
 		this.refClienteInput = '';
 	}
 
-	isCliccabile(tavolo: any): boolean {
-		return tavolo.stato !== 'senza-ordini';
-	}
-
 	handleClick(tavolo: any) {
 		if (tavolo.stato === 'attesa-arrivo') {
 			this.tavoloDaConfermare = tavolo;
-			this.showConfermaArrivoPopup = true;
-		} else if (this.isCliccabile(tavolo)) {
+			this.showModaleConfermaArrivo = true;
+		} else if (tavolo.stato !== 'senza-ordini') {
 			console.log('Hai cliccato sul tavolo:', tavolo);
 			this.tavoloService.setTavolo(tavolo);
 			this.router.navigate(['/visualizza-ordini-cameriere']);
@@ -530,7 +544,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 					: `Errore conferma arrivo`,
 				resp.success ? 'success' : 'danger'
 			);
-			this.showConfermaArrivoPopup = false;
+			this.showModaleConfermaArrivo = false;
 			this.tavoloDaConfermare = null;
 			await this.loadTavoli();
 		} catch (e) {
@@ -542,8 +556,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		}
 	}
 
-	chiudiPopupArrivo() {
-		this.showConfermaArrivoPopup = false;
+	chiudiModaleConfermaArrivo() {
+		this.showModaleConfermaArrivo = false;
 		this.tavoloDaConfermare = null;
 	}
 
@@ -560,12 +574,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		await toast.present();
 	}
 
-	filtraPerStato(stato: string | null) {
-		this.selectedFilter = stato;
-		this.applicaFiltro();
+	filtraTavoliPerStato(stato?: string) {
+		this.selectedFilter = stato || null;
+		this.applicaFiltroTavoli();
 	}
 
-	applicaFiltro() {
+	applicaFiltroTavoli() {
 		this.tavoliFiltrati = this.selectedFilter
 			? this.tavoli.filter((t) => t.stato === this.selectedFilter)
 			: [...this.tavoli];
