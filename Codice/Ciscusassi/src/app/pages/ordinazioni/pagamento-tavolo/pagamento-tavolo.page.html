@@ -1,38 +1,62 @@
-<ion-content fullscreen color="light" class="ion-padding">
-	<ion-grid>
-		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<!-- Colonna sinistra: form -->
-			<ion-col size="12" size-md="6" class="form-col">
-				<ion-card class="address-card">
-					<h1>PAGAMENTO</h1>
+<ion-content [fullscreen]="true" color="bianco">
+	<div class="page-wrapper">
+		<ion-grid
+			fixed
+			class="ion-align-items-center ion-justify-content-center"
+		>
+			<ion-row class="ion-align-items-center ion-justify-content-center">
+				<!-- Colonna sinistra: form -->
+				<ion-col size="12" size-xl="6" class="ion-padding-end">
+					<ion-card
+						class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
+						color="verdechiaro"
+					>
+						<ion-text
+							class="ion-text-center ion-padding-horizontal"
+						>
+							<h2 class="text-color-bianco">PAGAMENTO</h2>
+						</ion-text>
 
-					<ion-card-content>
-						<p>Dovrai pagare {{ totale }}€</p>
+						<ion-text
+							class="ion-text-center ion-padding-horizontal"
+						>
+							<p class="text-color-bianco">
+								Dovrai pagare {{ totale }}€
+							</p>
+						</ion-text>
 
 						<!-- Bottone finale -->
-						<ion-button (click)="pagaCarta()" fill="solid" shape="round">
-							<ion-text
-								color="light"
-								>PAGA CON CARTA</ion-text
-							>
+						<ion-button
+							(click)="pagaCarta()"
+							size="default"
+							fill="solid"
+							shape="round"
+							color="rosso"
+							expand="block"
+							class="ion-padding-horizontal text-color-bianco"
+						>
+							PAGA CON CARTA
 						</ion-button>
 						<ion-button
 							(click)="pagaCassa()"
-
+							size="default"
 							fill="solid"
 							shape="round"
+							color="rosso"
+							expand="block"
+							class="ion-padding-horizontal text-color-bianco"
 						>
-							<ion-text color="light">PAGA ALLA CASSA</ion-text>
+							PAGA ALLA CASSA
 						</ion-button>
-					</ion-card-content>
-				</ion-card>
-			</ion-col>
-			<!-- Colonna destra: immagine -->
-			<ion-col size="12" size-md="6" class="image-col">
-				<ion-img
-					src="/assets/illustrations/SceltaPagamento.png"
-				></ion-img>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+					</ion-card>
+				</ion-col>
+				<!-- Colonna destra: immagine -->
+				<ion-col size="6" class="ion-hide-xl-down ion-padding-start">
+					<ion-img
+						src="/assets/illustrations/SceltaPagamento.png"
+					></ion-img>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</div>
 </ion-content>

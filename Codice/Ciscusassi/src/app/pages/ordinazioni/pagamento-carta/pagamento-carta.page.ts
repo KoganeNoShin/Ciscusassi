@@ -1,4 +1,9 @@
-import { Component, createComponent, EnvironmentInjector, OnInit } from '@angular/core';
+import {
+	Component,
+	createComponent,
+	EnvironmentInjector,
+	OnInit,
+} from '@angular/core';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import {
@@ -10,6 +15,7 @@ import {
 	IonCardContent,
 	IonButton,
 	IonImg,
+	IonText,
 } from '@ionic/angular/standalone';
 import { RicevutaComponent } from 'src/app/components/ricevuta/ricevuta.component';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
@@ -21,18 +27,19 @@ import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 	styleUrls: ['./pagamento-carta.page.scss'],
 	standalone: true,
 	imports: [
+		IonText,
 		IonImg,
 		IonButton,
-		IonCardContent,
 		IonCard,
 		IonCol,
 		IonRow,
 		IonGrid,
 		IonContent,
+		IonText,
 	],
 })
 export class PagamentoCartaPage implements OnInit {
-	carrello: OrdProdEstended[] = []
+	carrello: OrdProdEstended[] = [];
 	constructor(
 		private injector: EnvironmentInjector,
 		private tavoloService: TavoloService
@@ -42,8 +49,8 @@ export class PagamentoCartaPage implements OnInit {
 		this.ngViewWillEnter();
 	}
 
-	ngViewWillEnter(){
-		this.carrello = this.tavoloService.getOrdini()
+	ngViewWillEnter() {
+		this.carrello = this.tavoloService.getOrdini();
 	}
 
 	async generaRicevuta() {
