@@ -701,6 +701,8 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	}
 
 	chiudiModaleInserimentoPrenotazione() {
+		this.showModaleConfermaArrivo = false;
+
 		this.personeSelezionate = null;
 
 		this.inputManuale = null;
