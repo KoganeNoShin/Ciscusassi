@@ -70,17 +70,34 @@ class ClienteService {
         }
 	}
 
-    static generateRandomPassword(length: number = 6): string {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?';
-        let password = '';
-        
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            password += characters[randomIndex];
-        }
-        
-        return password;
+    static generateRandomPassword(): string {
+    // Verifica che la lunghezza sia tra 6 e 12 caratteri
+    const length = Math.floor(Math.random() * 7) + 6; // Assicura che la lunghezza sia tra 6 e 12
+
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const digits = '0123456789';
+    const specialChars = '!@#$%^*()-_=+[]{}|;:?';
+
+    // Assicurazionne che la password contenga almeno un carattere di ogni tipo
+    let password = [
+        uppercase[Math.floor(Math.random() * uppercase.length)],
+        lowercase[Math.floor(Math.random() * lowercase.length)],
+        digits[Math.floor(Math.random() * digits.length)],
+        specialChars[Math.floor(Math.random() * specialChars.length)]
+    ];
+
+    // Riempi il resto della password con caratteri casuali
+    const allCharacters = uppercase + lowercase + digits + specialChars;
+    for (let i = password.length; i < length; i++) {
+        password.push(allCharacters[Math.floor(Math.random() * allCharacters.length)]);
     }
+
+    // Mischia i caratteri della password per evitare che i tipi obbligatori siano sempre nelle stesse posizioni
+    password = password.sort(() => Math.random() - 0.5);
+
+    return password.join('');
+}
 
     static async recuperaPassword(emailCliente: string): Promise<void> {
 		try {

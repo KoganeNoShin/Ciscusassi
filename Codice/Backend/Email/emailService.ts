@@ -1,6 +1,12 @@
 import nodemailer from 'nodemailer';
 const dotenv = require('dotenv');
 dotenv.config();
+
+if (!process.env.MAIL_USER || !process.env.GOOGLE_APP_PASSWORD) {
+  console.error('❌ Errore: le credenziali per l\'email non sono impostate correttamente!');
+  process.exit(1);  // Termina l'applicazione se le credenziali mancano
+}
+
 // Crea il trasportatore di email
 const transporter = nodemailer.createTransport({
   service: "gmail",  // Usa 'gmail' come provider
@@ -8,7 +14,6 @@ const transporter = nodemailer.createTransport({
     user: process.env.MAIL_USER,  // La tua email
     pass: process.env.GOOGLE_APP_PASSWORD,  // La tua app password
   },
-  // Non è più necessario specificare 'host' e 'port' con 'service'
   secure: true, // Usa SSL
 });
 

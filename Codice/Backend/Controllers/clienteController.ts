@@ -76,7 +76,7 @@ class ClienteController {
 			});
 		} catch (err) {
 			console.error('❌ [CLIENTE ERROR] aggiornaPassword:', err);
-			res.status(400).json({ success: false, message: String((err as Error).message) });
+			res.status(500).json({ success: false, message: String((err as Error).message) });
 		}
 	}
 
@@ -94,7 +94,7 @@ class ClienteController {
 			});
 		} catch (err) {
 			console.error('❌ [CLIENTE ERROR] aggiornaEmail:', err);
-			res.status(400).json({ success: false, message: String((err as Error).message) });
+			res.status(500).json({ success: false, message: String((err as Error).message) });
 		}
 	}
 
@@ -111,7 +111,7 @@ class ClienteController {
 			});
 		} catch (err) {
 			console.error('❌ [CLIENTE ERROR] recuperaPassword:', err);
-			res.status(400).json({ success: false, message: String((err as Error).message) });
+			res.status(500).json({ success: false, message: String((err as Error).message) });
 		}
 	}
 }
