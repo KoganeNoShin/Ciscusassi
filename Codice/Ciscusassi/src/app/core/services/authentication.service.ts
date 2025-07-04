@@ -81,7 +81,7 @@ export class AuthenticationService {
 			email: email,
 		};
 		return this.http.post<ApiResponse<any>>(
-			`${this.apiURL}/cliente/recupera_password`,
+			`${this.apiURL}/auth/recupera_password`,
 			body
 		);
 	}
