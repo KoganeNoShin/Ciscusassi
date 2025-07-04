@@ -1,5 +1,15 @@
+ion-button {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+	gap: 1em;
+	align-items: start;
+}
+
 ion-card {
 	display: flex;
+	width: 100%;
 	flex-direction: row;
 	justify-content: start;
 	background-color: transparent;
@@ -10,8 +20,9 @@ ion-card {
 .img-filiale {
 	width: 20%;
 	height: 20%;
-	object-fit: contain;
+	object-fit: cover;
 	min-width: 100px;
+	aspect-ratio: 1/1;
 }
 
 .img-filiale::part(image) {

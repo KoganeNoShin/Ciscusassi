@@ -7,7 +7,6 @@ import {
 	IonChip,
 	IonButton,
 	IonIcon,
-	IonAlert,
 	IonText,
 	IonSearchbar,
 	IonSpinner,
@@ -107,8 +106,11 @@ export class GestisciImpiegatiPage implements OnInit {
 
 	private handleResponse(response: ApiResponse<ImpiegatoRecord[]>): void {
 		// Gestione risposta API
-		if (response.success && response.data) {
-			this.impiegati = response.data; // Salvo i impiegati ricevuti
+		if (response.success) {
+			if (response.data) {
+				this.impiegati = response.data; // Salvo i impiegati ricevuti
+			}
+
 			this.filterByRuolo('Tutti'); // Inizializzo lista filtrata con tutti i impiegati
 			console.log(this.impiegati);
 		} else {

@@ -73,7 +73,7 @@ router.post(
 );
 
 router.put(
-	'/updateImpiegato/:matricola', // ❌ I validatori non vanno bene
+	'/updateImpiegato/:matricola', // ✅
 	updateImpiegatoValidator,
 	validateMiddleware,
 	authMiddleware,

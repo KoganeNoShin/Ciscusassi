@@ -6,24 +6,29 @@ class FilialeController {
 		try {
 			const filiale = await FilialeService.addFiliale(req.body);
 
-            if(filiale) res.status(201).json({ success: true, data: req.body });
-            else res.status(400).json({
-                    success: false,
-					message: 'Errore durante l\'aggiunta della filiale',
-			});
+			if (filiale)
+				res.status(201).json({ success: true, data: req.body });
+			else
+				res.status(400).json({
+					success: false,
+					message: "Errore durante l'aggiunta della filiale",
+				});
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}
 
 	static async updateFiliale(req: Request, res: Response): Promise<void> {
 		try {
-			const filiale = await FilialeService.updateFiliale(req.body);
+			const filiale = await FilialeService.updateFiliale(
+				req.body,
+				parseInt(req.params.id_filiale)
+			);
 
 			res.json({ success: true, data: filiale });
 		} catch (err) {
@@ -31,7 +36,7 @@ class FilialeController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}
@@ -40,13 +45,16 @@ class FilialeController {
 		try {
 			await FilialeService.deleteFiliale(parseInt(req.params.id_filiale));
 
-			res.json({ success: true, message: 'Filiale eliminata con successo' });
+			res.json({
+				success: true,
+				message: 'Filiale eliminata con successo',
+			});
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}
@@ -66,7 +74,7 @@ class FilialeController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}

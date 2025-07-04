@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 import { ImpiegatoRecord } from 'src/app/core/interfaces/Impiegato';
 
@@ -33,10 +33,7 @@ export class ImpiegatoAmministratoreComponent implements OnInit {
 	@Output() showAlertDeleteImpiegatoEmitter: EventEmitter<ImpiegatoRecord> =
 		new EventEmitter();
 
-	constructor(
-		private route: ActivatedRoute, // Per leggere parametri query string da URL
-		private router: Router // Per gestione navigazione e stato
-	) {}
+	constructor() {}
 
 	ngOnInit() {
 		if (this.impiegato == null) {

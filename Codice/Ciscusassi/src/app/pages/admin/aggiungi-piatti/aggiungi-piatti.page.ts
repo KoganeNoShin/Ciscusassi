@@ -131,7 +131,7 @@ export class AggiungiPiattiPage implements OnInit {
 				// Resetta i campi del form dopo l'aggiunta
 				this.resetForm();
 
-				this.router.navigateBack(['/gestisci-piatti']);
+				this.router.back();
 			},
 			error: async (err) => {
 				console.error('❌ Errore HTTP:', err);
