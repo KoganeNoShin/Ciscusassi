@@ -25,16 +25,15 @@ import {
 
 import FilialeController from '../Controllers/filialeController';
 import ImpiegatoController from '../Controllers/impiegatoController';
-import PrenotazioneController from '../Controllers/prenotazioneController';
 
 const router = Router();
 
 // ----- Rotte -----
 
-router.get('', FilialeController.getAllFiliali);
+router.get('', FilialeController.getAllFiliali); // ✅
 
 router.post(
-	'/addFiliale',
+	'/addFiliale', // ✅ Teoricamente va bene, da capire quando sistemo l'invio delle immagini in base64
 	addFilialeValidator,
 	validateMiddleware,
 	authMiddleware,
@@ -43,7 +42,7 @@ router.post(
 );
 
 router.put(
-	'/updateFiliale/:id_filiale',
+	'/updateFiliale/:id_filiale', // ✅ Teoricamente va bene, da capire quando sistemo l'invio delle immagini in base64
 	updateFilialeValidator,
 	validateMiddleware,
 	authMiddleware,
@@ -52,7 +51,7 @@ router.put(
 );
 
 router.delete(
-	'/deleteFiliale/:id_filiale',
+	'/deleteFiliale/:id_filiale', // ✅
 	idFilialeValidator(param('id_filiale')),
 	validateMiddleware,
 	authMiddleware,
@@ -62,6 +61,8 @@ router.delete(
 
 // Routes per gli Impiegati
 
+// ❌ I validatori non vanno bene, in particolare la data,
+// inoltre qui non dovrei passare la password, o comunque se serve dopo la dovrebbe generare in automatico
 router.post(
 	'/addImpiegato',
 	addImpiegatoValidator,
@@ -72,7 +73,7 @@ router.post(
 );
 
 router.put(
-	'/updateImpiegato/:matricola',
+	'/updateImpiegato/:matricola', // ❌ I validatori non vanno bene
 	updateImpiegatoValidator,
 	validateMiddleware,
 	authMiddleware,
@@ -81,7 +82,7 @@ router.put(
 );
 
 router.delete(
-	'/deleteImpiegato/:matricola',
+	'/deleteImpiegato/:matricola', // ✅
 	matricolaImpiegatoValidator(param('matricola')),
 	validateMiddleware,
 	authMiddleware,
@@ -90,7 +91,7 @@ router.delete(
 );
 
 router.get(
-	'/:id_filiale/impiegati',
+	'/:id_filiale/impiegati', // ✅
 	idFilialeValidator(param('id_filiale')),
 	validateMiddleware,
 	authMiddleware,

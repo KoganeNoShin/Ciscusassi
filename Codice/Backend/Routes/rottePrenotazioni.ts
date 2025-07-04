@@ -41,17 +41,17 @@ const router = Router();
 // ----- Rotte -----
 
 // Route per i Prenotazioni
-router.get('', PrenotazioneController.getAllPrenotazioni);
+router.get('', PrenotazioneController.getAllPrenotazioni); //  ✅
 
 router.get(
-	'/:id_prenotazione',
+	'/:id_prenotazione', // ✅
 	idPrenotazioneValidator(param('id_prenotazione')),
 	validateMiddleware,
 	PrenotazioneController.getPrenotazioneById
 );
 
 router.get(
-	'/cliente',
+	'/cliente', // ❌ Ma sicuro che qui non ci dovrebbe essere l'id_cliente? Mettendoglielo funziona (frontend non c'è)
 	authMiddleware,
 	validateMiddleware,
 	PrenotazioneController.getPrenotazioniByCliente

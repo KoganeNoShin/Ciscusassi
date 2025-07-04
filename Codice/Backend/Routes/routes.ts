@@ -31,16 +31,16 @@ const router = express.Router();
 
 // ----- Rotte con prefissi -----
 
-router.use('/auth', rotteAutenticazione);
-router.use('/cliente', rotteClienti); // tutte le rotte che iniziano con '/clienti'
-router.use('/filiale', rotteFiliali); // tutte le rotte che iniziano con '/filiali'
-router.use('/menu', rotteMenu); // tutte le rotte che iniziano con '/menu'
+router.use('/auth', rotteAutenticazione); // tutte le rotte che iniziano con '/auth' 				✅
+router.use('/cliente', rotteClienti); // tutte le rotte che iniziano con '/clienti'					❌
+router.use('/filiale', rotteFiliali); // tutte le rotte che iniziano con '/filiali'					❌
+router.use('/menu', rotteMenu); // tutte le rotte che iniziano con '/menu'							✅
 router.use('/prenotazione', rottePrenotazioni); // tutte le rotte che iniziano con '/prenotazioni'
 
 // ----- Rotte senza prefissi -----
 
 router.post(
-	'/addAsporto',
+	'/addAsporto', // ✅
 	addAsportoValidator,
 	validateMiddleware,
 	authMiddleware,
@@ -48,7 +48,7 @@ router.post(
 );
 
 router.get(
-	'/pagamenti/:year',
+	'/pagamenti/:year', // ✅
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	annoPagamentoValidator(param('year')),
@@ -57,7 +57,7 @@ router.get(
 );
 
 router.get(
-	'/torrette/:id_torretta',
+	'/torrette/:id_torretta', // ❓ Mi sembra di capire che non venga utilizzato
 	idTorrettaValidator(param('id_torretta')),
 	validateMiddleware,
 	TorrettaController.getTorrettaByID

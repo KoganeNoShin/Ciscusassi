@@ -62,7 +62,10 @@ export class AuthenticationService {
 		);
 	}
 
-	cambiaPassword(nuovaPassword: string, confermaPassword: string): Observable<ApiResponse<any>> {
+	cambiaPassword(
+		nuovaPassword: string,
+		confermaPassword: string
+	): Observable<ApiResponse<any>> {
 		const body = {
 			nuovaPassword: nuovaPassword,
 			confermaPassword: confermaPassword,
@@ -75,7 +78,7 @@ export class AuthenticationService {
 
 	recuperaPassword(email: string): Observable<ApiResponse<any>> {
 		const body = {
-			email: email
+			email: email,
 		};
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/cliente/recupera_password`,
@@ -87,7 +90,7 @@ export class AuthenticationService {
 		const body = {
 			nuovaEmail: nuovaEmail,
 		};
-		return this.http.post<ApiResponse<any>>(
+		return this.http.put<ApiResponse<any>>(
 			`${this.apiURL}/cliente/nuova_email`,
 			body
 		);

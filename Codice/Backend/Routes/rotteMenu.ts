@@ -28,7 +28,7 @@ const router = Router();
 router.get('', ProdottoController.getAllProdotti);
 
 router.post(
-	'/menu/addProdotto',
+	'/addProdotto',
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	addProdottoValidator,

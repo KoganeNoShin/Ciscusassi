@@ -8,200 +8,258 @@
 			<h2>Visualizza tavoli</h2>
 		</ion-text>
 
-		<ng-container *ngIf="!localeAperto; else aperto">
-			<ion-text class="ion-text-center">
-				<h2 class="locale-chiuso text-color-rosso">
-					AL MOMENTO CISCUSASSI È CHIUSO
-				</h2>
-			</ion-text>
-		</ng-container>
+		@if(!localeAperto){
 
-		<ng-template #aperto>
-			<!-- Legenda -->
-			<div class="filter-row ion-padding ion-margin">
-				<ion-chip
-					[outline]="selectedFilter !== null"
-					color="medium"
-					(click)="filtraTavoliPerStato()"
-				>
-					Tutti
-				</ion-chip>
+		<ion-text class="ion-text-center">
+			<h2 class="locale-chiuso text-color-rosso">
+				AL MOMENTO CISCUSASSI È CHIUSO
+			</h2>
+		</ion-text>
 
-				<ion-chip
-					[outline]="selectedFilter !== 'attesa-arrivo'"
-					color="dark"
-					(click)="filtraTavoliPerStato('attesa-arrivo')"
-				>
-					Attesa arrivo
-				</ion-chip>
+		} @else {
 
-				<ion-chip
-					[outline]="selectedFilter !== 'senza-ordini'"
-					color="senape"
-					(click)="filtraTavoliPerStato('senza-ordini')"
-				>
-					Senza Ordini
-				</ion-chip>
+		<!-- Legenda -->
 
-				<ion-chip
-					[outline]="selectedFilter !== 'non-in-lavorazione'"
-					color="rosso"
-					(click)="filtraTavoliPerStato('non-in-lavorazione')"
-				>
-					Non in lavorazione
-				</ion-chip>
+		<div class="filter-row ion-padding ion-margin">
+			<!-- Filtri -->
 
-				<ion-chip
-					[outline]="selectedFilter !== 'in-lavorazione'"
-					color="arancione"
-					(click)="filtraTavoliPerStato('in-lavorazione')"
-				>
-					In lavorazione
-				</ion-chip>
-
-				<ion-chip
-					[outline]="selectedFilter !== 'in-consegna'"
-					color="celeste"
-					(click)="filtraTavoliPerStato('in-consegna')"
-				>
-					In consegna
-				</ion-chip>
-
-				<ion-chip
-					[outline]="selectedFilter !== 'consegnato'"
-					color="verdechiaro"
-					(click)="filtraTavoliPerStato('consegnato')"
-				>
-					Consegnato
-				</ion-chip>
-			</div>
-
-			<ng-container *ngIf="tavoliFiltrati.length === 0; else listaTavoli">
-				<ion-text class="ion-text-center">
-					<h4 class="text-color-gray">Non ci sono prenotazioni</h4>
-				</ion-text>
-			</ng-container>
-
-			<ng-template #listaTavoli>
-				<ion-grid fixed>
-					<ion-row class="ion-justify-content-center">
-						<!-- Bottone aggiungi -->
-						<ion-col size="6" size-md="4" sizeLg="3">
-							<div class="tavolo-wrapper add">
-								<div
-									class="circle add"
-									(click)="visualizzaModaleAggiungiPrenotazione()"
-								>
-									<ion-icon
-										slot="start"
-										name="add"
-									></ion-icon>
-								</div>
-							</div>
-						</ion-col>
-
-						<!-- Lista tavoli -->
-						<ion-col
-							*ngFor="let tavolo of tavoliFiltrati"
-							size="6"
-							size-md="4"
-							sizeLg="3"
-						>
-							<div
-								class="tavolo-wrapper"
-								(click)="handleClick(tavolo)"
-							>
-								<div class="circle" [ngClass]="tavolo.stato">
-									{{ tavolo.numero }}
-								</div>
-
-								<ion-text class="ion-text-center">
-									<h5>
-										Prenotazione: {{ tavolo.prenotazione }}
-									</h5>
-								</ion-text>
-								<ion-text class="ion-text-center">
-									<h5>{{ tavolo.orario }}</h5>
-								</ion-text>
-								<ion-text class="ion-text-center">
-									<h5>{{ tavolo.persone }} persone</h5>
-								</ion-text>
-							</div>
-						</ion-col>
-					</ion-row>
-				</ion-grid>
-			</ng-template>
-
-			<!-- Modale per inserimento prenotazione -->
-			<ion-modal
-				[isOpen]="showModaleInserimentoPrenotazione"
-				(didDismiss)="chiudiModaleInserimentoPrenotazione()"
-				[backdropDismiss]="false"
+			<ion-chip
+				[outline]="selectedFilter !== null"
+				color="medium"
+				(click)="filtraTavoliPerStato()"
 			>
-				<ng-template>
-					<div class="popup-container">
-						<h2>QUANTE PERSONE SI DEVONO SEDERE?</h2>
+				Tutti
+			</ion-chip>
 
-						<!-- Scelte rapide -->
-						<div class="scelte">
-							<div
-								*ngFor="let n of personePossibili"
-								(click)="selezionaPersone(n)"
-								[class.selected]="n === personeSelezionate"
-								[class.match-input]="inputManuale === n"
-								class="cerchio"
-							>
-								{{ n }}
-							</div>
-						</div>
+			<ion-chip
+				[outline]="selectedFilter !== 'attesa-arrivo'"
+				color="dark"
+				(click)="filtraTavoliPerStato('attesa-arrivo')"
+			>
+				Attesa arrivo
+			</ion-chip>
 
-						<!-- Input manuale -->
-						<div class="popup-footer">
-							<ion-item class="campoForm ion-padding-horizontal">
-								<ion-input
-									type="number"
-									label="N persone"
-									color="rosso"
-									placeholder="Inserisci il numero di persone..."
-									labelPlacement="stacked"
-									[(ngModel)]="inputManuale"
-									(input)="onInputChange()"
-									min="1"
-								></ion-input>
-							</ion-item>
+			<ion-chip
+				[outline]="selectedFilter !== 'senza-ordini'"
+				color="senape"
+				(click)="filtraTavoliPerStato('senza-ordini')"
+			>
+				Senza Ordini
+			</ion-chip>
 
-							<!-- Input refCliente -->
-							<ion-item class="campoForm ion-padding-horizontal">
-								<ion-input
-									type="number"
-									required
-									label="Codice carta"
-									labelPlacement="stacked"
-									color="rosso"
-									placeholder="Inserisci il codice della carta..."
-									[(ngModel)]="refClienteInput"
-								></ion-input>
-							</ion-item>
+			<ion-chip
+				[outline]="selectedFilter !== 'non-in-lavorazione'"
+				color="rosso"
+				(click)="filtraTavoliPerStato('non-in-lavorazione')"
+			>
+				Non in lavorazione
+			</ion-chip>
 
-							<ion-button
-								color="verdechiaro"
-								expand="block"
-								(click)="confermaModaleInserimentoPrenotazione()"
-							>
-								CONFERMA
-							</ion-button>
+			<ion-chip
+				[outline]="selectedFilter !== 'in-lavorazione'"
+				color="arancione"
+				(click)="filtraTavoliPerStato('in-lavorazione')"
+			>
+				In lavorazione
+			</ion-chip>
 
-							<ion-button
-								color="rosso"
-								expand="block"
-								(click)="annullaModaleInserimentoPrenotazione()"
-							>
-								ESCI
-							</ion-button>
+			<ion-chip
+				[outline]="selectedFilter !== 'in-consegna'"
+				color="celeste"
+				(click)="filtraTavoliPerStato('in-consegna')"
+			>
+				In consegna
+			</ion-chip>
+
+			<ion-chip
+				[outline]="selectedFilter !== 'consegnato'"
+				color="verdechiaro"
+				(click)="filtraTavoliPerStato('consegnato')"
+			>
+				Consegnato
+			</ion-chip>
+		</div>
+
+		@if(tavoliFiltrati.length === 0){
+
+		<ion-text class="ion-text-center">
+			<h4 class="text-color-gray">Non ci sono prenotazioni</h4>
+		</ion-text>
+
+		}
+
+		<!-- Tavoli e Bottone Aggiungi -->
+
+		<ion-grid fixed>
+			<ion-row class="ion-justify-content-center">
+				<!-- Tavoli -->
+
+				<ion-col size="6" size-md="4" sizeLg="3">
+					<div class="tavolo-wrapper add">
+						<div
+							class="circle add"
+							(click)="visualizzaModaleAggiungiPrenotazione()"
+						>
+							<ion-icon slot="start" name="add"></ion-icon>
 						</div>
 					</div>
-				</ng-template>
-			</ion-modal>
-		</ng-template>
+				</ion-col>
+
+				@for(tavolo of tavoliFiltrati; track tavolo){
+
+				<ion-col size="6" size-md="4" sizeLg="3">
+					<div class="tavolo-wrapper" (click)="handleClick(tavolo)">
+						<div class="circle" [ngClass]="tavolo.stato">
+							{{ tavolo.numero }}
+						</div>
+
+						<ion-text class="ion-text-center">
+							<h5>Prenotazione: {{ tavolo.prenotazione }}</h5>
+						</ion-text>
+
+						<ion-text class="ion-text-center">
+							<h5>{{ tavolo.orario }}</h5>
+						</ion-text>
+
+						<ion-text class="ion-text-center">
+							<h5>{{ tavolo.persone }} persone</h5>
+						</ion-text>
+					</div>
+				</ion-col>
+
+				}
+			</ion-row>
+		</ion-grid>
+
+		<!-- MODALE PER SCEGLIERE QUANTE PERSONE -->
+
+		<ion-modal
+			[isOpen]="showModaleInserimentoPrenotazione"
+			(didDismiss)="chiudiModaleInserimentoPrenotazione()"
+			[backdropDismiss]="true"
+		>
+			<ng-template>
+				<div class="popup-container">
+					<h2>QUANTE PERSONE SI DEVONO SEDERE?</h2>
+
+					<!-- Scelte rapide -->
+
+					<div class="scelte">
+						@for(n of personePossibili; track n){
+
+						<div
+							(click)="selezionaPersone(n)"
+							[class.selected]="n === personeSelezionate"
+							[class.match-input]="inputManuale === n"
+							class="cerchio"
+						>
+							{{ n }}
+						</div>
+
+						}
+					</div>
+
+					<!-- Input manuale -->
+
+					<div class="popup-footer">
+						<ion-item class="campoForm ion-padding-horizontal">
+							<ion-input
+								type="number"
+								label="N persone"
+								color="rosso"
+								placeholder="Inserisci il numero di persone..."
+								labelPlacement="stacked"
+								[(ngModel)]="inputManuale"
+								(input)="onInputChange()"
+								min="1"
+							></ion-input>
+						</ion-item>
+
+						<!-- Input refCliente -->
+
+						<ion-item class="campoForm ion-padding-horizontal">
+							<ion-input
+								type="text"
+								label="Codice carta"
+								labelPlacement="stacked"
+								color="rosso"
+								placeholder="Inserisci il codice della carta..."
+								[(ngModel)]="refClienteInput"
+							></ion-input>
+						</ion-item>
+
+						<ion-button
+							color="verdechiaro"
+							expand="block"
+							(click)="confermaModaleInserimentoPrenotazione()"
+							[disabled]="!personeSelezionate || personeSelezionate < 1"
+						>
+							CONFERMA
+						</ion-button>
+
+						<ion-button
+							color="rosso"
+							expand="block"
+							(click)="annullaModaleInserimentoPrenotazione()"
+						>
+							ESCI
+						</ion-button>
+					</div>
+				</div>
+			</ng-template>
+		</ion-modal>
+
+		<!-- MODALE CONFERMA ARRIVO CLIENTE -->
+
+		<ion-modal
+			[isOpen]="showModaleConfermaArrivo"
+			(didDismiss)="chiudiModaleConfermaArrivo()"
+			[backdropDismiss]="true"
+		>
+			<ng-template>
+				<div class="popup-container">
+					<ion-text class="ion-text-center">
+						<h2>Confermi l'arrivo del cliente?</h2>
+					</ion-text>
+
+					<ion-text class="ion-text-center">
+						<h6>
+							Numero prenotazione: {{ tavoloDaConfermare?.numero
+							}}
+						</h6>
+					</ion-text>
+
+					<br />
+
+					<ion-button
+						size="default"
+						fill="solid"
+						shape="round"
+						color="verdechiaro"
+						expand="block"
+						type="submit"
+						class="ion-padding-horizontal"
+						(click)="confermaArrivo()"
+					>
+						Conferma
+					</ion-button>
+
+					<ion-button
+						size="default"
+						fill="solid"
+						shape="round"
+						color="rosso"
+						expand="block"
+						type="submit"
+						class="ion-padding-horizontal"
+						(click)="chiudiModaleInserimentoPrenotazione()"
+					>
+						Indietro
+					</ion-button>
+				</div>
+			</ng-template>
+		</ion-modal>
+
+		}
 	</div>
 </ion-content>
