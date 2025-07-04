@@ -97,7 +97,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	inputManuale: number | null = null;
 
-	refClienteInput: string = '';
+	refClienteInput: number | null = null;
 
 	showModaleConfermaArrivo = false;
 
@@ -440,7 +440,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 		// ✅ VALIDAZIONE OBBLIGATORIA CAMPO refClienteInput
 
-		if (!this.refClienteInput || this.refClienteInput.trim() === '') {
+		if (!this.refClienteInput) {
 			await this.presentToast(
 				'Il numero della carta cliente è obbligatorio.',
 
@@ -450,15 +450,9 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 
-		// Parsing e validazione del numero carta
-
-		const parsed = parseInt(this.refClienteInput.trim(), 10);
-
-		if (!isNaN(parsed)) {
-			refCliente = parsed;
-		} else {
+		if (this.refClienteInput < 0) {
 			await this.presentToast(
-				'Il numero della carta non è valido',
+				'Il numero della carta cliente deve essere positivo.',
 
 				'warning'
 			);
@@ -467,6 +461,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		}
 
 		let dataPrenotazione = this.getLocalIsoString();
+		refCliente = this.refClienteInput;
 
 		if (refCliente !== null) {
 			try {
@@ -538,7 +533,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 			data_ora_prenotazione: dataPrenotazione,
 
-			ref_cliente: refCliente,
+			ref_cliente: refCliente!,
 		};
 
 		try {
@@ -707,7 +702,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 		this.inputManuale = null;
 
-		this.refClienteInput = '';
+		this.refClienteInput = null;
 	}
 
 	handleClick(tavolo: any) {

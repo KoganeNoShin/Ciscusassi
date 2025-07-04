@@ -179,12 +179,13 @@
 
 						<ion-item class="campoForm ion-padding-horizontal">
 							<ion-input
-								type="text"
+								type="number"
 								label="Codice carta"
 								labelPlacement="stacked"
 								color="rosso"
 								placeholder="Inserisci il codice della carta..."
 								[(ngModel)]="refClienteInput"
+								min="0"
 							></ion-input>
 						</ion-item>
 
@@ -192,7 +193,7 @@
 							color="verdechiaro"
 							expand="block"
 							(click)="confermaModaleInserimentoPrenotazione()"
-							[disabled]="!personeSelezionate || personeSelezionate < 1"
+							[disabled]="((!personeSelezionate || personeSelezionate < 1) || (!refClienteInput || refClienteInput < 1)) && ((!inputManuale || inputManuale < 1) || (!refClienteInput || refClienteInput < 1))  "
 						>
 							CONFERMA
 						</ion-button>
