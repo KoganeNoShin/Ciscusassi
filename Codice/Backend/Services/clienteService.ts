@@ -1,6 +1,6 @@
 import EmailService from "../Email/emailService";
 import Cliente, { ClienteData } from "../Models/cliente";
-import bcrypt from 'bcryptjs';
+import AuthService from "./authService";
 
 class ClienteService {
     // Registrazione Cliente
@@ -11,8 +11,7 @@ class ClienteService {
 			throw new Error('Email già registrata');
 		}
 
-		const salt = await bcrypt.genSalt(10);
-		input.password = await bcrypt.hash(input.password, salt); /// Encrypting Password
+        input.password = await AuthService.hashPassword(input.password);
 		return await Cliente.create(input);
 	}
 
@@ -46,8 +45,7 @@ class ClienteService {
 
     static async aggiornaPassword(idCliente: number, passwordChiara: string): Promise<void> {
         try {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(passwordChiara, salt);
+            const hashedPassword = await AuthService.hashPassword(passwordChiara);
 
             await Cliente.aggiornaPassword(idCliente, hashedPassword);
         } catch (err) {
@@ -70,42 +68,13 @@ class ClienteService {
         }
 	}
 
-    static generateRandomPassword(): string {
-    // Verifica che la lunghezza sia tra 6 e 12 caratteri
-    const length = Math.floor(Math.random() * 7) + 6; // Assicura che la lunghezza sia tra 6 e 12
-
-    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-    const digits = '0123456789';
-    const specialChars = '!@#$%^*()-_=+[]{}|;:?';
-
-    // Assicurazionne che la password contenga almeno un carattere di ogni tipo
-    let password = [
-        uppercase[Math.floor(Math.random() * uppercase.length)],
-        lowercase[Math.floor(Math.random() * lowercase.length)],
-        digits[Math.floor(Math.random() * digits.length)],
-        specialChars[Math.floor(Math.random() * specialChars.length)]
-    ];
-
-    // Riempi il resto della password con caratteri casuali
-    const allCharacters = uppercase + lowercase + digits + specialChars;
-    for (let i = password.length; i < length; i++) {
-        password.push(allCharacters[Math.floor(Math.random() * allCharacters.length)]);
-    }
-
-    // Mischia i caratteri della password per evitare che i tipi obbligatori siano sempre nelle stesse posizioni
-    password = password.sort(() => Math.random() - 0.5);
-
-    return password.join('');
-}
-
     static async recuperaPassword(emailCliente: string): Promise<void> {
 		try {
             const cliente = await Cliente.getByEmail(emailCliente);
             if (!cliente) {
                 throw new Error('Cliente non trovato');
             }
-            const newPassword = this.generateRandomPassword();
+            const newPassword = AuthService.generateRandomPassword();
 
             await this.aggiornaPassword(cliente.numero_carta, newPassword);
 

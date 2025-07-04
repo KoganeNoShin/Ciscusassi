@@ -30,16 +30,10 @@ export interface ImpiegatoRecord extends ImpiegatoData {
 export class Impiegato {
 	// Creazione di un nuovo Impiegato
 	static async create(data: ImpiegatoInput): Promise<number> {
-		const password = data.password;
-
-		// genSalt genera un seed casuale per l'hashing della password
-		const salt = await bcrypt.genSalt(10);
-		const hashedPassword = await bcrypt.hash(password, salt);
-
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO impiegati (nome, cognome, ruolo, foto, email, data_nascita, password, ref_filiale) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-				[data.nome, data.cognome, data.ruolo, data.foto, data.email, data.data_nascita, hashedPassword, data.ref_filiale],
+				[data.nome, data.cognome, data.ruolo, data.foto, data.email, data.data_nascita, data.password, data.ref_filiale],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);

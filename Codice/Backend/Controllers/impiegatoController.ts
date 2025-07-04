@@ -1,14 +1,12 @@
 import { Request, Response } from 'express';
 import ImpiegatoService from '../Services/impiegatoService';
-import { ImpiegatoInput } from '../Models/impiegato';
 
 class ImpiegatoController {
 	static async addImpiegato(req: Request, res: Response): Promise<void> {
 		try {
-			const {nome, cognome, ruolo, foto, email, data_nascita, ref_filiale, password} = req.body;
+			const {nome, cognome, ruolo, foto, email, data_nascita, ref_filiale} = req.body;
 
-			const newImpiegato: ImpiegatoInput = {nome, cognome, ruolo, foto, email, data_nascita, ref_filiale, password};
-			const id = await ImpiegatoService.addImpiegato(newImpiegato);
+			const id = await ImpiegatoService.addImpiegato(nome, cognome, ruolo, foto, email, data_nascita, ref_filiale);
 			res.status(201).json({ success: true, data: id });
 		} catch (err) {
 			console.error(err);

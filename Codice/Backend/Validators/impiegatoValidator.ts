@@ -36,8 +36,8 @@ function fotoValidator(chain: ValidationChain): ValidationChain {
 
 function data_nascitaValidator(chain: ValidationChain): ValidationChain {
   return chain
-        .notEmpty().withMessage('La data di consegna è obbligatoria')
-        .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di consegna deve essere nel formato "yyyy-MM-dd HH:mm"')
+        .notEmpty().withMessage('La data di nascita è obbligatoria')
+        .matches(/^(\d{4})-(\d{2})-(\d{2})$/).withMessage('La data di nascita deve essere nel formato "yyyy-MM-dd"')
         .bail() 
         .custom((value: string) => {
             const dataNascita = new Date(value);

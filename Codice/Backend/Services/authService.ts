@@ -1,6 +1,7 @@
 import Cliente, { ClienteData } from '../Models/cliente';
 import Impiegato, { ImpiegatoRecord } from '../Models/impiegato';
 import jwt, { Secret, SignOptions } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 import {
 	credentials,
@@ -97,6 +98,45 @@ class AuthService {
 		}
 
 		return false;
+	}
+
+	// Genera Password casuale
+    static generateRandomPassword(): string {
+        // Verifica che la lunghezza sia tra 6 e 12 caratteri
+        const length = Math.floor(Math.random() * 7) + 6; // Assicura che la lunghezza sia tra 6 e 12
+
+        const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        const digits = '0123456789';
+        const specialChars = '!@#$%^*()-_=+[]{}|;:?';
+
+        // Assicurazionne che la password contenga almeno un carattere di ogni tipo
+        let password = [
+            uppercase[Math.floor(Math.random() * uppercase.length)],
+            lowercase[Math.floor(Math.random() * lowercase.length)],
+            digits[Math.floor(Math.random() * digits.length)],
+            specialChars[Math.floor(Math.random() * specialChars.length)]
+        ];
+
+        // Riempi il resto della password con caratteri casuali
+        const allCharacters = uppercase + lowercase + digits + specialChars;
+        for (let i = password.length; i < length; i++) {
+            password.push(allCharacters[Math.floor(Math.random() * allCharacters.length)]);
+        }
+
+        // Mischia i caratteri della password per evitare che i tipi obbligatori siano sempre nelle stesse posizioni
+        password = password.sort(() => Math.random() - 0.5);
+
+        return password.join('');
+    }
+
+	// hashPassword
+	static async hashPassword(password: string): Promise<string> {
+		// genSalt genera un seed casuale per l'hashing della password
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(password, salt);
+	
+		return hashedPassword;
 	}
 }
 
