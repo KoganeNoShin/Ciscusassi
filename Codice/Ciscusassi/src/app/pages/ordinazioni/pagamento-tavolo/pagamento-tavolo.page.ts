@@ -32,7 +32,6 @@ import { PagamentoService } from 'src/app/core/services/pagamento.service';
 		RouterModule,
 		IonText,
 		IonButton,
-		IonCardContent,
 		IonCard,
 		IonImg,
 		IonCol,

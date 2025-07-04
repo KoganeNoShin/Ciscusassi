@@ -59,31 +59,9 @@ export class PagamentoCassaPage implements OnInit {
 
 		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
 		this.numeroOrdine = this.tavoloService.getNumeroOrdine();
-
-		if (this.numeroOrdine !== null && this.numeroOrdine !== undefined) {
-			this.prenotazioneService
-				.getTotaleByOrdine(this.numeroOrdine)
-				.subscribe({
-					next: (response: any) => {
-						this.totale = response?.totale ?? 0;
-						this.isLoading = false;
-					},
-					error: (err) => {
-						console.error(
-							'Errore durante il recupero del totale:',
-							err
-						);
-						this.totale = 0;
-						this.isLoading = false;
-					},
-				});
-		} else {
-			this.totale = 0;
-			this.isLoading = false;
-		}
-
-		this.prodotti = this.tavoloService.getOrdini();
-
+		this.totale = this.tavoloService.getTotaleQuery();
+		
+		this.isLoading = false;
 		this.codice =
 			this.numeroOrdine !== null && this.numeroOrdine !== undefined
 				? `ordine: ${this.numeroOrdine}`
