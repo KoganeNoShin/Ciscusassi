@@ -33,6 +33,10 @@ export class PiattoDelGiornoComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.ngDoCheck();
+	}
+
+	ngDoCheck(){
 		this.prodottoService.GetPiattoDelGiorno().subscribe({
 			next: (response) => this.handleResponse(response),
 			error: (err) => {
