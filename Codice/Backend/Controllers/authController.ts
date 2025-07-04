@@ -10,20 +10,20 @@ class AuthController {
 			if (logged) {
 				res.status(200).json({
 					success: true,
-					data: logged
+					data: logged,
 				});
 				return;
 			}
 
 			res.status(401).json({
 				success: false,
-				message: 'Email o password errata!'
+				message: 'Email o password errata!',
 			});
 		} catch (error: any) {
 			console.error('❌ [AUTH ERROR] login:', error.message);
 			res.status(400).json({
 				success: false,
-				message: 'Errore durante il login: ' + error.message
+				message: 'Errore durante il login: ' + error.message,
 			});
 		}
 	}
@@ -36,7 +36,7 @@ class AuthController {
 			if (!token) {
 				res.status(401).json({
 					success: false,
-					message: 'Non autenticato'
+					message: 'Non autenticato',
 				});
 				return;
 			}
@@ -46,19 +46,19 @@ class AuthController {
 			if (loggedOut) {
 				res.status(200).json({
 					success: true,
-					message: 'Logout effettuato'
+					message: 'Logout effettuato',
 				});
 			} else {
 				res.status(401).json({
 					success: false,
-					message: 'Token non valido o utente non trovato!'
+					message: 'Token non valido o utente non trovato!',
 				});
 			}
 		} catch (error: any) {
 			console.error('❌ [AUTH ERROR] logout:', error.message);
 			res.status(500).json({
 				success: false,
-				message: 'Errore durante il logout: ' + error.message
+				message: 'Errore durante il logout: ' + error.message,
 			});
 		}
 	}
@@ -72,11 +72,14 @@ class AuthController {
 
 			res.status(200).json({
 				success: true,
-				message: 'Email recupera Password con successo'
+				message: 'Email recupera Password con successo',
 			});
 		} catch (err) {
 			console.error('❌ [CLIENTE ERROR] recuperaPassword:', err);
-			res.status(500).json({ success: false, message: String((err as Error).message) });
+			res.status(500).json({
+				success: false,
+				message: String((err as Error).message),
+			});
 		}
 	}
 }

@@ -27,8 +27,7 @@ export function emailClienteValidator(chain: ValidationChain): ValidationChain {
 		.notEmpty()
 		.withMessage("L'email è obbligatoria")
 		.isEmail()
-		.withMessage("L'email deve essere valida")
-		.normalizeEmail();
+		.withMessage("L'email deve essere valida");
 }
 
 function passwordClienteValidator(chain: ValidationChain): ValidationChain {
