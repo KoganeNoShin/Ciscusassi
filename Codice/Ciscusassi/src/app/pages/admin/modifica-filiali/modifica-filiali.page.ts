@@ -21,6 +21,7 @@ import { FilialeInput } from 'src/app/core/interfaces/Filiale';
 import { HttpClient } from '@angular/common/http';
 
 import { NavController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 @Component({
 	selector: 'app-modifica-filiali',
@@ -89,26 +90,34 @@ export class ModificaFilialiPage implements OnInit {
 		}
 	}
 
-	cercaIndirizzo(event: any) {
-		// Richiesta suggerimenti indirizzo via OpenStreetMap se input >=3 caratteri
-		const query = event.target.value;
+	cercaIndirizzo() {
+		const query = `${this.filiale.indirizzo}, ${this.filiale.comune}`;
+
 		if (!query || query.length < 3) {
 			this.suggerimenti = [];
 			this.showSuggerimenti = false;
 			return;
 		}
 
-		const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-			query
-		)}&addressdetails=1&limit=5`;
+		const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}.json?key=${environment.tomtomApiKey}&limit=2&countrySet=IT`;
 
-		this.http.get<any[]>(url).subscribe(
-			(results) => {
-				this.suggerimenti = results;
-				this.showSuggerimenti = results.length > 0;
+		this.http.get<any>(url).subscribe(
+			(res) => {
+				this.suggerimenti = res.results.map((r: any) => {
+					const via = r.address.streetName || '';
+					const numero = r.address.streetNumber || '';
+					const label = `${via}${numero ? ', ' + numero : ''}`;
+					return {
+						display_name: label,
+						address: r.address,
+						lat: parseFloat(r.position.lat),
+						lon: parseFloat(r.position.lon),
+					};
+				});
+				this.showSuggerimenti = this.suggerimenti.length > 0;
 			},
-			(error) => {
-				console.error('Errore suggerimenti:', error);
+			(err) => {
+				console.error('❌ Errore API TomTom:', err);
 				this.suggerimenti = [];
 				this.showSuggerimenti = false;
 			}
@@ -204,21 +213,20 @@ export class ModificaFilialiPage implements OnInit {
 	async geocodificaIndirizzo(
 		address: string
 	): Promise<{ lat: number; lon: number } | null> {
-		// Funzione di geocodifica chiamando OpenStreetMap per ottenere lat/lon da indirizzo
-		const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-			address
-		)}`;
+		const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(address)}.json?key=${environment.tomtomApiKey}&limit=1&countrySet=IT`;
+
 		try {
 			const res: any = await this.http.get(url).toPromise();
-			if (res && res.length > 0) {
+			if (res && res.results && res.results.length > 0) {
+				const result = res.results[0];
 				return {
-					lat: parseFloat(res[0].lat),
-					lon: parseFloat(res[0].lon),
+					lat: parseFloat(result.position.lat),
+					lon: parseFloat(result.position.lon),
 				};
 			}
 			return null;
 		} catch (err) {
-			console.error('Errore geocoding:', err);
+			console.error('Errore geocoding con TomTom:', err);
 			return null;
 		}
 	}

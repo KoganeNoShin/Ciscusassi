@@ -3,7 +3,7 @@
 }
 
 ion-card {
-	gap: 2rem;
+	gap: 1.5em;
 	display: flex;
 	flex-direction: column;
 	height: 80vh;
@@ -15,4 +15,8 @@ ion-button {
 
 p {
 	font-size: clamp(1rem, 1vw, 1.4rem);
+}
+
+.codice-barre {
+	border-radius: 12px;
 }

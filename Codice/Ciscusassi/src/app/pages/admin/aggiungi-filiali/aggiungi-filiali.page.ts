@@ -22,6 +22,7 @@ import { NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeInput } from 'src/app/core/interfaces/Filiale';
+import { environment } from 'src/environments/environment';
 
 @Component({
 	selector: 'app-aggiungi-filiali',
@@ -103,20 +104,20 @@ export class AggiungiFilialiPage implements OnInit {
 			}
 
 			const query = `${this.indirizzo}, ${this.comune}`;
-			this.http
-				.get<
-					any[]
-				>(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`)
-				.subscribe(
-					(res) => {
-						// Mappa la risposta per ottenere solo i nomi da mostrare come suggerimenti
-						this.suggestions = res.map((item) => item.display_name);
-					},
-					(err) => {
-						console.error('Errore durante il suggerimento:', err);
-						this.suggestions = [];
-					}
-				);
+			const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}.json?key=${environment.tomtomApiKey}&limit=2&countrySet=IT`;
+			this.http.get<any>(url).subscribe(
+				(res) => {
+					this.suggestions = res.results.map((r: any) => {
+						const via = r.address.streetName || '';
+						const numero = r.address.streetNumber || '';
+						return `${via}${numero ? ', ' + numero : ''}`;
+					});
+				},
+				(err) => {
+					console.error('❌ Errore API TomTom:', err);
+					this.suggestions = [];
+				}
+			);
 		}, 300); // debounce di 300ms per limitare le chiamate API
 	}
 
@@ -189,24 +190,24 @@ export class AggiungiFilialiPage implements OnInit {
 		}
 	}
 
-	// Funzione per ottenere le coordinate geografiche tramite OpenStreetMap Nominatim
+	// Funzione per ottenere le coordinate geografiche tramite TomTom API
 	async geocodificaIndirizzo(
 		address: string
 	): Promise<{ lat: number; lon: number } | null> {
-		const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-			address
-		)}`;
+		const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(address)}.json?key=${environment.tomtomApiKey}&limit=1&countrySet=IT`;
+
 		try {
 			const res: any = await this.http.get(url).toPromise();
-			if (res && res.length > 0) {
+			if (res && res.results && res.results.length > 0) {
+				const result = res.results[0];
 				return {
-					lat: parseFloat(res[0].lat),
-					lon: parseFloat(res[0].lon),
+					lat: parseFloat(result.position.lat),
+					lon: parseFloat(result.position.lon),
 				};
 			}
 			return null;
 		} catch (err) {
-			console.error('Errore geocoding:', err);
+			console.error('Errore geocoding con TomTom:', err);
 			return null;
 		}
 	}

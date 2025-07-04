@@ -135,7 +135,7 @@ export class OrdinaAsportoPage implements OnInit {
 		// Chiamata a TomTom Search API
 		const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
 			indirizzo
-		)}%20Palermo.json?key=${this.chiaveTomTom}&limit=2&countrySet=IT`;
+		)}.json?key=${this.chiaveTomTom}&limit=2&countrySet=IT`;
 
 		this.http.get<any>(url).subscribe((risposta) => {
 			const risultati = risposta.results || [];

@@ -14,41 +14,25 @@
 						<ion-text
 							class="ion-text-center ion-padding-horizontal"
 						>
-							<h2 class="text-color-bianco">
+							<h3 class="text-color-bianco">
 								PAGAMENTO ALLA CASSA
-							</h2>
+							</h3>
 						</ion-text>
 
 						<ion-text
 							class="ion-text-center ion-padding-horizontal"
 						>
-							<p class="text-color-bianco">
+							<h5 class="text-color-bianco">
 								Grazie per averci scelto!
-							</p>
+							</h5>
 						</ion-text>
 
 						<ion-text
 							class="ion-text-center ion-padding-horizontal"
 						>
-							<p class="text-color-bianco">Dovrai pagare</p>
-						</ion-text>
-
-						<ion-text
-							class="ion-text-center ion-padding-horizontal"
-						>
-							<h2 class="text-color-bianco">{{totale}}€</h2>
-						</ion-text>
-
-						<ion-text
-							class="ion-text-center ion-padding-horizontal"
-						>
-							<p class="text-color-bianco">Numero Tavolo</p>
-						</ion-text>
-
-						<ion-text
-							class="ion-text-center ion-padding-horizontal"
-						>
-							<h2 class="text-color-bianco">{{numeroTavolo}}</h2>
+							<h3 class="text-color-bianco">
+								Dovrai pagare: {{totale}}€
+							</h3>
 						</ion-text>
 
 						@if(isLoading){
@@ -60,7 +44,7 @@
 						}
 
 						<ion-img
-							class="codiceBarre"
+							class="codice-barre bg-color-bianco ion-padding"
 							[src]="'https://bwipjs-api.metafloor.com/?bcid=code128&text=' + codice"
 							(ionImgDidLoad)="isLoading = false"
 							[style.visibility]="isLoading ? 'hidden' : 'visible'"
