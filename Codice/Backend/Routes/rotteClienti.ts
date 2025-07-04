@@ -18,6 +18,7 @@ import {
 // ----- Controller -----
 
 import ClienteController from '../Controllers/clienteController';
+import PrenotazioneController from '../Controllers/prenotazioneController';
 
 const router = Router();
 
@@ -61,6 +62,13 @@ router.post(
 	emailClienteValidator(body('email')),
 	validateMiddleware,
 	ClienteController.recuperaPassword
+);
+
+router.get(
+	'/prenotazioni', // ❌ Ma sicuro che qui non ci dovrebbe essere l'id_cliente? Mettendoglielo funziona (frontend non c'è)
+	authMiddleware,//  ✅ Si Daniele, qua non ci va, Lo prende dall'header
+	validateMiddleware,
+	PrenotazioneController.getPrenotazioniByCliente
 );
 
 export default router;
