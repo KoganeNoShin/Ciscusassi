@@ -1,9 +1,17 @@
 import Filiale, { FilialeRecord } from '../Models/filiale';
+import Torretta, { TorrettaInput } from '../Models/torretta';
 
 class FilialeService {
 	static async addFiliale(data: FilialeRecord): Promise<number | null> {
 		try {
-			return await Filiale.create(data);
+			const idFiliale = await Filiale.create(data);
+			
+			const torrettaInput: TorrettaInput = {ref_filiale: idFiliale}
+			for(let i = 0; i < data.num_tavoli; i++) {
+				await Torretta.create(torrettaInput);
+			}
+
+			return idFiliale;
 		} catch (error) {
 			console.error(
 				"❌ [FilialeService] Errore durante l'aggiunta della Filiale:",
@@ -13,12 +21,19 @@ class FilialeService {
 		}
 	}
 
-	static async updateFiliale(
-		data: FilialeRecord,
-		id_filiale: number
-	): Promise<void> {
+	static async updateFiliale(data: FilialeRecord, id_filiale: number): Promise<void> {
 		try {
-			return await Filiale.updateFiliale(data, id_filiale);
+			const dataFilialeOld = await Filiale.getById(id_filiale);
+
+			await Filiale.updateFiliale(data, id_filiale);
+
+			if(dataFilialeOld && data.num_tavoli > dataFilialeOld.num_tavoli) {
+				const torrettaInput: TorrettaInput = {ref_filiale: id_filiale}
+				const differenzaTavoli = data.num_tavoli - dataFilialeOld.num_tavoli;
+				for(let i = 0; i < differenzaTavoli; i++) {
+					await Torretta.create(torrettaInput);
+				}
+			}
 		} catch (error) {
 			console.error(
 				'❌ [FilialeService] Errore durante la modifica della Filiale:',
