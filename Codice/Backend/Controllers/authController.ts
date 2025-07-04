@@ -62,6 +62,23 @@ class AuthController {
 			});
 		}
 	}
+
+	// Recupera Password
+	static async recuperaPassword(req: Request, res: Response): Promise<void> {
+		try {
+			const emailCliente = req.body.email;
+
+			await AuthService.recuperaPassword(emailCliente);
+
+			res.status(200).json({
+				success: true,
+				message: 'Email recupera Password con successo'
+			});
+		} catch (err) {
+			console.error('❌ [CLIENTE ERROR] recuperaPassword:', err);
+			res.status(500).json({ success: false, message: String((err as Error).message) });
+		}
+	}
 }
 
 export default AuthController;

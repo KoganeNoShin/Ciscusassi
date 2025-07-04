@@ -15,7 +15,7 @@ function cognomeValidator(chain: ValidationChain): ValidationChain {
 		.isString().withMessage('Il cognome deve essere una stringa');
 }
 
-function emailValidator(chain: ValidationChain): ValidationChain {
+export function emailValidator(chain: ValidationChain): ValidationChain {
   return chain
 		.trim()
         .notEmpty().withMessage("L'email è obbligatoria")

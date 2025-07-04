@@ -53,5 +53,16 @@ class ImpiegatoService {
             throw error;
         }
     }
+
+    static async aggiornaPassword(matricola: number, passwordChiara: string): Promise<void> {
+        try {
+            const hashedPassword = await AuthService.hashPassword(passwordChiara);
+
+            await Impiegato.aggiornaPassword(matricola, hashedPassword);
+        } catch (err) {
+            console.error('❌ [ImpiegatoService Error] aggiornaPassword:', err);
+            throw new Error('Errore durante l\'aggiornamento della password');
+        }
+    }
 }
 export default ImpiegatoService;

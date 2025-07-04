@@ -209,6 +209,24 @@ export class Impiegato {
 	static async comparePassword(candidatePassword: string, hash: string): Promise<boolean> {
 		return bcrypt.compare(candidatePassword, hash);
 	}
+
+	// Aggiorna la password del cliente
+	static async aggiornaPassword(matricola: number, nuovaPassword: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			db.run(`
+				UPDATE impiegati
+				SET password = ?
+				WHERE matricola = ?
+			`, [nuovaPassword, matricola], 
+			function (err: Error | null) {
+				if (err) {
+					console.error('❌ [ImpiegatoModel ERROR] aggiornaPassword:', err.message);
+					return reject(err);
+				}
+				resolve();
+			});
+		});
+	}
 }
 
 export default Impiegato;

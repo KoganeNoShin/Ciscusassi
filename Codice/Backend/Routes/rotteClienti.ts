@@ -57,13 +57,6 @@ router.put(
 	ClienteController.aggiornaEmail
 );
 
-router.post(
-	'/recupera_password',
-	emailClienteValidator(body('email')),
-	validateMiddleware,
-	ClienteController.recuperaPassword
-);
-
 router.get(
 	'/prenotazioni', // ❌ Ma sicuro che qui non ci dovrebbe essere l'id_cliente? Mettendoglielo funziona (frontend non c'è)
 	authMiddleware,//  ✅ Si Daniele, qua non ci va, Lo prende dall'header

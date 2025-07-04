@@ -67,30 +67,6 @@ class ClienteService {
             throw new Error('Errore durante l\'aggiornamento della email');
         }
 	}
-
-    static async recuperaPassword(emailCliente: string): Promise<void> {
-		try {
-            const cliente = await Cliente.getByEmail(emailCliente);
-            if (!cliente) {
-                throw new Error('Cliente non trovato');
-            }
-            const newPassword = AuthService.generateRandomPassword();
-
-            await this.aggiornaPassword(cliente.numero_carta, newPassword);
-
-            const mailOptions = {
-                to: cliente.email,  // Email del cliente
-                subject: 'Recupero Password',
-                text: `Ecco la tua nuova password: ${newPassword}`,
-                html: `Ecco la tua nuova password: ${newPassword}`,
-            };
-
-            await EmailService.sendMail(mailOptions);
-        } catch (err) {
-            console.error('❌ [ClienteService Error] recuperaPassword:', err);
-            throw new Error('Errore durante l\'aggiornamento della password');
-        }
-	} 
 }
 
 export default ClienteService;

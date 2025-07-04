@@ -8,6 +8,9 @@ import {
 	LoginRecord,
 	OurTokenPayload
 } from '../Models/credentials';
+import ClienteService from './clienteService';
+import EmailService from '../Email/emailService';
+import ImpiegatoService from './impiegatoService';
 
 class AuthService {
 	// Genera un token JWT per l'utente
@@ -138,6 +141,49 @@ class AuthService {
 	
 		return hashedPassword;
 	}
+
+	
+
+    static async recuperaPassword(emailCliente: string): Promise<void> {
+		try {
+            const cliente = await Cliente.getByEmail(emailCliente);
+            if (cliente) {
+                const newPassword = this.generateRandomPassword();
+
+            	await ClienteService.aggiornaPassword(cliente.numero_carta, newPassword);
+
+				const mailOptions = {
+					to: cliente.email,  // Email del cliente
+					subject: 'Recupero Password',
+					text: `Ecco la tua nuova password: ${newPassword}`,
+					html: `Ecco la tua nuova password: ${newPassword}`,
+				};
+
+				return await EmailService.sendMail(mailOptions);
+            }
+
+            const impiegato = await Impiegato.getByEmail(emailCliente);
+            if (impiegato) {
+                const newPassword = this.generateRandomPassword();
+
+            	await ImpiegatoService.aggiornaPassword(impiegato.matricola, newPassword);
+
+				const mailOptions = {
+					to: impiegato.email,  // Email del cliente
+					subject: 'Recupero Password',
+					text: `Ecco la tua nuova password: ${newPassword}`,
+					html: `Ecco la tua nuova password: ${newPassword}`,
+				};
+
+				return await EmailService.sendMail(mailOptions);
+            }
+
+			throw new Error('Email non trovata');
+        } catch (err) {
+            console.error('❌ [ClienteService Error] recuperaPassword:', err);
+            throw new Error('Errore durante l\'aggiornamento della password');
+        }
+	} 
 }
 
 export default AuthService;
