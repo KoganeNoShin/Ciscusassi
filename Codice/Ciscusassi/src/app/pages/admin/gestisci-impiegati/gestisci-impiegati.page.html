@@ -78,13 +78,20 @@
 					<ion-icon name="add" size="large" />
 				</ion-button>
 			</div>
-			@for (impiegato of impiegatiFiltrati; track impiegato.matricola ){
+
+			@if(impiegati.length != 0) { @for (impiegato of impiegatiFiltrati;
+			track impiegato.matricola ){
 			<app-impiegato-amministratore
 				[impiegato]="impiegato"
 				(showAlertDeleteImpiegatoEmitter)="showAlertDeleteImpiegato($event)"
 			/>
-			}
+			} }
 		</div>
-		}
+
+		@if(impiegati.length == 0){
+		<ion-text class="ion-text-center">
+			<h3 class="text-color-grigio">Nessun impiegato presente!</h3>
+		</ion-text>
+		} }
 	</div>
 </ion-content>

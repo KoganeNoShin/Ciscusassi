@@ -3,12 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonButton,
 	IonCard,
-	IonIcon,
 	IonInput,
 	IonSelect,
 	IonSelectOption,
@@ -27,6 +23,7 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { ImpiegatoData } from 'src/app/core/interfaces/Impiegato';
+import { NavController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-modifica-impiegati', // nome componente per il template
@@ -67,7 +64,8 @@ export class ModificaImpiegatiPage implements OnInit {
 		private router: Router, // router per navigazione e recupero dati passati
 		private filialeService: FilialeService, // servizio per filiali
 		private impiegatoService: ImpiegatoService, // servizio per dipendenti
-		private toastController: ToastController // per messaggi toast a schermo
+		private toastController: ToastController, // per messaggi toast a schermo
+		private navigator: NavController
 	) {}
 
 	ngOnInit() {
@@ -177,7 +175,7 @@ export class ModificaImpiegatiPage implements OnInit {
 						'Impiegato aggiornato con successo!',
 						'success'
 					);
-					// eventualmente potresti fare un redirect o reset form qui
+					this.navigator.back();
 				},
 				error: (err) => {
 					console.error('Errore aggiornamento dipendente:', err);

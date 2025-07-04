@@ -20,6 +20,8 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeInput } from 'src/app/core/interfaces/Filiale';
 import { HttpClient } from '@angular/common/http';
 
+import { NavController } from '@ionic/angular';
+
 @Component({
 	selector: 'app-modifica-filiali',
 	templateUrl: './modifica-filiali.page.html',
@@ -60,7 +62,8 @@ export class ModificaFilialiPage implements OnInit {
 	constructor(
 		private filialeService: FilialeService, // Servizio per chiamate API filiali
 		private toastController: ToastController, // Per mostrare messaggi toast
-		private http: HttpClient // Per chiamate HTTP esterne (OpenStreetMap)
+		private http: HttpClient, // Per chiamate HTTP esterne (OpenStreetMap)
+		private router: NavController
 	) {}
 
 	ngOnInit() {
@@ -173,9 +176,10 @@ export class ModificaFilialiPage implements OnInit {
 					next: async (res) => {
 						if (res.success) {
 							this.presentToast(
-								'Filiale aggiornata con successo!',
+								'Filiale aggiornata con successo! 🎉',
 								'success'
 							);
+							this.router.navigateBack(['/gestisci-filiali']);
 						} else {
 							this.presentToast(
 								"Errore durante l'aggiornamento.",

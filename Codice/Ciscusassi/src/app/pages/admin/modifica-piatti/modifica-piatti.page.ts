@@ -105,7 +105,7 @@ export class ModificaPiattiPage implements OnInit {
 							color: 'success',
 						});
 						await toast.present();
-						this.router.navigateBack(['/gestisci-piatti']);
+						this.router.back();
 					} else {
 						const toast = await this.toastCtrl.create({
 							message:

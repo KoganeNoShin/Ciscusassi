@@ -6,41 +6,53 @@ import Cliente from '../Models/cliente';
 function nomeClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
-		.notEmpty().withMessage('Il nome è obbligatorio')
-		.isLength({ max: 50 }).withMessage('Il nome non può superare 50 caratteri');
+		.notEmpty()
+		.withMessage('Il nome è obbligatorio')
+		.isLength({ max: 50 })
+		.withMessage('Il nome non può superare 50 caratteri');
 }
 
 function cognomeClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
-		.notEmpty().withMessage('Il cognome è obbligatorio')
-		.isLength({ max: 50 }).withMessage('Il cognome non può superare 50 caratteri');
+		.notEmpty()
+		.withMessage('Il cognome è obbligatorio')
+		.isLength({ max: 50 })
+		.withMessage('Il cognome non può superare 50 caratteri');
 }
 
 export function emailClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
-		.notEmpty().withMessage("L'email è obbligatoria")
-		.isEmail().withMessage("L'email deve essere valida")
+		.notEmpty()
+		.withMessage("L'email è obbligatoria")
+		.isEmail()
+		.withMessage("L'email deve essere valida")
 		.normalizeEmail();
 }
 
 function passwordClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
-		.notEmpty().withMessage('La password è obbligatoria')
-		.isLength({ min: 6 }).withMessage('La password deve contenere almeno 6 caratteri');
+		.notEmpty()
+		.withMessage('La password è obbligatoria')
+		.isLength({ min: 6 })
+		.withMessage('La password deve contenere almeno 6 caratteri');
 }
 
 function imageClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
-		.notEmpty().withMessage('L\'immagine è obbligatoria')
-		.isString().withMessage('Formato immagine non valido');
+		.notEmpty()
+		.withMessage("L'immagine è obbligatoria")
+		.matches(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/)
+		.withMessage('Formato immagine non valido');
 }
 
 function dataNascitaClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
-		.notEmpty().withMessage('La data di nascita è obbligatoria')
-		.matches(/^(\d{4})-(\d{2})-(\d{2})$/).withMessage('La data deve essere nel formato "yyyy-MM-dd"')
+		.notEmpty()
+		.withMessage('La data di nascita è obbligatoria')
+		.matches(/^(\d{4})-(\d{2})-(\d{2})$/)
+		.withMessage('La data deve essere nel formato "yyyy-MM-dd"')
 		.bail()
 		.custom((value: string) => {
 			const dataNascita = new Date(value);
@@ -57,7 +69,8 @@ function dataNascitaClienteValidator(chain: ValidationChain): ValidationChain {
 			const eta = oggi.getFullYear() - dataNascita.getFullYear();
 			const m = oggi.getMonth() - dataNascita.getMonth();
 			const giorno = oggi.getDate() - dataNascita.getDate();
-			const isUnder18 = (eta < 18) || (eta === 18 && (m < 0 || (m === 0 && giorno < 0)));
+			const isUnder18 =
+				eta < 18 || (eta === 18 && (m < 0 || (m === 0 && giorno < 0)));
 
 			if (isUnder18) {
 				throw new Error('Il cliente deve avere almeno 18 anni.');
@@ -68,8 +81,10 @@ function dataNascitaClienteValidator(chain: ValidationChain): ValidationChain {
 
 export function numeroCartaValidator(chain: ValidationChain): ValidationChain {
 	return chain
-		.notEmpty().withMessage('Il numero della carta è obbligatorio')
-		.isInt({ gt: 0 }).withMessage('Numero carta non valido')
+		.notEmpty()
+		.withMessage('Il numero della carta è obbligatorio')
+		.isInt({ gt: 0 })
+		.withMessage('Numero carta non valido')
 		.bail()
 		.toInt()
 		.custom(async (numero: number) => {
@@ -83,13 +98,14 @@ export function numeroCartaValidator(chain: ValidationChain): ValidationChain {
 export const aggiornaPasswordValidator: ValidationChain[] = [
 	passwordClienteValidator(body('nuovaPassword')),
 	body('confermaPassword')
-		.notEmpty().withMessage('La conferma password è obbligatoria')
+		.notEmpty()
+		.withMessage('La conferma password è obbligatoria')
 		.custom((value, { req }) => {
 			if (value !== req.body.nuovaPassword) {
 				throw new Error('Le password non coincidono');
 			}
 			return true;
-		})
+		}),
 ];
 
 export const addClienteValidator = [
@@ -98,7 +114,7 @@ export const addClienteValidator = [
 	emailClienteValidator(body('email')),
 	...aggiornaPasswordValidator,
 	imageClienteValidator(body('image')),
-	dataNascitaClienteValidator(body('data_nascita'))
+	dataNascitaClienteValidator(body('data_nascita')),
 ];
 
 export const updateClienteValidator = [
@@ -106,5 +122,5 @@ export const updateClienteValidator = [
 	cognomeClienteValidator(body('cognome')),
 	emailClienteValidator(body('email')),
 	imageClienteValidator(body('image')),
-	dataNascitaClienteValidator(body('data_nascita'))
+	dataNascitaClienteValidator(body('data_nascita')),
 ];

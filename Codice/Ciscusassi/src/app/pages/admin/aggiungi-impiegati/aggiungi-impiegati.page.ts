@@ -22,6 +22,7 @@ import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ImpiegatoInput } from 'src/app/core/interfaces/Impiegato';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
+import { NavController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-aggiungi-impegati',
@@ -62,7 +63,8 @@ export class AggiungiImpiegatiPage implements OnInit {
 	constructor(
 		private impiegatoService: ImpiegatoService,
 		private filialeService: FilialeService,
-		private toastController: ToastController
+		private toastController: ToastController,
+		private router: NavController
 	) {}
 
 	// Metodo eseguito all'inizializzazione del componente
@@ -149,6 +151,7 @@ export class AggiungiImpiegatiPage implements OnInit {
 					'success'
 				);
 				this.resetForm(); // resetta i campi del form dopo l'inserimento
+				this.router.back();
 			},
 			error: (error) => {
 				console.error(

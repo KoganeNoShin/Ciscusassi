@@ -4,44 +4,71 @@ import ImpiegatoService from '../Services/impiegatoService';
 class ImpiegatoController {
 	static async addImpiegato(req: Request, res: Response): Promise<void> {
 		try {
-			const {nome, cognome, ruolo, foto, email, data_nascita, ref_filiale} = req.body;
+			const {
+				nome,
+				cognome,
+				ruolo,
+				foto,
+				email,
+				data_nascita,
+				ref_filiale,
+			} = req.body;
 
-			const id = await ImpiegatoService.addImpiegato(nome, cognome, ruolo, foto, email, data_nascita, ref_filiale);
+			const id = await ImpiegatoService.addImpiegato(
+				nome,
+				cognome,
+				ruolo,
+				foto,
+				email,
+				data_nascita,
+				ref_filiale
+			);
 			res.status(201).json({ success: true, data: id });
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}
 
 	static async updateImpiegato(req: Request, res: Response): Promise<void> {
 		try {
-			await ImpiegatoService.updateImpiegato(req.body, parseInt(req.params.matricola));
-			res.json({ success: true, message: 'Impiegato aggiornato con successo' });
+			await ImpiegatoService.updateImpiegato(
+				req.body,
+				parseInt(req.params.matricola)
+			);
+			res.json({
+				success: true,
+				message: 'Impiegato aggiornato con successo',
+			});
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}
 
 	static async deleteImpiegato(req: Request, res: Response): Promise<void> {
 		try {
-			await ImpiegatoService.deleteImpiegato(parseInt(req.params.matricola));
-			res.json({ success: true, message: 'Impiegato eliminato con successo' });
+			await ImpiegatoService.deleteImpiegato(
+				parseInt(req.params.matricola)
+			);
+			res.json({
+				success: true,
+				message: 'Impiegato eliminato con successo',
+			});
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}
@@ -62,9 +89,10 @@ class ImpiegatoController {
 			if (impiegati && impiegati.length > 0) {
 				res.json({ success: true, data: impiegati });
 			} else {
-				res.status(404).json({
-					success: false,
-					message: 'Nessun impiegato trovato per la filiale specificata',
+				res.status(200).json({
+					success: true,
+					message:
+						'Nessun impiegato trovato per la filiale specificata',
 				});
 			}
 		} catch (err) {
@@ -72,7 +100,7 @@ class ImpiegatoController {
 			res.status(500).json({
 				success: false,
 				message: 'Errore interno del server',
-				error: (err instanceof Error ? err.message : String(err))
+				error: err instanceof Error ? err.message : String(err),
 			});
 		}
 	}

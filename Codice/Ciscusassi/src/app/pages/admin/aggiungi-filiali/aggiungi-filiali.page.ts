@@ -16,6 +16,9 @@ import {
 	IonRow,
 	IonImg,
 } from '@ionic/angular/standalone';
+
+import { NavController } from '@ionic/angular';
+
 import { HttpClient } from '@angular/common/http';
 import { FilialeService } from 'src/app/core/services/filiale.service';
 import { FilialeInput } from 'src/app/core/interfaces/Filiale';
@@ -59,7 +62,8 @@ export class AggiungiFilialiPage implements OnInit {
 	constructor(
 		private filialeService: FilialeService,
 		private toastController: ToastController,
-		private http: HttpClient
+		private http: HttpClient,
+		private router: NavController
 	) {}
 
 	// Metodo eseguito all'inizializzazione del componente
@@ -166,6 +170,7 @@ export class AggiungiFilialiPage implements OnInit {
 							'success'
 						);
 						this.resetForm(); // Reset del form dopo il successo
+						this.router.navigateBack(['/gestisci-filiali']);
 					} else {
 						this.presentToast(
 							"Errore durante l'aggiunta della filiale.",

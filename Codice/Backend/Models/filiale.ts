@@ -22,36 +22,63 @@ export class Filiale {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO filiali (comune, indirizzo, num_tavoli, longitudine, latitudine, immagine) VALUES (?, ?, ?, ?, ?, ?)',
-				[data.comune, data.indirizzo, data.num_tavoli, data.longitudine, data.latitudine, data.immagine],
+				[
+					data.comune,
+					data.indirizzo,
+					data.num_tavoli,
+					data.longitudine,
+					data.latitudine,
+					data.immagine,
+				],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante INSERT:',
+							err.message
+						);
 						reject(err);
-					}
-					else resolve(this.lastID);
+					} else resolve(this.lastID);
 				}
 			);
 		});
 	}
 
 	// Modifica Filiale
-	static async updateFiliale(data: FilialeRecord): Promise<void> {
+	static async updateFiliale(
+		data: FilialeRecord,
+		id_filiale: number
+	): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE filiali SET comune = ?, indirizzo = ?, num_tavoli = ?, longitudine = ?, latitudine = ?, immagine = ? WHERE id_filiale = ?',
-				[data.comune, data.indirizzo, data.num_tavoli, data.longitudine, data.latitudine, data.immagine,
-				data.id_filiale],
+				[
+					data.comune,
+					data.indirizzo,
+					data.num_tavoli,
+					data.longitudine,
+					data.latitudine,
+					data.immagine,
+					id_filiale,
+				],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante UPDATE:',
+							err.message
+						);
 						console.error('🧾 Query params:', data.id_filiale);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessuna filiale aggiornato con ID ${data.id_filiale}`);
-						return reject(new Error(`Nessuna filiale trovata con ID ${data.id_filiale}`));
-					}
-					else resolve();
+						console.warn(
+							`⚠️ [DB WARNING] Nessuna filiale aggiornato con ID ${data.id_filiale}`
+						);
+						return reject(
+							new Error(
+								`Nessuna filiale trovata con ID ${data.id_filiale}`
+							)
+						);
+					} else resolve();
 				}
 			);
 		});
@@ -65,15 +92,21 @@ export class Filiale {
 				[id],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante DELETE:',
+							err.message
+						);
 						console.error('🧾 Query params:', id);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(`⚠️ [DB WARNING] Nessun prodotto eliminato con ID ${id}`);
-						return reject(new Error(`Nessun prodotto trovato con ID ${id}`));
-					}
-					else resolve();
+						console.warn(
+							`⚠️ [DB WARNING] Nessun prodotto eliminato con ID ${id}`
+						);
+						return reject(
+							new Error(`Nessun prodotto trovato con ID ${id}`)
+						);
+					} else resolve();
 				}
 			);
 		});
@@ -86,7 +119,10 @@ export class Filiale {
 				'SELECT * FROM filiali',
 				(err: Error | null, rows: FilialeRecord[]) => {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante SELECT:',
+							err.message
+						);
 						reject(err);
 					} else if (!rows || rows.length === 0) {
 						console.warn('⚠️ [DB WARNING] Nessuna filiale trovato');
@@ -105,7 +141,10 @@ export class Filiale {
 				[id],
 				(err: Error | null, row: FilialeRecord) => {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						console.error(
+							'❌ [DB ERROR] Errore durante SELECT:',
+							err.message
+						);
 						reject(err);
 					} else if (!row) {
 						console.log('⚠️ [DB WARNING] Nessun Prodotto trovato');
