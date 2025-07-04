@@ -98,8 +98,7 @@ export const addImpiegatoValidator = [
     fotoValidator(body('foto')),
     emailValidator(body('email')),
     data_nascitaValidator(body('data_nascita')),
-    idFilialeValidator(body('ref_filiale')),
-    passwordValidator(body('password'))
+    idFilialeValidator(body('ref_filiale'))
 ];
 
 export const updateImpiegatoValidator = [
