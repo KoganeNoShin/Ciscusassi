@@ -1,35 +1,64 @@
-// importo il db
+// Importa il database SQLite
 import db from '../db';
 import { RunResult } from 'sqlite3';
 
-// Definiamo il modello di un Prenotazione
+/**
+ * Input richiesto per la creazione di una nuova prenotazione.
+ */
 export interface PrenotazioneInput {
+	/** Numero di persone per la prenotazione */
 	numero_persone: number;
+	/** Data e ora della prenotazione (formato ISO o datetime SQL) */
 	data_ora_prenotazione: string;
+	/** ID del cliente se autenticato, null se guest */
 	ref_cliente: number | null;
+	/** ID della torretta associata */
 	ref_torretta: number;
 }
 
+/**
+ * Record completo di una prenotazione salvata nel database.
+ */
 export interface PrenotazioneRecord extends PrenotazioneInput {
+	/** ID univoco della prenotazione */
 	id_prenotazione: number;
+	/** OTP generato per la conferma della prenotazione (può essere null) */
 	otp: string | null;
 }
 
+/**
+ * Estensione della prenotazione con dati del cliente associato.
+ */
 export interface PrenotazioneWithUtente extends PrenotazioneRecord {
 	utente: {
+		/** Nome del cliente */
 		nome: string;
+		/** Cognome del cliente */
 		cognome: string;
 	};
 }
 
+/**
+ * Estensione della prenotazione con informazioni sulla filiale.
+ */
 export interface PrenotazioneWithFiliale extends PrenotazioneRecord {
+	/** ID della filiale associata */
 	id_filiale: number;
+	/** Indirizzo della filiale */
 	indirizzo: string;
+	/** Comune della filiale */
 	comune: string;
 }
 
+/**
+ * Classe `Prenotazione` per la gestione delle prenotazioni nel sistema.
+ */
 export class Prenotazione {
-	// Creazione di una nuova prenotazione online
+	/**
+	 * Crea una nuova prenotazione online.
+	 * @param data - Dati della prenotazione
+	 * @returns ID della prenotazione creata
+	 */
 	static async create(data: PrenotazioneInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -46,7 +75,12 @@ export class Prenotazione {
 		});
 	}
 
-	// Creazione di una nuova prenotazione in loco
+	/**
+	 * Crea una prenotazione in loco, includendo l’OTP.
+	 * @param data - Dati della prenotazione
+	 * @param otp - Codice OTP generato
+	 * @returns ID della prenotazione creata
+	 */
 	static async createLocale(data: PrenotazioneInput, otp: string): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -63,13 +97,17 @@ export class Prenotazione {
 		});
 	}
 
-	// Modifica Prenotazione
+	/**
+	 * Aggiorna il numero di persone e l’orario di una prenotazione esistente.
+	 * @param id_prenotazione - ID della prenotazione da aggiornare.
+	 * @param numero_persone - Nuovo numero di persone.
+	 * @param data_ora_prenotazione - Nuova data e ora della prenotazione.
+	 */
 	static async update(id_prenotazione: number, numero_persone: number, data_ora_prenotazione: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE prenotazioni SET numero_persone = ?, data_ora_prenotazione = ? WHERE id_prenotazione = ?',
-				[numero_persone, data_ora_prenotazione, 
-				id_prenotazione],
+				[numero_persone, data_ora_prenotazione, id_prenotazione],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
@@ -86,7 +124,10 @@ export class Prenotazione {
 		});
 	}
 
-	// Elimina Prenotazione
+	/**
+	 * Elimina una prenotazione esistente.
+	 * @param id_prenotazione - ID della prenotazione da eliminare.
+	 */
 	static async delete(id_prenotazione: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -107,7 +148,10 @@ export class Prenotazione {
 		});
 	}
 
-	// Recupera tutte le prenotazioni
+	/**
+	 * Restituisce tutte le prenotazioni nel sistema.
+	 * @returns Lista di prenotazioni.
+	 */
 	static async getAll(): Promise<PrenotazioneRecord[]> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -118,7 +162,7 @@ export class Prenotazione {
 						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);
 					} else if (!rows || rows.length === 0) {
-						console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovato');
+						console.warn('⚠️ [DB WARNING] Nessuna prenotazione trovata');
 						resolve([]);
 					} else resolve(rows);
 				}
@@ -126,7 +170,11 @@ export class Prenotazione {
 		});
 	}
 
-	// Recupera prenotazione per ID
+	/**
+	 * Restituisce una prenotazione tramite il suo ID.
+	 * @param id_prenotazione - ID della prenotazione.
+	 * @returns Record della prenotazione o `null` se non trovata.
+	 */
 	static async getById(id_prenotazione: number): Promise<PrenotazioneRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -145,7 +193,12 @@ export class Prenotazione {
 		});
 	}
 
-	// Recupera OTP dato Data e Torretta
+	/**
+	 * Restituisce l’OTP per una torretta in un determinato orario.
+	 * @param id_torretta - ID della torretta.
+	 * @param data - Data e ora della prenotazione.
+	 * @returns Codice OTP oppure `null`.
+	 */
 	static async getOTPByIdTorrettaAndData(id_torretta: number, data: string): Promise<string | null> {
 		return new Promise((resolve, reject) => {
 			db.get(`
@@ -166,7 +219,11 @@ export class Prenotazione {
 		});
 	}
 
-	// Recupera prenotazioni per cliente
+	/**
+	 * Restituisce tutte le prenotazioni effettuate da un cliente.
+	 * @param ref_cliente - ID del cliente.
+	 * @returns Lista di prenotazioni con dettagli sulla filiale.
+	 */
 	static async getByCliente(ref_cliente: number): Promise<PrenotazioneWithFiliale[]> {
 		return new Promise((resolve, reject) => {
 			db.all(`
@@ -180,15 +237,11 @@ export class Prenotazione {
 					f.id_filiale, 
 					f.indirizzo, 
 					f.comune
-				FROM 
-					prenotazioni p
-				JOIN 
-					torrette t ON p.ref_torretta = t.id_torretta
-				JOIN 
-					filiali f ON t.ref_filiale = f.id_filiale
-				WHERE 
-					p.ref_cliente = ?
-				`,[ref_cliente],
+				FROM prenotazioni p
+				JOIN torrette t ON p.ref_torretta = t.id_torretta
+				JOIN filiali f ON t.ref_filiale = f.id_filiale
+				WHERE p.ref_cliente = ?`,
+				[ref_cliente],
 				(err: Error | null, rows: PrenotazioneWithFiliale[]) => {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
@@ -202,37 +255,42 @@ export class Prenotazione {
 		});
 	}
 
-	// Recupera prenotazioni del giorno per filiale
+	/**
+	 * Restituisce le prenotazioni per una specifica data e filiale.
+	 * @param id_filiale - ID della filiale.
+	 * @param data - Data della prenotazione (formato 'yyyy-MM-dd').
+	 * @returns Lista di prenotazioni con dettagli del cliente.
+	 */
 	static async getPrenotazioniDataAndFiliale(id_filiale: number, data: string): Promise<PrenotazioneWithUtente[]> {
 		return new Promise((resolve, reject) => {
 			db.all(`
-            SELECT 
-				p.id_prenotazione, 
-				p.numero_persone, 
-				p.data_ora_prenotazione,
-				p.ref_torretta,
-				c.nome, 
-				c.cognome
-			FROM 
-				prenotazioni p
-			JOIN 
-				torrette t ON p.ref_torretta = t.id_torretta
-			LEFT JOIN 
-				clienti c ON p.ref_cliente = c.numero_carta
-			WHERE 
-				DATE(p.data_ora_prenotazione) = DATE(?)
-				AND t.ref_filiale = ?
-			`,[data, id_filiale],
+				SELECT 
+					p.id_prenotazione, 
+					p.numero_persone, 
+					p.data_ora_prenotazione,
+					p.ref_torretta,
+					c.nome, 
+					c.cognome
+				FROM prenotazioni p
+				JOIN torrette t ON p.ref_torretta = t.id_torretta
+				LEFT JOIN clienti c ON p.ref_cliente = c.numero_carta
+				WHERE DATE(p.data_ora_prenotazione) = DATE(?) AND t.ref_filiale = ?`,
+				[data, id_filiale],
 				(err: Error | null, rows: PrenotazioneWithUtente[]) => {
-						if (err) {
-							console.error('❌ [DB ERROR] Errore durante SELECT future:', err.message);
-							reject(err);
-						} else resolve(rows);
-					}
-				);
-			});
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT future:', err.message);
+						reject(err);
+					} else resolve(rows);
+				}
+			);
+		});
 	}
 
+	/**
+	 * Conferma una prenotazione assegnando un codice OTP.
+	 * @param id_prenotazione - ID della prenotazione.
+	 * @param otp - Codice OTP da assegnare.
+	 */
 	static async confermaPrenotazione(id_prenotazione: number, otp: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -253,6 +311,12 @@ export class Prenotazione {
 		});
 	}
 
+	/**
+	 * Restituisce l'OTP associato a una prenotazione dato il suo ID.
+	 *
+	 * @param id_prenotazione - L'ID univoco della prenotazione.
+	 * @returns Una Promise che risolve con l'OTP come stringa oppure `null` se non trovato.
+	 */
 	static async getOTPById(id_prenotazione: number): Promise<string | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -271,6 +335,12 @@ export class Prenotazione {
 		});
 	}
 
+	/**
+	 * Cerca una prenotazione in base a data e torretta.
+	 * @param data_ora_prenotazione - Data e ora della prenotazione.
+	 * @param ref_torretta - ID della torretta.
+	 * @returns Prenotazione trovata oppure `null`.
+	 */
 	static async getByDataETorretta(data_ora_prenotazione: string, ref_torretta: number): Promise<PrenotazioneRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(

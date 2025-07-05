@@ -1,21 +1,39 @@
-// importo il db
+// Importa il database SQLite
 import db from '../db';
 import { RunResult } from 'sqlite3';
 
-// Definiamo il modello di un Prodotto Ordinato
+/**
+ * Dati necessari per inserire un prodotto ordinato.
+ */
 export interface OrdProdInput {
+	/** Indica se il prodotto è in versione "romana" */
 	is_romana: boolean;
+	/** Stato attuale del prodotto (es. "in preparazione", "consegnato") */
 	stato: string;
+	/** ID del prodotto ordinato */
 	ref_prodotto: number;
+	/** ID dell'ordine a cui è associato il prodotto */
 	ref_ordine: number;
 }
 
+/**
+ * Record completo del prodotto ordinato, incluso l'ID univoco.
+ */
 export interface OrdProdRecord extends OrdProdInput {
+	/** ID univoco del prodotto ordinato */
 	id_ord_prod: number;
 }
 
+/**
+ * Classe `OrdProd` per la gestione dei prodotti associati a un ordine.
+ */
 export class OrdProd {
-	// Creazione di un nuovo OrdProd
+	/**
+	 * Crea un nuovo prodotto ordinato.
+	 * 
+	 * @param data - Dati del prodotto da inserire
+	 * @returns ID del nuovo record inserito
+	 */
 	static async create(data: OrdProdInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -32,7 +50,11 @@ export class OrdProd {
 		});
 	}
 
-	// Rimuovi un prodotto ordinato
+	/**
+	 * Rimuove un prodotto ordinato tramite ID.
+	 * 
+	 * @param id_ord_prod - ID del prodotto ordinato
+	 */
 	static async removeProdotto(id_ord_prod: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -54,7 +76,12 @@ export class OrdProd {
 		});
 	}
 
-	// Selezione di un Prodotto Ordinato per ID
+	/**
+	 * Recupera un prodotto ordinato tramite il suo ID.
+	 * 
+	 * @param id_ord_prod - ID del prodotto ordinato
+	 * @returns Record del prodotto o null se non trovato
+	 */
 	static async getById(id_ord_prod: number): Promise<OrdProdRecord | null>{
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -73,7 +100,12 @@ export class OrdProd {
 		});
 	}
 
-	// Selezione di tutti i Prodotti Ordinati per Ordine
+	/**
+	 * Restituisce tutti i prodotti ordinati associati a un ordine.
+	 * 
+	 * @param ref_ordine - ID dell’ordine
+	 * @returns Array di prodotti ordinati
+	 */
 	static async getByOrdine(ref_ordine: number): Promise<OrdProdRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -92,7 +124,13 @@ export class OrdProd {
 		});
 	}
 
-	// Selezione dei Prodotti Ordinati per Ordine e se Romana
+	/**
+	 * Restituisce i prodotti ordinati di un ordine filtrati per tipo "romana".
+	 * 
+	 * @param ref_ordine - ID dell’ordine
+	 * @param is_romana - `true` se si vogliono solo prodotti "romani"
+	 * @returns Lista dei prodotti corrispondenti
+	 */
 	static async getByOrdineAndRomana(ref_ordine: number, is_romana: boolean): Promise<OrdProdRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -111,7 +149,12 @@ export class OrdProd {
 		});
 	}
 
-	// Selezione dei Prodotti Ordinati per Ordine
+	/**
+	 * Alias di `getByOrdine` (ridondanza evitabile).
+	 * 
+	 * @param id_ordine - ID dell’ordine
+	 * @returns Lista di prodotti associati all’ordine
+	 */
 	static async getByOrdineId(id_ordine: number): Promise<OrdProdRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -130,7 +173,12 @@ export class OrdProd {
 		});
 	}
 
-	// Cambia Stato
+	/**
+	 * Aggiorna lo stato di un prodotto ordinato.
+	 * 
+	 * @param id_ord_prod - ID del prodotto
+	 * @param nuovoStato - Nuovo stato da impostare
+	 */
 	static async cambiaStato(id_ord_prod: number, nuovoStato: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -149,6 +197,12 @@ export class OrdProd {
 		});
 	}
 
+	/**
+	 * Aggiorna il flag `is_romana` di un prodotto ordinato.
+	 * 
+	 * @param idOrdProd - ID del prodotto ordinato
+	 * @param isRomana - Nuovo valore per `is_romana`
+	 */
 	static async aggiornaStatoRomana(idOrdProd: number, isRomana: boolean): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -169,6 +223,5 @@ export class OrdProd {
 		});
 	}
 }
-
 
 export default OrdProd;

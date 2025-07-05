@@ -1,23 +1,43 @@
-// importo il db
+// Importa il database SQLite
 import db from '../db';
 import { RunResult } from 'sqlite3';
 
-// Definiamo il modello della filiale
+/**
+ * Interfaccia per l'inserimento di una nuova filiale nel database.
+ */
 export interface FilialeInput {
+	/** Comune in cui si trova la filiale */
 	comune: string;
+	/** Indirizzo dettagliato della filiale */
 	indirizzo: string;
+	/** Numero totale di tavoli disponibili */
 	num_tavoli: number;
+	/** Longitudine della posizione geografica della filiale */
 	longitudine: string;
+	/** Latitudine della posizione geografica della filiale */
 	latitudine: string;
+	/** URL o path dell'immagine della filiale */
 	immagine: string;
 }
 
+/**
+ * Interfaccia che rappresenta un record completo della filiale nel database.
+ */
 export interface FilialeRecord extends FilialeInput {
+	/** Identificativo univoco della filiale (primary key) */
 	id_filiale: number;
 }
 
+/**
+ * Classe che gestisce tutte le operazioni CRUD sulla tabella `filiali`.
+ */
 export class Filiale {
-	// Creazione di una nuova filiale
+	/**
+	 * Crea una nuova filiale nel database.
+	 * 
+	 * @param data - Dati della filiale da inserire
+	 * @returns ID della filiale appena creata
+	 */
 	static async create(data: FilialeInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -32,10 +52,7 @@ export class Filiale {
 				],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante INSERT:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
 						reject(err);
 					} else resolve(this.lastID);
 				}
@@ -43,11 +60,13 @@ export class Filiale {
 		});
 	}
 
-	// Modifica Filiale
-	static async updateFiliale(
-		data: FilialeRecord,
-		id_filiale: number
-	): Promise<void> {
+	/**
+	 * Aggiorna i dati di una filiale esistente nel database.
+	 * 
+	 * @param data - Dati aggiornati della filiale
+	 * @param id_filiale - ID della filiale da modificare
+	 */
+	static async updateFiliale(data: FilialeRecord, id_filiale: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE filiali SET comune = ?, indirizzo = ?, num_tavoli = ?, longitudine = ?, latitudine = ?, immagine = ? WHERE id_filiale = ?',
@@ -62,29 +81,24 @@ export class Filiale {
 				],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante UPDATE:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
 						console.error('🧾 Query params:', data.id_filiale);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(
-							`⚠️ [DB WARNING] Nessuna filiale aggiornato con ID ${data.id_filiale}`
-						);
-						return reject(
-							new Error(
-								`Nessuna filiale trovata con ID ${data.id_filiale}`
-							)
-						);
+						console.warn(`⚠️ [DB WARNING] Nessuna filiale aggiornato con ID ${data.id_filiale}`);
+						return reject(new Error(`Nessuna filiale trovata con ID ${data.id_filiale}`));
 					} else resolve();
 				}
 			);
 		});
 	}
 
-	// Elimina Piatto
+	/**
+	 * Elimina una filiale dal database tramite ID.
+	 * 
+	 * @param id - ID della filiale da eliminare
+	 */
 	static async deleteFiliale(id: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -92,37 +106,31 @@ export class Filiale {
 				[id],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante DELETE:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante DELETE:', err.message);
 						console.error('🧾 Query params:', id);
 						reject(err);
 					}
 					if (this.changes === 0) {
-						console.warn(
-							`⚠️ [DB WARNING] Nessun prodotto eliminato con ID ${id}`
-						);
-						return reject(
-							new Error(`Nessun prodotto trovato con ID ${id}`)
-						);
+						console.warn(`⚠️ [DB WARNING] Nessun prodotto eliminato con ID ${id}`);
+						return reject(new Error(`Nessun prodotto trovato con ID ${id}`));
 					} else resolve();
 				}
 			);
 		});
 	}
 
-	// Selezione di tutte le Filiali
+	/**
+	 * Restituisce la lista completa delle filiali registrate nel database.
+	 * 
+	 * @returns Array di record delle filiali
+	 */
 	static async getAll(): Promise<FilialeRecord[]> {
 		return new Promise((resolve, reject) => {
 			db.all(
 				'SELECT * FROM filiali',
 				(err: Error | null, rows: FilialeRecord[]) => {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante SELECT:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);
 					} else if (!rows || rows.length === 0) {
 						console.warn('⚠️ [DB WARNING] Nessuna filiale trovato');
@@ -133,7 +141,12 @@ export class Filiale {
 		});
 	}
 
-	// Seleziona per id
+	/**
+	 * Recupera una filiale tramite il suo ID.
+	 * 
+	 * @param id - Identificativo della filiale
+	 * @returns Record della filiale o `null` se non trovata
+	 */
 	static async getById(id: number): Promise<FilialeRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -141,10 +154,7 @@ export class Filiale {
 				[id],
 				(err: Error | null, row: FilialeRecord) => {
 					if (err) {
-						console.error(
-							'❌ [DB ERROR] Errore durante SELECT:',
-							err.message
-						);
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
 						reject(err);
 					} else if (!row) {
 						console.log('⚠️ [DB WARNING] Nessun Prodotto trovato');
@@ -156,4 +166,5 @@ export class Filiale {
 	}
 }
 
+// Esporta la classe per usarla nei controller o in altri moduli
 export default Filiale;

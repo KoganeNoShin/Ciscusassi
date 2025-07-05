@@ -1,22 +1,48 @@
-// importo il db
+// Importa l'istanza del database SQLite
 import db from '../db';
+
+// Importa il tipo RunResult per ottenere dettagli sull'inserimento (es. lastID)
 import { RunResult } from 'sqlite3';
 
-// Definiamo il modello di un asporto
+/**
+ * Interfaccia che rappresenta i dati necessari per creare un nuovo record di asporto.
+ */
 export interface AsportoInput {
+	/** Indirizzo di consegna dell'asporto */
 	indirizzo: string;
+
+	/** Data e ora previste per la consegna */
 	data_ora_consegna: string;
+
+	/** ID del cliente che ha effettuato l'asporto (foreign key) */
 	ref_cliente: number;
+
+	/** ID del metodo di pagamento associato (foreign key) */
 	ref_pagamento: number;
+
+	/** ID della filiale da cui parte l'asporto (foreign key) */
 	ref_filiale: number;
 }
 
+/**
+ * Estensione dell'input `AsportoInput` che include l'identificativo del record.
+ */
 export interface AsportoRecord extends AsportoInput {
+	/** Identificativo univoco dell'asporto (primary key) */
 	id_asporto: number;
 }
 
+/**
+ * Classe che gestisce le operazioni sulla tabella `asporti`,
+ * contenente gli ordini d'asporto effettuati dai clienti.
+ */
 export class Asporto {
-	// Creazione di un nuovo asporto
+	/**
+	 * Inserisce un nuovo record nella tabella `asporti`.
+	 *
+	 * @param data - Oggetto contenente i dati dell'asporto
+	 * @returns Una Promise che risolve con l'ID del nuovo asporto inserito
+	 */
 	static async create(data: AsportoInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -33,7 +59,12 @@ export class Asporto {
 		});
 	}
 
-	// Selezione per ID
+	/**
+	 * Recupera un asporto dal database tramite il suo ID.
+	 *
+	 * @param id - Identificativo dell'asporto da recuperare
+	 * @returns Una Promise che risolve con il record dell'asporto o `null` se non trovato
+	 */
 	static async getByID(id: number): Promise<AsportoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -53,4 +84,5 @@ export class Asporto {
 	}
 }
 
+// Esporta la classe `Asporto` per essere utilizzata in altri moduli
 export default Asporto;
