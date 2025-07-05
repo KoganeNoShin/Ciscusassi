@@ -16,7 +16,7 @@ import {
 } from '../Validators/filialeValidator';
 
 import {
-	addImpiegatoValidator,         // Valida i dati per la creazione di un nuovo impiegato
+	addImpiegatoValidator,         aggiornaPasswordValidator,         // Valida i dati per la creazione di un nuovo impiegato
 	matricolaImpiegatoValidator,   // Valida la matricola dell’impiegato
 	updateImpiegatoValidator,      // Valida i dati per l’aggiornamento di un impiegato
 } from '../Validators/impiegatoValidator';
@@ -131,6 +131,20 @@ router.delete(
 	authMiddleware,
 	roleMiddleware(['amministratore']),
 	ImpiegatoController.deleteImpiegato
+);
+
+/**
+ * @route PUT /filiale/impiegato/nuova_password
+ * @desc Permette al impiegato autenticato di cambiare la propria password
+ * @access Privato
+ * @middleware authMiddleware, aggiornaPasswordValidator, validateMiddleware
+ */
+router.put(
+	'/impiegato/nuova_password',
+	authMiddleware,
+	aggiornaPasswordValidator,
+	validateMiddleware,
+	ImpiegatoController.aggiornaPassword
 );
 
 /**

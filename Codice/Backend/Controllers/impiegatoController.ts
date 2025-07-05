@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import ImpiegatoService from '../Services/impiegatoService';
+import { AuthenticatedRequest } from '../Middleware/authMiddleware';
 
 /**
  * Controller per la gestione degli impiegati.
@@ -137,6 +138,28 @@ class ImpiegatoController {
 				message: 'Errore interno del server',
 				error: err instanceof Error ? err.message : String(err),
 			});
+		}
+	}
+
+	/**
+	 * Aggiorna la password dell'impiegato autenticato.
+	 * 
+	 * @param req Richiesta autenticata contenente la nuova password
+	 * @param res Risposta HTTP
+	 * 
+	 * @returns 200 se aggiornamento riuscito,
+	 *          500 in caso di errore interno
+	 */
+	static async aggiornaPassword(req: AuthenticatedRequest, res: Response): Promise<void> {
+		try {
+			const matricola = Number(req.user?.id);
+
+			await ImpiegatoService.aggiornaPassword(matricola, req.body.nuovaPassword);
+
+			res.status(200).json({ message: 'Password aggiornata con successo' });
+		} catch (err) {
+			console.error('❌ [ImpiegatoController] Errore in aggiornaPasswordImpiegato:', err);
+			res.status(500).json({ error: 'Errore durante l\'aggiornamento della password' });
 		}
 	}
 }

@@ -137,6 +137,16 @@ export function matricolaImpiegatoValidator(
 		});
 }
 
+/**
+ * Valida la password:
+ * - Richiede un minimo di 6 caratteri
+ */
+function passwordImpiegatoValidator(chain: ValidationChain): ValidationChain {
+	return chain
+		.notEmpty().withMessage('La password è obbligatoria')
+		.isLength({ min: 6 }).withMessage('La password deve contenere almeno 6 caratteri');
+}
+
 // Validatori
 /**
  * Validatore per la creazione di un nuovo impiegato.
@@ -177,4 +187,21 @@ export const updateImpiegatoValidator = [
 	data_nascitaValidator(body('data_nascita')),
 	idFilialeValidator(body('ref_filiale')),
 	matricolaImpiegatoValidator(param('matricola')),
+];
+
+/**
+ * Validatore per la modifica password dell'Impiegato:
+ * - Verifica che la nuova password sia valida
+ * - Verifica che la conferma coincida
+ */
+export const aggiornaPasswordValidator: ValidationChain[] = [
+	passwordImpiegatoValidator(body('nuovaPassword')),
+	body('confermaPassword')
+		.notEmpty().withMessage('La conferma password è obbligatoria')
+		.custom((value, { req }) => {
+			if (value !== req.body.nuovaPassword) {
+				throw new Error('Le password non coincidono');
+			}
+			return true;
+		}),
 ];
