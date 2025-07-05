@@ -12,10 +12,10 @@ export function createIfDoesntExists(): Promise<string> {
                 nome TEXT NOT NULL,
                 cognome TEXT NOT NULL,
                 email TEXT NOT NULL,
-                data_nascita TEXT,
+                data_nascita TEXT NOT NULL,
                 password TEXT NOT NULL,
                 punti INTEGER NOT NULL DEFAULT 0,
-                image BLOB NOT NULL,
+                image BLOB,
 				token TEXT UNIQUE
             )`,
 				(err: Error | null) => {
