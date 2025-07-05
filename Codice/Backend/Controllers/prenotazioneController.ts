@@ -2,7 +2,16 @@ import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../Middleware/authMiddleware';
 import PrenotazioneService, { PrenotazioneRequest } from '../Services/prenotazioneService';
 
+/**
+ * Controller per la gestione delle prenotazioni.
+ */
 class PrenotazioneController {
+    /**
+	 * Crea una prenotazione per un cliente autenticato.
+	 * @param req Richiesta HTTP contenente i dati della prenotazione
+	 * @param res Risposta HTTP
+	 * @returns 201 con prenotazione creata, 400 se errore, 500 se errore server
+	 */
     static async prenota(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const {ref_filiale, data_ora_prenotazione, numero_persone} = req.body
@@ -31,6 +40,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Crea una prenotazione in loco da parte di un operatore.
+	 * @param req Richiesta HTTP con corpo contenente dati prenotazione e cliente
+	 * @param res Risposta HTTP
+	 * @returns 201 se prenotazione creata, 400 o 500 se errore
+	 */
     static async prenotaLoco(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const {ref_cliente, data_ora_prenotazione, numero_persone} = req.body
@@ -59,6 +74,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Conferma una prenotazione esistente.
+	 * @param req Richiesta contenente l'ID della prenotazione
+	 * @param res Risposta HTTP
+	 * @returns 200 se confermata, 500 se errore
+	 */
     static async confermaPrenotazione(req: Request, res: Response): Promise<void> {
         try {
             const id_prenotazione = parseInt(req.body.id_prenotazione);
@@ -78,7 +99,12 @@ class PrenotazioneController {
         }
     }
 
-
+    /**
+	 * Modifica una prenotazione esistente.
+	 * @param req Richiesta contenente id_prenotazione, numero_persone, data_ora
+	 * @param res Risposta HTTP
+	 * @returns 200 con dati aggiornati, 500 se errore
+	 */
     static async modificaPrenotazione(req: Request, res: Response): Promise<void> {
         try {
             const id_prenotazione = parseInt(req.body.id_prenotazione);
@@ -97,6 +123,12 @@ class PrenotazioneController {
 		}
     }
 
+    /**
+	 * Elimina una prenotazione tramite ID.
+	 * @param req Richiesta con parametro id_prenotazione
+	 * @param res Risposta HTTP
+	 * @returns 200 se eliminata, 500 se errore
+	 */
     static async eliminaPrenotazione(req: Request, res: Response): Promise<void> {
         try {
             await PrenotazioneService.eliminaPrenotazione(parseInt(req.params.id_prenotazione));
@@ -112,6 +144,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Restituisce l'OTP della prenotazione tramite ID torretta e orario.
+	 * @param req Parametri URL con id_prenotazione
+	 * @param res Risposta HTTP
+	 * @returns 200 con OTP, 404 se non trovata, 500 se errore
+	 */
     static async getOTPByIdTorrettaAndData(req: Request, res: Response): Promise<void> {
         try {
             const otp = await PrenotazioneService.getOTPByIdTorrettaAndData(parseInt(req.params.id_prenotazione));
@@ -131,6 +169,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Ottiene i dati di una prenotazione tramite ID.
+	 * @param req Parametri URL con id_prenotazione
+	 * @param res Risposta HTTP
+	 * @returns 200 con dati, 404 se non trovata, 500 se errore
+	 */
     static async getPrenotazioneById(req: Request, res: Response): Promise<void> {
         try {
             const prenotazione = await PrenotazioneService.getPrenotazioneById(parseInt(req.params.id_prenotazione));
@@ -150,6 +194,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Restituisce tutte le prenotazioni del sistema.
+	 * @param req Richiesta HTTP
+	 * @param res Risposta HTTP
+	 * @returns 200 con lista prenotazioni, 404 o 500 se errore
+	 */
     static async getAllPrenotazioni(req: Request, res: Response): Promise<void> {
         try {
             const prenotazioni = await PrenotazioneService.getAllPrenotazioni();
@@ -169,6 +219,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Ottiene tutte le prenotazioni associate all'utente autenticato.
+	 * @param req Richiesta autenticata con ID cliente
+	 * @param res Risposta HTTP
+	 * @returns 200 con prenotazioni, 404 se nessuna, 500 se errore
+	 */
     static async getPrenotazioniByCliente(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(Number(req.user?.id));
@@ -188,6 +244,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Recupera le prenotazioni di un cliente specifico (per cameriere).
+	 * @param req Parametri URL con id_cliente
+	 * @param res Risposta HTTP
+	 * @returns 200 con dati, 404 o 500 in caso di errore
+	 */
     static async getPrenotazioniCameriereByCliente(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(Number(req.params.id_cliente));
@@ -207,6 +269,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Ottiene le prenotazioni giornaliere per la filiale dell'utente.
+	 * @param req Richiesta con data in query string (opzionale)
+	 * @param res Risposta HTTP
+	 * @returns 200 con lista, 404 se vuota, 500 se errore
+	 */
     static async getPrenotazioniDelGiornoFiliale(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const { data } = req.query;
@@ -244,7 +312,12 @@ class PrenotazioneController {
         }
     }
 
-
+    /**
+	 * Calcola il numero di tavoli in uso in una data e ora per la filiale.
+	 * @param req Query param opzionale 'data', altrimenti usa data corrente
+	 * @param res Risposta HTTP
+	 * @returns 200 con numero tavoli, 500 se errore
+	 */
 	static async getTavoliInUso(req: AuthenticatedRequest, res: Response) {
 		try {
             const { data } = req.query;
@@ -271,6 +344,12 @@ class PrenotazioneController {
 		}
 	}
 
+    /**
+	 * Ottiene lo stato di una prenotazione per il cameriere.
+	 * @param req Parametri URL con id_prenotazione
+	 * @param res Risposta HTTP
+	 * @returns 200 con stato, 500 se errore
+	 */
     static async getStatoPrenotazioneCameriere(req: Request, res: Response): Promise<void> {
         try {
             const id_prenotazione = parseInt(req.params.id_prenotazione);
@@ -287,6 +366,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Ottiene lo stato di una prenotazione per lo chef.
+	 * @param req Parametri URL con id_prenotazione
+	 * @param res Risposta HTTP
+	 * @returns 200 con stato, 500 se errore
+	 */
     static async getStatoPrenotazioneChef(req: Request, res: Response): Promise<void> {
         try {
             const id_prenotazione = parseInt(req.params.id_prenotazione);
@@ -303,6 +388,12 @@ class PrenotazioneController {
         }
     }
 
+    /**
+	 * Verifica la validità di un codice OTP per una determinata torretta e data.
+	 * @param req Corpo richiesta contenente data_ora_prenotazione, ref_torretta e otp
+	 * @param res Risposta HTTP
+	 * @returns 200 con booleano, 500 se errore
+	 */
     static async checkOTP(req: Request, res: Response): Promise<void> {
     try {
         const { data_ora_prenotazione, ref_torretta, otp } = req.body;

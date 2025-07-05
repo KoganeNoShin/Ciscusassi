@@ -1,8 +1,20 @@
 import AuthService from '../Services/authService';
 import { Request, Response } from 'express';
 
+/**
+ * Controller per la gestione dell'autenticazione (login, logout, recupero password).
+ */
 class AuthController {
-	// Gestisce il login per cliente o impiegato
+	/**
+	 * Effettua il login di un cliente o impiegato.
+	 * 
+	 * @param req Richiesta HTTP contenente `email` e `password` nel body
+	 * @param res Risposta HTTP
+	 * 
+	 * @returns 200 con token e dati utente se successo,
+	 *          401 se email o password non valide,
+	 *          400 in caso di errore durante il login.
+	 */
 	static async login(req: Request, res: Response): Promise<void> {
 		try {
 			const logged = await AuthService.login(req.body);
@@ -28,7 +40,16 @@ class AuthController {
 		}
 	}
 
-	// Gestisce il logout e l'invalidazione del token
+	/**
+	 * Effettua il logout dell'utente e invalida il token.
+	 * 
+	 * @param req Richiesta HTTP contenente il token nell’header Authorization
+	 * @param res Risposta HTTP
+	 * 
+	 * @returns 200 se logout riuscito,
+	 *          401 se token assente o non valido,
+	 *          500 in caso di errore interno.
+	 */
 	static async logout(req: Request, res: Response): Promise<void> {
 		try {
 			const token = req.headers.authorization?.replace('Bearer ', '');
@@ -63,7 +84,15 @@ class AuthController {
 		}
 	}
 
-	// Recupera Password
+	/**
+	 * Invia una email di recupero password all’indirizzo fornito.
+	 * 
+	 * @param req Richiesta HTTP contenente `email` nel body
+	 * @param res Risposta HTTP
+	 * 
+	 * @returns 200 se email inviata con successo,
+	 *          500 in caso di errore durante l’invio.
+	 */
 	static async recuperaPassword(req: Request, res: Response): Promise<void> {
 		try {
 			const emailCliente = req.body.email;

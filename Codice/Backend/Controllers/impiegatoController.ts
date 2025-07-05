@@ -1,7 +1,18 @@
 import { Request, Response } from 'express';
 import ImpiegatoService from '../Services/impiegatoService';
 
+/**
+ * Controller per la gestione degli impiegati.
+ */
 class ImpiegatoController {
+	/**
+	 * Aggiunge un nuovo impiegato.
+	 * 
+	 * @param req Richiesta HTTP contenente i dati dell’impiegato
+	 * @param res Risposta HTTP con ID del nuovo impiegato o errore
+	 * 
+	 * @returns 201 se creazione avvenuta, 500 in caso di errore
+	 */
 	static async addImpiegato(req: Request, res: Response): Promise<void> {
 		try {
 			const {
@@ -34,6 +45,14 @@ class ImpiegatoController {
 		}
 	}
 
+	/**
+	 * Aggiorna i dati di un impiegato esistente.
+	 * 
+	 * @param req Richiesta con param `matricola` e nuovi dati nel body
+	 * @param res Risposta di successo o errore
+	 * 
+	 * @returns 200 se aggiornamento riuscito, 500 in caso di errore
+	 */
 	static async updateImpiegato(req: Request, res: Response): Promise<void> {
 		try {
 			await ImpiegatoService.updateImpiegato(
@@ -54,6 +73,14 @@ class ImpiegatoController {
 		}
 	}
 
+	/**
+	 * Elimina un impiegato dato il suo numero di matricola.
+	 * 
+	 * @param req Richiesta contenente `matricola` nei parametri
+	 * @param res Risposta con conferma eliminazione o errore
+	 * 
+	 * @returns 200 se eliminazione riuscita, 500 in caso di errore
+	 */
 	static async deleteImpiegato(req: Request, res: Response): Promise<void> {
 		try {
 			await ImpiegatoService.deleteImpiegato(
@@ -73,6 +100,14 @@ class ImpiegatoController {
 		}
 	}
 
+	/**
+	 * Restituisce tutti gli impiegati associati a una filiale specifica.
+	 * 
+	 * @param req Richiesta contenente l’ID della filiale nei parametri
+	 * @param res Risposta con array di impiegati o messaggio
+	 * 
+	 * @returns 200 con dati o messaggio vuoto, 400 se ID non valido, 500 in caso di errore
+	 */
 	static async getAllImpiegati(req: Request, res: Response): Promise<void> {
 		try {
 			const idFiliale = Number(req.params.id_filiale);
