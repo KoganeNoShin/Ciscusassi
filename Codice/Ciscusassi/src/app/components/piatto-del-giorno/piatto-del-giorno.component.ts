@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProdottoService } from 'src/app/core/services/prodotto.service';
-import { IonSpinner } from '@ionic/angular/standalone';
+import { IonSpinner, IonText } from '@ionic/angular/standalone';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 
@@ -9,7 +9,7 @@ import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 	templateUrl: './piatto-del-giorno.component.html',
 	styleUrls: ['./piatto-del-giorno.component.scss'],
 	standalone: true,
-	imports: [IonSpinner],
+	imports: [IonText, IonSpinner],
 })
 export class PiattoDelGiornoComponent implements OnInit {
 	piatto: ProdottoRecord | undefined;
@@ -18,6 +18,12 @@ export class PiattoDelGiornoComponent implements OnInit {
 
 	constructor(private prodottoService: ProdottoService) {}
 
+	/**
+	 * Gestiamo la rispsota alla richiesta del piatto del giorno,
+	 * se successo allora memorizza i dati altrimenti memorizza errore
+	 *
+	 * @param response la risposta che ha restituito il server
+	 */
 	private handleResponse(response: ApiResponse<ProdottoRecord>): void {
 		console.log(response);
 
@@ -32,6 +38,11 @@ export class PiattoDelGiornoComponent implements OnInit {
 		this.loading = false;
 	}
 
+	/**
+	 * All'inizio del life-cicle del componente, mandiamo una richiesta
+	 * tramite la prodottoService per prendere il piatto del giorno corrente,
+	 * in modo tale da poter mostrare tutte le sue informazioni
+	 */
 	ngOnInit() {
 		this.prodottoService.GetPiattoDelGiorno().subscribe({
 			next: (response) => this.handleResponse(response),

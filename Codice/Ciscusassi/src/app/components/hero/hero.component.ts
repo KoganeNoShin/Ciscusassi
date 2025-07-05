@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { IonIcon } from '@ionic/angular/standalone';
+import { IonIcon, IonText } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import { chevronDown } from 'ionicons/icons';
@@ -10,7 +10,7 @@ import { chevronDown } from 'ionicons/icons';
 	templateUrl: './hero.component.html',
 	styleUrls: ['./hero.component.scss'],
 	standalone: true,
-	imports: [IonIcon],
+	imports: [IonText, IonIcon],
 })
 export class HeroComponent implements OnInit {
 	@Input() title: string = '';
