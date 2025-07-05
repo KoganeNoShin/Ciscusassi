@@ -1,6 +1,19 @@
 import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from './authMiddleware';
 
+/**
+ * Middleware per il controllo dei ruoli.
+ * Permette l'accesso solo agli utenti autenticati con uno dei ruoli specificati.
+ * Blocca i clienti in ogni caso, anche se specificati nei ruoli ammessi.
+ *
+ * @param allowedRoles Lista di ruoli autorizzati per accedere alla risorsa
+ * @returns Middleware Express che verifica il ruolo dell'utente
+ *
+ * Esempio:
+ * ```ts
+ * router.get('/admin', roleMiddleware(['amministratore']), controller);
+ * ```
+ */
 const roleMiddleware = (allowedRoles: string[]) => {
 	return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
 		if (!req.user) {

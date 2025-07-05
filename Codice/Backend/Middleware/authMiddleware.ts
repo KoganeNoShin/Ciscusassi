@@ -3,6 +3,9 @@ import Cliente from '../Models/cliente';
 import Impiegato from '../Models/impiegato';
 import AuthService from '../Services/authService';
 
+/**
+ * Estende l'interfaccia Request per includere l'utente autenticato.
+ */
 export interface AuthenticatedRequest extends Request {
 	user?: {
 		id: number | string;
@@ -12,6 +15,18 @@ export interface AuthenticatedRequest extends Request {
 	};
 }
 
+/**
+ * Middleware di autenticazione.
+ * Verifica la presenza e la validità del token JWT nell'header `Authorization`.
+ * Se il token è valido e corrisponde a un cliente o impiegato registrato, 
+ * aggiunge i dati utente all'oggetto `req.user` e passa il controllo al middleware successivo.
+ * In caso di token mancante, non valido o scaduto, restituisce errore 401.
+ *
+ * @param req Richiesta HTTP estesa con campo `user`
+ * @param res Risposta HTTP
+ * @param next Funzione per passare al middleware successivo
+ * @returns 401 in caso di token mancante, scaduto o non valido; 500 in caso di errore interno
+ */
 const authMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
 	const authHeader = req.headers.authorization;
 
