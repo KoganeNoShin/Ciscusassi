@@ -2,7 +2,9 @@
 	(click)="selectedCircle()"
 	[class.selected]="number === personeSelezionate"
 	[class.match-input]="inputManuale === number"
-	class="cerchio"
+	class="cerchio bg-color-bianco"
 >
-	<p>{{ number }}</p>
+	<ion-text color="ion-text-center">
+		<p class="text-color-nero">{{ number }}</p>
+	</ion-text>
 </div>

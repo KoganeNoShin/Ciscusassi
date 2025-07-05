@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { IonText } from '@ionic/angular/standalone';
 
 @Component({
 	selector: 'app-numero-posti-button',
 	templateUrl: './numero-posti-button.component.html',
 	styleUrls: ['./numero-posti-button.component.scss'],
+	imports: [IonText],
 })
 export class NumeroPostiButton implements OnInit {
 	@Input() number: number = 0;

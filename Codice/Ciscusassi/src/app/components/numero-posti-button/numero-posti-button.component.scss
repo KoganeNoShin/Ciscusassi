@@ -7,10 +7,8 @@
 	justify-content: center;
 	cursor: pointer;
 	transition: all 0.2s ease-in-out;
-	color: black;
-	background-color: white;
 
-	p {
+	ion-text p {
 		font-size: clamp(1.5rem, 2vw, 4rem);
 		display: flex;
 		align-items: center;
@@ -25,24 +23,24 @@
 	background-color: var(--ion-color-verdechiaro);
 	border-color: var(--ion-color-verdechiaro);
 
-	p {
+	ion-text p {
 		color: var(--ion-color-bianco);
 	}
 }
 
 .cerchio.match-input:not(.selected) {
-	background-color: var(--ion-color-verdechiaro);
-	border-color: var(--ion-color-verdechiaro);
+	background-color: var(--ion-color-verdechiaro) !important;
+	border-color: var(--ion-color-verdechiaro) !important;
 
-	p {
-		color: var(--ion-color-bianco);
+	ion-text p {
+		color: var(--ion-color-bianco) !important;
 	}
 }
 
 .cerchio:hover {
-	background-color: var(--ion-color-verdechiaro);
+	background-color: var(--ion-color-verdechiaro) !important;
 
-	p {
-		color: var(--ion-color-bianco);
+	ion-text p {
+		color: var(--ion-color-bianco) !important;
 	}
 }

@@ -70,6 +70,15 @@ export class AuthenticationService {
 			nuovaPassword: nuovaPassword,
 			confermaPassword: confermaPassword,
 		};
+
+		// Se siamo un impiegato
+		if (this.getFiliale() != -1) {
+			return this.http.put<ApiResponse<any>>(
+				`${this.apiURL}/filiale/impiegato/nuova_password`,
+				body
+			);
+		}
+
 		return this.http.put<ApiResponse<any>>(
 			`${this.apiURL}/cliente/nuova_password`,
 			body
@@ -80,6 +89,7 @@ export class AuthenticationService {
 		const body = {
 			email: email,
 		};
+
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/auth/recupera_password`,
 			body

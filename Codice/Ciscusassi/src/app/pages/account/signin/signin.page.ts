@@ -26,18 +26,12 @@ import {
 	ValidationErrors,
 } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import {
-	LoginRecord,
-	OurTokenPayload,
-	RegistrationData,
-} from 'src/app/core/interfaces/Credentials';
+import { RegistrationData } from 'src/app/core/interfaces/Credentials';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { IonInput } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 
-import { inject } from '@angular/core';
-import { NavController, ToastController } from '@ionic/angular';
-import { image } from 'ionicons/icons';
+import { ToastController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-signin',
@@ -61,7 +55,7 @@ import { image } from 'ionicons/icons';
 		ReactiveFormsModule,
 		IonInput,
 		IonInputPasswordToggle,
-		IonAvatar
+		IonAvatar,
 	],
 })
 export class SigninPage implements OnInit {
@@ -80,21 +74,26 @@ export class SigninPage implements OnInit {
 		nuovaPassword: '',
 		confermaPassword: '',
 	};
+	dataMaxOggi: string = '';
 
 	constructor(
 		private fb: FormBuilder,
 		private authenticationService: AuthenticationService,
 		private router: Router,
-		private toastController: ToastController,
+		private toastController: ToastController
 	) {}
 
 	private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
 		if (response.success) {
-			this.presentToast('Registrazione completata con successo!', 'success');
+			this.presentToast(
+				'Registrazione completata con successo!',
+				'success'
+			);
 			this.router.navigate(['/login']);
 		} else {
-			this.errorMsg = response.message || 'Errore durante la registrazione.';
+			this.errorMsg =
+				response.message || 'Errore durante la registrazione.';
 			this.error = true;
 		}
 	}
@@ -131,6 +130,12 @@ export class SigninPage implements OnInit {
 				],
 			],
 		});
+
+		const oggi = new Date();
+		const anno = oggi.getFullYear();
+		const mese = String(oggi.getMonth() + 1).padStart(2, '0'); // mesi da 0 a 11
+		const giorno = String(oggi.getDate()).padStart(2, '0');
+		this.dataMaxOggi = `${anno}-${mese}-${giorno}`;
 	}
 
 	async onSubmit() {
@@ -144,17 +149,15 @@ export class SigninPage implements OnInit {
 				this.formRegistrazione.value.confermaPassword;
 
 			try {
-
-				if (this.credenziali.image === '') {	
-				this.credenziali.image = await this.loadDefaultImage();
-				} 
+				if (this.credenziali.image === '') {
+					this.credenziali.image = await this.loadDefaultImage();
+				}
 				this.authenticationService
 					.registrati(this.credenziali)
 					.subscribe({
 						next: (response) => this.handleResponse(response),
 						error: (err) => {
-							this.errorMsg =
-								'Formato email non valido';
+							this.errorMsg = 'Formato email non valido';
 							console.log(err);
 							this.error = true;
 							this.loading = false;
@@ -187,7 +190,9 @@ export class SigninPage implements OnInit {
 	}
 
 	async loadDefaultImage(): Promise<string> {
-		const response = await fetch('https://ionicframework.com/docs/img/demos/avatar.svg');
+		const response = await fetch(
+			'https://ionicframework.com/docs/img/demos/avatar.svg'
+		);
 		const blob = await response.blob();
 		return this.convertToBase64(blob);
 	}
@@ -207,14 +212,15 @@ export class SigninPage implements OnInit {
 			const reader = new FileReader();
 			reader.onload = async () => {
 				const image = reader.result as string;
-				this.credenziali.image = await this.convertToBase64(await (await fetch(image)).blob());
+				this.credenziali.image = await this.convertToBase64(
+					await (await fetch(image)).blob()
+				);
 			};
 			reader.readAsDataURL(file);
 		} else {
 			this.presentToast('Seleziona un file immagine valida.', 'warning');
 		}
 	}
-
 
 	async presentToast(
 		message: string,

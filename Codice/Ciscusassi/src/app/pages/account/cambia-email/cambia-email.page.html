@@ -20,10 +20,7 @@
 					<p class="errorMsg">{{ errorMsg }}</p>
 					}
 
-					<form
-						[formGroup]="formCambiaEmail"
-						(ngSubmit)="onSubmit()"
-					>
+					<form [formGroup]="formCambiaEmail" (ngSubmit)="onSubmit()">
 						<ion-item class="campoForm ion-padding-horizontal">
 							<ion-input
 								formControlName="email"
@@ -45,7 +42,10 @@
 							[disabled]="formCambiaEmail.invalid || loading"
 						>
 							@if (!loading) { MODIFICA EMAIL } @else {
-							<ion-spinner name="bubbles"></ion-spinner>
+							<ion-spinner
+								name="circular"
+								color="bianco"
+							></ion-spinner>
 							}
 						</ion-button>
 					</form>
