@@ -1,49 +1,55 @@
+// Sfochiamo lo sfondo per dare distacco
 #blur {
-	position: absolute;
-	z-index: -1;
-	backdrop-filter: blur(5px);
-	width: 100vw;
-	height: 100vh;
+	position: absolute; // Ci permette di mettere il blur sopra lo sfondo
+	z-index: -1; // Lo mettiamo davanti all'immagine ma dietro il testo
+	backdrop-filter: blur(5px); // Aggiungiamo il blur
+	width: 100vw; // Il blur deve prendere tutta la dimensione orizzontale
+	height: 100vh; // Ed anche quella verticale
 }
 
 #background {
-	position: absolute;
-	z-index: -2;
+	position: absolute; // Ci permette di mettere l'immagine sotto il testo
+	z-index: -2; // Lo mettiamo dietro al testo ed al blur
 	backdrop-filter: blur(5px);
 	width: 100vw;
 	height: 100vh;
-	background-size: cover;
-	background-position: center;
-	filter: brightness(60%);
+	background-size: cover; // L'immagine prende interamente la dimensione a costo di venir ritagliata leggermente
+	background-position: center; // Lo sfondo deve essere centrato
+	filter: brightness(60%); // Scuriamo l'immagine
 }
 
 #hero {
-	text-align: center;
 	width: 100vw;
 	height: 100vh;
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	font-family: 'Isocpeur-Regular', sans-serif;
-}
+	flex-direction: column; // Dispone i figli della div in colonna
+	justify-content: center; // Centra verticalmente
+	align-items: center; // Centra orizzontalmente
 
-#hero h1 {
-	margin-bottom: 30px;
-	color: var(--ion-color-bianco);
-	width: 90%;
-}
+	h1 {
+		margin-bottom: 30px;
+	}
 
-#hero p {
-	font-size: 1.5rem;
-	line-height: 22px;
-	width: 90%;
-	color: var(--ion-color-bianco);
-}
+	#chevron {
+		position: absolute;
+		bottom: 0; // Posizioniamo lo chevron in fondo alla pagina
+		margin-bottom: 15vh;
+		animation: pulse 2s ease-in-out infinite; // Animazione di puslsazione
+	}
 
-#chevron {
-	position: absolute;
-	bottom: 0;
-	margin-bottom: 5%;
-	color: var(--ion-color-arancione);
+	// Keyframe dell'animazione
+	@keyframes pulse {
+		0% {
+			transform: scale(1);
+			opacity: 1;
+		}
+		50% {
+			transform: scale(1.4);
+			opacity: 0.3;
+		}
+		100% {
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
 }

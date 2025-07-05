@@ -1,21 +1,40 @@
-// importo il db
+// Importa librerie necessarie
 import { rejects } from 'assert';
 import db from '../db';
 import { RunResult } from 'sqlite3';
 
-// Definiamo il modello di un Ordine
+/**
+ * Input richiesto per la creazione di un ordine.
+ */
 export interface OrdineInput {
+	/** Username di chi ha effettuato l’ordine */
 	username_ordinante: string;
+	/** ID della prenotazione associata */
 	ref_prenotazione: number;
+	/** ID cliente se autenticato, null se guest */
 	ref_cliente: number | null;
 }
+
+/**
+ * Rappresenta un record completo dell'ordine nel database.
+ */
 export interface OrdineRecord extends OrdineInput {
+	/** ID univoco dell'ordine (primary key) */
 	id_ordine: number;
+	/** Riferimento al pagamento associato all’ordine (può essere null) */
 	ref_pagamento: number | null;
 }
 
+/**
+ * Classe che gestisce tutte le operazioni CRUD relative agli ordini.
+ */
 export class Ordine {
-	// Creazione di un nuovo Ordine
+	/**
+	 * Crea un nuovo ordine nel database.
+	 * 
+	 * @param data - Dati dell’ordine da inserire
+	 * @returns ID del nuovo ordine creato
+	 */
 	static async create(data: OrdineInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -32,7 +51,12 @@ export class Ordine {
 		});
 	}
 
-	// Aggiunta di un Pagamento a un Ordine
+	/**
+	 * Associa un pagamento a un ordine esistente.
+	 * 
+	 * @param ref_pagamento - ID del pagamento
+	 * @param id_ordine - ID dell’ordine da aggiornare
+	 */
 	static async addPagamento(ref_pagamento : number, id_ordine: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -54,8 +78,11 @@ export class Ordine {
 		});
 	}
 
-
-	// Elimina Piatto
+	/**
+	 * Elimina un ordine dal database.
+	 * 
+	 * @param id - ID dell’ordine da eliminare
+	 */
 	static async deleteOrdine(id: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -77,7 +104,11 @@ export class Ordine {
 		});
 	}
 
-	// Selezione di tutti gli Ordini
+	/**
+	 * Restituisce tutti gli ordini presenti nel sistema.
+	 * 
+	 * @returns Array di ordini
+	 */
 	static async getAll(): Promise<OrdineRecord[]> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -95,7 +126,12 @@ export class Ordine {
 		});
 	}
 
-	// Selezione di un Ordine per ID
+	/**
+	 * Restituisce un ordine specifico tramite ID.
+	 * 
+	 * @param id - ID dell’ordine
+	 * @returns Record dell’ordine oppure null
+	 */
 	static async getById(id: number): Promise<OrdineRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -114,7 +150,12 @@ export class Ordine {
 		});
 	}
 
-	// Selezione di Ordini per Cliente
+	/**
+	 * Restituisce tutti gli ordini associati a un cliente.
+	 * 
+	 * @param clienteId - ID del cliente
+	 * @returns Lista di ordini del cliente
+	 */
 	static async getByCliente(clienteId: number): Promise<OrdineRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -133,7 +174,12 @@ export class Ordine {
 		});
 	}
 
-	// Selezione di Ordini per Prenotazione
+	/**
+	 * Restituisce tutti gli ordini associati a una prenotazione.
+	 * 
+	 * @param prenotazioneId - ID della prenotazione
+	 * @returns Lista di ordini associati
+	 */
 	static async getByPrenotazione(prenotazioneId: number): Promise<OrdineRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -152,7 +198,13 @@ export class Ordine {
 		});
 	}
 
-	// Selezione di Ordini per Prenotazione e Username (Copia univoca tramite validate)
+	/**
+	 * Restituisce l'ID dell’ordine associato a una combinazione unica di prenotazione e username.
+	 * 
+	 * @param prenotazioneID - ID della prenotazione
+	 * @param username - Username dell'ordinante
+	 * @returns ID dell’ordine oppure null
+	 */
 	static async getOrdineByPrenotazioneAndUsername(prenotazioneID: number, username: string): Promise<number | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -175,4 +227,5 @@ export class Ordine {
 	}
 }
 
+// Esporta la classe Ordine come default per l'utilizzo nei controller
 export default Ordine;

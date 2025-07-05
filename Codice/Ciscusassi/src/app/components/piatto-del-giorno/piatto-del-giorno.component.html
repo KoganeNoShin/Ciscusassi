@@ -4,10 +4,13 @@
 
 <div id="content" backgr>
 	@if (loading) {
-		<ion-spinner name="bubbles"></ion-spinner>
+		<ion-spinner name="circular" color="bianco"></ion-spinner>
 	} @else {
 		@if (!error) {
-			<h1 class="text-color-bianco">PIATTO DEL GIORNO</h1>
+			<ion-text class="ion-text-center">
+				<h2 class="text-color-bianco">PIATTO DEL GIORNO</h2>
+			</ion-text>
+
 			<div id="plate">
 				<img
 					[src]="piatto!.immagine"
@@ -15,14 +18,24 @@
 					class="immagine-rotante"
 				/>
 				<div id="plateInfo">
-					<h2 class="text-color-bianco">
-						{{ piatto!.nome }} - {{ piatto!.costo }} €
-					</h2>
-					<h5 class="text-color-bianco">{{ piatto!.descrizione }}</h5>
-					<p class="text-color-bianco">
-						* Acquistando il piatto del giorno hai diritto a 10 pt
-						fedeltà bonus.
-					</p>
+					<ion-text class="ion-text-center ion-text-md-left">
+						<h4 class="text-color-bianco">
+							<b> {{ piatto!.nome }} - {{ piatto!.costo }} </b> €
+						</h4>
+					</ion-text>
+
+					<ion-text class="ion-text-center ion-text-md-left">
+						<h5 class="text-color-bianco">
+							{{ piatto!.descrizione }}
+						</h5>
+					</ion-text>
+
+					<ion-text class="ion-text-center ion-text-md-left">
+						<p class="text-color-bianco">
+							* Acquistando il piatto del giorno hai diritto a 10
+							pt fedeltà bonus.
+						</p>
+					</ion-text>
 				</div>
 			</div>
 		} @else {

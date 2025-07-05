@@ -1,34 +1,63 @@
-// importo il db
+// Importa il database SQLite e il tipo di risultato per operazioni di scrittura
 import { RunResult } from 'sqlite3';
 import db from '../db';
 
-// importo il modulo bcryptjs per la gestione delle password
+// Importa bcryptjs per il confronto sicuro tra password
 import bcrypt from 'bcryptjs';
 
-// Definiamo il modello dell'impiegato
+/**
+ * Dati generali di un impiegato (senza credenziali).
+ */
 export interface ImpiegatoData {
+	/** Nome dell’impiegato */
 	nome: string;
+	/** Cognome dell’impiegato */
 	cognome: string;
+	/** Ruolo dell’impiegato (es: cameriere, chef, ecc.) */
 	ruolo: string;
+	/** Base64 dell'immagine/foto dell'impiegato */
 	foto: string;
+	/** Data di nascita dell’impiegato */
 	data_nascita: string;
+	/** ID della filiale a cui è assegnato l’impiegato */
 	ref_filiale: number;
 }
 
+/**
+ * Credenziali dell'impiegato per login e autenticazione.
+ */
 export interface ImpiegatoCredentials {
+	/** Email utilizzata per il login */
 	email: string;
+	/** Password hashata salvata nel DB */
 	password: string;
 }
 
+/**
+ * Input completo richiesto alla creazione di un impiegato.
+ */
 export interface ImpiegatoInput extends ImpiegatoData, ImpiegatoCredentials {}
 
+/**
+ * Record completo restituito dal database per un impiegato.
+ */
 export interface ImpiegatoRecord extends ImpiegatoData {
+	/** Email dell’impiegato */
 	email: string;
+	/** Matricola univoca (primary key) */
 	matricola: number;
 }
 
+/**
+ * Classe `Impiegato` che gestisce tutte le operazioni relative agli impiegati nel database.
+ */
 export class Impiegato {
-	// Creazione di un nuovo Impiegato
+	/**
+	 * Crea un nuovo impiegato nel database.
+	 *
+	 * @param data - Dati completi dell'impiegato da inserire
+	 * @returns ID (matricola) del nuovo impiegato
+	 */
 	static async create(data: ImpiegatoInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -44,15 +73,19 @@ export class Impiegato {
 		});
 	}
 
-	// Modifica Impiegato
+	/**
+	 * Aggiorna le informazioni di un impiegato dato l’ID (matricola).
+	 *
+	 * @param data - Nuovi dati dell’impiegato
+	 * @param matricola - Identificativo dell’impiegato
+	 */
 	static async updateImpiegato(data: ImpiegatoData, matricola: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				`UPDATE impiegati 
 				SET nome = ?, cognome = ?, ruolo = ?, foto = ?, data_nascita = ?, ref_filiale = ? 
 				WHERE matricola = ?`,
-				[data.nome, data.cognome, data.ruolo, data.foto, data.data_nascita, data.ref_filiale,
-				matricola],
+				[data.nome, data.cognome, data.ruolo, data.foto, data.data_nascita, data.ref_filiale, matricola],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
@@ -68,7 +101,11 @@ export class Impiegato {
 		});
 	}
 
-	// Elimina Impiegato
+	/**
+	 * Elimina un impiegato dal database tramite matricola.
+	 *
+	 * @param matricola - Identificativo dell’impiegato da eliminare
+	 */
 	static async deleteImpiegato(matricola: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -76,7 +113,7 @@ export class Impiegato {
 				[matricola],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
-						console.error('❌ [DB ERROR] Errore durante DELETE: ',err.message);
+						console.error('❌ [DB ERROR] Errore durante DELETE: ', err.message);
 						reject(err);
 					}
 					if (this.changes === 0) {
@@ -88,7 +125,12 @@ export class Impiegato {
 		});
 	}
 
-	// Seleziona tutti gli Impiegati
+	/**
+	 * Restituisce tutti gli impiegati associati a una determinata filiale.
+	 *
+	 * @param id_filiale - ID della filiale
+	 * @returns Lista di impiegati della filiale
+	 */
 	static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -107,7 +149,12 @@ export class Impiegato {
 		});
 	}
 
-	// Seleziona in base all'email
+	/**
+	 * Recupera un impiegato tramite la sua email.
+	 *
+	 * @param email - Email dell’impiegato
+	 * @returns Record dell’impiegato oppure `null`
+	 */
 	static async getByEmail(email: string): Promise<ImpiegatoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -126,7 +173,12 @@ export class Impiegato {
 		});
 	}
 
-	// Seleziona in base all'ID
+	/**
+	 * Recupera un impiegato tramite matricola.
+	 *
+	 * @param id - Matricola dell’impiegato
+	 * @returns Dati dell’impiegato oppure `null`
+	 */
 	static async getByMatricola(id: number): Promise<ImpiegatoData | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -147,9 +199,15 @@ export class Impiegato {
 		});
 	}
 
-	//------------------ ZONA CREDENZIALI ------------------//
+	// ------------------ ZONA CREDENZIALI ------------------ //
 
-	// Aggiornamento Token Impiegato
+	/**
+	 * Aggiorna il token associato a un impiegato.
+	 *
+	 * @param matricola - Matricola dell’impiegato
+	 * @param token - Nuovo token da associare
+	 * @returns Token aggiornato
+	 */
 	static async updateToken(matricola: number, token: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			db.run('UPDATE impiegati SET token = ? WHERE matricola = ?', [token, matricola], function (this: RunResult, err: Error) {
@@ -166,7 +224,12 @@ export class Impiegato {
 		});
 	}
 
-	// Seleziona le credenziali dell'impiegato in base al token
+	/**
+	 * Recupera un impiegato tramite token salvato nel DB.
+	 *
+	 * @param token - Token associato all’impiegato
+	 * @returns Record dell’impiegato oppure `null`
+	 */
 	static async getByToken(token: string): Promise<ImpiegatoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get('SELECT matricola, nome, cognome, ruolo, foto, email, data_nascita, ref_filiale FROM impiegati WHERE token = ?', [token], (err: Error, row: ImpiegatoRecord) => {
@@ -179,7 +242,12 @@ export class Impiegato {
 		});
 	}
 
-	// Seleziona le credenziali dell'impiegato in base all'email
+	/**
+	 * Recupera email e password hashata dell’impiegato tramite email.
+	 *
+	 * @param email - Email da cercare
+	 * @returns Oggetto con email e password oppure `null`
+	 */
 	static async getPassword(email: string): Promise<ImpiegatoCredentials | null> {
 		return new Promise((resolve, reject) => {
 			db.get('SELECT impiegati.email, impiegati.password FROM impiegati WHERE email = ?', [email], (err: Error, row: ImpiegatoCredentials) => {
@@ -192,7 +260,11 @@ export class Impiegato {
 		});
 	}
 
-	// Invalida il token dell'impiegato
+	/**
+	 * Invalida (rimuove) il token dell’impiegato, ad esempio durante il logout.
+	 *
+	 * @param matricola - Matricola dell’impiegato
+	 */
 	static async invalidateToken(matricola: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run('UPDATE impiegati SET token = NULL WHERE matricola = ?', [matricola], (err: Error) => {
@@ -205,12 +277,23 @@ export class Impiegato {
 		});
 	}
 
-	// Confronta la password inserita con quella salvata nel database
+	/**
+	 * Confronta la password inserita con quella salvata nel database.
+	 *
+	 * @param candidatePassword - Password fornita dall'utente
+	 * @param hash - Password salvata nel DB (hash)
+	 * @returns `true` se la password combacia, `false` altrimenti
+	 */
 	static async comparePassword(candidatePassword: string, hash: string): Promise<boolean> {
 		return bcrypt.compare(candidatePassword, hash);
 	}
 
-	// Aggiorna la password del cliente
+	/**
+	 * Aggiorna la password di un impiegato nel database.
+	 *
+	 * @param matricola - Matricola dell’impiegato
+	 * @param nuovaPassword - Password nuova hashata
+	 */
 	static async aggiornaPassword(matricola: number, nuovaPassword: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(`

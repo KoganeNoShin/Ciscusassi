@@ -3,6 +3,10 @@ import { idFilialeValidator } from './filialeValidator';
 import Impiegato from '../Models/impiegato';
 
 // Funzioni
+/**
+ * Valida il nome dell'impiegato.
+ * - Deve essere non vuoto.
+ */
 function nomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
@@ -10,6 +14,10 @@ function nomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
 		.withMessage("Il nome dell'impiegato è obbligatorio");
 }
 
+/**
+ * Valida il cognome dell'impiegato.
+ * - Deve essere non vuoto.
+ */
 function cognomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
@@ -17,6 +25,11 @@ function cognomeImpiegatoValidator(chain: ValidationChain): ValidationChain {
 		.withMessage("Il cognome dell'impiegato è obbligatorio");
 }
 
+/**
+ * Valida il ruolo dell'impiegato.
+ * - Deve essere non vuoto.
+ * - Deve essere uno tra: "Amministratore", "Chef", "Cameriere".
+ */
 function ruoloValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
@@ -33,6 +46,11 @@ function ruoloValidator(chain: ValidationChain): ValidationChain {
 		});
 }
 
+/**
+ * Valida il campo immagine (foto).
+ * - Deve essere non vuoto.
+ * - Deve essere una stringa base64 con formato immagine valido: jpeg, png o webp.
+ */
 function fotoValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty()
@@ -41,6 +59,13 @@ function fotoValidator(chain: ValidationChain): ValidationChain {
 		.withMessage('Formato immagine non valido!');
 }
 
+/**
+ * Valida la data di nascita.
+ * - Deve essere non vuota.
+ * - Deve rispettare il formato "yyyy-MM-dd".
+ * - Deve rappresentare una data valida nel passato.
+ * - L'impiegato deve avere almeno 18 anni (verifica età).
+ */
 function data_nascitaValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty()
@@ -74,6 +99,11 @@ function data_nascitaValidator(chain: ValidationChain): ValidationChain {
 		});
 }
 
+/**
+ * Valida il campo email.
+ * - Deve essere non vuoto.
+ * - Deve rispettare il formato di un'email valida.
+ */
 function emailValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.trim()
@@ -83,14 +113,12 @@ function emailValidator(chain: ValidationChain): ValidationChain {
 		.withMessage("L'email deve essere valida");
 }
 
-function passwordValidator(chain: ValidationChain): ValidationChain {
-	return chain
-		.notEmpty()
-		.withMessage('La password è obbligatoria')
-		.isLength({ min: 6 })
-		.withMessage('La password deve essere lunga almeno 6 caratteri');
-}
-
+/**
+ * Valida la matricola dell’impiegato.
+ * - Deve essere non vuota.
+ * - Deve essere un numero intero positivo.
+ * - Deve corrispondere a un impiegato esistente nel database.
+ */
 export function matricolaImpiegatoValidator(
 	chain: ValidationChain
 ): ValidationChain {
@@ -109,7 +137,29 @@ export function matricolaImpiegatoValidator(
 		});
 }
 
+/**
+ * Valida la password:
+ * - Richiede un minimo di 6 caratteri
+ */
+function passwordImpiegatoValidator(chain: ValidationChain): ValidationChain {
+	return chain
+		.notEmpty().withMessage('La password è obbligatoria')
+		.isLength({ min: 6 }).withMessage('La password deve contenere almeno 6 caratteri');
+}
+
 // Validatori
+/**
+ * Validatore per la creazione di un nuovo impiegato.
+ * 
+ * Valida i seguenti campi del body della richiesta:
+ * - `nome`: deve essere non vuoto.
+ * - `cognome`: deve essere non vuoto.
+ * - `ruolo`: deve essere uno tra "Amministratore", "Chef", "Cameriere".
+ * - `foto`: deve essere una stringa in formato immagine base64 valida (jpeg, png, webp).
+ * - `email`: deve essere un'email valida e non vuota.
+ * - `data_nascita`: deve essere nel formato "yyyy-MM-dd", nel passato e con età ≥ 18.
+ * - `ref_filiale`: ID numerico positivo di una filiale esistente.
+ */
 export const addImpiegatoValidator = [
 	nomeImpiegatoValidator(body('nome')),
 	cognomeImpiegatoValidator(body('cognome')),
@@ -120,6 +170,15 @@ export const addImpiegatoValidator = [
 	idFilialeValidator(body('ref_filiale')),
 ];
 
+/**
+ * Validatore per l'aggiornamento di un impiegato esistente.
+ * 
+ * Valida:
+ * - Campi del body (come nella creazione):
+ *   - `nome`, `cognome`, `ruolo`, `foto`, `data_nascita`, `ref_filiale`
+ * - Parametri della route:
+ *   - `matricola`: deve essere un intero > 0 e corrispondere a un impiegato registrato.
+ */
 export const updateImpiegatoValidator = [
 	nomeImpiegatoValidator(body('nome')),
 	cognomeImpiegatoValidator(body('cognome')),
@@ -128,4 +187,21 @@ export const updateImpiegatoValidator = [
 	data_nascitaValidator(body('data_nascita')),
 	idFilialeValidator(body('ref_filiale')),
 	matricolaImpiegatoValidator(param('matricola')),
+];
+
+/**
+ * Validatore per la modifica password dell'Impiegato:
+ * - Verifica che la nuova password sia valida
+ * - Verifica che la conferma coincida
+ */
+export const aggiornaPasswordValidator: ValidationChain[] = [
+	passwordImpiegatoValidator(body('nuovaPassword')),
+	body('confermaPassword')
+		.notEmpty().withMessage('La conferma password è obbligatoria')
+		.custom((value, { req }) => {
+			if (value !== req.body.nuovaPassword) {
+				throw new Error('Le password non coincidono');
+			}
+			return true;
+		}),
 ];

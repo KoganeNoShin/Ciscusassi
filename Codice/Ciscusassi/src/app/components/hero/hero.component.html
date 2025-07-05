@@ -6,12 +6,19 @@
 ></div>
 
 <div id="hero">
-	<h1>{{ title }}</h1>
-	<p [innerHTML]="description"></p>
+	<ion-text class="ion-text-center">
+		<h1 class="text-color-bianco">{{ title }}</h1>
+	</ion-text>
+
+	<ion-text class="ion-text-center">
+		<h3 class="text-color-bianco">{{ description }}</h3>
+	</ion-text>
+
 	<ion-icon
 		id="chevron"
 		slot="icon-only"
 		name="chevron-down"
 		size="large"
+		color="arancione"
 	></ion-icon>
 </div>

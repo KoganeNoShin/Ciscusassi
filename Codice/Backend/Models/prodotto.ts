@@ -2,22 +2,40 @@
 import db from '../db';
 import { RunResult } from 'sqlite3';
 
-// Definiamo il modello di un Prodotto
+/**
+ * Interfaccia che rappresenta i dati in input per creare o aggiornare un prodotto.
+ */
 export interface ProdottoInput {
+	/** Nome del prodotto */
 	nome: string;
+	/** Descrizione del prodotto */
 	descrizione: string;
+	/** Costo del prodotto in euro */
 	costo: number;
+	/** URL o path dell'immagine del prodotto */
 	immagine: string;
+	/** Categoria a cui appartiene il prodotto (es. primi, dolci, bevande...) */
 	categoria: string;
 }
 
+/**
+ * Interfaccia che rappresenta un record completo di prodotto presente nel database.
+ * Estende `ProdottoInput` e include anche l'ID e il flag facoltativo `is_piatto_giorno`.
+ */
 export interface ProdottoRecord extends ProdottoInput {
+	/** Identificativo univoco del prodotto nel database */
 	id_prodotto: number;
+	/** Indica se il prodotto è attualmente il piatto del giorno (1 = sì, 0/null = no) */
 	is_piatto_giorno?: boolean;
 }
 
+
 export class Prodotto {
-	// Creazione di un nuovo Prodotto
+	/**
+	 * Crea un nuovo prodotto nel database.
+	 * @param data - I dati del prodotto da inserire.
+	 * @returns L'ID del prodotto appena creato.
+	 */
 	static async create(data: ProdottoInput): Promise<number> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -28,19 +46,23 @@ export class Prodotto {
 						console.error('❌ [DB ERROR] Errore durante INSERT:', err.message);
 						reject(err);
 					}
-					else resolve(this.lastID);
+					else resolve(this.lastID); // restituisce l'ID appena inserito
 				}
 			);
 		});
 	}
 
-	// Modifica Piatto
+	/**
+	 * Aggiorna un prodotto esistente nel database.
+	 * @param data - I nuovi dati del prodotto.
+	 * @param id - L'ID del prodotto da aggiornare.
+	 * @returns Void se aggiornamento avvenuto con successo, altrimenti errore.
+	 */
 	static async updateProdotto(data: ProdottoInput, id: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'UPDATE prodotti SET nome = ?, descrizione = ?, costo = ?, immagine = ?, categoria = ? WHERE id_prodotto = ?',
-				[data.nome, data.descrizione, data.costo, data.immagine, data.categoria, 
-				id],
+				[data.nome, data.descrizione, data.costo, data.immagine, data.categoria, id],
 				function (this: RunResult, err: Error | null) {
 					if (err) {
 						console.error('❌ [DB ERROR] Errore durante UPDATE:', err.message);
@@ -57,7 +79,10 @@ export class Prodotto {
 		});
 	}
 
-	// Elimina Piatto
+	/**
+	 * Elimina un prodotto dal database tramite ID.
+	 * @param id - L'ID del prodotto da eliminare.
+	 */
 	static async deleteProdotto(id: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -79,7 +104,9 @@ export class Prodotto {
 		});
 	}
 	
-	// Disattiva Piatto del Giorno
+	/**
+	 * Disattiva il piatto del giorno (imposta tutti i flag a false).
+	 */
 	static async disattivaPiattoDelGiorno(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -94,7 +121,10 @@ export class Prodotto {
 		});
 	}
 
-	// Attiva Piatto del Giorno
+	/**
+	 * Attiva il piatto del giorno per uno specifico prodotto.
+	 * @param id - L'ID del prodotto da marcare come piatto del giorno.
+	 */
 	static async attivaPiattoDelGiorno(id: number): Promise<void> {
 		return new Promise((resolve, reject) => {
 			db.run(
@@ -115,7 +145,10 @@ export class Prodotto {
 		});
 	}
 
-	// Selezione di tutti i Prodotti
+	/**
+	 * Restituisce l'elenco di tutti i prodotti ordinati per categoria decrescente.
+	 * @returns Lista di tutti i prodotti presenti nel database.
+	 */
 	static async getAll(): Promise<ProdottoRecord[]> {
 		return new Promise((resolve, reject) => {
 			db.all(
@@ -133,7 +166,10 @@ export class Prodotto {
 		});
 	}
 
-	// Selezione del Piatto del Giorno
+	/**
+	 * Restituisce il prodotto che è stato marcato come piatto del giorno.
+	 * @returns Il prodotto marcato come piatto del giorno oppure null se non presente.
+	 */
 	static async getPiattoDelGiorno(): Promise<ProdottoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(
@@ -151,7 +187,11 @@ export class Prodotto {
 		});
 	}
 
-	// Selezione per ID
+	/**
+	 * Restituisce un prodotto dato il suo ID.
+	 * @param id - L'ID del prodotto da recuperare.
+	 * @returns Il prodotto corrispondente oppure null se non trovato.
+	 */
 	static async getByID(id: number): Promise<ProdottoRecord | null> {
 		return new Promise((resolve, reject) => {
 			db.get(

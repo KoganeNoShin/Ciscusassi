@@ -2,7 +2,16 @@ import { Request, Response } from 'express';
 import ProdottoService from '../Services/prodottoService';
 import { ProdottoInput } from '../Models/prodotto';
 
+/**
+ * Controller per la gestione dei prodotti.
+ */
 class ProdottoController {
+	/**
+	 * Aggiunge un nuovo prodotto al sistema.
+	 * @param req Richiesta HTTP contenente i dati del prodotto nel body
+	 * @param res Risposta HTTP
+	 * @returns 201 se inserito con successo, 400 se errore di validazione, 500 se errore server
+	 */
 	static async addProdotto(req: Request, res: Response): Promise<void> {
 		try {
 			const { nome, descrizione, costo, immagine, categoria} = req.body;
@@ -25,6 +34,12 @@ class ProdottoController {
 		}
 	}
 
+	/**
+	 * Aggiorna un prodotto esistente dato l'ID.
+	 * @param req Richiesta HTTP con ID del prodotto nei parametri e dati aggiornati nel body
+	 * @param res Risposta HTTP
+	 * @returns 200 se aggiornato con successo, 500 se errore
+	 */
 	static async updateProdotto(req: Request, res: Response): Promise<void> {
 		try {
 			await ProdottoService.updateProdotto(req.body, parseInt(req.params.id_prodotto));
@@ -40,6 +55,12 @@ class ProdottoController {
 		}
 	}
 
+	/**
+	 * Elimina un prodotto dato il suo ID.
+	 * @param req Richiesta HTTP con ID del prodotto nei parametri
+	 * @param res Risposta HTTP
+	 * @returns 200 se eliminato con successo, 500 se errore
+	 */
 	static async deleteProdotto(req: Request, res: Response): Promise<void> {
 		try {
 			await ProdottoService.deleteProdotto(
@@ -57,6 +78,12 @@ class ProdottoController {
 		}
 	}
 
+	/**
+	 * Cambia il prodotto impostato come "piatto del giorno".
+	 * @param req Richiesta HTTP con ID del nuovo piatto del giorno nei parametri
+	 * @param res Risposta HTTP
+	 * @returns 200 se aggiornato con successo, 500 se errore
+	 */
 	static async changePiattoDelGiorno(req: Request, res: Response): Promise<void> {
 		try {
 			await ProdottoService.changePiattoDelGiorno(
@@ -74,6 +101,12 @@ class ProdottoController {
 		}
 	}
 
+	/**
+	 * Restituisce il piatto del giorno corrente.
+	 * @param req Richiesta HTTP
+	 * @param res Risposta HTTP
+	 * @returns 200 con il piatto del giorno, 500 se errore
+	 */
 	static async getProdottoDelGiorno(req: Request, res: Response): Promise<void> {
 		try {
 			const piatto = await ProdottoService.getPiattoDelGiorno();
@@ -89,6 +122,12 @@ class ProdottoController {
 		}
 	}
 
+	/**
+	 * Restituisce la lista di tutti i prodotti disponibili.
+	 * @param req Richiesta HTTP
+	 * @param res Risposta HTTP
+	 * @returns 200 con lista dei prodotti, 500 se errore
+	 */
 	static async getAllProdotti(req: Request, res: Response): Promise<void> {
 		try {
 			const prodotti = await ProdottoService.getAllProdotti();

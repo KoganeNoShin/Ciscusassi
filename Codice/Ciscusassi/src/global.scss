@@ -38,14 +38,15 @@
 
 @import './theme/variables.scss';
 
+// Font per i titoli delle pagine e dei componenti
 @font-face {
-	font-family: 'JacquesFrancoisShadow';
-	src: url('/assets/fonts/JacquesFrancoisShadow-Regular.ttf')
-		format('truetype');
+	font-family: 'Chau';
+	src: url('/assets/fonts/ChauPhilomeneOne-Regular.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
 
+// Font per le descrizioni e testi lunghi
 @font-face {
 	font-family: 'Caveat';
 	src: url('assets/fonts/Caveat.ttf');
@@ -53,21 +54,8 @@
 	font-style: normal;
 }
 
-@font-face {
-	font-family: 'LucidaCalligraphy';
-	src: url('/assets/fonts/LucidaUnicodeCalligraphy.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: 'Isocpeur-Regular';
-	src: url('/assets/fonts/Isocpeur-Regular.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
-}
-
-/* Rimuove eventuali bordi da ion-item e imposta sfondo trasparente */
+/* Rimuove eventuali bordi e imposta sfondo trasparente */
+.campo-form,
 .campoForm {
 	--background: var(--ion-color-bianco) !important;
 	--padding-start: 25 !important;
@@ -78,25 +66,26 @@
 	margin-bottom: 25px;
 }
 
+.campo-form,
 .campoForm > ion-input {
 	margin-left: 25px;
 }
 
-/* TITOLI: JacquesFrancoisShadow */
+/* Standardizziamo dimensioni e font */
 h1 {
-	font-family: 'JacquesFrancoisShadow', sans-serif;
+	font-family: 'Chau', sans-serif;
 	font-size: clamp(2.5rem, 5vw, 3rem);
 	color: var(--ion-color-primary-contrast);
 }
 
 h2 {
-	font-family: 'LucidaCalligraphy', sans-serif;
+	font-family: 'Chau', sans-serif;
 	font-size: clamp(1.4rem, 2.8vw, 2rem);
 	color: var(--ion-color-primary-contrast);
 }
 
 h3 {
-	font-family: 'LucidaCalligraphy', sans-serif;
+	font-family: 'Caveat', sans-serif;
 	font-size: clamp(1.2rem, 2.3vw, 1.7rem);
 	color: var(--ion-color-primary-contrast);
 }
@@ -119,7 +108,6 @@ h6 {
 	color: var(--ion-color-primary-contrast);
 }
 
-/* TESTO: LucidaCalligraphy */
 p,
 a,
 ion-label,
@@ -183,7 +171,7 @@ button.alert-button.alert-button-confirm:hover {
 .btn-prenota-filiale {
 	background-color: var(--ion-color-verdechiaro);
 	color: var(--ion-color-bianco);
-	font-family: 'Isocpeur-Regular', sans-serif;
+	font-family: 'Caveat', sans-serif;
 	font-size: clamp(1rem, 1.3vw, 1.2rem);
 	padding: 5px 10px 5px 10px;
 	border-radius: 5px;
@@ -193,5 +181,5 @@ button.alert-button.alert-button-confirm:hover {
 }
 
 ion-checkbox::part(label) {
-	font-family: 'Isocpeur-Regular', sans-serif;
+	font-family: 'Caveat', sans-serif;
 }

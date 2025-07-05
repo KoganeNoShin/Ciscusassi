@@ -1,25 +1,40 @@
 import { body, param, ValidationChain } from 'express-validator';
 
-// Funzioni
+/**
+ * Valida che il campo "comune" sia presente e non vuoto.
+ * Deve essere una stringa non vuota.
+ */
 function comuneValidator(chain: ValidationChain): ValidationChain {
 	return chain.trim().notEmpty().withMessage('Il comune è obbligatorio!');
 }
 
+/**
+ * Valida che il campo "indirizzo" sia presente e non vuoto.
+ * Deve essere una stringa non vuota.
+ */
 function indirizzoValidator(chain: ValidationChain): ValidationChain {
 	return chain.trim().notEmpty().withMessage("L'indirizzo è obbligatorio!");
 }
 
+/**
+ * Valida che il numero di tavoli sia:
+ * - presente
+ * - un intero maggiore o uguale a 1
+ */
 function num_tavoliValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty()
 		.withMessage('Il numero di tavoli è obbligatorio!')
 		.isInt({ min: 1 })
-		.withMessage(
-			'Il numero di tavoli deve essere un numero intero positivo'
-		)
+		.withMessage('Il numero di tavoli deve essere un numero intero positivo')
 		.toInt();
 }
 
+/**
+ * Valida che la longitudine sia:
+ * - presente
+ * - un numero decimale compreso tra -180 e 180
+ */
 function longitudineValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty()
@@ -29,6 +44,11 @@ function longitudineValidator(chain: ValidationChain): ValidationChain {
 		.toFloat();
 }
 
+/**
+ * Valida che la latitudine sia:
+ * - presente
+ * - un numero decimale compreso tra -90 e 90
+ */
 function latitudineValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty()
@@ -38,6 +58,10 @@ function latitudineValidator(chain: ValidationChain): ValidationChain {
 		.toFloat();
 }
 
+/**
+ * Valida che il campo immagine sia presente e nel formato base64 corretto.
+ * Il formato accettato è: `data:image/{jpeg|png|webp};base64,...`
+ */
 function immagineValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty()
@@ -46,6 +70,11 @@ function immagineValidator(chain: ValidationChain): ValidationChain {
 		.withMessage('Formato immagine non valido!');
 }
 
+/**
+ * Valida che l'ID della filiale sia:
+ * - presente
+ * - un intero positivo
+ */
 export function idFilialeValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty()
@@ -55,7 +84,16 @@ export function idFilialeValidator(chain: ValidationChain): ValidationChain {
 		.toInt();
 }
 
-// Validatori
+/**
+ * Validatore per la creazione di una nuova filiale.
+ * Valida i seguenti campi nel corpo della richiesta:
+ * - `comune`: stringa non vuota
+ * - `indirizzo`: stringa non vuota
+ * - `num_tavoli`: intero >= 1
+ * - `longitudine`: float tra -180 e 180
+ * - `latitudine`: float tra -90 e 90
+ * - `immagine`: stringa base64 valida
+ */
 export const addFilialeValidator = [
 	comuneValidator(body('comune')),
 	indirizzoValidator(body('indirizzo')),
@@ -65,6 +103,12 @@ export const addFilialeValidator = [
 	immagineValidator(body('immagine')),
 ];
 
+/**
+ * Validatore per la modifica di una filiale esistente.
+ * Valida:
+ * - `id_filiale`: parametro route, intero positivo
+ * - gli stessi campi validati nella creazione (vedi `addFilialeValidator`)
+ */
 export const updateFilialeValidator = [
 	idFilialeValidator(param('id_filiale')),
 	...addFilialeValidator,
