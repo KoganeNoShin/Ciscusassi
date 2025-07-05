@@ -28,6 +28,7 @@ export class TavoloService {
 	totaleQuery: number = 0;
 	haPagato: number | null = null;
 
+	
 	setNumeroTavolo(numero: number): void {
 		if (this.tavolo) {
 			this.tavolo.numero = numero;

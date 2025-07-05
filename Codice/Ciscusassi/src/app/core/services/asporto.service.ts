@@ -8,37 +8,30 @@ import { AsportoInput, AsportoRecord } from '../interfaces/Asporto';
 @Injectable({
 	providedIn: 'root',
 })
+
 export class AsportoService {
+	/**
+   * @remarks
+   * Recuperiamo {@link environment.apiURL l'URL dell'API} dal file di ambiente {@link environment} 
+   * per effettuare le richieste HTTP
+	*/
 	private apiURL = environment.apiURL;
 
 	constructor(private http: HttpClient) {}
 
-	GetProdotti(): Observable<ApiResponse<AsportoRecord[]>> {
-		return this.http.get<ApiResponse<AsportoRecord[]>>(
-			`${this.apiURL}/asporti`
-		);
-	}
-
-	addProdotto(prodotto: AsportoInput): Observable<ApiResponse<number>> {
+	/**
+   * @remarks
+   * La seguente funzione è utilizzata per effettuare una richiesta POST
+   * all'API per creare un nuovo asporto. Viene passato un oggetto {@link AsportoInput} nel quale
+   * sono contenuti i dati necessari per creare l'asporto, tra cui anche i prodotti.
+   * La rotta dell'API utilizzata è la `/addAsporto`, definita nel file routes.ts.
+   * @returns
+   * Un Observable di tipo ApiResponse che contiene un number, che rappresenta l'id dell'asporto appena creato.
+   */
+	addProdotto(prodotti: AsportoInput): Observable<ApiResponse<number>> {
 		return this.http.post<ApiResponse<number>>(
 			`${this.apiURL}/addAsporto`,
-			prodotto
-		);
-	}
-
-	updateProdotto(
-		id: number,
-		prodotto: AsportoInput
-	): Observable<ApiResponse<void>> {
-		return this.http.put<ApiResponse<void>>(
-			`${this.apiURL}/updateAsporto/${id}`,
-			prodotto
-		);
-	}
-
-	deleteProdotto(id: number): Observable<ApiResponse<void>> {
-		return this.http.delete<ApiResponse<void>>(
-			`${this.apiURL}/deleteAsporto/${id}`
+			prodotti
 		);
 	}
 }

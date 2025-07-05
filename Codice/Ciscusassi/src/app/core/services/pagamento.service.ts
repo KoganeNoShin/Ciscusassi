@@ -9,16 +9,38 @@ import { PagamentoMensile } from '../interfaces/Pagamento';
 	providedIn: 'root',
 })
 export class PagamentoService {
+	/**
+	 * @remarks
+	 * Recuperiamo {@link environment.apiURL l'URL dell'API} dal file di ambiente {@link environment} 
+	 * per effettuare le richieste HTTP
+	 */
 	private apiURL = environment.apiURL;
 
 	constructor(private http: HttpClient) {}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere gli utili mensili. Viene passato un oggetto {@link PagamentoMensile}
+	 * La rotta dell'API utilizzata è la `/pagamenti`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti {@link PagamentoMensile}.
+	 */
 	GetUtiliMensili(year: number): Observable<ApiResponse<PagamentoMensile[]>> {
 		return this.http.get<ApiResponse<PagamentoMensile[]>>(
 			`${this.apiURL}/pagamenti/${year}`
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta POST
+	 * all'API per registrare un pagamento di un ordine. Viene passato l'id dell'ordine,
+	 * l'importo del pagamento e la data/ora del pagamento.
+	 * La rotta dell'API utilizzata è la `/prenotazione/ordine/pay`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse void.
+	 */
 	ordinePay(
 		id_ordine: number,
 		importo: number,

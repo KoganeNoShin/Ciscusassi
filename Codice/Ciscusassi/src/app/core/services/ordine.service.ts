@@ -10,11 +10,25 @@ import { OrdProdEstended, OrdProdInput } from '../interfaces/OrdProd';
 	providedIn: 'root',
 })
 export class OrdineService {
+	/**
+	 * @remarks
+	 * Recuperiamo {@link environment.apiURL l'URL dell'API} dal file di ambiente {@link environment} 
+	 * per effettuare le richieste HTTP
+	 */
 	private apiURL = environment.apiURL;
 	prodottiOrdinati: OrdProdEstended[] = [];
 
 	constructor(private http: HttpClient) {}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta POST
+	 * all'API per aggiungere un nuovo ordine. Viene passato un oggetto contenente
+	 * il nome utente dell'ordinante e il riferimento alla prenotazione.
+	 * La rotta dell'API utilizzata è la `/prenotazione/addOrdini`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse void.
+	 */
 	addOrdine(
 		username: string,
 		ref_prenotazione: number
@@ -29,6 +43,15 @@ export class OrdineService {
 			body
 		);
 	}
+
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta PUT
+	 * all'API per cambiare lo stato di un prodotto ordinato. Viene passato lo stato desiderato e l'id dell'ord prod.
+	 * La rotta dell'API utilizzata è la `/prenotazione/ordine/prodotto/{id}/cambiaStato`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse void.
+	 */
 	cambiaStato(stato: string, id: number): Observable<ApiResponse<any>> {
 		const body = {
 			stato: stato,
@@ -40,6 +63,14 @@ export class OrdineService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta POST
+	 * all'API per aggiungere prodotti a un ordine. Viene passato un array di oggetti {@link OrdProdInput}.
+	 * La rotta dell'API utilizzata è la `/prenotazione/ordine/addProdotti`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse void.
+	 */
 	ordineAddProdotti(
 		ref_prodotto: OrdProdInput[]
 	): Observable<ApiResponse<any>> {
@@ -52,6 +83,15 @@ export class OrdineService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta PUT
+	 * all'API per cambiare lo stato di un prodotto ordinato in "romana" o meno.
+	 * Viene passato l'id dell'ordine prodotto e un booleano che indica se è romana.
+	 * La rotta dell'API utilizzata è la `/prenotazione/ordine/prodotto/{id_ordprod}/isRomana`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse void.
+	 */
 	cambiaRomana(
 		id_ordprod: number,
 		isRomana: boolean
@@ -66,6 +106,15 @@ export class OrdineService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere i prodotti ordinati.
+	 * Viene passato l'id dell'ordine.
+	 * La rotta dell'API utilizzata è la `/prenotazione/ordine/{id}/prodotti`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti {@link OrdProdEstended}.
+	 */
 	getProdottiOrdinatiByNumeroOrdine(
 		id: number
 	): Observable<ApiResponse<OrdProdEstended[]>> {
@@ -73,6 +122,16 @@ export class OrdineService {
 			`${this.apiURL}/prenotazione/ordine/${id}/prodotti`
 		);
 	}
+
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere i prodotti ordinati da una prenotazione specifica.
+	 * Viene passato l'id della prenotazione.
+	 * La rotta dell'API utilizzata è la `/prenotazione/{idPrenotazione}/prodotti`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti {@link OrdProdEstended}.
+	 */
 	getProdottiOrdinatiByPrenotazione(
 		idPrenotazione: number
 	): Observable<ApiResponse<OrdProdEstended[]>> {
@@ -81,6 +140,15 @@ export class OrdineService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere i prodotti ordinati da un utente specifico in una prenotazione.
+	 * Viene passato l'id della prenotazione e il nome utente dell'utente.
+	 * La rotta dell'API utilizzata è la `/prenotazione/{idPrenotazione}/ordini/{username}`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti {@link OrdProdEstended}.
+	 */
 	getProdottiOrdinatiByUsername(
 		idPrenotazione: number,
 		username: string
@@ -90,10 +158,20 @@ export class OrdineService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per impostare i prodotti ordinati.
+	 * Viene passato un array di oggetti {@link OrdProdEstended}.
+	 */
 	setProdottiOrdinati(prodottiOrdinati: OrdProdEstended[]) {
 		this.prodottiOrdinati = prodottiOrdinati;
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per ottenere i prodotti ordinati.
+	 * Restituisce un array di oggetti {@link OrdProdEstended}.
+	 */
 	getProdottiOrdinati(): OrdProdEstended[] {
 		return this.prodottiOrdinati;
 	}

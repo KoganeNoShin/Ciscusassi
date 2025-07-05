@@ -15,6 +15,11 @@ import {
 	providedIn: 'root',
 })
 export class PrenotazioneService {
+	/**
+	 * @remarks
+	 * Recuperiamo {@link environment.apiURL l'URL dell'API} dal file di ambiente {@link environment} 
+	 * per effettuare le richieste HTTP
+	 */
 	private apiURL = environment.apiURL;
 
 	// Dati locali temporanei
@@ -26,14 +31,21 @@ export class PrenotazioneService {
 
 	constructor(private http: HttpClient) {}
 
-	// --------- Metodi HTTP ---------
-
+	/**
+	 * Metodo per ottenere tutte le prenotazioni.
+	 * @returns Un Observable di tipo ApiResponse che contiene un array di oggetti {@link PrenotazioneRecord}.
+	 */
 	getAllPrenotazioni(): Observable<ApiResponse<PrenotazioneRecord[]>> {
 		return this.http.get<ApiResponse<PrenotazioneRecord[]>>(
 			`${this.apiURL}/prenotazioni`
 		);
 	}
 
+	/**
+	 * Metodo per ottenere le prenotazioni di una filiale specifica.
+	 * @param idFiliale L'ID della filiale.
+	 * @returns Un Observable di tipo ApiResponse che contiene un array di oggetti {@link PrenotazioneRecord}.
+	 */
 	getPrenotazioneById(
 		id: number
 	): Observable<ApiResponse<PrenotazioneRecord>> {
@@ -42,6 +54,15 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta POST
+	 * all'API per verificare che l'OTP inserito sia corretto. Viene passata la data e ora della prenotazione,
+	 * il riferimento alla torretta e l'OTP inserito dall'utente.
+	 * La rotta dell'API utilizzata è la `/prenotazione/check-otp`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto di tipo `any`.
+	 */
 	checkOtp(
 		data_ora_prenotazione: string,
 		ref_torretta: number,
@@ -60,6 +81,14 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere le prenotazioni di un cliente specifico.
+	 * La rotta dell'API utilizzata è la `/cliente/prenotazioni`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti {@link PrenotazioneWithFiliale}.
+	 */
 	getPrenotazioniByCliente(): Observable<
 		ApiResponse<PrenotazioneWithFiliale[]>
 	> {
@@ -68,6 +97,14 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere le prenotazioni di una specifica filiale, in cui lavora un cameriere.
+	 * La rotta dell'API utilizzata è la `/prenotazione/cameriere/{clienteId}`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti {@link PrenotazioneWithFiliale}.
+	 */
 	getPrenotazioniByClienteCameriere(
 		clienteId: number
 	): Observable<ApiResponse<PrenotazioneWithFiliale[]>> {
@@ -76,12 +113,28 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere il totale associato a un ordine. Viene passato l'id dell'ordine.
+	 * La rotta dell'API utilizzata è la `/prenotazione/ordine/{idOrdine}/totale`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti `any`.
+	 */
 	getTotaleByOrdine(idOrdine: number): Observable<ApiResponse<any>> {
 		return this.http.get<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/ordine/${idOrdine}/totale`
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere le prenotazioni del giorno di una filiale.
+	 * La rotta dell'API utilizzata è la `/prenotazione/filiale/prenotazioni`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un array di oggetti {@link PrenotazioneRecord}.
+	 */
 	getPrenotazioniDelGiornoFiliale(): Observable<
 		ApiResponse<PrenotazioneRecord[]>
 	> {
@@ -90,22 +143,58 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere lo stato delle prenotazioni del giorno di una filiale, in cui lavora un cameriere.
+	 * Viene passato l'id della prenotazione.
+	 * La rotta dell'API utilizzata è la `/prenotazione/{id}/cameriere/stato`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto con `success` e `data`.
+	 * `data` contiene lo stato della prenotazione come stringa.
+	 */
 	getStatoPrenotazioneCameriere(id: number) {
 		return this.http.get<{ success: boolean; data: string }>(
 			`${this.apiURL}/prenotazione/${id}/cameriere/stato`
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere lo stato delle prenotazioni del giorno di una filiale, in cui lavora uno chef.
+	 * Viene passato l'id della prenotazione.
+	 * La rotta dell'API utilizzata è la `/prenotazione/{id}/chef/stato`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto con `success` e `data`.
+	 * `data` contiene lo stato della prenotazione come stringa.
+	 */
 	getStatoPrenotazioneChef(id: number) {
 		return this.http.get<{ success: boolean; data: string }>(
 			`${this.apiURL}/prenotazione/${id}/chef/stato`
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere i tavoli in uso.
+	 * La rotta dell'API utilizzata è la `/prenotazione/tavoli-in-uso`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable che contiene un array di oggetti `any`.
+	 */
 	getTavoliInUso(): Observable<any> {
 		return this.http.get(`${this.apiURL}/prenotazione/tavoli-in-uso`);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta POST
+	 * all'API per prenotare un tavolo. Viene passato un oggetto {@link PrenotazioneRequest}.
+	 * La rotta dell'API utilizzata è la `/prenotazione/prenota`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto di tipo `any`.
+	 */
 	prenota(data: PrenotazioneRequest): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/prenota`,
@@ -113,6 +202,14 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta POST
+	 * all'API per prenotare un tavolo in un locale. Viene passato un oggetto {@link PrenotazioneRequest}.
+	 * La rotta dell'API utilizzata è la `/prenotazione/prenotaLoco`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto di tipo `any`.
+	 */
 	prenotaLoco(data: PrenotazioneRequest): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/prenotaLoco`,
@@ -120,6 +217,14 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta POST
+	 * all'API per confermare una prenotazione. Viene passato l'id della prenotazione.
+	 * La rotta dell'API utilizzata è la `/prenotazione/conferma`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto di tipo `any`.
+	 */
 	confermaPrenotazione(id: number): Observable<ApiResponse<any>> {
 		return this.http.post<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/conferma`,
@@ -127,6 +232,14 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta PUT
+	 * all'API per modificare una prenotazione. Viene passato un oggetto {@link PrenotazioneRecord}.
+	 * La rotta dell'API utilizzata è la `/prenotazione/modificaPrenotazione`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto di tipo `any`.
+	 */
 	modificaPrenotazione(
 		data: PrenotazioneRecord
 	): Observable<ApiResponse<any>> {
@@ -136,11 +249,29 @@ export class PrenotazioneService {
 		);
 	}
 
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta DELETE
+	 * all'API per eliminare una prenotazione. Viene passato l'id della prenotazione.
+	 * La rotta dell'API utilizzata è la `/prenotazione/eliminaPrenotazione/{id}`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto di tipo `any`.
+	 */
 	eliminaPrenotazione(id: number): Observable<ApiResponse<any>> {
 		return this.http.delete<ApiResponse<any>>(
 			`${this.apiURL}/prenotazione/eliminaPrenotazione/${id}`
 		);
 	}
+
+	/**
+	 * @remarks
+	 * La seguente funzione è utilizzata per effettuare una richiesta GET
+	 * all'API per ottenere i tavoli in uso in una data specifica.
+	 * La rotta dell'API utilizzata è la `/prenotazione/filiale/tavoli-in-uso?data={data}`, definita nel file routes.ts.
+	 * @returns
+	 * Un Observable di tipo ApiResponse che contiene un oggetto con `success` e `data`.
+	 * `data` è una stringa che contiene data e ora.
+	 */
 	tavoliInUso(data: string): Observable<ApiResponse<any>> {
 		return this.http
 			.get<{

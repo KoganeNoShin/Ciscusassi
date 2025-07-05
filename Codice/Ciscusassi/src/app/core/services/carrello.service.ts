@@ -14,13 +14,27 @@ export class CarrelloService {
 
 	constructor() {}
 
-	// Aggiunge un prodotto al carrello
+	/**
+	 * Aggiunge un prodotto al carrello.
+	 * @remarks
+	 * La seguente funzione è utilizzata per aggiungere un prodotto al carrello.
+	 * @param prodotto - Il prodotto da aggiungere, rappresentato da un oggetto di tipo {@link ProdottoRecord}.
+	 */
 	aggiungi(prodotto: ProdottoRecord) {
 		const attuale = this.prodottiSubject.value;
 		this.prodottiSubject.next([...attuale, prodotto]);
 	}
 
-	// Rimuove la prima occorrenza di un prodotto
+	/**
+	 * Rimuove un prodotto dal carrello.
+	 *
+	 * @remarks
+	 * Questa funzione cerca e rimuove un'istanza del prodotto specificato,
+	 * identificata tramite `id_prodotto`, dall'elenco corrente dei prodotti nel carrello.
+	 * Se il prodotto è presente, viene rimosso e l'elenco aggiornato viene notificato agli osservatori.
+	 *
+	 * @param prodotto - Il prodotto da rimuovere, rappresentato da un oggetto di tipo {@link ProdottoRecord}.
+	 */
 	rimuovi(prodotto: ProdottoRecord) {
 		const attuale = [...this.prodottiSubject.value];
 		const index = attuale.findIndex(
@@ -32,12 +46,23 @@ export class CarrelloService {
 		}
 	}
 
-	// Restituisce i prodotti attuali (non reattivo)
+	/**
+	 * Restituisce i prodotti attualmente presenti nel carrello.
+	 *
+	 * @remarks
+	 * Questa funzione ppermette di ottenere l'elenco dei prodotti attualmente presenti nel carrello.
+	 * @returns Un array di oggetti {@link ProdottoRecord} che rappresentano i prodotti nel carrello.
+	 */
 	getProdotti(): ProdottoRecord[] {
 		return this.prodottiSubject.value;
 	}
 
-	// Svuota completamente il carrello
+	/**
+	 * Svuota il carrello, rimuovendo tutti i prodotti attualmente presenti.
+	 *
+	 * @remarks
+	 * Questa funzione ppermette di svuotare il carrello
+	 */
 	svuotaCarrello() {
 		this.prodottiSubject.next([]);
 	}
