@@ -136,16 +136,15 @@ export async function generateUtentiFissi(): Promise<string> {
 		for (const utente of utentiFissi) {
 			const foto = getBase64FromFile(utente.fotoUrl);
 
-			await ImpiegatoService.addImpiegato({
-				nome: utente.nome,
-				cognome: utente.cognome,
-				ruolo: utente.ruolo,
-				foto: foto,
-				password: password,
-				email: utente.email,
-				data_nascita: utente.data_nascita,
-				ref_filiale: utente.ref_filiale,
-			});
+			await ImpiegatoService.addImpiegato(
+				utente.nome,
+				utente.cognome,
+				utente.ruolo,
+				foto,
+				utente.email,
+				utente.data_nascita,
+				utente.ref_filiale,
+			);
 			console.log(
 				`✅ ${utente.nome} ${utente.cognome} (${utente.ruolo}) aggiunto con successo.`
 			);
