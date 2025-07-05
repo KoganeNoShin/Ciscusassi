@@ -43,10 +43,6 @@ export class HeaderComponent implements OnInit {
 		addIcons({ personCircle });
 	}
 
-	changeLanguage() {
-		this.isItalian = !this.isItalian;
-	}
-
 	svuotaCarrello() {
 		console.log('svuoto il carrello');
 		this.servizioCarrello.svuotaCarrello();

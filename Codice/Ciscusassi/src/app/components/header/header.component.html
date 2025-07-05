@@ -37,14 +37,6 @@
 				}
 			}
 
-			<ion-button (click)="changeLanguage()">
-				@if (isItalian) {
-					🇮🇹
-				} @else {
-					🇬🇧
-				}
-			</ion-button>
-
 			@if (avatar && avatar !== '') {
 				<ion-button
 					[routerLink]="['/dati-account']"
