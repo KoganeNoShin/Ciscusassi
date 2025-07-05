@@ -1,68 +1,119 @@
 import Impiegato, { ImpiegatoData, ImpiegatoInput, ImpiegatoRecord } from '../Models/impiegato';
-import bcrypt from 'bcryptjs';
 import AuthService from './authService';
 import EmailService from '../Email/emailService';
 
 class ImpiegatoService {
-    static async addImpiegato(nome: string, cognome: string, ruolo: string, foto: string, email: string, data_nascita: string, ref_filiale: number): Promise<number> {
-        try {
-            const NotHashedPassword = AuthService.generateRandomPassword();
-            const password = await AuthService.hashPassword(NotHashedPassword);
-            const impiegato: ImpiegatoInput = {nome, cognome, ruolo, foto, email, data_nascita, ref_filiale, password};
-            const idImpiegato = await Impiegato.create(impiegato);
+	/**
+	 * Crea un nuovo impiegato nel database e invia via email le credenziali generate.
+	 * @param nome Nome dell'impiegato
+	 * @param cognome Cognome dell'impiegato
+	 * @param ruolo Ruolo dell'impiegato (es. chef, cameriere, amministratore)
+	 * @param foto URL o path dell'immagine del profilo
+	 * @param email Email dell'impiegato
+	 * @param data_nascita Data di nascita (formato ISO)
+	 * @param ref_filiale ID della filiale di appartenenza
+	 * @returns ID dell'impiegato appena creato
+	 */
+	static async addImpiegato(
+		nome: string,
+		cognome: string,
+		ruolo: string,
+		foto: string,
+		email: string,
+		data_nascita: string,
+		ref_filiale: number
+	): Promise<number> {
+		try {
+			// Genera una password sicura
+			const NotHashedPassword = AuthService.generateRandomPassword();
+			const password = await AuthService.hashPassword(NotHashedPassword);
 
-            const mailOptions = {
-                to: email,  // Email del cliente
-                subject: 'Nuova Assunzione',
-                text: `Ciao ${nome} ${cognome}, sei stato assunto nel ruolo di ${ruolo}, ecco la tua password per accedere al pannello di controllo: ${NotHashedPassword}`,
-                html: `Ciao ${nome} ${cognome}, sei stato assunto nel ruolo di ${ruolo}, ecco la tua password per accedere al pannello di controllo: ${NotHashedPassword}`,
-            };
+			const impiegato: ImpiegatoInput = {
+				nome,
+				cognome,
+				ruolo,
+				foto,
+				email,
+				data_nascita,
+				ref_filiale,
+				password
+			};
 
-            await EmailService.sendMail(mailOptions);
+			// Salva l'impiegato nel DB
+			const idImpiegato = await Impiegato.create(impiegato);
 
-            return idImpiegato;
-        }catch (error) {
-            console.error('❌ [ImpiegatoService] Errore durante l\'aggiunta dell\'impiegato:', error);
-            throw error;
-        }
-    }
+			// Invio credenziali via email
+			const mailOptions = {
+				to: email,
+				subject: 'Nuova Assunzione',
+				text: `Ciao ${nome} ${cognome}, sei stato assunto nel ruolo di ${ruolo}, ecco la tua password per accedere al pannello di controllo: ${NotHashedPassword}`,
+				html: `Ciao ${nome} ${cognome}, sei stato assunto nel ruolo di ${ruolo}, ecco la tua password per accedere al pannello di controllo: ${NotHashedPassword}`,
+			};
 
-    static async updateImpiegato(input: ImpiegatoData, matricola: number): Promise<void> {
-        try {
-            await Impiegato.updateImpiegato(input, matricola);
-        } catch (error) {
-            console.error('❌ [ImpiegatoService] Errore durante l\'aggiornamento dell\'impiegato:', error);
-            throw error;
-        }
-    }
+			await EmailService.sendMail(mailOptions);
 
-    static async deleteImpiegato(matricola: number): Promise<void> {
-        try {
-            await Impiegato.deleteImpiegato(matricola);
-        } catch (error) {
-            console.error('❌ [ImpiegatoService] Errore durante l\'eliminazione dell\'impiegato:', error);
-            throw error;
-        }
-    }
+			return idImpiegato;
+		} catch (error) {
+			console.error('❌ [ImpiegatoService] Errore durante l\'aggiunta dell\'impiegato:', error);
+			throw error;
+		}
+	}
 
-    static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
-        try {
-            return await Impiegato.getByFiliale(id_filiale);
-        } catch (error) {
-            console.error('❌ [ImpiegatoService] Errore durante la selezione degli impiegato:', error);
-            throw error;
-        }
-    }
+	/**
+	 * Aggiorna i dati di un impiegato.
+	 * @param input Oggetto con i nuovi dati dell'impiegato
+	 * @param matricola Matricola dell'impiegato da aggiornare
+	 */
+	static async updateImpiegato(input: ImpiegatoData, matricola: number): Promise<void> {
+		try {
+			await Impiegato.updateImpiegato(input, matricola);
+		} catch (error) {
+			console.error('❌ [ImpiegatoService] Errore durante l\'aggiornamento dell\'impiegato:', error);
+			throw error;
+		}
+	}
 
-    static async aggiornaPassword(matricola: number, passwordChiara: string): Promise<void> {
-        try {
-            const hashedPassword = await AuthService.hashPassword(passwordChiara);
+	/**
+	 * Elimina un impiegato dal database.
+	 * @param matricola Matricola dell'impiegato da rimuovere
+	 */
+	static async deleteImpiegato(matricola: number): Promise<void> {
+		try {
+			await Impiegato.deleteImpiegato(matricola);
+		} catch (error) {
+			console.error('❌ [ImpiegatoService] Errore durante l\'eliminazione dell\'impiegato:', error);
+			throw error;
+		}
+	}
 
-            await Impiegato.aggiornaPassword(matricola, hashedPassword);
-        } catch (err) {
-            console.error('❌ [ImpiegatoService Error] aggiornaPassword:', err);
-            throw new Error('Errore durante l\'aggiornamento della password');
-        }
-    }
+	/**
+	 * Recupera tutti gli impiegati associati a una determinata filiale.
+	 * @param id_filiale ID della filiale
+	 * @returns Array di impiegati oppure null
+	 */
+	static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
+		try {
+			return await Impiegato.getByFiliale(id_filiale);
+		} catch (error) {
+			console.error('❌ [ImpiegatoService] Errore durante la selezione degli impiegato:', error);
+			throw error;
+		}
+	}
+
+	/**
+	 * Aggiorna la password di un impiegato (es. durante reset o cambio credenziali).
+	 * @param matricola Matricola dell'impiegato
+	 * @param passwordChiara Nuova password non criptata
+	 */
+	static async aggiornaPassword(matricola: number, passwordChiara: string): Promise<void> {
+		try {
+			const hashedPassword = await AuthService.hashPassword(passwordChiara);
+			await Impiegato.aggiornaPassword(matricola, hashedPassword);
+		} catch (err) {
+			console.error('❌ [ImpiegatoService Error] aggiornaPassword:', err);
+			throw new Error('Errore durante l\'aggiornamento della password');
+		}
+	}
 }
+
 export default ImpiegatoService;
