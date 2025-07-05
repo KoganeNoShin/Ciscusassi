@@ -156,7 +156,7 @@ class ImpiegatoController {
 
 			await ImpiegatoService.aggiornaPassword(matricola, req.body.nuovaPassword);
 
-			res.status(200).json({ message: 'Password aggiornata con successo' });
+			res.status(200).json({ success: true, message: 'Password aggiornata con successo' });
 		} catch (err) {
 			console.error('❌ [ImpiegatoController] Errore in aggiornaPasswordImpiegato:', err);
 			res.status(500).json({ error: 'Errore durante l\'aggiornamento della password' });
