@@ -145,6 +145,27 @@ export class Prenotazione {
 		});
 	}
 
+	// Recupera OTP dato Data e Torretta
+	static async getOTPByIdTorrettaAndData(id_torretta: number, data: string): Promise<string | null> {
+		return new Promise((resolve, reject) => {
+			db.get(`
+				SELECT p.otp 
+				FROM prenotazioni p 
+				WHERE data_ora_prenotazione = ? AND ref_torretta = ?`,
+				[data, id_torretta],
+				(err: Error | null, row: string | undefined) => {
+					if (err) {
+						console.error('❌ [DB ERROR] Errore durante SELECT:', err.message);
+						reject(err);
+					} else if (!row) {
+						console.warn(`⚠️ [DB WARNING] Nessuna prenotazione trovata con ID ${id_torretta} per questo orario ${data}`);
+						resolve(null);
+					} else resolve(row);
+				}
+			);
+		});
+	}
+
 	// Recupera prenotazioni per cliente
 	static async getByCliente(ref_cliente: number): Promise<PrenotazioneWithFiliale[]> {
 		return new Promise((resolve, reject) => {

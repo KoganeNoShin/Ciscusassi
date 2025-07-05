@@ -26,6 +26,7 @@ import rotteClienti from './rotteClienti';
 import rotteFiliali from './rotteFiliali';
 import rotteMenu from './rotteMenu';
 import rottePrenotazioni from './rottePrenotazioni';
+import PrenotazioneController from '../Controllers/prenotazioneController';
 
 const router = express.Router();
 
@@ -61,6 +62,13 @@ router.get(
 	idTorrettaValidator(param('id_torretta')),
 	validateMiddleware,
 	TorrettaController.getTorrettaByID
+);
+
+router.get(
+	'/:id_torretta/otp',
+	idTorrettaValidator(param('id_torretta')),
+	validateMiddleware,
+	PrenotazioneController.getOTPByIdTorrettaAndData
 );
 
 export default router;

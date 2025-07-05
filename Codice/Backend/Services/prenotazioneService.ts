@@ -249,18 +249,45 @@ class PrenotazioneService {
 		}
 	}
 
-	static async getOTPById(id: number): Promise<string | null> {
-		try {
-			const prenotazione = await Prenotazione.getById(id);
-			if (prenotazione) {
-				return prenotazione.otp || null;
+	private static getFasciaOrariaCorrente(): string | null {
+		const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
+		const now = new Date();
+
+		const fasce = orariValidi.map(orario => {
+			const [ore, minuti] = orario.split(':').map(Number);
+			const dataFascia = new Date(now);
+			dataFascia.setHours(ore, minuti, 0, 0);
+			return dataFascia;
+		});
+
+		for (let i = 0; i < fasce.length; i++) {
+			const inizio = fasce[i];
+			const fine = fasce[i + 1] ?? new Date(now.setHours(23, 59, 59, 999));
+
+			if (now >= inizio && now < fine) {
+				const yyyy = inizio.getFullYear();
+				const mm = (inizio.getMonth() + 1).toString().padStart(2, '0');
+				const dd = inizio.getDate().toString().padStart(2, '0');
+				const hh = inizio.getHours().toString().padStart(2, '0');
+				const min = inizio.getMinutes().toString().padStart(2, '0');
+
+				return `${yyyy}-${mm}-${dd}T${hh}:${min}:00`;
 			}
-			return null;
+		}
+
+		return null; // Fuori da ogni fascia (es. mattina presto)
+	}
+
+
+	static async getOTPByIdTorrettaAndData(id: number): Promise<string | null> {
+		try {
+			const dataOraPrenotazione = PrenotazioneService.getFasciaOrariaCorrente();
+			if (!dataOraPrenotazione) return null;
+
+			const otp = await Prenotazione.getOTPByIdTorrettaAndData(id, dataOraPrenotazione);
+			return otp;
 		} catch (error) {
-			console.error(
-				"❌ [PrenotazioneService] Errore durante il recupero dell'OTP:",
-				error
-			);
+			console.error("❌ [PrenotazioneService] Errore durante il recupero dell'OTP:", error);
 			throw error;
 		}
 	}

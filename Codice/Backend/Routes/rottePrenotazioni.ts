@@ -74,13 +74,6 @@ router.get(
 	PrenotazioneController.getTavoliInUso
 );
 
-router.get(
-	'/:id_prenotazione/otp',
-	idPrenotazioneValidator(param('id_prenotazione')),
-	validateMiddleware,
-	PrenotazioneController.getOTPById
-);
-
 router.post(
 	'/check-otp',
 	checkOTPValidator,

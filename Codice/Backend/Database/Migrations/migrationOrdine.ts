@@ -11,7 +11,7 @@ export function createIfDoesntExists(): Promise<string> {
                 id_ordine INTEGER PRIMARY KEY AUTOINCREMENT,
                 username_ordinante TEXT NOT NULL,
                 ref_pagamento INTEGER NULLABLE,
-                ref_cliente INTEGER NULLABLE,
+                ref_cliente INTEGER NOT NULL,
                 ref_prenotazione INTEGER NOT NULL,
                 FOREIGN KEY (ref_pagamento) REFERENCES pagamenti (id_pagamento),
                 FOREIGN KEY (ref_cliente) REFERENCES clienti (numero_carta),
