@@ -97,16 +97,15 @@ export async function generateFiliale(): Promise<string> {
 			let chef_ruolo = 'Chef';
 
 			try {
-				await ImpiegatoService.addImpiegato({
-					nome: chef_nome,
-					cognome: chef_cognome,
-					ruolo: chef_ruolo,
-					foto: chef_imageBase64,
-					password: password,
-					email: chef_email,
-					data_nascita: chef_data_nascita,
-					ref_filiale: id_filiale,
-				});
+				await ImpiegatoService.addImpiegato(
+					chef_nome,
+					chef_cognome,
+					chef_ruolo,
+					chef_imageBase64,
+					chef_email,
+					chef_data_nascita,
+					id_filiale,
+				);
 				console.log(
 					`🥩 ${chef_nome} ${chef_cognome} è stato assunto in ${vieFiliali[i]} come ${chef_ruolo}!`
 				);

@@ -78,12 +78,7 @@ class ProdottoController {
 		try {
 			const piatto = await ProdottoService.getPiattoDelGiorno();
 
-			if (piatto) res.json({ success: true, data: piatto });
-			else
-				res.status(404).json({
-					success: false,
-					message: 'Nessun piatto del giorno trovato',
-				});
+			res.json({ success: true, data: piatto });
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
@@ -98,12 +93,7 @@ class ProdottoController {
 		try {
 			const prodotti = await ProdottoService.getAllProdotti();
 
-			if (prodotti && prodotti.length > 0) res.json({ success: true, data: prodotti });
-			else
-				res.status(404).json({
-					success: false,
-					message: 'Nessun piatto trovato',
-				});
+			res.json({ success: true, data: prodotti });
 		} catch (err) {
 			console.error(err);
 			res.status(500).json({
