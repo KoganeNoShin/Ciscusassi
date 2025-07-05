@@ -8,7 +8,7 @@ import { numeroCartaValidator } from './clienteValidator';
 // Funzioni
 function data_ora_prenotazioneValidator(chain: ValidationChain): ValidationChain {
   return chain
-        .optional({ checkFalsy: true })
+        .notEmpty().withMessage('La data e ora della prenotazione è obbligatoria')
         .matches(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/).withMessage('La data di prenotazione deve essere nel formato "yyyy-MM-dd HH:mm"')
 }
 
