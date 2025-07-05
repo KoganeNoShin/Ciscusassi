@@ -198,11 +198,8 @@ export class PrenotaPage implements OnInit {
 							const toast = await this.toastController.create({
 								message:
 									'Impossibile cancellare la prenotazione perché è ancora associata a un tavolo',
-								duration: 2000,
-								cssClass: [
-									'bg-color-bianco',
-									'text-color-bianco',
-								],
+								duration: 3000,
+								color: 'danger',
 								position: 'bottom',
 							});
 							await toast.present();
@@ -243,7 +240,7 @@ export class PrenotaPage implements OnInit {
 				console.error('Errore nella cancellazione:', err);
 				const toast = await this.toastController.create({
 					message: 'Errore nella cancellazione della prenotazione.',
-					duration: 2000,
+					duration: 3000,
 					color: 'danger',
 					position: 'bottom',
 				});
