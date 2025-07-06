@@ -82,6 +82,23 @@ ion-button {
 	border-radius: 50%;
 	margin-bottom: 10px;
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+	animation: pulse 2s ease-in-out infinite; // Animazione di puslsazione
+}
+
+// Keyframe dell'animazione
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.2);
+		opacity: 0.8;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
 }
 
 .non-lavorazione {
@@ -150,4 +167,5 @@ ion-checkbox::part(label) {
 		--ion-color-bianco
 	); /* Colore del testo (alternativa per sicurezza) */
 	font-size: 2rem; /* Ridondanza utile per compatibilità */
+	padding: 5px;
 }
