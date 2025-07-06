@@ -57,29 +57,30 @@
 							[disabled]="formLogin.invalid || loading"
 						>
 							@if (!loading) { LOGIN } @else {
-							<ion-spinner name="bubbles"></ion-spinner>
+							<ion-spinner
+								name="circular"
+								color="bianco"
+							></ion-spinner>
 							}
 						</ion-button>
 					</form>
 					<ion-text class="forgot-text">
-						<p class="text-color-bianco">
+						<h4 class="text-color-bianco">
 							Hai dimenticato la password?
 							<a
 								routerLink="/recupera-password"
 								class="text-color-arancione"
 								><b>Recuperala!</b></a
 							>
-						</p>
+						</h4>
 					</ion-text>
 					<ion-text class="forgot-text">
-						<p class="text-color-bianco">
+						<h4 class="text-color-bianco">
 							Non hai un'account?
-							<a
-								routerLink="/signin"
-								class="text-color-arancione"
+							<a routerLink="/signin" class="text-color-arancione"
 								><b>Registrati!</b></a
 							>
-						</p>
+						</h4>
 					</ion-text>
 				</ion-card>
 			</ion-col>

@@ -71,6 +71,15 @@
 	--ion-color-bianco-shade: #e0e0e0;
 	--ion-color-bianco-tint: #160101;
 
+	/* ======= NERO ======= */
+
+	--ion-color-nero: #000000;
+	--ion-color-nero-rgb: 0, 0, 0;
+	--ion-color-nero-contrast: #ffffff;
+	--ion-color-nero-contrast-rgb: 255, 255, 255;
+	--ion-color-nero-shade: #0e0e0e;
+	--ion-color-nero-tint: #160101;
+
 	/* ======= DEFAULT ======= */
 
 	--ion-color-success: #2dd55b;
@@ -197,6 +206,15 @@
 	--ion-color-tint: var(--ion-color-bianconeve-tint);
 }
 
+.ion-color-nero {
+	--ion-color-base: var(--ion-color-bianconeve);
+	--ion-color-base-rgb: var(--ion-color-bianconeve-rgb);
+	--ion-color-contrast: var(--ion-color-bianconeve-contrast);
+	--ion-color-contrast-rgb: var(--ion-color-bianconeve-contrast-rgb);
+	--ion-color-shade: var(--ion-color-bianconeve-shade);
+	--ion-color-tint: var(--ion-color-bianconeve-tint);
+}
+
 // ✅ Colori mappa
 $custom-colors: (
 	'rosso': var(--ion-color-rosso),
@@ -208,6 +226,7 @@ $custom-colors: (
 	'celeste': var(--ion-color-celeste),
 	'bianco': var(--ion-color-bianco),
 	'bianconeve': var(--ion-color-bianconeve),
+	'nero': var(--ion-color-nero),
 );
 
 // ✅ Genera classi solo per `color:`

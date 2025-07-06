@@ -16,7 +16,9 @@
 				<ion-card
 					class="ion-padding ion-text-center ion-align-items-center ion-justify-content-center bg-color-verdechiaro card-container"
 				>
-					<h1 class="titolo text-color-bianco">DATI ACCOUNT</h1>
+					<ion-text class="ion-text-center">
+						<h1 class="titolo text-color-bianco">DATI ACCOUNT</h1>
+					</ion-text>
 
 					@if (error) {
 					<p class="text-color-rosso">{{ errorMsg }}</p>
@@ -29,13 +31,25 @@
 									<img [src]="avatar" alt="Avatar" />
 								</ion-avatar>
 							</div>
-							<div>
-								<h2 class="username">{{ username }}</h2>
+							<div class="info-div">
+								<ion-text class="ion-text-center">
+									<h2 class="text-color-nero">
+										{{ username }}
+									</h2>
+								</ion-text>
 
 								@if (role == 'cliente') { @if (loading) {
-								<ion-spinner name="bubbles"></ion-spinner>
+								<ion-spinner
+									name="circular"
+									color="bianco"
+								></ion-spinner>
 								} @else {
-								<p class="punti">{{ points }} PT</p>
+								<ion-text class="ion-text-center">
+									<h2 class="text-color-arancione">
+										{{ points }} PT
+									</h2>
+								</ion-text>
+
 								} }
 							</div>
 						</ion-card-content>

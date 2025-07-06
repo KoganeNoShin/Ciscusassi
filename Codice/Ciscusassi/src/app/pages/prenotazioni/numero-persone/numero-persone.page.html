@@ -6,20 +6,20 @@
 				class="ion-justify-content-center ion-align-items-center"
 			>
 				@if(loading) {
-				<ion-spinner name="bubbles"></ion-spinner>
+				<ion-spinner name="circles" color="bianco"></ion-spinner>
 				} @else {
 				<ion-text class="ion-text-center">
 					<h2 class="text-color-bianco">PRENOTA UN TAVOLO</h2>
 				</ion-text>
 
 				<ion-text class="ion-text-center">
-					<h5 class="text-color-bianco">
+					<h4 class="text-color-bianco">
 						{{filiale?.comune}}, {{filiale?.indirizzo}}
-					</h5>
+					</h4>
 				</ion-text>
 
 				<ion-text class="ion-text-center ion-margin-bottom">
-					<h6 class="text-color-bianco">In quanti sarete?</h6>
+					<h5 class="text-color-bianco">In quanti sarete?</h5>
 				</ion-text>
 
 				<div class="scelte ion-hide-sm-down">
@@ -44,7 +44,7 @@
 						[(ngModel)]="inputManuale"
 						(input)="onInputChange()"
 						min="1"
-						class="ion-padding-horizontal"
+						class="ion-padding-horizontal text-color-nero"
 					></ion-input>
 
 					<br />

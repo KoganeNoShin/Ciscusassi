@@ -38,6 +38,7 @@ import { Router } from '@angular/router';
 		IonButton,
 		RouterModule,
 		IonAvatar,
+		IonText,
 	],
 })
 export class DatiAccountPage implements OnInit {

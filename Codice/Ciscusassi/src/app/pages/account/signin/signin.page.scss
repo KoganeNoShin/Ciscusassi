@@ -11,6 +11,10 @@ ion-card {
 	height: 80vh;
 }
 
+ion-avatar {
+	cursor: pointer;
+}
+
 .errorMsg {
 	color: var(--ion-color-rosso);
 	font-weight: bolder;

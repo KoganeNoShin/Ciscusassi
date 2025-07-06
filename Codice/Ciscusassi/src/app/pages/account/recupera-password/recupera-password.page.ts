@@ -11,8 +11,6 @@ import {
 	IonButton,
 	IonItem,
 	IonSpinner,
-	IonInputPasswordToggle,
-	IonAvatar,
 } from '@ionic/angular/standalone';
 
 import {
@@ -21,23 +19,14 @@ import {
 	FormGroup,
 	FormBuilder,
 	Validators,
-	ValidatorFn,
-	AbstractControl,
-	ValidationErrors,
 } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
-import {
-	LoginRecord,
-	OurTokenPayload,
-	RegistrationData,
-} from 'src/app/core/interfaces/Credentials';
+
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { IonInput } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 
-import { inject } from '@angular/core';
-import { NavController, ToastController } from '@ionic/angular';
-import { image } from 'ionicons/icons';
+import { ToastController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-recupera-password',
