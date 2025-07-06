@@ -54,23 +54,6 @@
 	font-style: normal;
 }
 
-/* Rimuove eventuali bordi e imposta sfondo trasparente */
-.campo-form,
-.campoForm {
-	--background: var(--ion-color-bianco) !important;
-	--padding-start: 25 !important;
-	--padding-end: 25 !important;
-	--inner-border-width: 0 !important;
-	color: black;
-	border-radius: 20px;
-	margin-bottom: 25px;
-}
-
-.campo-form,
-.campoForm > ion-input {
-	margin-left: 25px;
-}
-
 /* Standardizziamo dimensioni e font */
 h1 {
 	font-family: 'Chau', sans-serif;

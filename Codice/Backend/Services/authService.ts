@@ -1,15 +1,17 @@
-import Cliente, { ClienteData } from '../Models/cliente';
-import Impiegato, { ImpiegatoRecord } from '../Models/impiegato';
+import { MailTemplateData, MailOptions } from '../Interfaces/Email';
+
+import Cliente from '../Models/cliente';
+import Impiegato from '../Models/impiegato';
 import jwt, { Secret, SignOptions } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 import {
 	credentials,
 	LoginRecord,
-	OurTokenPayload
+	OurTokenPayload,
 } from '../Models/credentials';
 import ClienteService from './clienteService';
-import EmailService from '../Email/emailService';
+import EmailService from './emailService';
 import ImpiegatoService from './impiegatoService';
 
 class AuthService {
@@ -19,7 +21,8 @@ class AuthService {
 	 * @returns Token JWT firmato.
 	 */
 	static generateToken(payload: OurTokenPayload): string {
-		const secretKey: Secret = process.env.JWT_SECRET_KEY || 'PasswordDelJWT';
+		const secretKey: Secret =
+			process.env.JWT_SECRET_KEY || 'PasswordDelJWT';
 		const options: SignOptions = { expiresIn: '1d' };
 		return jwt.sign(payload, secretKey, options);
 	}
@@ -32,7 +35,10 @@ class AuthService {
 	 */
 	static verifyToken(token: string): OurTokenPayload {
 		try {
-			return jwt.verify(token, process.env.JWT_SECRET_KEY || 'PasswordDelJWT') as OurTokenPayload;
+			return jwt.verify(
+				token,
+				process.env.JWT_SECRET_KEY || 'PasswordDelJWT'
+			) as OurTokenPayload;
 		} catch (err) {
 			throw new Error('Token non valido o scaduto!');
 		}
@@ -48,7 +54,10 @@ class AuthService {
 		const user = await Cliente.getByEmail(input.email);
 
 		if (user) {
-			const passwordMatch = await Cliente.comparePassword(input.password, user.password);
+			const passwordMatch = await Cliente.comparePassword(
+				input.password,
+				user.password
+			);
 			if (!passwordMatch) return;
 
 			// Costruzione del token
@@ -56,7 +65,9 @@ class AuthService {
 			const tokenPayload: OurTokenPayload = {
 				id_utente: user.numero_carta,
 				ruolo: 'cliente',
-				username: `${user.nome}.${user.cognome}.${anno}`.toLowerCase().replace(/\s+/g, '')
+				username: `${user.nome}.${user.cognome}.${anno}`
+					.toLowerCase()
+					.replace(/\s+/g, ''),
 			};
 
 			const token = this.generateToken(tokenPayload);
@@ -64,28 +75,39 @@ class AuthService {
 
 			return {
 				token,
-				avatar: user.image
+				avatar: user.image,
 			};
 		}
 
 		// Login come impiegato
 		const impiegatoCredentials = await Impiegato.getPassword(input.email);
 		if (impiegatoCredentials) {
-			const passwordMatch = await Impiegato.comparePassword(input.password, impiegatoCredentials.password);
+			const passwordMatch = await Impiegato.comparePassword(
+				input.password,
+				impiegatoCredentials.password
+			);
 			if (!passwordMatch) return;
 
 			const impiegato = await Impiegato.getByEmail(input.email);
 			if (!impiegato) {
-				console.error('❌ [AUTH ERROR] login: impiegato non trovato per email:', input.email);
+				console.error(
+					'❌ [AUTH ERROR] login: impiegato non trovato per email:',
+					input.email
+				);
 				throw new Error('Impiegato non trovato');
 			}
 
 			const anno = impiegato.data_nascita.slice(0, 4);
 			const tokenPayload: OurTokenPayload = {
 				id_utente: impiegato.matricola,
-				ruolo: impiegato.ruolo.toLowerCase() as 'chef' | 'cameriere' | 'amministratore',
-				username: `${impiegato.nome}.${impiegato.cognome}.${anno}`.toLowerCase().replace(/\s+/g, ''),
-				id_filiale: impiegato.ref_filiale
+				ruolo: impiegato.ruolo.toLowerCase() as
+					| 'chef'
+					| 'cameriere'
+					| 'amministratore',
+				username: `${impiegato.nome}.${impiegato.cognome}.${anno}`
+					.toLowerCase()
+					.replace(/\s+/g, ''),
+				id_filiale: impiegato.ref_filiale,
 			};
 
 			const token = this.generateToken(tokenPayload);
@@ -93,7 +115,7 @@ class AuthService {
 
 			return {
 				token,
-				avatar: impiegato.foto
+				avatar: impiegato.foto,
 			};
 		}
 
@@ -138,12 +160,14 @@ class AuthService {
 			uppercase[Math.floor(Math.random() * uppercase.length)],
 			lowercase[Math.floor(Math.random() * lowercase.length)],
 			digits[Math.floor(Math.random() * digits.length)],
-			specialChars[Math.floor(Math.random() * specialChars.length)]
+			specialChars[Math.floor(Math.random() * specialChars.length)],
 		];
 
 		const allCharacters = uppercase + lowercase + digits + specialChars;
 		for (let i = password.length; i < length; i++) {
-			password.push(allCharacters[Math.floor(Math.random() * allCharacters.length)]);
+			password.push(
+				allCharacters[Math.floor(Math.random() * allCharacters.length)]
+			);
 		}
 
 		// Shuffle per evitare pattern fissi
@@ -173,13 +197,21 @@ class AuthService {
 			const cliente = await Cliente.getByEmail(emailCliente);
 			if (cliente) {
 				const newPassword = this.generateRandomPassword();
-				await ClienteService.aggiornaPassword(cliente.numero_carta, newPassword);
+				await ClienteService.aggiornaPassword(
+					cliente.numero_carta,
+					newPassword
+				);
 
-				const mailOptions = {
+				const mailTemplateData: MailTemplateData = {
+					titolo: `Recupero Password`,
+					contenuto: `Ciao ${cliente.nome} ${cliente.cognome}, ecco la tua nuova password: ${newPassword}`,
+				};
+
+				// Invio credenziali via email
+				const mailOptions: MailOptions = {
 					to: cliente.email,
 					subject: 'Recupero Password',
-					text: `Ecco la tua nuova password: ${newPassword}`,
-					html: `Ecco la tua nuova password: ${newPassword}`,
+					data: mailTemplateData,
 				};
 
 				return await EmailService.sendMail(mailOptions);
@@ -188,13 +220,21 @@ class AuthService {
 			const impiegato = await Impiegato.getByEmail(emailCliente);
 			if (impiegato) {
 				const newPassword = this.generateRandomPassword();
-				await ImpiegatoService.aggiornaPassword(impiegato.matricola, newPassword);
+				await ImpiegatoService.aggiornaPassword(
+					impiegato.matricola,
+					newPassword
+				);
 
-				const mailOptions = {
+				const mailTemplateData: MailTemplateData = {
+					titolo: `Recupero Password`,
+					contenuto: `Ciao ${impiegato.nome} ${impiegato.cognome}, ecco la tua nuova password: ${newPassword}`,
+				};
+
+				// Invio credenziali via email
+				const mailOptions: MailOptions = {
 					to: impiegato.email,
 					subject: 'Recupero Password',
-					text: `Ecco la tua nuova password: ${newPassword}`,
-					html: `Ecco la tua nuova password: ${newPassword}`,
+					data: mailTemplateData,
 				};
 
 				return await EmailService.sendMail(mailOptions);
@@ -203,7 +243,7 @@ class AuthService {
 			throw new Error('Email non trovata');
 		} catch (err) {
 			console.error('❌ [ClienteService Error] recuperaPassword:', err);
-			throw new Error('Errore durante l\'aggiornamento della password');
+			throw new Error("Errore durante l'aggiornamento della password");
 		}
 	}
 }

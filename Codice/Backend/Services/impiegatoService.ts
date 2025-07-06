@@ -1,6 +1,11 @@
-import Impiegato, { ImpiegatoData, ImpiegatoInput, ImpiegatoRecord } from '../Models/impiegato';
+import { MailTemplateData, MailOptions } from '../Interfaces/Email';
+import Impiegato, {
+	ImpiegatoData,
+	ImpiegatoInput,
+	ImpiegatoRecord,
+} from '../Models/impiegato';
 import AuthService from './authService';
-import EmailService from '../Email/emailService';
+import EmailService from './emailService';
 
 class ImpiegatoService {
 	/**
@@ -36,25 +41,32 @@ class ImpiegatoService {
 				email,
 				data_nascita,
 				ref_filiale,
-				password
+				password,
 			};
 
 			// Salva l'impiegato nel DB
 			const idImpiegato = await Impiegato.create(impiegato);
 
+			const mailTemplateData: MailTemplateData = {
+				titolo: `Nuova Assunzione`,
+				contenuto: `Ciao ${nome} ${cognome}, sei stato assunto nel ruolo di ${ruolo}, ecco la tua password per accedere al pannello di controllo: ${NotHashedPassword}`,
+			};
+
 			// Invio credenziali via email
-			const mailOptions = {
+			const mailOptions: MailOptions = {
 				to: email,
 				subject: 'Nuova Assunzione',
-				text: `Ciao ${nome} ${cognome}, sei stato assunto nel ruolo di ${ruolo}, ecco la tua password per accedere al pannello di controllo: ${NotHashedPassword}`,
-				html: `Ciao ${nome} ${cognome}, sei stato assunto nel ruolo di ${ruolo}, ecco la tua password per accedere al pannello di controllo: ${NotHashedPassword}`,
+				data: mailTemplateData,
 			};
 
 			await EmailService.sendMail(mailOptions);
 
 			return idImpiegato;
 		} catch (error) {
-			console.error('❌ [ImpiegatoService] Errore durante l\'aggiunta dell\'impiegato:', error);
+			console.error(
+				"❌ [ImpiegatoService] Errore durante l'aggiunta dell'impiegato:",
+				error
+			);
 			throw error;
 		}
 	}
@@ -64,11 +76,17 @@ class ImpiegatoService {
 	 * @param input Oggetto con i nuovi dati dell'impiegato
 	 * @param matricola Matricola dell'impiegato da aggiornare
 	 */
-	static async updateImpiegato(input: ImpiegatoData, matricola: number): Promise<void> {
+	static async updateImpiegato(
+		input: ImpiegatoData,
+		matricola: number
+	): Promise<void> {
 		try {
 			await Impiegato.updateImpiegato(input, matricola);
 		} catch (error) {
-			console.error('❌ [ImpiegatoService] Errore durante l\'aggiornamento dell\'impiegato:', error);
+			console.error(
+				"❌ [ImpiegatoService] Errore durante l'aggiornamento dell'impiegato:",
+				error
+			);
 			throw error;
 		}
 	}
@@ -81,7 +99,10 @@ class ImpiegatoService {
 		try {
 			await Impiegato.deleteImpiegato(matricola);
 		} catch (error) {
-			console.error('❌ [ImpiegatoService] Errore durante l\'eliminazione dell\'impiegato:', error);
+			console.error(
+				"❌ [ImpiegatoService] Errore durante l'eliminazione dell'impiegato:",
+				error
+			);
 			throw error;
 		}
 	}
@@ -91,11 +112,16 @@ class ImpiegatoService {
 	 * @param id_filiale ID della filiale
 	 * @returns Array di impiegati oppure null
 	 */
-	static async getByFiliale(id_filiale: number): Promise<ImpiegatoRecord[] | null> {
+	static async getByFiliale(
+		id_filiale: number
+	): Promise<ImpiegatoRecord[] | null> {
 		try {
 			return await Impiegato.getByFiliale(id_filiale);
 		} catch (error) {
-			console.error('❌ [ImpiegatoService] Errore durante la selezione degli impiegato:', error);
+			console.error(
+				'❌ [ImpiegatoService] Errore durante la selezione degli impiegato:',
+				error
+			);
 			throw error;
 		}
 	}
@@ -105,13 +131,17 @@ class ImpiegatoService {
 	 * @param matricola Matricola dell'impiegato
 	 * @param passwordChiara Nuova password non criptata
 	 */
-	static async aggiornaPassword(matricola: number, passwordChiara: string): Promise<void> {
+	static async aggiornaPassword(
+		matricola: number,
+		passwordChiara: string
+	): Promise<void> {
 		try {
-			const hashedPassword = await AuthService.hashPassword(passwordChiara);
+			const hashedPassword =
+				await AuthService.hashPassword(passwordChiara);
 			await Impiegato.aggiornaPassword(matricola, hashedPassword);
 		} catch (err) {
 			console.error('❌ [ImpiegatoService Error] aggiornaPassword:', err);
-			throw new Error('Errore durante l\'aggiornamento della password');
+			throw new Error("Errore durante l'aggiornamento della password");
 		}
 	}
 }
