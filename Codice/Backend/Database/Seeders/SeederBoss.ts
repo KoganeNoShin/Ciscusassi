@@ -136,7 +136,7 @@ export async function generateUtentiFissi(): Promise<string> {
 		for (const utente of utentiFissi) {
 			const foto = getBase64FromFile(utente.fotoUrl);
 
-			await ImpiegatoService.addImpiegato(
+			const id = await ImpiegatoService.addImpiegato(
 				utente.nome,
 				utente.cognome,
 				utente.ruolo,
@@ -145,6 +145,7 @@ export async function generateUtentiFissi(): Promise<string> {
 				utente.data_nascita,
 				utente.ref_filiale,
 			);
+			await ImpiegatoService.aggiornaPassword(id, "Pwm30L!");
 			console.log(
 				`✅ ${utente.nome} ${utente.cognome} (${utente.ruolo}) aggiunto con successo.`
 			);
@@ -184,7 +185,7 @@ export async function generateUtentiFissi(): Promise<string> {
 		for (const cliente of ClientiFissi) {
 			const foto = getBase64FromFile(cliente.fotoUrl);
 
-			await ClienteService.register({
+			const id = await ClienteService.register({
 				nome: cliente.nome,
 				cognome: cliente.cognome,
 				image: foto,
@@ -192,6 +193,8 @@ export async function generateUtentiFissi(): Promise<string> {
 				email: cliente.email,
 				data_nascita: cliente.data_nascita,
 			});
+			await ClienteService.aggiornaPassword(id, "Pwm30L!");
+
 			console.log(
 				`✅ ${cliente.nome} ${cliente.cognome} aggiunto con successo.`
 			);
