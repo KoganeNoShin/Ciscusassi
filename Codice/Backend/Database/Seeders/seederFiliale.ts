@@ -1,5 +1,5 @@
 import filiale from '../../Models/filiale';
-import impiegato from '../../Models/impiegato';
+import impiegato, { Impiegato } from '../../Models/impiegato';
 import torretta from '../../Models/torretta';
 
 import { faker } from '@faker-js/faker';
@@ -7,6 +7,7 @@ import axios from 'axios';
 
 import immagini from './immaginiFiliali.json';
 import ImpiegatoService from '../../Services/impiegatoService';
+import AuthService from '../../Services/authService';
 
 const password = 'Pwm30L!';
 
@@ -56,7 +57,7 @@ export async function generateFiliale(): Promise<string> {
 			'38.1279652',
 			'38.0908109',
 		];
-
+		let hashedPassword = await AuthService.hashPassword(password);
 		for (let i = 0; i < numeroFiliali; i++) {
 			const num_tavoli = faker.number.int({ min: 10, max: 30 });
 			let id_filiale;
@@ -97,15 +98,16 @@ export async function generateFiliale(): Promise<string> {
 			let chef_ruolo = 'Chef';
 
 			try {
-				await ImpiegatoService.addImpiegato(
-					chef_nome,
-					chef_cognome,
-					chef_ruolo,
-					chef_imageBase64,
-					chef_email,
-					chef_data_nascita,
-					id_filiale,
-				);
+				await Impiegato.create({
+					nome: chef_nome,
+					cognome: chef_cognome,
+					ruolo: chef_ruolo,
+					foto: chef_imageBase64,
+					email: chef_email,
+					password: hashedPassword,
+					data_nascita: chef_data_nascita,
+					ref_filiale: id_filiale,
+			});
 				console.log(
 					`🥩 ${chef_nome} ${chef_cognome} è stato assunto in ${vieFiliali[i]} come ${chef_ruolo}!`
 				);
@@ -141,7 +143,7 @@ export async function generateFiliale(): Promise<string> {
 						cognome: waiter_cognome,
 						ruolo: waiter_ruolo,
 						foto: waiter_imageBase64,
-						password: password,
+						password: hashedPassword,
 						email: waiter_email,
 						data_nascita: waiter_data_nascita,
 						ref_filiale: id_filiale,

@@ -1,10 +1,11 @@
-import impiegato from '../../Models/impiegato';
+import impiegato, { Impiegato } from '../../Models/impiegato';
 import filiale from '../../Models/filiale';
 import fs from 'fs';
 import path from 'path';
 import Cliente from '../../Models/cliente';
 import ClienteService from '../../Services/clienteService';
 import ImpiegatoService from '../../Services/impiegatoService';
+import AuthService from '../../Services/authService';
 
 function getBase64FromFile(localPath: string): string {
 	const fullPath = path.resolve(__dirname, localPath); // path assoluto
@@ -18,7 +19,7 @@ export async function generateUtentiFissi(): Promise<string> {
 		if (!filiali || filiali.length === 0)
 			throw new Error('Nessuna filiale trovata');
 		const password = 'Pwm30L!';
-
+		let hashedPassword = await AuthService.hashPassword(password);
 		const utentiFissi = [
 			// Amministratori
 			{
@@ -136,16 +137,16 @@ export async function generateUtentiFissi(): Promise<string> {
 		for (const utente of utentiFissi) {
 			const foto = getBase64FromFile(utente.fotoUrl);
 
-			const id = await ImpiegatoService.addImpiegato(
-				utente.nome,
-				utente.cognome,
-				utente.ruolo,
-				foto,
-				utente.email,
-				utente.data_nascita,
-				utente.ref_filiale,
-			);
-			await ImpiegatoService.aggiornaPassword(id, "Pwm30L!");
+			await Impiegato.create({
+				nome: utente.nome,
+				cognome: utente.cognome,
+				ruolo: utente.ruolo,
+				foto: foto,
+				email: utente.email,
+				password: hashedPassword,
+				data_nascita: utente.data_nascita,
+				ref_filiale: utente.ref_filiale,
+		});
 			console.log(
 				`✅ ${utente.nome} ${utente.cognome} (${utente.ruolo}) aggiunto con successo.`
 			);
