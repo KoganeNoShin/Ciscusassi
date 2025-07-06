@@ -21,13 +21,26 @@ export async function generateProdotto(): Promise<string> {
 		for (let i = 0; i < prodotti.length; i++) {
 			let nome = prodotti[i].nome;
 			let descrizione = prodotti[i].descrizione;
-			let costo = faker.number.float({
-				min: 8,
-				max: 14,
-				fractionDigits: 2,
-			});
 			let immagine = 'data:image/jpeg;base64,' + prodotti[i].immagine;
 			let categoria = prodotti[i].categoria;
+			let costo;
+
+			switch (categoria.toUpperCase()) {
+				case 'PRIMO':
+					costo = parseFloat(faker.number.int({ min: 10, max: 16 }) + '.00');
+					break;
+				case 'ANTIPASTO':
+					costo = parseFloat(faker.number.int({ min: 6, max: 10 }) + '.00');
+					break;
+				case 'DOLCE':
+					costo = parseFloat(faker.number.int({ min: 4, max: 8 }) + '.00');
+					break;
+				case 'BEVANDA':
+					costo = parseFloat(faker.number.int({ min: 2, max: 5 }) + '.00');
+					break;
+				default:
+					costo = parseFloat(faker.number.int({ min: 8, max: 14 }) + '.00');
+			}
 
 			try {
 				await prodotto.create({
