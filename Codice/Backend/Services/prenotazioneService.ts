@@ -76,6 +76,15 @@ class PrenotazioneService {
                 throw new Error('La data e ora della prenotazione non può essere nel passato');
             }
 
+			// Check Prenotazioni future
+			const prenotazioni = await Prenotazione.getByCliente(Number(data.ref_cliente));
+			
+			const prenotazioniFuturo = prenotazioni.filter((p) => new Date(p.data_ora_prenotazione) >= adesso);
+			
+			if (prenotazioniFuturo.length > 0) {
+				throw new Error('Il cliente ha già una prenotazione futura. Non è possibile fare una nuova prenotazione.');
+			}
+
 			// Check posto
 			const filiale = await Filiale.getById(Number(data.ref_filiale));
 			if (!filiale) throw new Error('Filiale non trovata');

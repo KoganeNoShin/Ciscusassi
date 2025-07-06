@@ -26,6 +26,7 @@ import {
 	idPrenotazioneValidator,
 	prenotazioneInputLocoValidator,
 	prenotazioneInputValidator,
+	prenotazioneUpdateValidator,
 } from '../Validators/prenotazioneValidator';
 
 import { numeroCartaValidator } from '../Validators/clienteValidator';
@@ -168,7 +169,7 @@ router.post(
  */
 router.put(
 	'/modificaPrenotazione',
-	prenotazioneInputValidator,
+	prenotazioneUpdateValidator,
 	validateMiddleware,
 	authMiddleware,
 	PrenotazioneController.modificaPrenotazione

@@ -83,6 +83,18 @@ export const prenotazioneInputValidator = [
 ];
 
 /**
+ * Valida i campi obbligatori per l'aggiornamento di una prenotazione:
+ * - `data_ora_prenotazione`
+ * - `ref_filiale`
+ * - `numero_persone`
+ * - `id_prenotazione`
+ */
+export const prenotazioneUpdateValidator = [
+	...prenotazioneInputValidator,
+	idPrenotazioneValidator(body('id_prenotazione'))
+];
+
+/**
  * Valida i campi per la prenotazione in loco:
  * - `numero_persone`
  * - `data_ora_prenotazione`
@@ -98,10 +110,10 @@ export const prenotazioneInputLocoValidator = [
 			 * Se esiste almeno una prenotazione con data >= ora attuale, la validazione fallisce.
 			 */
 			.custom(async (numeroCarta: number, { req }) => {
-				const cliente = await Prenotazione.getByCliente(numeroCarta);
+				const prenotazioni = await Prenotazione.getByCliente(numeroCarta);
 				const adesso = new Date();
 
-				const prenotazioniFuturo = cliente.filter(
+				const prenotazioniFuturo = prenotazioni.filter(
 					(p) => new Date(p.data_ora_prenotazione) >= adesso
 				);
 
