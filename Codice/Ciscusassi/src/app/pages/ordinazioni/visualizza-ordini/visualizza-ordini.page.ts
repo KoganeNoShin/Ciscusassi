@@ -91,7 +91,10 @@ export class VisualizzaOrdiniPage implements OnInit {
 		this.loadOrdini(); // Carica gli ordini inizialmente
 
 		// Imposta un intervallo che ricarica gli ordini ogni 30 secondi
-		this.intervalAggiornamento = setInterval(() => this.loadOrdini(), 5000);
+		this.intervalAggiornamento = setInterval(
+			() => this.loadOrdini(),
+			30000
+		);
 	}
 
 	// Metodo lifecycle Angular chiamato prima che il componente venga distrutto

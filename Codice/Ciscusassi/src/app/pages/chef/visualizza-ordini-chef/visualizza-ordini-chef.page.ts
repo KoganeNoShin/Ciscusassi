@@ -61,7 +61,7 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 
 	ngViewWillEnter() {
 		this.loadOrdini();
-		this.intervalAggiornamento = setInterval(() => this.loadOrdini(), 5000);
+		this.intervalAggiornamento = setInterval(() => this.loadOrdini(), 30000);
 	}
 
 	loadOrdini() {

@@ -64,7 +64,7 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 		this.loadOrdini();
 		this.intervalAggiornamento = setInterval(
 			() => this.loadOrdini(),
-			5000
+			30000
 		);
 	}
 
