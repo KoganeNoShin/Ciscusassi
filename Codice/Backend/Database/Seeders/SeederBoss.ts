@@ -32,6 +32,15 @@ export async function generateUtentiFissi(): Promise<string> {
 				ref_filiale: filiali[3].id_filiale,
 			},
 			{
+				nome: 'Luca',
+				cognome: 'Cruciata',
+				email: 'luca.cruciata@amministratore.it',
+				data_nascita: '1999-07-09',
+				ruolo: 'Amministratore',
+				fotoUrl: './Professore.jpg',
+				ref_filiale: filiali[3].id_filiale,
+			},
+			{
 				nome: 'Daniele Orazio',
 				cognome: 'Susino',
 				email: 'danieleorazio.susino@amministratore.it',
