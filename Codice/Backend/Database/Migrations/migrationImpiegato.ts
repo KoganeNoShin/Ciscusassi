@@ -14,7 +14,7 @@ export function createIfDoesntExists(): Promise<string> {
                 ruolo TEXT NOT NULL,
                 foto BLOB,
                 password TEXT NOT NULL,
-                email TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
                 data_nascita TEXT NOT NULL,
                 ref_filiale INTEGER NOT NULL,
 				token TEXT UNIQUE,

@@ -11,7 +11,7 @@ export function createIfDoesntExists(): Promise<string> {
                 numero_carta INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 cognome TEXT NOT NULL,
-                email TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
                 data_nascita TEXT NOT NULL,
                 password TEXT NOT NULL,
                 punti INTEGER NOT NULL DEFAULT 0,
