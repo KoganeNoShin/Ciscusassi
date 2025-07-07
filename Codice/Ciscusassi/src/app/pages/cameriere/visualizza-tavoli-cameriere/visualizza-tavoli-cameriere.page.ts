@@ -146,6 +146,10 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	// Pulisce gli intervalli temporali per evitare memory leak quando il componente viene distrutto.
 
 	ngOnDestroy(): void {
+		this.ionViewWillLeave();
+	}
+
+	ionViewWillLeave(){
 		if (this.intervalTavoli) {
 			clearInterval(this.intervalTavoli);
 		}

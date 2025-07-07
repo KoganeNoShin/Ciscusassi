@@ -5,6 +5,8 @@ import { IonIcon, IonText } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { chevronDown } from 'ionicons/icons';
 
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 @Component({
 	selector: 'app-hero',
 	templateUrl: './hero.component.html',
@@ -17,9 +19,21 @@ export class HeroComponent implements OnInit {
 	@Input() description: string = '';
 	@Input() backgroundURL: string = '';
 
-	constructor() {
+	safeTitle: SafeHtml = '';
+	safeDescription: SafeHtml = '';
+
+	constructor(private sanitizer: DomSanitizer) {
 		addIcons({ chevronDown });
+		this.safeTitle = this.sanitizer.bypassSecurityTrustHtml(this.title);
+		this.safeDescription = this.sanitizer.bypassSecurityTrustHtml(
+			this.description
+		);
 	}
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.safeTitle = this.sanitizer.bypassSecurityTrustHtml(this.title);
+		this.safeDescription = this.sanitizer.bypassSecurityTrustHtml(
+			this.description
+		);
+	}
 }

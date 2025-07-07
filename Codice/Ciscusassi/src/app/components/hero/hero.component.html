@@ -7,11 +7,11 @@
 
 <div id="hero">
 	<ion-text class="ion-text-center">
-		<h1 class="text-color-bianco">{{ title }}</h1>
+		<h1 class="text-color-bianco" [innerHTML]="safeTitle"></h1>
 	</ion-text>
 
-	<ion-text class="ion-text-center">
-		<h3 class="text-color-bianco">{{ description }}</h3>
+	<ion-text class="ion-text-center" id="description">
+		<h3 class="text-color-bianco" [innerHTML]="safeDescription"></h3>
 	</ion-text>
 
 	<ion-icon

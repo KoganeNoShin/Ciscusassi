@@ -13,10 +13,6 @@
 	width: 100%;
 }
 
-h1 {
-	font-family: 'LucidaCalligraphy', sans-serif;
-}
-
 ion-select {
 	width: fit-content;
 	height: fit-content;
@@ -52,7 +48,6 @@ ion-select {
 	background-color: #fff;
 	overflow: hidden;
 	border: 1px solid #ddd;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	font-size: 0.95em;
 }
 
@@ -67,7 +62,6 @@ ion-select {
 
 /* Header della tabella */
 .table-header {
-	background-color: var(--ion-color-verdechiaro);
 	font-weight: 700;
 	border-bottom: 2px solid #aac7ff;
 

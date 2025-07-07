@@ -5,7 +5,7 @@
 >
 	<div class="page-wrapper">
 		<ion-text class="ion-text-center ion-padding-top">
-			<h2>Visualizza tavoli</h2>
+			<h2 class="text-color-nero">Visualizza tavoli</h2>
 		</ion-text>
 
 		@if(!localeAperto){
@@ -83,7 +83,9 @@
 		@if(tavoliFiltrati.length === 0){
 
 		<ion-text class="ion-text-center">
-			<h4 class="text-color-gray">Non ci sono prenotazioni</h4>
+			<h4 class="text-color-gray text-color-nero">
+				Non ci sono prenotazioni
+			</h4>
 		</ion-text>
 
 		}
@@ -114,15 +116,19 @@
 						</div>
 
 						<ion-text class="ion-text-center">
-							<h5>Prenotazione: {{ tavolo.prenotazione }}</h5>
+							<h5 class="text-color-nero">
+								Prenotazione: {{ tavolo.prenotazione }}
+							</h5>
 						</ion-text>
 
 						<ion-text class="ion-text-center">
-							<h5>{{ tavolo.orario }}</h5>
+							<h5 class="text-color-nero">{{ tavolo.orario }}</h5>
 						</ion-text>
 
 						<ion-text class="ion-text-center">
-							<h5>{{ tavolo.persone }} persone</h5>
+							<h5 class="text-color-nero">
+								{{ tavolo.persone }} persone
+							</h5>
 						</ion-text>
 					</div>
 				</ion-col>
@@ -220,11 +226,13 @@
 			<ng-template>
 				<div class="popup-container">
 					<ion-text class="ion-text-center">
-						<h2>Confermi l'arrivo del cliente?</h2>
+						<h2 class="text-color-nero">
+							Confermi l'arrivo del cliente?
+						</h2>
 					</ion-text>
 
 					<ion-text class="ion-text-center">
-						<h6>
+						<h6 class="text-color-nero">
 							Numero prenotazione: {{ tavoloDaConfermare?.numero
 							}}
 						</h6>
