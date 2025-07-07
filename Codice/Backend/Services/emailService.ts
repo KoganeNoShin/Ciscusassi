@@ -1,11 +1,8 @@
 import nodemailer from 'nodemailer';
-
 import fs from 'fs';
 import path from 'path';
 import handlebars from 'handlebars';
-
 import { htmlToText } from 'html-to-text';
-
 import { MailOptions } from '../Interfaces/Email';
 
 const dotenv = require('dotenv');
@@ -50,27 +47,28 @@ class EmailService {
 				'Template.hbs'
 			);
 
-			const logoPath = path.join(__dirname, '..', 'Assets', 'logo.png');
-			const logoBase64 = fs.readFileSync(logoPath).toString('base64');
-			const logoMimeType = 'image/png'; // o 'image/jpeg' se il file è .jpg
-
-			const base64Image = `data:${logoMimeType};base64,${logoBase64}`;
-
 			const templateSource = fs.readFileSync(templatePath, 'utf-8');
 			const compiledTemplate = handlebars.compile(templateSource);
 
-			const html = compiledTemplate({ ...data, logo: base64Image });
-			const text = htmlToText(html); // <-- converte HTML in plain text
+			// L'immagine sarà referenziata nel template tramite cid:logo
+			const html = compiledTemplate({ ...data });
+			const text = htmlToText(html);
 
 			const mailDetails = {
-				from: `"Ciscusassi" <${process.env.MAIL_USER}>`, // Email mittente
+				from: `"Ciscusassi" <${process.env.MAIL_USER}>`,
 				to,
 				subject,
 				text,
 				html,
+				attachments: [
+					{
+						filename: 'logo.png',
+						path: path.join(__dirname, '..', 'Assets', 'logo.png'),
+						cid: 'logo',
+					},
+				],
 			};
 
-			// Invia l'email tramite il transport configurato
 			await transporter.sendMail(mailDetails);
 			console.log(`✅ Email inviata a ${to}`);
 		} catch (error) {
