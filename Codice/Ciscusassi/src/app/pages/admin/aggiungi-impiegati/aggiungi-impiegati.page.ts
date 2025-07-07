@@ -164,13 +164,9 @@ export class AggiungiImpiegatiPage implements OnInit {
 				this.resetForm(); // resetta i campi del form dopo l'inserimento
 				this.router.back();
 			},
-			error: (error) => {
-				console.error(
-					"Errore durante l'aggiunta del dipendente:",
-					error
-				);
+			error: () => {
 				this.presentToast(
-					"Errore durante l'aggiunta del dipendente.",
+					"Errore durante l'aggiunta del dipendente. Assicurati che il dipendente non esista già.",
 					'danger'
 				);
 			},
