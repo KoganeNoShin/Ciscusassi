@@ -46,6 +46,11 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 	) {}
 
 	ngOnDestroy() {
+		this.ionViewWillLeave(); // Chiama il metodo per pulire l'intervallo di aggiornamento
+	}
+
+	ionViewWillLeave() {
+		// Cancella l'intervallo di aggiornamento quando il componente sta per essere abbandonato
 		if (this.intervalAggiornamento) {
 			clearInterval(this.intervalAggiornamento);
 		}
@@ -59,7 +64,7 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 		this.loadOrdini();
 		this.intervalAggiornamento = setInterval(
 			() => this.loadOrdini(),
-			30000
+			5000
 		);
 	}
 

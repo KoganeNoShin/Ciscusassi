@@ -73,9 +73,14 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
+		this.ionViewWillLeave();
+	}
+
+	ionViewWillLeave(){
 		if (this.intervalTavoli) {
 			clearInterval(this.intervalTavoli);
 		}
+
 		if (this.intervalApertura) {
 			clearInterval(this.intervalApertura);
 		}
