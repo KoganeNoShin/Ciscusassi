@@ -20,10 +20,21 @@
 		@if (menuAperto === 'antipasti') {
 			<div>
 				@for (a of antipasti; track a.id_prodotto) {
-					<app-prodotto-menu
-						[isOrdinazione]="isOrdinazione"
-						[prodotto]="a"
-					></app-prodotto-menu>
+					@if (a.is_piatto_giorno) {
+						<app-prodotto-menu
+							[isOrdinazione]="isOrdinazione"
+							[isPiattoGiorno]="true"
+							[prodotto]="a"
+						></app-prodotto-menu>
+					}
+				}
+				@for (a of antipasti; track a.id_prodotto) {
+					@if (!a.is_piatto_giorno) {
+						<app-prodotto-menu
+							[isOrdinazione]="isOrdinazione"
+							[prodotto]="a"
+						></app-prodotto-menu>
+					}
 				}
 			</div>
 		}
@@ -63,10 +74,21 @@
 		@if (menuAperto === 'dolci') {
 			<div>
 				@for (d of dolci; track d.id_prodotto) {
-					<app-prodotto-menu
-						[isOrdinazione]="isOrdinazione"
-						[prodotto]="d"
-					></app-prodotto-menu>
+					@if (d.is_piatto_giorno) {
+						<app-prodotto-menu
+							[isOrdinazione]="isOrdinazione"
+							[isPiattoGiorno]="true"
+							[prodotto]="d"
+						></app-prodotto-menu>
+					}
+				}
+				@for (d of dolci; track d.id_prodotto) {
+					@if (!d.is_piatto_giorno) {
+						<app-prodotto-menu
+							[isOrdinazione]="isOrdinazione"
+							[prodotto]="d"
+						></app-prodotto-menu>
+					}
 				}
 			</div>
 		}
@@ -79,10 +101,21 @@
 		@if (menuAperto === 'bevande') {
 			<div>
 				@for (b of bevande; track b.id_prodotto) {
-					<app-prodotto-menu
-						[isOrdinazione]="isOrdinazione"
-						[prodotto]="b"
-					></app-prodotto-menu>
+					@if (b.is_piatto_giorno) {
+						<app-prodotto-menu
+							[isOrdinazione]="isOrdinazione"
+							[isPiattoGiorno]="true"
+							[prodotto]="b"
+						></app-prodotto-menu>
+					}
+				}
+				@for (b of bevande; track b.id_prodotto) {
+					@if (!b.is_piatto_giorno) {
+						<app-prodotto-menu
+							[isOrdinazione]="isOrdinazione"
+							[prodotto]="b"
+						></app-prodotto-menu>
+					}
 				}
 			</div>
 		}
