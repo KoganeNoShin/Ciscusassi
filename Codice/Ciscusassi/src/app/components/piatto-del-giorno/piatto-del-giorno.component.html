@@ -38,7 +38,13 @@
 					</ion-text>
 				</div>
 			</div>
-		} @else {
+		} @else if(piatto === undefined) {
+			<h1 class="text-color-bianco">PIATTO DEL GIORNO</h1>
+			<h3 class="text-color-bianco">
+				Ancora non è stato impostato nessun piatto del giorno.
+				Controlla più tardi!
+			</h3>
+		} @else{
 			<h1 class="text-color-bianco">ERRORE</h1>
 			<h3 class="text-color-bianco">
 				C'è stato un errore durante il caricamento. Riprova!

@@ -32,7 +32,7 @@ import { RouterModule } from '@angular/router';
 })
 export class PiattoAmministratoreComponent implements OnInit {
 	@Input() prodotto!: ProdottoRecord;
-	@Input() idPiattoDelGiorno: number = -1;
+	@Input() idPiattoDelGiorno: number | null = null;
 	@Output() changePiattoDelGiornoEmitter: EventEmitter<ProdottoRecord> =
 		new EventEmitter();
 	@Output() showAlertDeletePiattoEmitter: EventEmitter<ProdottoRecord> =

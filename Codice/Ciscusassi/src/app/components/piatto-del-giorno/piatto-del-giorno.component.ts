@@ -32,6 +32,7 @@ export class PiattoDelGiornoComponent implements OnInit {
 			this.piatto.nome = this.piatto.nome.toUpperCase();
 		} else {
 			console.error(response.message || 'Errore sconosciuto');
+			this.piatto = undefined;
 			this.error = true;
 		}
 

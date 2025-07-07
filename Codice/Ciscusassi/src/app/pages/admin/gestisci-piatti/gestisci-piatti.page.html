@@ -95,7 +95,7 @@
 				[prodotto]="prodotto"
 				(changePiattoDelGiornoEmitter)="changePiattoDelGiorno($event)"
 				(showAlertDeletePiattoEmitter)="showAlertDeletePiatto($event)"
-				[idPiattoDelGiorno]="piattoDelGiorno!.id_prodotto"
+				[idPiattoDelGiorno]="piattoDelGiorno?.id_prodotto ?? null"
 			/>
 
 			}
