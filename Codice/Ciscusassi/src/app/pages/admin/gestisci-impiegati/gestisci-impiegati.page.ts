@@ -32,7 +32,6 @@ import { ImpiegatoAmministratoreComponent } from 'src/app/components/impiegato-a
 		ImpiegatoAmministratoreComponent,
 		IonText,
 		IonContent,
-		RouterLink,
 		IonButton,
 		CommonModule,
 		FormsModule,
@@ -254,4 +253,10 @@ export class GestisciImpiegatiPage implements OnInit {
 		});
 		await toast.present();
 	}
+	vaiAdAggiungiImpiegati() {
+	this.router.navigate(['/aggiungi-impiegati'], {
+		state: { filialeId: this.id_filiale },
+	});
+}
+
 }

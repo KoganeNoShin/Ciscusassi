@@ -23,6 +23,7 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 import { ImpiegatoInput } from 'src/app/core/interfaces/Impiegato';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-aggiungi-impegati',
@@ -64,11 +65,21 @@ export class AggiungiImpiegatiPage implements OnInit {
 		private impiegatoService: ImpiegatoService,
 		private filialeService: FilialeService,
 		private toastController: ToastController,
-		private router: NavController
+		private router: NavController,
+		private routerRouter: Router, // per navigazione e recupero stato
 	) {}
 
 	// Metodo eseguito all'inizializzazione del componente
 	ngOnInit() {
+		const nav = this.routerRouter.getCurrentNavigation();
+		const state = nav?.extras?.state as { filialeId?: number };
+
+		if (state?.filialeId) {
+			this.ref_filiale = state.filialeId;
+			console.log('Filiale ricevuta:', this.ref_filiale);
+		} else {
+			console.error('Nessuna filiale ricevuta');
+		}
 		this.caricaFiliali(); // carica le filiali da mostrare nel select
 	}
 
