@@ -207,6 +207,17 @@ for tag in bevande:
 # Trasformiamo in un dizionario 
 prodotti_dict = [prodotto.to_dict() for prodotto in prodotti]
 
-# Eseguiamo la conversione dei prodotti in json ed esportiamo nel file prodotti.json
+# Carichiamo i prodotti manuali da prodottiManuali.json
+try:
+    with open('prodottiManuali.json', 'r', encoding='utf-8') as f:
+        prodotti_manuali = json.load(f)
+except FileNotFoundError:
+    print("Attenzione: Il file 'prodottiManuali.json' non è stato trovato. Nessun prodotto manuale verrà aggiunto.")
+    prodotti_manuali = []
+
+# Aggiungiamo i prodotti manuali alla lista esistente
+prodotti_dict.extend(prodotti_manuali)
+
+# Salviamo di nuovo tutti i prodotti (inclusi quelli manuali) in prodotti.json
 with open('prodotti.json', 'w', encoding='utf-8') as f:
     json.dump(prodotti_dict, f, ensure_ascii=False, indent=4)
