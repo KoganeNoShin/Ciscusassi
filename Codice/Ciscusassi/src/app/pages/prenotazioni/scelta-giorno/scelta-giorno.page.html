@@ -1,4 +1,6 @@
-<ion-content [fullscreen]="true" color="senape">
+<ion-content [fullscreen]="true" color="senape" class="ion-justify-content-center ion-align-items-center">
+	<div class="page-wrapper">
+	@if(!hasError){
 	<ion-grid fixed class="ion-padding ion-margin-vertical">
 		<ion-row>
 			<ion-col size="12">
@@ -25,7 +27,7 @@
 				size="12"
 				class="ion-justify-content-center ion-align-items-center"
 			>
-				<ion-spinner name="bubbles"></ion-spinner>
+				<ion-spinner name="circle" color="bianco"></ion-spinner>
 			</ion-col>
 			} @else {
 			<ion-col
@@ -75,4 +77,10 @@
 			}
 		</ion-row>
 	</ion-grid>
+	} @else {
+		<ion-text class="ion-text-center ion-padding">
+			<h2 class="text-color-bianco errore">Errore: per favore riprova più tardi!</h2>
+		</ion-text>
+	}
+	</div>
 </ion-content>

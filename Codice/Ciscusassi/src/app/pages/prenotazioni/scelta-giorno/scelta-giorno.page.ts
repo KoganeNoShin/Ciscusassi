@@ -347,18 +347,24 @@ export class SceltaGiornoPage implements OnInit {
 					}
 				},
 				error: async (err) => {
-					console.error(
-						'Errore nella richiesta di prenotazione:',
-						err
-					);
-					const toast = await this.toastController.create({
-						message: 'Errore, non ci sono abbastanza tavoli disponibili nella fascia oraria selezionata',
-						duration: 3000,
-						position: 'bottom',
-						color: 'danger',
-					});
-					await toast.present();
-				},
+					if (err.status === 500){
+						const toast = await this.toastController.create({
+							message: 'Errore, non ci sono abbastanza tavoli disponibili nella fascia oraria selezionata',
+							duration: 3000,
+							position: 'bottom',
+							color: 'danger',
+						});
+						await toast.present();
+					} else {
+						const toast = await this.toastController.create({
+							message: 'Errore, per favore riprova più tardi!',
+							duration: 3000,
+							position: 'bottom',
+							color: 'danger',
+						});
+						await toast.present();
+					}
+				}
 			});
 	}
 

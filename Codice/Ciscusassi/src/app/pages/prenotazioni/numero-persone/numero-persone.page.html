@@ -1,61 +1,71 @@
-<ion-content [fullscreen]="true" color="senape">
-	<ion-grid fixed>
-		<ion-row>
-			<ion-col
-				size="12"
-				class="ion-justify-content-center ion-align-items-center"
-			>
-				@if(loading) {
-				<ion-spinner name="circles" color="bianco"></ion-spinner>
-				} @else {
-				<ion-text class="ion-text-center">
-					<h2 class="text-color-bianco">PRENOTA UN TAVOLO</h2>
-				</ion-text>
+<ion-content [fullscreen]="true" color="senape" class="ion-justify-content-center ion-align-items-center">
+	<div class="page-wrapper">
+		@if (!error){
+		<ion-grid fixed>
+			<ion-row>
+				<ion-col
+					size="12"
+					class="ion-justify-content-center ion-align-items-center"
+				>
+					@if(loading) {
+					<ion-spinner name="circle" color="bianco"></ion-spinner>
+					} @else {
+					<ion-text class="ion-text-center">
+						<h2 class="text-color-bianco">PRENOTA UN TAVOLO</h2>
+					</ion-text>
 
-				<ion-text class="ion-text-center">
-					<h4 class="text-color-bianco">
-						{{filiale?.comune}}, {{filiale?.indirizzo}}
-					</h4>
-				</ion-text>
+					<ion-text class="ion-text-center">
+						<h4 class="text-color-bianco">
+							{{filiale?.comune}}, {{filiale?.indirizzo}}
+						</h4>
+					</ion-text>
 
-				<ion-text class="ion-text-center ion-margin-bottom">
-					<h5 class="text-color-bianco">In quanti sarete?</h5>
-				</ion-text>
+					<ion-text class="ion-text-center ion-margin-bottom">
+						<h5 class="text-color-bianco">In quanti sarete?</h5>
+					</ion-text>
 
-				<div class="scelte ion-hide-sm-down">
-					@for(number of personePossibili; track number){
-					<app-numero-posti-button
-						[number]="number"
-						[personeSelezionate]="personeSelezionate"
-						[inputManuale]="inputManuale"
-						(selectCircleEmitter)="selezionaPersone($event)"
-					></app-numero-posti-button>
+					<div class="scelte ion-hide-sm-down">
+						@for(number of personePossibili; track number){
+						<app-numero-posti-button
+							[number]="number"
+							[personeSelezionate]="personeSelezionate"
+							[inputManuale]="inputManuale"
+							(selectCircleEmitter)="selezionaPersone($event)"
+						></app-numero-posti-button>
+						}
+					</div>
+
+					<ion-text class="ion-text-center ion-hide-sm-down">
+						<h6 class="text-color-bianco ion-hide-sm-down">
+							OPPURE
+						</h6>
+					</ion-text>
+
+					<div class="input-div ion-text-center">
+						<ion-input
+							type="number"
+							placeholder="Inserisci in quanti sarete..."
+							[(ngModel)]="inputManuale"
+							(input)="onInputChange()"
+							min="1"
+							class="ion-padding-horizontal text-color-nero"
+						></ion-input>
+
+						<br />
+						<ion-button
+							expand="block"
+							(click)="salvaPersone(this.personeSelezionate ?? -1, this.inputManuale ?? -1)"
+							>CONFERMA</ion-button
+						>
+					</div>
 					}
-				</div>
-
-				<ion-text class="ion-text-center ion-hide-sm-down">
-					<h6 class="text-color-bianco ion-hide-sm-down">OPPURE</h6>
-				</ion-text>
-
-				<div class="input-div ion-text-center">
-					<ion-input
-						type="number"
-						placeholder="Inserisci in quanti sarete..."
-						[(ngModel)]="inputManuale"
-						(input)="onInputChange()"
-						min="1"
-						class="ion-padding-horizontal text-color-nero"
-					></ion-input>
-
-					<br />
-					<ion-button
-						expand="block"
-						(click)="salvaPersone(this.personeSelezionate ?? -1, this.inputManuale ?? -1)"
-						>CONFERMA</ion-button
-					>
-				</div>
-				}
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+		} @else {
+		<ion-text class="ion-text-center ion-padding">
+			<h2 class="text-color-bianco errore">Errore: per favore riprova più tardi!</h2>
+		</ion-text>
+		}
+	</div>
 </ion-content>
