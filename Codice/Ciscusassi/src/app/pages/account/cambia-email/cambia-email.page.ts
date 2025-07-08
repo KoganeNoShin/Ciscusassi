@@ -71,7 +71,7 @@ export class CambiaEmailPage implements OnInit {
 
 	private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
-		if (response.success) {
+		if (response.success && response.message) {
 			this.presentToast(
 				"L'email è stata modificata con successo!",
 				'success'
@@ -79,17 +79,17 @@ export class CambiaEmailPage implements OnInit {
 			this.loading = false;
 			this.error = false;
 			this.router.navigate(['/dati-account']);
-		} else {
+		} else if (!response.message){
 			this.errorMsg =
-				response.message ||
-				"Si è verificato un errore durante la modifica dell'email.";
+				"Email già in uso";
+			this.loading = false;
 			this.error = true;
 		}
 	}
 
 	ngOnInit() {
 		this.formCambiaEmail = this.fb.group({
-			email: ['', [Validators.required, Validators.email]],
+			email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
 		});
 		this.formCambiaEmail.reset();
 		this.formCambiaEmail.markAllAsTouched();
@@ -106,7 +106,7 @@ export class CambiaEmailPage implements OnInit {
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
 					this.errorMsg =
-						'Formato email non valido o email già in uso.';
+						'Errore: si è verificato un errore durante la modifica dell\'email.';
 					console.log(err);
 					this.error = true;
 					this.loading = false;

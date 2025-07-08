@@ -79,7 +79,7 @@ export class RecuperaPasswordPage implements OnInit {
 		} else {
 			this.errorMsg =
 				response.message ||
-				"Si è verificato un errore durante la modifica dell'email.";
+				"Si è verificato un errore durante il recupero della password.";
 			this.error = true;
 		}
 	}
@@ -93,8 +93,17 @@ export class RecuperaPasswordPage implements OnInit {
 		this.loading = false;
 		this.errorMsg = '';
 		this.formRecuperaPassword = this.fb.group({
-			email: ['', [Validators.required, Validators.email]],
+			email: [
+				'',
+				[
+					Validators.required,
+					Validators.pattern(
+						'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+					),
+				],
+			],
 		});
+		this.formRecuperaPassword.markAllAsTouched();
 	}
 
 	async onSubmit() {
@@ -108,7 +117,7 @@ export class RecuperaPasswordPage implements OnInit {
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
 					this.errorMsg =
-						"Formato email non valido oppure c'è stato un errore nel server.";
+						"Si è verificato un errore durante il recupero della password.";
 					console.log(err);
 					this.error = true;
 					this.loading = false;
