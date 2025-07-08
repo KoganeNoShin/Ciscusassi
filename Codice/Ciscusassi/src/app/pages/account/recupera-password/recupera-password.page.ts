@@ -28,6 +28,9 @@ import { Router } from '@angular/router';
 
 import { ToastController } from '@ionic/angular';
 
+/**
+ * Pagina che mostra il form per poter richiedere il reset della password.
+ */
 @Component({
 	selector: 'app-recupera-password',
 	templateUrl: './recupera-password.page.html',
@@ -68,14 +71,14 @@ export class RecuperaPasswordPage implements OnInit {
 
 	private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
-			this.presentToast(
-				'Se esiste un account con questa email verrà inviata una password temporaranea',
-				'success'
-			);
-			this.loading = false;
-			this.error = false;
-			this.router.navigate(['/login']);
-		}
+		this.presentToast(
+			'Se esiste un account con questa email verrà inviata una password temporaranea',
+			'success'
+		);
+		this.loading = false;
+		this.error = false;
+		this.router.navigate(['/login']);
+	}
 	ngOnInit() {
 		this.ngViewWillEnter();
 	}
@@ -96,7 +99,6 @@ export class RecuperaPasswordPage implements OnInit {
 				],
 			],
 		});
-		this.formRecuperaPassword.markAllAsTouched();
 	}
 
 	async onSubmit() {
@@ -109,11 +111,11 @@ export class RecuperaPasswordPage implements OnInit {
 			this.authenticationService.recuperaPassword(this.email).subscribe({
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
-					 if (err.status === 500) {
-						this.handleResponse(err)
+					if (err.status === 500) {
+						this.handleResponse(err);
 					} else {
-					this.errorMsg =
-						"Si è verificato un errore durante il recupero della password.";
+						this.errorMsg =
+							'Si è verificato un errore durante il recupero della password.';
 					}
 					console.log(err);
 					this.error = true;

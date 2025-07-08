@@ -32,6 +32,10 @@ import { IonInput } from '@ionic/angular/standalone';
 import { NavController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
+/**
+ * Pagina che permette all'utente di loggare con le proprie credenziali,
+ * che si tratti di un cliente, cameriere, chef oppure un amministratore
+ */
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.page.html',
