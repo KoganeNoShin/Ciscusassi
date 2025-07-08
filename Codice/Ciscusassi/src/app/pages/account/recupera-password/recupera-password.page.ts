@@ -68,7 +68,6 @@ export class RecuperaPasswordPage implements OnInit {
 
 	private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
-		if (response.success) {
 			this.presentToast(
 				'Se esiste un account con questa email verrà inviata una password temporaranea',
 				'success'
@@ -76,13 +75,7 @@ export class RecuperaPasswordPage implements OnInit {
 			this.loading = false;
 			this.error = false;
 			this.router.navigate(['/login']);
-		} else {
-			this.errorMsg =
-				response.message ||
-				"Si è verificato un errore durante il recupero della password.";
-			this.error = true;
 		}
-	}
 	ngOnInit() {
 		this.ngViewWillEnter();
 	}
@@ -116,8 +109,12 @@ export class RecuperaPasswordPage implements OnInit {
 			this.authenticationService.recuperaPassword(this.email).subscribe({
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
+					 if (err.status === 500) {
+						this.handleResponse(err)
+					} else {
 					this.errorMsg =
 						"Si è verificato un errore durante il recupero della password.";
+					}
 					console.log(err);
 					this.error = true;
 					this.loading = false;
