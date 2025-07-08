@@ -298,7 +298,16 @@ export class OrdinaAsportoPage implements OnInit {
 
 	// Metodo principale chiamato quando l’utente preme "Procedi"
 	async procedi() {
-		if (this.coordinateSelezionate) {
+		if (this.erroreNellaRichiesta) {
+			const toast = await this.toastController.create({
+				message: 'Errore nella richiesta, riprova più tardi.',
+				duration: 3000,
+				position: 'bottom',
+				color: 'danger',
+			});
+			await toast.present();
+			return;
+		} else if (this.coordinateSelezionate) {
 			this.caricamentoInCorso = true;
 			await this.trovaFilialePiuVicina(this.coordinateSelezionate);
 			this.caricamentoInCorso = false;
