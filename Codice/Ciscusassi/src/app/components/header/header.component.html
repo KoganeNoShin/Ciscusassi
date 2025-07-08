@@ -2,30 +2,39 @@
 <ion-header [translucent]="true">
 	<!-- La toolbar ci permette di mettere gli elementi in riga -->
 	<ion-toolbar color="rosso" id="content">
-		<!-- Mostriamo l'hamburger solo su schermi piccoli -->
-		<ion-menu-button
-			slot="start"
-			menu="main"
-			class="ion-hide-sm-up text-color-bianco"
-		></ion-menu-button>
-
 		<!-- Altrimenti mostriamo direttamente i bottoni delle pagine, con relativo link alle rotte -->
-		<ion-buttons slot="start" class="ion-hide-sm-down">
-			<ion-button [routerLink]="['/']"> HOME </ion-button>
-			<ion-button [routerLink]="['/menu']"> MENU </ion-button>
+		<ion-buttons slot="start">
+			<ion-button (click)="navigateBack()">
+				<ion-icon name="arrow-back" color="bianco" />
+			</ion-button>
 
-			<ion-button [routerLink]="['/ristoranti']"> RISTORANTI </ion-button>
+			<ion-button [routerLink]="['/']" class="ion-hide-sm-down">
+				HOME
+			</ion-button>
+			<ion-button [routerLink]="['/menu']" class="ion-hide-sm-down">
+				MENU
+			</ion-button>
+
+			<ion-button [routerLink]="['/ristoranti']" class="ion-hide-sm-down">
+				RISTORANTI
+			</ion-button>
 
 			<!-- I bottoni per ristoranti ed ordina ora, li mostriamo solo se è un potenziale cliente -->
 			@if (role == 'cliente' || role == '') {
 				<ion-button
 					(click)="svuotaCarrello()"
 					[routerLink]="['/ordina-ora']"
+					class="ion-hide-sm-down"
 				>
 					ORDINA ORA
 				</ion-button>
 
-				<ion-button [routerLink]="['/prenota']"> PRENOTA </ion-button>
+				<ion-button
+					[routerLink]="['/prenota']"
+					class="ion-hide-sm-down"
+				>
+					PRENOTA
+				</ion-button>
 			}
 		</ion-buttons>
 
@@ -74,6 +83,12 @@
 					<ion-icon name="person-circle" size="large"></ion-icon>
 				</ion-button>
 			}
+
+			<!-- Mostriamo l'hamburger solo su schermi piccoli -->
+			<ion-menu-button
+				menu="main"
+				class="ion-hide-sm-up text-color-bianco"
+			/>
 		</ion-buttons>
 	</ion-toolbar>
 </ion-header>

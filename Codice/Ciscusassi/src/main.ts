@@ -22,9 +22,17 @@ import { authInterceptor } from './app/core/interceptors/auth.interceptor';
 bootstrapApplication(AppComponent, {
 	providers: [
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+
+		// Carichiamo le classi di Ionic Angular
 		provideIonicAngular(),
+
+		// Carichiamo le rotte
 		provideRouter(routes, withPreloading(PreloadAllModules)),
+
+		// Iniettiamo il client HTTP per fare richieste al server, aggiungendo l'interceptor così possiamo intercettare eventuali errori
 		provideHttpClient(withInterceptors([authInterceptor])),
+
+		// Integriamo Ionic Storage per la gestione dello storage locale
 		importProvidersFrom(IonicStorageModule.forRoot()),
 	],
 });

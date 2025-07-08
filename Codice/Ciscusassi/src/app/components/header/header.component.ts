@@ -10,10 +10,11 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { personCircle } from 'ionicons/icons';
+import { personCircle, arrowBack } from 'ionicons/icons';
 import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { NavController } from '@ionic/angular';
 
 /**
  * Componente custom utilizzato per creare un header personalizzato con tutti i bottoni
@@ -41,9 +42,10 @@ export class HeaderComponent implements OnInit {
 
 	constructor(
 		private authService: AuthenticationService,
-		private servizioCarrello: CarrelloService
+		private servizioCarrello: CarrelloService,
+		private navigation: NavController
 	) {
-		addIcons({ personCircle });
+		addIcons({ personCircle, arrowBack });
 	}
 
 	/**
@@ -67,5 +69,10 @@ export class HeaderComponent implements OnInit {
 		this.authService.avatar$.subscribe((avatar) => {
 			this.avatar = avatar;
 		});
+	}
+
+	/** Torniamo indietro usando la freccetta */
+	navigateBack() {
+		this.navigation.back();
 	}
 }
