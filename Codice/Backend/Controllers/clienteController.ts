@@ -161,8 +161,7 @@ class ClienteController {
 			const success = await ClienteService.aggiornaEmail(idCliente, req.body.nuovaEmail);
 
 			res.status(200).json({
-				success: success,
-				message: 'Email aggiornata con successo',
+				success: success
 			});
 		} catch (err) {
 			console.error('❌ [CLIENTE ERROR] aggiornaEmail:', err);
