@@ -79,9 +79,8 @@ export class CambiaEmailPage implements OnInit {
 			this.loading = false;
 			this.error = false;
 			this.router.navigate(['/dati-account']);
-		} else if (!response.message){
-			this.errorMsg =
-				"Email già in uso";
+		} else if (!response.message) {
+			this.errorMsg = 'Email già in uso';
 			this.loading = false;
 			this.error = true;
 		}
@@ -89,11 +88,17 @@ export class CambiaEmailPage implements OnInit {
 
 	ngOnInit() {
 		this.formCambiaEmail = this.fb.group({
-			email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
+			email: [
+				'',
+				[
+					Validators.required,
+					Validators.pattern(
+						'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+					),
+				],
+			],
 		});
 		this.formCambiaEmail.reset();
-		this.formCambiaEmail.markAllAsTouched();
-
 	}
 
 	async onSubmit() {
@@ -106,7 +111,7 @@ export class CambiaEmailPage implements OnInit {
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
 					this.errorMsg =
-						'Errore: si è verificato un errore durante la modifica dell\'email.';
+						"Errore: si è verificato un errore durante la modifica dell'email.";
 					console.log(err);
 					this.error = true;
 					this.loading = false;

@@ -2,12 +2,10 @@
 	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
 		<ion-row class="ion-align-items-center ion-justify-content-center">
 			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
-				<ion-img
-					[src]="'/assets/illustrations/TizioChiave.png'"
-				></ion-img>
+				<ion-img [src]="'/assets/illustrations/TizioChiave.png'" />
 			</ion-col>
 
-			<ion-col size="12" sizeXl="6">
+			<ion-col size="10" sizeXl="6">
 				<ion-card
 					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
 					color="verdechiaro"
@@ -20,14 +18,22 @@
 					<p class="errorMsg">{{ errorMsg }}</p>
 					}
 
-					<form [formGroup]="formCambiaEmail" (ngSubmit)="onSubmit()">
-						<ion-item class="campoForm ion-padding-horizontal">
+					<form
+						[formGroup]="formCambiaEmail"
+						(ngSubmit)="onSubmit()"
+						class="form-fields ion-margin-top"
+					>
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formCambiaEmail.get('email')?.touched"
+						>
 							<ion-input
 								formControlName="email"
 								type="email"
 								errorText="Il formato dell'email non è valido"
 								label="Email"
-								color="rosso"
+								color="arancione"
 								placeholder="Inserisci la tua nuova email"
 							></ion-input>
 						</ion-item>
