@@ -9,7 +9,7 @@
 			</ion-col>
 
 			<!-- Colonna destra: form -->
-			<ion-col size="12" sizeXl="6">
+			<ion-col size="10" sizeXl="6">
 				<ion-card
 					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
 					color="salmone"
@@ -20,17 +20,22 @@
 						</h2>
 					</ion-text>
 
-					<ion-text>
-						<p class="text-color-bianco">
+					<ion-text
+						class="ion-text-center ion-padding-horizontal ion-padding-vertical"
+					>
+						<h5 class="text-color-bianco">
 							Inserisci il tuo indirizzo per ricevere comodamente
 							l'ordine alla tua posizione corrente.
-						</p>
+						</h5>
 					</ion-text>
 
 					<!-- Input indirizzo -->
 
-					<div class="indirizzo-wrapper">
-						<ion-item class="campoForm ion-padding-horizontal">
+					<div class="form-fields">
+						<ion-item
+							class="campo-form ion-padding-horizontal"
+							lines="none"
+						>
 							<ion-input
 								placeholder="Inserisci il tuo indirizzo..."
 								label="Indirizzo"
@@ -38,7 +43,7 @@
 								[(ngModel)]="testoRicerca"
 								(ionInput)="avviaRicerca()"
 								class="ion-padding-horizontal"
-							></ion-input>
+							/>
 						</ion-item>
 
 						<div class="autocomplete-wrapper">
@@ -52,21 +57,21 @@
 								} </ion-list
 							>}
 						</div>
-					</div>
 
-					<ion-button
-						(click)="procedi()"
-						[disabled]="caricamentoInCorso || !coordinateSelezionate"
-						size="default"
-						fill="solid"
-						shape="round"
-						color="verdechiaro"
-						expand="block"
-						type="submit"
-						class="ion-padding-horizontal ion-padding-vertical"
-					>
-						PROCEDI
-					</ion-button>
+						<ion-button
+							(click)="procedi()"
+							[disabled]="caricamentoInCorso || !coordinateSelezionate"
+							size="default"
+							fill="solid"
+							shape="round"
+							color="verdechiaro"
+							expand="block"
+							type="submit"
+							class="ion-padding-horizontal ion-padding-vertical"
+						>
+							PROCEDI
+						</ion-button>
+					</div>
 				</ion-card>
 			</ion-col>
 		</ion-row>

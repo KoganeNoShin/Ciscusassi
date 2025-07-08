@@ -1,21 +1,3 @@
-/* ==========================
-   Overflow e Scroll
-========================== */
-
-ion-content {
-	--overflow: hidden;
-}
-
-@media (max-width: 767px) {
-	ion-content {
-		--overflow: auto;
-	}
-}
-
-/* ==========================
-   Layout Generale e Grid
-========================== */
-
 ion-grid {
 	height: 100vh;
 	display: flex;
@@ -23,121 +5,65 @@ ion-grid {
 }
 
 ion-card {
-	gap: 2rem;
 	display: flex;
 	flex-direction: column;
 	height: 80vh;
-	padding: 10%;
-}
-/* ==========================
-   Colonne (ion-col)
-========================== */
-
-/* ==========================
-   Card (ion-card)
-========================== */
-
-/* ==========================
-   Immagini (ion-img)
-========================== */
-
-ion-img {
-	padding-left: 10vh;
-	width: 90vh;
-	height: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
-/* ==========================
-   Testi e Input
-========================== */
-
-ion-list {
-	max-width: 90%;
-	margin: 0 auto;
-	position: relative;
-}
-
-/* ==========================
-   Autocomplete List Style
-========================== */
-
-.autocomplete-wrapper {
-	position: relative; /* per posizionamento assoluto della lista interna */
+ion-text {
 	width: 100%;
+}
 
-	ion-list {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		right: 0;
-		z-index: 9999;
-		background: #fff;
-		border-radius: 12px;
-		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-		padding: 4px 0;
-		max-height: 300px;
-		overflow-y: auto;
-		scroll-behavior: smooth;
+ion-content {
+	overflow-y: auto;
+}
+
+.errorMsg {
+	color: var(--ion-color-rosso);
+	font-weight: bolder;
+}
+
+// Classe del wrapper dei campi del form
+.form-fields {
+	min-width: 500px; // Almeno 500 px di larghezza
+	gap: 1.5em; // Spaziamo i componenti
+
+	height: fit-content; // Deve essere grande solo quanto basta
+	display: flex; // Mettiamo flex per jestire la giustificazione e l'allineamento
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	// Classe del singolo campo
+	.campo-form {
+		max-width: 600px; // Limitiamo larghezza sia massima
+		min-width: 400px; // che minima
+		width: 80%; // Prendiamo solo l'80% della grandezza disponibile
+		border-radius: 12px; // Arrotondiamo i campi
+		--border-radius: 12px;
+		overflow: hidden; // non mostriamo l'overflow
+		--background: white;
+		color: black;
+		--color: black;
 	}
-}
 
-ion-list ion-item,
-.autocomplete-wrapper ion-list ion-item {
-	--padding-start: 16px;
-	--inner-padding-end: 16px;
-	--background: transparent;
-	--color: #333;
-	font-size: 15px;
-	transition: background 0.2s ease;
-	border-radius: 0;
-}
+	// Se il campo è stato selezionato (e quindi c'è l'errore)
+	.touched::part(native) {
+		padding-bottom: 5px; // Allora mettiamo un po' di padding per fare leggere meglio l'errore
+	}
 
-ion-list ion-item:hover,
-.autocomplete-wrapper ion-list ion-item:hover {
-	--background: #f0f0f0;
-}
+	ion-input,
+	ion-textarea,
+	ion-select {
+		--background: var(--ion-color-bianco);
+		--color: black;
+		border-radius: 10px;
+		width: 80%;
+	}
 
-ion-list ion-item:first-child,
-.autocomplete-wrapper ion-list ion-item:first-child {
-	border-top-left-radius: 12px;
-	border-top-right-radius: 12px;
-}
-
-ion-list ion-item:last-child,
-.autocomplete-wrapper ion-list ion-item:last-child {
-	border-bottom-left-radius: 12px;
-	border-bottom-right-radius: 12px;
-}
-
-/* --------------------- */
-
-ion-input {
-	background-color: white;
-	--background: white;
-}
-
-.campoForm {
-	border-radius: 12px;
-	overflow: hidden;
-	--background: white;
-	--border-radius: 12px;
-	width: 100%;
-	margin-bottom: 1%;
-}
-
-ion-button {
-	width: 100%;
-}
-
-.text-full {
-	width: 100%;
-}
-
-.indirizzo-wrapper {
-	width: 100%;
-	height: fit-content;
-}
-
-p {
-	font-size: clamp(1rem, 1vw, 1.4rem);
+	ion-button {
+		width: 80%;
+	}
 }
