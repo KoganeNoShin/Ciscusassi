@@ -29,7 +29,6 @@ import {
 } from 'src/app/core/interfaces/Credentials';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { IonInput } from '@ionic/angular/standalone';
-import { inject } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
@@ -54,7 +53,7 @@ import { RouterModule } from '@angular/router';
 		ReactiveFormsModule,
 		IonInput,
 		IonInputPasswordToggle,
-		RouterModule
+		RouterModule,
 	],
 })
 export class LoginPage implements OnInit {
@@ -66,7 +65,7 @@ export class LoginPage implements OnInit {
 	constructor(
 		private fb: FormBuilder,
 		private authenticationService: AuthenticationService,
-		private navigation: NavController,
+		private navigation: NavController
 	) {}
 
 	private handleResponse(response: ApiResponse<LoginRecord>): void {
@@ -105,7 +104,15 @@ export class LoginPage implements OnInit {
 
 	ngOnInit() {
 		this.formLogin = this.fb.group({
-			email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
+			email: [
+				'',
+				[
+					Validators.required,
+					Validators.pattern(
+						'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+					),
+				],
+			],
 			password: [
 				'',
 				[
@@ -117,7 +124,6 @@ export class LoginPage implements OnInit {
 			],
 		});
 		this.formLogin.reset();
-		this.formLogin.markAllAsTouched();
 	}
 
 	onSubmit() {
@@ -129,10 +135,10 @@ export class LoginPage implements OnInit {
 			this.authenticationService.login(credentials).subscribe({
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
-					 if (err.status === 401) {
-      					this.errorMsg = 'Email o password errati';
-					 } else {
-					this.errorMsg =	'Errore durante il login.';
+					if (err.status === 401) {
+						this.errorMsg = 'Email o password errati';
+					} else {
+						this.errorMsg = 'Errore durante il login.';
 					}
 					console.log(err);
 					this.error = true;

@@ -2,49 +2,64 @@
 	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
 		<ion-row class="ion-align-items-center ion-justify-content-center">
 			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
-				<ion-img
-					[src]="'/assets/illustrations/TizioChiave.png'"
-				></ion-img>
+				<ion-img [src]="'/assets/illustrations/TizioChiave.png'" />
 			</ion-col>
 
-			<ion-col size="12" sizeXl="6">
+			<ion-col size="10" sizeXl="6">
 				<ion-card
 					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
 					color="verdechiaro"
 				>
 					<ion-text>
-						<h1 class="text-color-bianco">LOGIN</h1>
+						<h1 class="text-color-bianco ion-margin-bottom">
+							LOGIN
+						</h1>
 					</ion-text>
 
 					@if (error) {
 					<p class="errorMsg">{{ errorMsg }}</p>
 					}
 
-					<form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
-						<ion-item class="campoForm ion-padding-horizontal">
+					<form
+						[formGroup]="formLogin"
+						(ngSubmit)="onSubmit()"
+						class="form-fields ion-margin-top"
+					>
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formLogin.get('email')?.touched"
+						>
 							<ion-input
 								formControlName="email"
 								type="email"
 								label="Email"
-								errorText="Il formato dell'email non è valido"
-								color="rosso"
+								labelPlacement="floating"
+								color="arancione"
 								placeholder="Inserisci la tua email"
-							></ion-input>
+								errorText="Il formato della email non è valido"
+							/>
 						</ion-item>
 
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formLogin.get('password')?.touched"
+						>
 							<ion-input
 								type="password"
 								label="Password"
+								labelPlacement="floating"
 								errorText="La password deve essere lunga almeno 6 caratteri e contenere almeno un numero, una lettera maiuscola e un carattere speciale"
 								formControlName="password"
-								color="rosso"
+								color="arancione"
 								placeholder="Inserisci la tua password"
 							>
 								<ion-input-password-toggle
+									*ngIf="formLogin.get('password')?.value?.length > 0"
 									slot="end"
 									color="rosso"
-								></ion-input-password-toggle>
+								/>
 							</ion-input>
 						</ion-item>
 
@@ -59,14 +74,11 @@
 							[disabled]="formLogin.invalid || loading"
 						>
 							@if (!loading) { LOGIN } @else {
-							<ion-spinner
-								name="circular"
-								color="bianco"
-							></ion-spinner>
+							<ion-spinner name="circular" color="bianco" />
 							}
 						</ion-button>
 					</form>
-					<ion-text class="forgot-text">
+					<ion-text>
 						<h4 class="text-color-bianco">
 							Hai dimenticato la password?
 							<a
@@ -76,7 +88,7 @@
 							>
 						</h4>
 					</ion-text>
-					<ion-text class="forgot-text">
+					<ion-text>
 						<h4 class="text-color-bianco">
 							Non hai un account?
 							<a routerLink="/signin" class="text-color-arancione"
