@@ -4,6 +4,7 @@
 	color="verdechiaro"
 >
 	<div class="page-wrapper">
+		@if (!error){
 		<div class="first-div">
 			<ion-text class="ion-text-center">
 				<h2 class="text-color-bianco">VISUALIZZA COMANDE</h2>
@@ -33,6 +34,13 @@
 		}@else {
 		<!-- Lista ordini visibile solo se NON sto caricando -->
 		<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+		}}
+		@else {
+			<ion-text class="ion-text-center">
+			<h1 style="color: var(--ion-color-bianco)">
+				Errore: per favore riprova più tardi!
+			</h1>
+		</ion-text>
 		}
 	</div>
 </ion-content>

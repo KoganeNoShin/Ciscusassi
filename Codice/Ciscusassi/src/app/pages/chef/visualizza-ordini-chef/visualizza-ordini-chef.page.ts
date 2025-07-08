@@ -38,6 +38,7 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 	private intervalAggiornamento: any;
 
 	isLoading = false;
+	error = false;
 
 	constructor(
 		private tavoloService: TavoloService,
@@ -101,6 +102,7 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 						console.error('Errore nel caricamento ordini:', err);
 						this.prodottiSubject.next([]);
 						this.isLoading = false;
+						this.error = true;
 					},
 					complete: () => {
 						this.isLoading = false;

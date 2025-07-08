@@ -150,7 +150,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		this.ionViewWillLeave();
 	}
 
-	ionViewWillLeave(){
+	ionViewWillLeave() {
 		if (this.intervalTavoli) {
 			clearInterval(this.intervalTavoli);
 		}
@@ -501,14 +501,18 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 						return;
 					}
 				}
-			} catch (e) {
-				console.error('Errore controllo prenotazioni cliente:', e);
+			} catch (e: any) {
+				console.error('Errore: per favore riprova più tardi', e);
 
 				await this.presentToast(
-					'Errore controllo prenotazioni cliente',
+					'Errore: per favore riprova più tardi',
 
 					'danger'
 				);
+
+				if (e?.status === 400) {
+					await this.presentToast('Errore: numero carta non trovato', 'danger');
+				}
 
 				return;
 			}
