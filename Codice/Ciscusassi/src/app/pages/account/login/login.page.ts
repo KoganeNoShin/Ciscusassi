@@ -117,6 +117,8 @@ export class LoginPage implements OnInit {
 				],
 			],
 		});
+		this.formLogin.reset();
+		this.formLogin.markAllAsTouched();
 	}
 
 	onSubmit() {

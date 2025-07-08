@@ -144,6 +144,7 @@ export class SigninPage implements OnInit {
 		const mese = String(oggi.getMonth() + 1).padStart(2, '0'); // mesi da 0 a 11
 		const giorno = String(oggi.getDate()).padStart(2, '0');
 		this.dataMaxOggi = `${anno}-${mese}-${giorno}`;
+		this.formRegistrazione.markAllAsTouched();
 	}
 
 	async onSubmit() {

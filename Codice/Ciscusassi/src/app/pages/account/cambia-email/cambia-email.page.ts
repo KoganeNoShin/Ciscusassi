@@ -91,6 +91,9 @@ export class CambiaEmailPage implements OnInit {
 		this.formCambiaEmail = this.fb.group({
 			email: ['', [Validators.required, Validators.email]],
 		});
+		this.formCambiaEmail.reset();
+		this.formCambiaEmail.markAllAsTouched();
+
 	}
 
 	async onSubmit() {
@@ -98,7 +101,6 @@ export class CambiaEmailPage implements OnInit {
 
 		if (this.formCambiaEmail.valid) {
 			this.nuovaEmail = this.formCambiaEmail.value.email;
-			console.log('PIPO: ' + this.nuovaEmail);
 
 			this.authenticationService.cambiaEmail(this.nuovaEmail).subscribe({
 				next: (response) => this.handleResponse(response),
