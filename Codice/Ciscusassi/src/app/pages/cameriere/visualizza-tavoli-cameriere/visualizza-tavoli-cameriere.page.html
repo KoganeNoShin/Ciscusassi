@@ -1,9 +1,10 @@
 <ion-content
 	[fullscreen]="true"
-	class="ion-justify-content-center ion-align-items-center"
+	class="ion-justify-content-center ion-align-items-center "
 	color="bianco"
 >
 	<div class="page-wrapper">
+		@if (!this.error) {
 		<ion-text class="ion-text-center ion-padding-top">
 			<h2 class="text-color-nero">Visualizza tavoli</h2>
 		</ion-text>
@@ -269,6 +270,12 @@
 			</ng-template>
 		</ion-modal>
 
+		} } @else {
+		<ion-text class="ion-text-center ion-padding">
+			<h1 style="color: var(--ion-color-rosso)">
+				Errore: per favore riprova più tardi!
+			</h1>
+		</ion-text>
 		}
 	</div>
 </ion-content>

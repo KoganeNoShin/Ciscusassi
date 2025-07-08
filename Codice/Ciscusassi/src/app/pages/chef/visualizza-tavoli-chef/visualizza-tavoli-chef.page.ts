@@ -52,6 +52,8 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 	private intervalTavoli: any;
 	private intervalApertura: any;
 
+	error: boolean = false;
+
 	constructor(
 		private toastController: ToastController,
 		private authService: AuthenticationService,
@@ -178,11 +180,9 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 			}
 		} catch (err: any) {
 			console.error('Errore caricamento tavoli:', err);
-			const messaggio =
-				err?.error?.message || 'Errore durante il caricamento';
-			this.presentToast(messaggio, 'danger');
 			this.tavoli = [];
 			this.tavoliFiltrati = [];
+			this.error = true;
 		}
 	}
 

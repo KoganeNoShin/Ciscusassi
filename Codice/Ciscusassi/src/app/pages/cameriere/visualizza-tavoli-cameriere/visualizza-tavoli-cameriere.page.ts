@@ -108,6 +108,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	private intervalTavoli: any;
 
 	private intervalApertura: any;
+	error: boolean = false;
 
 	constructor(
 		private toastController: ToastController,
@@ -297,6 +298,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			}
 		} catch (e) {
 			console.error('Errore caricamento tavoli:', e);
+			this.error = true;
 
 			this.tavoli = [];
 
