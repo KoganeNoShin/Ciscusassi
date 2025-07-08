@@ -16,6 +16,7 @@ import {
 	IonCol,
 	IonItem,
 	IonImg,
+	IonLabel,
 } from '@ionic/angular/standalone';
 
 import { ImpiegatoService } from 'src/app/core/services/impiegato.service';
@@ -66,7 +67,7 @@ export class AggiungiImpiegatiPage implements OnInit {
 		private filialeService: FilialeService,
 		private toastController: ToastController,
 		private router: NavController,
-		private routerRouter: Router, // per navigazione e recupero stato
+		private routerRouter: Router // per navigazione e recupero stato
 	) {}
 
 	// Metodo eseguito all'inizializzazione del componente
@@ -108,7 +109,7 @@ export class AggiungiImpiegatiPage implements OnInit {
 
 	// Validazione semplice per l'indirizzo email
 	private isValidEmail(email: string): boolean {
-		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		return re.test(email.toLowerCase());
 	}
 
@@ -142,6 +143,39 @@ export class AggiungiImpiegatiPage implements OnInit {
 			return;
 		}
 
+		if (!this.data_nascita) {
+			this.presentToast('Inserisci una data di nascita.', 'danger');
+			return;
+		}
+
+		const oggi = new Date();
+		const dataNascita = new Date(this.data_nascita);
+
+		if (dataNascita > oggi) {
+			this.presentToast(
+				'La data di nascita non può essere futura.',
+				'danger'
+			);
+			return;
+		}
+
+		// (Opzionale) Controllo maggiore età
+		const anni = oggi.getFullYear() - dataNascita.getFullYear();
+		const meseDiff = oggi.getMonth() - dataNascita.getMonth();
+		const giornoDiff = oggi.getDate() - dataNascita.getDate();
+		const eta =
+			meseDiff < 0 || (meseDiff === 0 && giornoDiff < 0)
+				? anni - 1
+				: anni;
+
+		if (eta < 18) {
+			this.presentToast(
+				'Il dipendente deve essere maggiorenne.',
+				'danger'
+			);
+			return;
+		}
+
 		// Creazione dell'oggetto ImpiegatoInput con i dati inseriti
 		const nuovoDipendente: ImpiegatoInput = {
 			nome: this.nome,
@@ -161,14 +195,26 @@ export class AggiungiImpiegatiPage implements OnInit {
 					'Dipendente aggiunto con successo!',
 					'success'
 				);
-				this.resetForm(); // resetta i campi del form dopo l'inserimento
+				this.resetForm();
 				this.router.back();
 			},
-			error: () => {
-				this.presentToast(
-					"Errore durante l'aggiunta del dipendente. Assicurati che il dipendente non esista già.",
-					'danger'
-				);
+			error: (err) => {
+				if (err.status === 400) {
+					this.presentToast(
+						"È necessario compilare tutti i campi e caricare un'immagine valida",
+						'danger'
+					);
+				} else if(err.status === 500){
+					this.presentToast(
+						"Errore durante l'aggiunta del dipendente. Assicurati che il dipendente non esista già.",
+						'danger'
+					);
+				}else {
+					this.presentToast(
+						"Errore durante l'aggiunta del dipendente. Riprova più tardi.",
+						'danger'
+					);
+				}
 			},
 		});
 	}

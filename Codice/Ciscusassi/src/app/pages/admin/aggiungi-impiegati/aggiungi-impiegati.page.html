@@ -68,6 +68,7 @@
 									<ion-input
 										type="email"
 										label="Email"
+										errorText="Il formato dell'email non è valido"
 										color="rosso"
 										placeholder="Inserisci l'email..."
 										[(ngModel)]="email"
@@ -125,7 +126,7 @@
 									type="submit"
 									class="ion-padding-vertical"
 									(click)="aggiungiImpiegato()"
-									[disabled]="!foto || !nome || !cognome || !data_nascita || !email || !ruolo || !ref_filiale"
+									[disabled]="!nome || !cognome || !data_nascita || !ruolo || !ref_filiale"
 								>
 									ASSUMI IMPIEGATO
 								</ion-button>
