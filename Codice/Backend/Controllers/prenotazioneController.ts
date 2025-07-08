@@ -148,17 +148,13 @@ class PrenotazioneController {
 	 * Restituisce l'OTP della prenotazione tramite ID torretta e orario.
 	 * @param req Parametri URL con id_prenotazione
 	 * @param res Risposta HTTP
-	 * @returns 200 con OTP, 404 se non trovata, 500 se errore
+	 * @returns 200 con OTP, 500 se errore
 	 */
     static async getOTPByIdTorrettaAndData(req: Request, res: Response): Promise<void> {
         try {
             const otp = await PrenotazioneService.getOTPByIdTorrettaAndData(parseInt(req.params.id_prenotazione));
 
-            if (otp) res.json({ success: true, data: otp });
-            else res.status(404).json({
-                success: false,
-                message: 'Prenotazione non trovata o OTP non disponibile',
-            });
+            res.json({ success: true, data: otp });       
         } catch (err) {
             console.error(err);
             res.status(500).json({
@@ -173,17 +169,13 @@ class PrenotazioneController {
 	 * Ottiene i dati di una prenotazione tramite ID.
 	 * @param req Parametri URL con id_prenotazione
 	 * @param res Risposta HTTP
-	 * @returns 200 con dati, 404 se non trovata, 500 se errore
+	 * @returns 200 con dati, 500 se errore
 	 */
     static async getPrenotazioneById(req: Request, res: Response): Promise<void> {
         try {
             const prenotazione = await PrenotazioneService.getPrenotazioneById(parseInt(req.params.id_prenotazione));
 
-            if (prenotazione) res.json({ success: true, data: prenotazione });
-            else res.status(404).json({
-                success: false,
-                message: 'Prenotazione non trovata',
-            });
+            res.json({ success: true, data: prenotazione });
         } catch (err) {
             console.error(err);
             res.status(500).json({
@@ -198,17 +190,13 @@ class PrenotazioneController {
 	 * Restituisce tutte le prenotazioni del sistema.
 	 * @param req Richiesta HTTP
 	 * @param res Risposta HTTP
-	 * @returns 200 con lista prenotazioni, 404 o 500 se errore
+	 * @returns 200 con lista prenotazioni o 500 se errore
 	 */
     static async getAllPrenotazioni(req: Request, res: Response): Promise<void> {
         try {
             const prenotazioni = await PrenotazioneService.getAllPrenotazioni();
 
-            if (prenotazioni) res.json({ success: true, data: prenotazioni });
-            else res.status(404).json({
-                success: false,
-                message: 'Nessuna prenotazione trovata',
-            });
+            res.json({ success: true, data: prenotazioni });
         } catch (err) {
             console.error(err);
             res.status(500).json({
@@ -223,17 +211,13 @@ class PrenotazioneController {
 	 * Ottiene tutte le prenotazioni associate all'utente autenticato.
 	 * @param req Richiesta autenticata con ID cliente
 	 * @param res Risposta HTTP
-	 * @returns 200 con prenotazioni, 404 se nessuna, 500 se errore
+	 * @returns 200 con prenotazioni, 500 se errore
 	 */
     static async getPrenotazioniByCliente(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(Number(req.user?.id));
 
-            if (prenotazioni) res.json({ success: true, data: prenotazioni });
-            else res.status(404).json({
-                success: false,
-                message: 'Nessuna prenotazione trovata per questo cliente',
-            });
+            res.json({ success: true, data: prenotazioni });
         } catch (err) {
             console.error(err);
             res.status(500).json({
@@ -248,17 +232,13 @@ class PrenotazioneController {
 	 * Recupera le prenotazioni di un cliente specifico (per cameriere).
 	 * @param req Parametri URL con id_cliente
 	 * @param res Risposta HTTP
-	 * @returns 200 con dati, 404 o 500 in caso di errore
+	 * @returns 200 con dati o 500 in caso di errore
 	 */
     static async getPrenotazioniCameriereByCliente(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
             const prenotazioni = await PrenotazioneService.getPrenotazioniByCliente(Number(req.params.id_cliente));
 
-            if (prenotazioni) res.json({ success: true, data: prenotazioni });
-            else res.status(404).json({
-                success: false,
-                message: 'Nessuna prenotazione trovata per questo cliente',
-            });
+            res.json({ success: true, data: prenotazioni });
         } catch (err) {
             console.error(err);
             res.status(500).json({
@@ -273,7 +253,7 @@ class PrenotazioneController {
 	 * Ottiene le prenotazioni giornaliere per la filiale dell'utente.
 	 * @param req Richiesta con data in query string (opzionale)
 	 * @param res Risposta HTTP
-	 * @returns 200 con lista, 404 se vuota, 500 se errore
+	 * @returns 200 con lista, 500 se errore
 	 */
     static async getPrenotazioniDelGiornoFiliale(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
@@ -294,14 +274,7 @@ class PrenotazioneController {
             const id_Filiale = Number(req.user?.id_filiale); 
             const prenotazioni = await PrenotazioneService.getPrenotazioniDataAndFiliale(id_Filiale, dataFormattata);
 
-            if (prenotazioni && prenotazioni.length > 0) {
-                res.json({ success: true, data: prenotazioni });
-            } else {
-                res.status(404).json({
-                    success: false,
-                    message: 'Nessuna prenotazione trovata per la data specificata'
-                });
-            }
+            res.json({ success: true, data: prenotazioni });;
         } catch (err) {
             console.error('❌ Errore durante il recupero delle prenotazioni del giorno:', err);
             res.status(500).json({
