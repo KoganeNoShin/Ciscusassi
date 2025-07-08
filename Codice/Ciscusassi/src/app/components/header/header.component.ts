@@ -15,6 +15,10 @@ import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
+/**
+ * Componente custom utilizzato per creare un header personalizzato con tutti i bottoni
+ * per navigare le rotte del sito, e controlli immediati in base al cambio di ruolo dell'utente.
+ */
 @Component({
 	selector: 'app-header',
 	templateUrl: './header.component.html',
@@ -32,7 +36,6 @@ import { AuthenticationService } from 'src/app/core/services/authentication.serv
 	standalone: true,
 })
 export class HeaderComponent implements OnInit {
-	isItalian = true;
 	role: string = '';
 	avatar: string = '';
 
@@ -43,11 +46,19 @@ export class HeaderComponent implements OnInit {
 		addIcons({ personCircle });
 	}
 
+	/**
+	 * Funzione per svuotare il carrello ogni volta che entriamo nella pagina di ordinazione
+	 * per evitare che l'utente si ritrovi ordini non voluti nel carrello
+	 */
 	svuotaCarrello() {
 		console.log('svuoto il carrello');
 		this.servizioCarrello.svuotaCarrello();
 	}
 
+	/**
+	 * All'inizializazzione del componente, iscriviamo role e avatar agli observable
+	 * della {@link AuthenticationService} per rispecchiare immediatamente ogni cambiamento che avviene.
+	 */
 	ngOnInit() {
 		this.authService.role$.subscribe((role) => {
 			this.role = role;

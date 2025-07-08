@@ -1,3 +1,7 @@
+<!--
+	Semplice componente lista utilizzato dal cliente, dal cameriere e dallo chef durante la visualizzazione degli ordini.
+-->
+
 <div class="view-list">
 	@for (prodotto of prodotti$ | async; track prodotto.id_ord_prod) {
 		<app-prodotto-ordine [prodotto]="prodotto"></app-prodotto-ordine>

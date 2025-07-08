@@ -1,3 +1,8 @@
+<!--
+	Questo componente serve per poter visualizzare il piatto e scegliere tra le operazioni di Modifica e cancellazione ad esso relative.
+	Se il piatto istanziato è il piatto del giorno, allora avrà sfondo verde, un animazione di spinning e la stellina piena e colorata.
+-->
+
 <ion-card
 	color="bianconeve"
 	[class.sfondo-verde]="idPiattoDelGiorno === prodotto.id_prodotto"
@@ -6,18 +11,20 @@
 		[name]="
 			idPiattoDelGiorno === prodotto.id_prodotto ? 'star' : 'star-outline'
 		"
-		[color]="
-			idPiattoDelGiorno === prodotto.id_prodotto ? 'warning' : 'medium'
+		[ngClass]="
+			idPiattoDelGiorno === prodotto.id_prodotto
+				? 'piatto-giorno-icon'
+				: ''
 		"
 		(click)="changePiattoDelGiorno()"
 		class="star-icon"
-	></ion-icon>
+	/>
 
 	<ion-img
 		[src]="prodotto.immagine"
 		[class.piatto-rotante]="idPiattoDelGiorno === prodotto.id_prodotto"
 		alt="Immagine del piatto"
-	></ion-img>
+	/>
 
 	<ion-card-header>
 		<ion-card-title>

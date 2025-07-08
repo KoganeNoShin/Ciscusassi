@@ -12,6 +12,13 @@ import { location, calendar, person, people } from 'ionicons/icons';
 
 import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 
+/**
+ * Card che permette di visualizzare i dettagli della propria
+ * prenotazione ed eventualmente di gestirne la cancellazione.
+ *
+ * @param prenotazione - L'istanza della {@link PrenotazioneWithFiliale} che permette di visualizzarne i valori.
+ * @returns `confermaCancellazioneEmitter` - Emitter che viene emesso quando il pulsante di cancellazione viene premuto.
+ */
 @Component({
 	selector: 'app-prenotazione-card',
 	templateUrl: './prenotazione-card.component.html',
@@ -19,7 +26,7 @@ import { PrenotazioneWithFiliale } from 'src/app/core/interfaces/Prenotazione';
 	imports: [IonCard, IonIcon, IonText, IonButton],
 })
 export class PrenotazioneCardComponent implements OnInit {
-	@Input() prenotazione!: PrenotazioneWithFiliale; // La variabile che riceverai
+	@Input() prenotazione!: PrenotazioneWithFiliale;
 	@Output() confermaCancellazioneEmitter: EventEmitter<number> =
 		new EventEmitter();
 
@@ -34,8 +41,24 @@ export class PrenotazioneCardComponent implements OnInit {
 		}
 	}
 
+	/**
+	 * Funzione per passare ad una data scritta in formato italiano
+	 * @param dateInput - la data in formato stringa
+	 * @example
+	 * Esempio di utilizzo
+	 * ```
+	 * formattaData("2025-07-06 00:00") -> "06/07/2025 - 00:00";
+	 * ```
+	 */
 	formattaData(dateInput: string | number): string {
-		const date = new Date(dateInput);
+		// Normalizziamo la data siccome non è in formato ISO
+		const safeInput =
+			typeof dateInput === 'string'
+				? dateInput.replace(' ', 'T')
+				: dateInput;
+
+		const date = new Date(safeInput);
+
 		if (isNaN(date.getTime())) {
 			console.error('Data non valida:', dateInput);
 			return '';

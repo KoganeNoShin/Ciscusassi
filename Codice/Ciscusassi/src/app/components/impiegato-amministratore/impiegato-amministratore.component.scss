@@ -2,7 +2,7 @@ ion-card {
 	width: 250px;
 	height: 100%; // In modo tale da uniformare la lunghezza in tutte le card
 	border-radius: 12px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Ombra leggera
 	transition:
 		background-color 0.2s ease-in-out,
 		transform 0.2s ease-in-out;
@@ -21,9 +21,8 @@ ion-card {
 
 	ion-card-content {
 		p {
-			font-family: 'Isocpeur-Regular', sans-serif;
 			color: #6c757d;
-			font-size: 1rem;
+			font-size: 1.1rem;
 			line-height: 1.4; // Spaziatura verticale tra righe del testo
 		}
 	}
@@ -35,8 +34,10 @@ ion-card {
 	}
 
 	&:hover {
-		transform: translateY(-6px);
-		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+		transform: translateY(
+			-6px
+		); // Alziamo leggermente la card quando passiamo sopra con il mouse
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); // Leggera ombra per effetto rilievo
 	}
 }
 
@@ -46,8 +47,9 @@ ion-img {
 	max-width: 300px;
 }
 
+// Usiamo part per accedere all'image dell'ion-img
 ion-img::part(image) {
-	border-radius: 100%;
-	object-fit: cover;
-	aspect-ratio: 1/1;
+	border-radius: 100%; // Arrotondiamo completamente l'immagine
+	object-fit: cover; // Estendiamo l'immagine per coprire interamente lo spazio
+	aspect-ratio: 1/1; // Forziamo l'immagine ad essere quadrata
 }

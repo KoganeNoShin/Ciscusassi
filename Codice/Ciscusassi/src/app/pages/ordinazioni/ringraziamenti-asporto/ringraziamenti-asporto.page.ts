@@ -69,7 +69,6 @@ export class RingraziamentiAsportoPage implements OnInit {
 
 		// Passa i dati necessari al componente dinamico
 		componentRef.instance.carrello = this.carrello;
-		componentRef.instance.logo = 'assets/icon/logo.png';
 		componentRef.instance.servizio = 'asporto';
 
 		// Rende effettivi i cambiamenti nel componente

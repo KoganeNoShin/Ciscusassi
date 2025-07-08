@@ -1,75 +1,121 @@
+<!--
+	Componente principale dell'app, contiene l'interezza dell'applicazione.
+	Ogni componente specificato dentro questo file, verrà inserito in ogni pagina!
+-->
 <ion-app>
-	<app-header></app-header>
+	<!--
+		In cima alla pagina inseriamo il nostro header custom
+	  	per vedere pulsanti di rotte e comandi in base al ruolo
+	-->
+	<app-header />
 
+	<!--
+		Definiamo il menu che si aprirà quando verrà permuto il pulsante hamburgher nell'header
+		Oppure quando si fa swipe a partire da sinistra verso destra per schermi di piccole dimensioni
+	-->
 	<ion-menu
 		contentId="main-content"
 		side="start"
 		menuId="main"
 		class="ion-hide-md-up"
 	>
+		<!--
+			In cima al menù laterale, mettiamo un titolo usando l'header
+		-->
 		<ion-header>
 			<ion-toolbar color="rosso">
 				<ion-title>Pagine</ion-title>
 			</ion-toolbar>
 		</ion-header>
+
+		<!--
+			Il contenuto del menù non è altro che l'insieme dei
+			bottoni delle rotte con un icona rappresentativa
+		-->
 		<ion-content color="verdechiaro">
 			<ion-list class="bg-color-transparent" lines="none">
 				<ion-menu-toggle>
-					<ion-item [routerLink]="['/']" class="menu-item">
+					<ion-item
+						[routerLink]="['/']"
+						class="menu-item bg-color-transparent"
+					>
 						<ion-icon
 							aria-hidden="true"
 							name="home"
 							slot="start"
-						></ion-icon>
-						<ion-label>HOME</ion-label></ion-item
-					>
+							class="text-color-bianco"
+						/>
+						<ion-label class="text-color-bianco">HOME </ion-label>
+					</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle>
-					<ion-item [routerLink]="['/menu']" class="menu-item">
+					<ion-item
+						[routerLink]="['/menu']"
+						class="menu-item bg-color-transparent"
+					>
 						<ion-icon
 							aria-hidden="true"
 							name="newspaper"
 							slot="start"
-						></ion-icon>
-						<ion-label>MENU</ion-label></ion-item
-					>
+							class="text-color-bianco"
+						/>
+						<ion-label class="text-color-bianco">MENU </ion-label>
+					</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle>
-					<ion-item [routerLink]="['/ristoranti']" class="menu-item">
+					<ion-item
+						[routerLink]="['/ristoranti']"
+						class="menu-item bg-color-transparent"
+					>
 						<ion-icon
 							aria-hidden="true"
 							name="location"
 							slot="start"
-						></ion-icon>
-						<ion-label>RISTORANTI</ion-label></ion-item
-					>
+							class="text-color-bianco"
+						/>
+						<ion-label class="text-color-bianco"
+							>RISTORANTI
+						</ion-label>
+					</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle>
-					<ion-item [routerLink]="['/ordina-ora']" class="menu-item">
+					<ion-item
+						[routerLink]="['/ordina-ora']"
+						class="menu-item bg-color-transparent"
+					>
 						<ion-icon
 							aria-hidden="true"
 							name="restaurant"
 							slot="start"
-						></ion-icon>
-						<ion-label>ORDINA ORA</ion-label></ion-item
-					>
+							class="text-color-bianco"
+						/>
+						<ion-label class="text-color-bianco"
+							>ORDINA ORA</ion-label
+						>
+					</ion-item>
 				</ion-menu-toggle>
 				<ion-menu-toggle>
-					<ion-item [routerLink]="['/prenota']" class="menu-item">
+					<ion-item
+						[routerLink]="['/prenota']"
+						class="menu-item bg-color-transparent"
+					>
 						<ion-icon
 							aria-hidden="true"
 							name="calendar"
 							slot="start"
-						></ion-icon>
-						<ion-label>PRENOTA</ion-label></ion-item
-					>
+							class="text-color-bianco"
+						/>
+						<ion-label class="text-color-bianco"
+							>PRENOTA
+						</ion-label>
+					</ion-item>
 				</ion-menu-toggle>
 			</ion-list>
 		</ion-content>
 	</ion-menu>
 
-	<!-- #TODO: parlare con cruciata delle animazioni in stuttering -->
-	<ion-router-outlet id="main-content" [animated]="false"></ion-router-outlet>
+	<!-- ⚠️ ALERT: Qualora le animazioni andassero in stuttering, rimettere animated a false -->
+	<ion-router-outlet id="main-content" [animated]="true" />
 
-	<app-footer></app-footer>
+	<app-footer />
 </ion-app>

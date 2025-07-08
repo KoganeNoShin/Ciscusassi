@@ -1,29 +1,23 @@
 .sfondo {
 	width: 100vw;
 	height: 50vh;
-	margin: 0;
-	--border-radius: 0;
-	border-radius: 0;
+	margin: 0; // Lo sfondo deve essere attaccato ai margini dello schermo e degli altri bottoni
+	--border-radius: 0; // I bottoni devono essere squadrati
+	border-radius: 0; // I bottoni devono essere squadrati
 	overflow: hidden;
-	z-index: 0;
 }
 
 .immagine {
-	position: absolute;
-	top: -50%;
-	width: 110vw;
-	height: 100vh;
-	background-size: cover;
-	background-position: center;
-	filter: blur(5px) brightness(60%);
-	z-index: 0;
+	position: absolute; // Per permetterci di metterla sopra il pulsante
+	width: 110vw; // Messo a 110 per evitare che la sfocatura mostri leggermente lo sfondo
+	height: 100vh; // Stessa cosa della sfumatura
+	background-size: cover; // Non ci devono essere ripetizioni, l'immagine deve coprire interamente lo sfondo
+	background-position: center; // Lo sfondo deve partire dal centro, in modo tale da inquadrare meglio le immagini delle sezioni che sono scattate centralmente
+	filter: blur(5px) brightness(60%); // Scuriamo e blurriamo lo sfondo
+	z-index: 0; // Lo sfondo, sull'asse z, deve essere indietro rispetto il testo, per non coprirlo
 }
 
 h1 {
-	position: relative;
-	z-index: 1;
-	padding-top: 7rem;
-	padding-bottom: 7rem;
-	text-align: center;
-	color: var(--ion-color-bianco);
+	position: relative; // Ci posizioniamo relativamente all'immagine
+	z-index: 5; // Ci spostiamo nell'asse z, in modo tale che l'immagine stia sotto
 }

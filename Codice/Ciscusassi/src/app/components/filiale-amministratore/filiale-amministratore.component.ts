@@ -11,6 +11,14 @@ import {
 import { RouterModule } from '@angular/router';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 
+/**
+ * Componente che permette di visualizzare ed accedere
+ * ai controlli da amministratore per ogni filiale.
+ *
+ * @param filiale L'oggetto {@link FilialeRecord} che serve per visualizzarne i valori all'interno della card
+ *
+ * @returns `showAlertDeleteFilialeEmitter` Emitter che viene emesso alla pressione del tasto di cancellazione filiale
+ */
 @Component({
 	selector: 'app-filiale-amministratore',
 	templateUrl: './filiale-amministratore.component.html',

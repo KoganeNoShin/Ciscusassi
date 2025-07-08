@@ -1,3 +1,7 @@
+<!--
+	Questo componente serve per poter visualizzare la filiale e scegliere tra le operazioni di Modifica e cancellazione ad essa relative.	
+-->
+
 <ion-card color="bianconeve">
 	<ion-img [src]="filiale.immagine" alt="Immagine della filiale" />
 
@@ -33,7 +37,10 @@
 		>
 			Modifica filiale
 		</ion-button>
-		<!-- Modificato: passiamo filialeId anche come query param -->
+
+		<!--
+			Passiamo filialeId come query param per poterla prendere dalla pagina seguente
+		-->
 		<ion-button
 			[routerLink]="['/gestisci-impiegati']"
 			[state]="{ filialeId: filiale.id_filiale }"

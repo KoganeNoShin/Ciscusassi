@@ -37,7 +37,8 @@
 		animation: pulse 2s ease-in-out infinite; // Animazione di puslsazione
 	}
 
-	// Keyframe dell'animazione
+	// Keyframe dell'animazione, facciamo in modo
+	// che pulsi e cambi leggermente d'opacità
 	@keyframes pulse {
 		0% {
 			transform: scale(1);

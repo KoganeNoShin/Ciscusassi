@@ -13,7 +13,18 @@ import { addIcons } from 'ionicons';
 import { star, starOutline } from 'ionicons/icons';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
+/**
+ * Componente che permette di visualizzare ed accedere
+ * ai controlli da amministratore per ogni piatto.
+ *
+ * @param prodotto L'oggetto {@link ProdottoRecord} che serve per visualizzarne i valori all'interno della card
+ * @param idPiattoDelGiorno L'id del piatto del giorno correntemente selezionato
+ *
+ * @returns `changePiattoDelGiornoEmitter` Emitter che viene emesso al cambio del piatto del giorno (click sulla stella)
+ * @returns `showAlertDeletePiattoEmitter` Emitter che viene emesso alla pressione del tasto di cancellazione piatto
+ */
 @Component({
 	selector: 'app-piatto-amministratore',
 	templateUrl: './piatto-amministratore.component.html',
@@ -28,6 +39,7 @@ import { RouterModule } from '@angular/router';
 		IonImg,
 		RouterModule,
 		IonText,
+		CommonModule,
 	],
 })
 export class PiattoAmministratoreComponent implements OnInit {

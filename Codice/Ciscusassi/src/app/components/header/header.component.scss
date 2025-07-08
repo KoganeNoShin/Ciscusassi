@@ -1,14 +1,6 @@
 ion-avatar {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-ion-avatar,
-img {
-	width: 100% !important;
-	height: 100% !important;
-	max-width: 30px !important; //any size
-	max-height: 30px !important; //any size
+	width: auto; // Occupiamo tutta la larghezza disponibile
+	height: 100%; // Occupiamo tutta l'altezza disponibile
+	max-width: 35px !important; // Limitiamo larghezza a 40 px
+	max-height: 35px !important; // Limitiamo altezza a 40 px
 }

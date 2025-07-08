@@ -1,15 +1,5 @@
-#content {
-	display: flex;
-	flex-direction: row;
-	height: fit-content;
-	align-items: center;
-	font-size: 0.8rem;
-}
-
 a,
 p {
-	color: var(--ion-color-bianco);
-	text-decoration: none;
 	font-size: clamp(0.5rem, 1vw, 0.8rem);
 }
 

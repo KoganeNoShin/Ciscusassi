@@ -1,3 +1,4 @@
+// Classe per mostrare orizzontalmente i figli
 .flexRow {
 	display: flex;
 	flex-direction: row;
@@ -6,17 +7,20 @@
 	gap: 25px;
 }
 
+// La card ha solamente i bordi arrotondati ed una leggera ombra
 .prenotazione-card {
 	border-radius: 25px;
 	width: fit-content;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+// Sistemiamo le dimensioni delle icone
 ion-icon {
 	width: 25px;
 	height: 25px;
 }
 
 p {
+	// Restringiamo le dimensioni del font ad un intervallo che va tra gli 1rem ed i 1.2rem
 	font-size: clamp(1rem, 1.3vw, 1.2rem);
 }

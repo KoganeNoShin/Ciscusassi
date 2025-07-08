@@ -1,0 +1,23 @@
+.image-wrapper {
+	position: absolute; // Posizioniamo la wrapper sopra il contenuto della pagina
+	z-index: 5;
+	bottom: 0; // Completamente in basso
+	left: 50%; // Sposta l'angolo sinistro del wrapper a metà della pagina
+	transform: translateX(
+		-50%
+	); // Sposta il wrapper della sua metà a sinistra (per riportarlo completamente al centro)
+	width: 350px;
+	transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+	.image-wrapper {
+		width: 200px;
+	}
+}
+
+@media (max-width: 576px) {
+	.image-wrapper {
+		width: 200px;
+	}
+}

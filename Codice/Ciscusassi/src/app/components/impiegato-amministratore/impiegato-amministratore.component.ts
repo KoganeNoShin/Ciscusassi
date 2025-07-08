@@ -13,6 +13,14 @@ import {
 	IonText,
 } from '@ionic/angular/standalone';
 
+/**
+ * Componente che permette di visualizzare ed accedere
+ * ai controlli da amministratore per ogni impiegato.
+ *
+ * @param impiegato L'oggetto {@link ImpiegatoRecord} che serve per visualizzarne i valori all'interno della card
+ *
+ * @returns `showAlertDeleteImpiegatoEmitter` Emitter che viene emesso alla pressione del tasto di licenziamento
+ */
 @Component({
 	selector: 'app-impiegato-amministratore',
 	templateUrl: './impiegato-amministratore.component.html',

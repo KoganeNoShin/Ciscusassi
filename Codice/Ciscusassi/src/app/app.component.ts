@@ -38,12 +38,19 @@ import {
 	calendar,
 } from 'ionicons/icons';
 
+/**
+ * 	Componente principale dell'app, contiene l'interezza dell'applicazione.
+ * 	Ogni componente specificato dentro questo, verrà inserito in ogni pagina!
+ *
+ * 	Si occupa inoltre di cambiare titolo alla pagina in base alla rotta nella quale stiamo navigando.
+ *
+ * 	Inizializza l'{@link AuthenticationService} e l'ionic-storage all'avvio dell'applicazione.
+ */
 @Component({
 	selector: 'app-root',
 	templateUrl: 'app.component.html',
 	styleUrls: ['./app.component.scss'],
 	imports: [
-		
 		IonApp,
 		IonRouterOutlet,
 		RouterModule,
@@ -64,8 +71,8 @@ import {
 export class AppComponent {
 	constructor(
 		private storage: Storage, // Gestione dello storage locale (sessioni, preferenze, ecc.)
-		private authService: AuthenticationService, // Servizio di autenticazione per gestire login/logout ecc.
-		private router: Router, // Router Angular per ascoltare eventi di navigazione
+		private authService: AuthenticationService, // Servizio di autenticazione per gestire login/logout, ruoli, ecc.
+		private router: Router, // Router Angular per eventi di navigazione
 		private titleService: Title // Usato per aggiornare dinamicamente il titolo della pagina
 	) {
 		this.initStorage(); // Inizializza storage e autenticazione al boot

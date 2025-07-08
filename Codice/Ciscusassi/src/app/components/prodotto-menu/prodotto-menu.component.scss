@@ -31,6 +31,7 @@
 	}
 }
 
+// Quando lo schermo diventa più piccolo, anche le informazioni del piatto vengono disposte in colonne
 @media (max-width: 768px) {
 	.plate {
 		display: flex;
@@ -42,6 +43,7 @@
 	}
 }
 
+// I bottoni devono essere disposti in verticale
 .button-group {
 	display: flex;
 	flex-direction: column;
