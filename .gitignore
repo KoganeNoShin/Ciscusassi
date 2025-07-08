@@ -7,3 +7,4 @@ Codice/Ciscusassi/src/environments/environment.prod.ts
 Codice/Ciscusassi/src/environments/environment.ts
 .env
 Codice/Backend/database.sqlite-journal
+/.idea
