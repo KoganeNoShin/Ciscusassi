@@ -103,7 +103,7 @@ class ClienteService {
 	static async aggiornaEmail(
 		idCliente: number,
 		newEmail: string
-	): Promise<void> {
+	): Promise<Boolean> {
 		try {
 			const existing = await Cliente.getByEmail(newEmail);
 			if (existing) {
@@ -111,9 +111,10 @@ class ClienteService {
 					'❌ [ClienteService Error] aggiornaEmail: email già registrata:',
 					newEmail
 				);
-				throw new Error('Email già registrata');
+				return false;
 			}
-			return await Cliente.aggiornaEmail(idCliente, newEmail);
+			await Cliente.aggiornaEmail(idCliente, newEmail);
+			return true;
 		} catch (err) {
 			console.error('❌ [ClienteService Error] aggiornaEmail:', err);
 			throw new Error("Errore durante l'aggiornamento della email");

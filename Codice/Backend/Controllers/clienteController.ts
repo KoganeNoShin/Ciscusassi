@@ -158,10 +158,10 @@ class ClienteController {
 			const idCliente = Number(req.user?.id);
 
 			console.log(`Sto cambiando email con ${req.body.nuovaEmail}`);
-			await ClienteService.aggiornaEmail(idCliente, req.body.nuovaEmail);
+			const success = await ClienteService.aggiornaEmail(idCliente, req.body.nuovaEmail);
 
 			res.status(200).json({
-				success: true,
+				success: success,
 				message: 'Email aggiornata con successo',
 			});
 		} catch (err) {
