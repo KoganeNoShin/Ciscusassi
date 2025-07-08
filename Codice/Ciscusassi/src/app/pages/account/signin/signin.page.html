@@ -7,7 +7,6 @@
 				></ion-img>
 			</ion-col>
 
-			@if (pagina == 0) {
 			<ion-col size="12" sizeXl="6">
 				<ion-card
 					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
@@ -17,9 +16,7 @@
 						<h1 class="text-color-bianco">REGISTRATI</h1>
 					</ion-text>
 
-					@if (error) {
-					<p class="errorMsg">{{ errorMsg }}</p>
-					}
+					
 
 					<input
 						#fileInput
@@ -37,9 +34,12 @@
 							alt="Anteprima immagine"
 						/>
 					</ion-avatar>
+					@if (error) {
+					<p class="errorMsg">{{ errorMsg }}</p>
+					}
 					<form
-						[formGroup]="formDatiPersonali"
-						(ngSubmit)="continua()"
+						[formGroup]="formRegistrazione"
+						(ngSubmit)="onSubmit()"
 					>
 						<ion-item class="campoForm ion-padding-horizontal">
 							<ion-input
@@ -72,46 +72,8 @@
 								[max]="dataMaxOggi"
 							></ion-input>
 						</ion-item>
+						
 
-						<ion-button
-							size="default"
-							fill="solid"
-							shape="round"
-							color="arancione"
-							expand="block"
-							type="submit"
-							class="ion-padding-horizontal"
-							[disabled]="formDatiPersonali.invalid || loading"
-						>
-							@if (!loading) { CONTINUA } @else {
-							<ion-spinner
-								name="circular"
-								color="bianco"
-							></ion-spinner>
-							}
-						</ion-button>
-					</form>
-				</ion-card>
-			</ion-col>
-			} @else{
-
-			<ion-col size="12" sizeXl="6">
-				<ion-card
-					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
-					color="verdechiaro"
-				>
-
-					<ion-text>
-						<h1 class="text-color-bianco">REGISTRATI</h1>
-					</ion-text>
-					@if (error) {
-					<p class="errorMsg">{{ errorMsg }}</p>
-					}
-
-					<form
-						[formGroup]="formRegistrazione"
-						(ngSubmit)="onSubmit()"
-					>
 						<ion-item class="campoForm ion-padding-horizontal">
 							<ion-input
 								formControlName="email"
@@ -165,28 +127,14 @@
 							[disabled]="formRegistrazione.invalid || loading"
 						>
 							@if (!loading) { REGISTRATI } @else {
-							<ion-spinner name="bubbles"></ion-spinner>
+							<ion-spinner
+								name="circular"
+								color="bianco"></ion-spinner>
 							}
-						</ion-button>
-						<ion-button
-							size="default"
-							fill="solid"
-							shape="round"
-							color="rosso"
-							expand="block"
-							type="submit"
-							class="ion-padding-horizontal"
-							(click)="tornaIndietro()"
-						>
-						<ion-icon
-							name="arrow-back"
-							slot="icon-only"
-						></ion-icon>
 						</ion-button>
 					</form>
 				</ion-card>
 			</ion-col>
-			}
 		</ion-row>
 	</ion-grid>
 </ion-content>

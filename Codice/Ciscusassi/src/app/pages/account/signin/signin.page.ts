@@ -15,8 +15,6 @@ import {
 	IonAvatar,
 	IonIcon,
 } from '@ionic/angular/standalone';
-import { arrowBack } from 'ionicons/icons';
-import { addIcons } from 'ionicons';
 
 import {
 	FormsModule,
@@ -42,7 +40,6 @@ import { ToastController } from '@ionic/angular';
 	styleUrls: ['./signin.page.scss'],
 	standalone: true,
 	imports: [
-		IonIcon,
 		IonSpinner,
 		IonSpinner,
 		IonItem,
@@ -64,11 +61,9 @@ import { ToastController } from '@ionic/angular';
 })
 export class SigninPage implements OnInit {
 	formRegistrazione: FormGroup = new FormGroup({});
-	formDatiPersonali: FormGroup = new FormGroup({});
 	error: boolean = false;
 	loading: boolean = false;
 	errorMsg: string = '';
-	pagina: number = 0;
 	credenziali: RegistrationData = {
 		nome: '',
 		cognome: '',
@@ -85,13 +80,8 @@ export class SigninPage implements OnInit {
 		private authenticationService: AuthenticationService,
 		private router: Router,
 		private toastController: ToastController
-	) {
-		addIcons({
-			arrowBack,
-		});
-	}
-
-	private handleResponse(response: ApiResponse<any>): void {
+	) {}
+		private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
 		if (response.success) {
 			this.presentToast(
@@ -100,14 +90,24 @@ export class SigninPage implements OnInit {
 			);
 			this.router.navigate(['/login']);
 		} else {
-			this.errorMsg =
-				response.message || 'Errore durante la registrazione.';
+			this.errorMsg = 'Errore durante la registrazione.';
 			this.error = true;
 		}
 	}
 	ngOnInit() {
 		this.formRegistrazione = this.fb.group(
 			{
+				nome: ['', [Validators.required, , Validators.minLength(2)]],
+			cognome: ['', [Validators.required, , Validators.minLength(2)]],
+			dataNascita: [
+				'',
+				[
+					Validators.required,
+					Validators.pattern(
+						'^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
+					),
+				],
+			],
 				email: ['', [Validators.required, Validators.email]],
 				password: [
 					'',
@@ -125,20 +125,6 @@ export class SigninPage implements OnInit {
 			}
 		);
 
-		this.formDatiPersonali = this.fb.group({
-			nome: ['', [Validators.required, , Validators.minLength(2)]],
-			cognome: ['', [Validators.required, , Validators.minLength(2)]],
-			dataNascita: [
-				'',
-				[
-					Validators.required,
-					Validators.pattern(
-						'^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
-					),
-				],
-			],
-		});
-
 		const oggi = new Date();
 		const anno = oggi.getFullYear();
 		const mese = String(oggi.getMonth() + 1).padStart(2, '0'); // mesi da 0 a 11
@@ -151,6 +137,10 @@ export class SigninPage implements OnInit {
 		this.loading = true;
 
 		if (this.formRegistrazione.valid) {
+			this.credenziali.nome = this.formRegistrazione.value.nome;
+			this.credenziali.cognome = this.formRegistrazione.value.cognome;
+			this.credenziali.data_nascita =
+				this.formRegistrazione.value.dataNascita.trim();
 			this.credenziali.email = this.formRegistrazione.value.email;
 			this.credenziali.nuovaPassword =
 				this.formRegistrazione.value.password;
@@ -166,10 +156,15 @@ export class SigninPage implements OnInit {
 					.subscribe({
 						next: (response) => this.handleResponse(response),
 						error: (err) => {
-							this.errorMsg = 'Formato email non valido';
+							 if (err.status === 400) {
+      						this.errorMsg = 'Email già registrata';
+							} else {
+							this.errorMsg = 'Errore durante la registrazione.';
+							}
 							console.log(err);
 							this.error = true;
 							this.loading = false;
+
 						},
 					});
 			} catch (err) {
@@ -177,16 +172,6 @@ export class SigninPage implements OnInit {
 				this.error = true;
 				this.loading = false;
 			}
-		}
-	}
-
-	continua() {
-		if (this.formDatiPersonali.valid) {
-			this.credenziali.nome = this.formDatiPersonali.value.nome;
-			this.credenziali.cognome = this.formDatiPersonali.value.cognome;
-			this.credenziali.data_nascita =
-				this.formDatiPersonali.value.dataNascita.trim();
-			this.pagina = 1;
 		}
 	}
 
@@ -243,9 +228,5 @@ export class SigninPage implements OnInit {
 			color,
 		});
 		toast.present();
-	}
-
-	tornaIndietro() {
-		this.pagina = 0;
 	}
 }

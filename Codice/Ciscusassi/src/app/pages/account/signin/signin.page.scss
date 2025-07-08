@@ -9,6 +9,7 @@ ion-card {
 	display: flex;
 	flex-direction: column;
 	height: 80vh;
+	overflow: scroll;
 }
 
 ion-avatar {
