@@ -7,16 +7,14 @@
 				></ion-img>
 			</ion-col>
 
-			<ion-col size="12" sizeXl="6">
+			<ion-col size="9" sizeMd="10" sizeXl="6">
 				<ion-card
 					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
 					color="verdechiaro"
 				>
-					<ion-text>
+					<ion-text class="title">
 						<h1 class="text-color-bianco">REGISTRATI</h1>
 					</ion-text>
-
-					
 
 					<input
 						#fileInput
@@ -40,28 +38,45 @@
 					<form
 						[formGroup]="formRegistrazione"
 						(ngSubmit)="onSubmit()"
+						class="form-fields ion-margin-top"
 					>
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formRegistrazione.get('nome')?.touched"
+						>
 							<ion-input
 								formControlName="nome"
 								type="text"
 								label="Nome"
 								color="rosso"
+								errorText="Il nome è obbligatorio"
 								placeholder="Inserisci il tuo nome"
-							></ion-input>
+								labelPlacement="floating"
+							/>
 						</ion-item>
 
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formRegistrazione.get('cognome')?.touched"
+						>
 							<ion-input
 								formControlName="cognome"
 								type="text"
 								label="Cognome"
 								color="rosso"
+								errorText="Il cognome è obbligatorio"
 								placeholder="Inserisci il tuo cognome"
-							></ion-input>
+								labelPlacement="floating"
+							/>
 						</ion-item>
 
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formRegistrazione.get('dataNascita')?.touched"
+						>
 							<ion-input
 								formControlName="dataNascita"
 								type="date"
@@ -70,11 +85,15 @@
 								errorText="Data di nascita non valida"
 								placeholder="Inserisci la tua data di nascita"
 								[max]="dataMaxOggi"
-							></ion-input>
+								labelPlacement="floating"
+							/>
 						</ion-item>
-						
 
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formRegistrazione.get('email')?.touched"
+						>
 							<ion-input
 								formControlName="email"
 								type="email"
@@ -82,10 +101,15 @@
 								errorText="Il formato dell'email non è valido"
 								color="rosso"
 								placeholder="Inserisci la tua email"
-							></ion-input>
+								labelPlacement="floating"
+							/>
 						</ion-item>
 
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formRegistrazione.get('password')?.touched"
+						>
 							<ion-input
 								type="password"
 								label="Password"
@@ -93,26 +117,35 @@
 								errorText="La password deve essere lunga almeno 6 caratteri e contenere almeno un numero, una lettera maiuscola e un carattere speciale"
 								color="rosso"
 								placeholder="Inserisci la tua password"
+								labelPlacement="floating"
 							>
 								<ion-input-password-toggle
+									*ngIf="formRegistrazione.get('password')?.value?.length > 0"
 									slot="end"
 									color="rosso"
-								></ion-input-password-toggle>
+								/>
 							</ion-input>
 						</ion-item>
 
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formRegistrazione.get('confermaPassword')?.touched"
+						>
 							<ion-input
 								type="password"
 								label="Conferma Password"
 								formControlName="confermaPassword"
 								color="rosso"
 								placeholder="Conferma la tua password"
+								errorText="Le due password non coincidono"
+								labelPlacement="floating"
 							>
 								<ion-input-password-toggle
+									*ngIf="formRegistrazione.get('confermaPassword')?.value?.length > 0"
 									slot="end"
 									color="rosso"
-								></ion-input-password-toggle>
+								/>
 							</ion-input>
 						</ion-item>
 
@@ -123,13 +156,11 @@
 							color="arancione"
 							expand="block"
 							type="submit"
-							class="ion-padding-horizontal"
+							class="ion-padding-vertical ion-padding-horizontal"
 							[disabled]="formRegistrazione.invalid || loading"
 						>
 							@if (!loading) { REGISTRATI } @else {
-							<ion-spinner
-								name="circular"
-								color="bianco"></ion-spinner>
+							<ion-spinner name="circular" color="bianco" />
 							}
 						</ion-button>
 					</form>
