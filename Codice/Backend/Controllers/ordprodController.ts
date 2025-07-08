@@ -37,14 +37,7 @@ class OrdProdController {
 			const ordineId = Number(req.params.id_ordine);
 
 			const prodotti = await OrdProdService.getProdottiByOrdine(ordineId);
-			if (prodotti) {
-				res.status(200).json({ success: true, data: prodotti });
-			} else {
-				res.status(404).json({
-					success: false,
-					message: 'Nessun prodotto trovato per questo ordine',
-				});
-			}
+			res.status(200).json({ success: true, data: prodotti });
 		} catch (error) {
 			console.error(
 				'❌ [OrdProdController] Errore durante il recupero dei prodotti dell\'ordine:',
@@ -65,11 +58,6 @@ class OrdProdController {
 			const prenotazioneId = Number(req.params.id_prenotazione);
 
 			const prodotti = await OrdProdService.getProdottiByPrenotazione(prenotazioneId);
-
-			if (!prodotti || prodotti.length === 0) {
-				res.status(404).json({ message: 'Nessun prodotto trovato per la prenotazione' });
-				return;
-			}
 
 			res.status(200).json(prodotti);
 		} catch (error) {
