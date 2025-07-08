@@ -203,20 +203,19 @@ export class GestisciImpiegatiPage implements OnInit {
 		if (this.selectedImpiegato) {
 			const matricolaToDelete = this.selectedImpiegato.matricola;
 
-			// Rimozione ottimistica dalla lista visualizzata
-			this.impiegati = this.impiegati.filter(
-				(d) => d.matricola !== matricolaToDelete
-			);
-			this.applyFilters(); // Aggiorna lista filtrata dopo rimozione
-
 			// Chiamata API per eliminare il impieagato lato server
 			this.impiegatoService.DeleteImpiegato(matricolaToDelete).subscribe({
 				next: () => {
 					// Notifica successo eliminazione
 					this.showToastMessage(
-						'impieagato licenziato con successo',
+						'Impieagato licenziato con successo',
 						'success'
 					);
+					// Rimozione ottimistica dalla lista visualizzata
+					this.impiegati = this.impiegati.filter(
+						(d) => d.matricola !== matricolaToDelete
+					);
+					this.applyFilters(); // Aggiorna lista filtrata dopo rimozione
 				},
 				error: (err) => {
 					// Gestione errore eliminazione: log e notifica all’utente
@@ -254,9 +253,8 @@ export class GestisciImpiegatiPage implements OnInit {
 		await toast.present();
 	}
 	vaiAdAggiungiImpiegati() {
-	this.router.navigate(['/aggiungi-impiegati'], {
-		state: { filialeId: this.id_filiale },
-	});
-}
-
+		this.router.navigate(['/aggiungi-impiegati'], {
+			state: { filialeId: this.id_filiale },
+		});
+	}
 }
