@@ -69,8 +69,8 @@ export class CambiaPasswordPage implements OnInit {
   loading: boolean = false;
   errorMsg: string = '';
   pagina: number = 0;
-  nuovaPassword: string ='';
-  confermaPassword: string ='';
+  nuovaPassword: string = '';
+  confermaPassword: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -107,6 +107,8 @@ export class CambiaPasswordPage implements OnInit {
         validators: this.matchPassword(),
       }
     );
+    this.formCambiaPassword.reset();
+    this.formCambiaPassword.markAllAsTouched();
   }
 
   async onSubmit() {
@@ -154,4 +156,5 @@ export class CambiaPasswordPage implements OnInit {
     });
     toast.present();
   }
+
 }

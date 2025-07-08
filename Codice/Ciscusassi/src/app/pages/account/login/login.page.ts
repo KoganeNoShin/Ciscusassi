@@ -96,8 +96,7 @@ export class LoginPage implements OnInit {
 					this.error = true;
 				});
 		} else {
-			console.error(response.message || 'Errore sconosciuto');
-			this.errorMsg = response.message || 'Errore sconosciuto';
+			this.errorMsg = 'Errore: per favore riprova più tardi.';
 			this.error = true;
 		}
 
@@ -117,6 +116,8 @@ export class LoginPage implements OnInit {
 				],
 			],
 		});
+		this.formLogin.reset();
+		this.formLogin.markAllAsTouched();
 	}
 
 	onSubmit() {
@@ -128,10 +129,7 @@ export class LoginPage implements OnInit {
 			this.authenticationService.login(credentials).subscribe({
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
-					this.errorMsg =
-						err?.error?.message ||
-						err.message ||
-						'Errore durante il login.';
+					this.errorMsg =	'Errore durante il login.';
 
 					console.log(err);
 					this.error = true;

@@ -1,10 +1,15 @@
-<ion-content [fullscreen]="true" color="bianco">
+<ion-content [fullscreen]="true" color="bianco" class="ion-justify-content-center ion-align-items-center">
 	<div class="page-wrapper ion-padding">
-		<ion-text color="primary" class="ion-text-center">
-			<h1 style="color: black">Visualizza Utili</h1>
+		<ion-text class="ion-text-center ion-padding">
+			<h2 class="text-color-nero">Visualizza Utili</h2>
 		</ion-text>
-
-		<div class="input-container ion-padding-vertical ion-margin-vertical">
+		@if (loading){
+		<div class="ion-text-center ion-padding ion-margin">
+			<ion-spinner name="circular" color="rosso"></ion-spinner>
+		</div>
+		} @else{ 
+			@if(!error){
+			<div class="input-container ion-padding-vertical ion-margin-vertical">
 			<ion-select
 				placeholder="Anno"
 				fill="outline"
@@ -82,5 +87,13 @@
 				</ion-row>
 			</ion-grid>
 		</div>
+		} @else{
+		<ion-text>
+			<h1 style="color: var(--ion-color-rosso)">
+				Errore: per favore riprova più tardi!
+			</h1>
+		</ion-text>
+		}
+	}
 	</div>
 </ion-content>

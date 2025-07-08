@@ -18,7 +18,11 @@ import {
 	IonRow,
 	IonText,
 } from '@ionic/angular/standalone';
+import { RouterModule } from '@angular/router';
 
+/**
+ * Questa pagina serve per visualizzare quanto tempo ci metterà l'ordine d'asporto a venire alla località scelta dal cliente
+ */
 @Component({
 	selector: 'app-ringraziamenti-asporto',
 	templateUrl: './ringraziamenti-asporto.page.html',
@@ -32,6 +36,7 @@ import {
 		IonCard,
 		IonButton,
 		IonText,
+		RouterModule,
 	],
 })
 export class RingraziamentiAsportoPage implements OnInit {

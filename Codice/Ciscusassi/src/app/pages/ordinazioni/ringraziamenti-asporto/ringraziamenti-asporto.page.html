@@ -1,3 +1,7 @@
+<!--
+Questa pagina serve per visualizzare quanto tempo ci metterà l'ordine d'asporto a venire alla località scelta dal cliente
+-->
+
 <ion-content [fullscreen]="true" color="light">
 	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
 		<ion-row class="ion-align-items-center ion-justify-content-center">
@@ -37,6 +41,17 @@
 						(click)="generaRicevuta()"
 						>SCARICA RICEVUTA</ion-button
 					>
+					<ion-button
+						[routerLink]="''"
+						size="default"
+						fill="solid"
+						shape="round"
+						color="verdechiaro"
+						expand="block"
+						class="ion-padding-horizontal ion-padding-vertical"
+					>
+						TORNA ALLA HOME
+					</ion-button>
 				</ion-card>
 			</ion-col>
 		</ion-row>

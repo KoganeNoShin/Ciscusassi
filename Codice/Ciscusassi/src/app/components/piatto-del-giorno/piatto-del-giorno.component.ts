@@ -32,15 +32,16 @@ export class PiattoDelGiornoComponent implements OnInit {
 	 * @param response la risposta che ha restituito il server
 	 */
 	private handleResponse(response: ApiResponse<ProdottoRecord>): void {
-		console.log(response);
-
 		if (response.success && response.data) {
 			this.piatto = response.data;
 			this.piatto.nome = this.piatto.nome.toUpperCase();
 		} else {
-			console.error(response.message || 'Errore sconosciuto');
-			this.piatto = undefined;
-			this.error = true;
+			if (response.success){
+				this.piatto = undefined;
+			} else {
+				console.error(response.message || 'Errore sconosciuto');
+				this.error = true;
+			}
 		}
 
 		this.loading = false;

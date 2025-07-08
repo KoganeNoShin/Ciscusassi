@@ -10,6 +10,8 @@ import {
 	IonSelect,
 	IonSelectOption,
 	IonText,
+	IonCard,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 
 import * as XLSX from 'xlsx-js-style';
@@ -23,6 +25,7 @@ import { FilialeService } from 'src/app/core/services/filiale.service';
 	styleUrls: ['./visualizza-utili.page.scss'],
 	standalone: true,
 	imports: [
+		IonSpinner,
 		IonText,
 		IonContent,
 		IonText,
@@ -40,7 +43,7 @@ export class VisualizzaUtiliPage implements OnInit {
 	selectedYear: number | null = null;
 
 	loading: boolean = true;
-	error: string = '';
+	error: boolean = false;
 
 	isChrome: boolean = false;
 	isFirefox: boolean = false;
@@ -162,6 +165,7 @@ export class VisualizzaUtiliPage implements OnInit {
 								};
 							}
 						);
+						this.loading = false;
 					},
 					error: (err) => {
 						console.error(
@@ -169,12 +173,16 @@ export class VisualizzaUtiliPage implements OnInit {
 							err
 						);
 						this.rows = [];
+						this.error = true;
+						this.loading = false;
 					},
 				});
 			},
 			error: (err) => {
 				console.error('Errore durante il recupero delle filiali:', err);
 				this.rows = [];
+				this.error = true;
+				this.loading = false;
 			},
 		});
 	}

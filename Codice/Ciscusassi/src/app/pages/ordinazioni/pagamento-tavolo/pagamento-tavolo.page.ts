@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CarrelloService } from 'src/app/core/services/carrello.service';
 import { Router } from '@angular/router';
 
 import {
@@ -12,7 +11,6 @@ import {
 	IonCol,
 	IonImg,
 	IonCard,
-	IonCardContent,
 	IonButton,
 	IonText,
 	ToastController,
@@ -23,6 +21,10 @@ import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { PagamentoService } from 'src/app/core/services/pagamento.service';
 
+/**
+ * 	Questa pagina serve per mostrare all'utente che ha due metodologie per pagare il proprio pasto,
+ * 	permettendogli di scegliere tra pagamento con carta di credito, oppure alla cassa.
+ */
 @Component({
 	selector: 'app-pagamento-tavolo',
 	templateUrl: './pagamento-tavolo.page.html',
@@ -48,7 +50,6 @@ export class PagamentoTavoloPage implements OnInit {
 	codice: string = '';
 
 	constructor(
-		private servizioCarrello: CarrelloService,
 		private router: Router,
 		private tavoloService: TavoloService,
 		private prenotazioneService: PrenotazioneService,
@@ -56,6 +57,10 @@ export class PagamentoTavoloPage implements OnInit {
 		private toastController: ToastController
 	) {}
 
+	/**
+	 * Appena il componente viene inizializzato effettuaiamo la chiamata alla {@link PrenotazioneService.getTotaleByOrdine}
+	 * per ricevere il totale dell'ordine del cliente, tenendo in considerazione le varie romane che erano al tavolo.
+	 */
 	ngOnInit() {
 		const numeroOrdine = this.tavoloService.getNumeroOrdine();
 		console.log('Numero ordine:', numeroOrdine);
@@ -104,6 +109,9 @@ export class PagamentoTavoloPage implements OnInit {
 		await toast.present();
 	}
 
+	/**
+	 * Funzione che reindirizza alla schermata di pagamento alla cassa
+	 */
 	pagaCassa() {
 		const data = this.getFormattedDate();
 		const numeroOrdine = this.tavoloService.getNumeroOrdine();
@@ -120,8 +128,13 @@ export class PagamentoTavoloPage implements OnInit {
 						this.router.navigate(['/pagamento-cassa']);
 					},
 					error: (err) => {
-						console.error('Errore durante il pagamento alla cassa:', err);
-						this.mostraToast('Ordine già pagato o errore nel pagamento.');
+						console.error(
+							'Errore durante il pagamento alla cassa:',
+							err
+						);
+						this.mostraToast(
+							'Ordine già pagato o errore nel pagamento.'
+						);
 					},
 				});
 		} else {
@@ -130,6 +143,9 @@ export class PagamentoTavoloPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Funzione che reindirizza alla schermata di pagamento con carta
+	 */
 	pagaCarta() {
 		const data = this.getFormattedDate();
 		const numeroOrdine = this.tavoloService.getNumeroOrdine();
@@ -142,12 +158,20 @@ export class PagamentoTavoloPage implements OnInit {
 				)
 				.subscribe({
 					next: (response) => {
-						console.log('Pagamento con carta effettuato:', response);
+						console.log(
+							'Pagamento con carta effettuato:',
+							response
+						);
 						this.router.navigate(['/pagamento-carta']);
 					},
 					error: (err) => {
-						console.error('Errore durante il pagamento con carta:', err);
-						this.mostraToast('Ordine già pagato o errore nel pagamento.');
+						console.error(
+							'Errore durante il pagamento con carta:',
+							err
+						);
+						this.mostraToast(
+							'Ordine già pagato o errore nel pagamento.'
+						);
 					},
 				});
 		} else {

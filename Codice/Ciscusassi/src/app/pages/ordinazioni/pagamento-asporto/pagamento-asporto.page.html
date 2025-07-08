@@ -1,44 +1,52 @@
+<!--
+	Questa pagina serve per pagare l'importo dovuto e reindirizzare alla pagina di ringraziamenti
+-->
 <ion-content [fullscreen]="true" color="light">
-	<ion-grid fixed class="ion-align-items-center ion-justify-content-center">
-		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<!-- Colonna sinistra: immagine -->
-			<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
-				<ion-img
-					src="/assets/illustrations/SceltaPagamentoAsporto.png"
-				></ion-img>
-			</ion-col>
+	<div class="page-wrapper">
+		<ion-grid
+			fixed
+			class="ion-align-items-center ion-justify-content-center"
+		>
+			<ion-row class="ion-align-items-center ion-justify-content-center">
+				<!-- Colonna sinistra: immagine -->
+				<ion-col size="6" class="ion-hide-xl-down ion-padding-end">
+					<ion-img
+						src="/assets/illustrations/SceltaPagamentoAsporto.png"
+					></ion-img>
+				</ion-col>
 
-			<!-- Colonna destra: Pulsanti -->
-			<ion-col size="24" sizeXl="6">
-				<ion-card
-					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
-					color="salmone"
-				>
-					<ion-text class="ion-text-center">
-						<h2 class="text-color-bianco">PAGAMENTO</h2>
-					</ion-text>
-
-					<ion-text class="ion-text-center">
-						<p class="text-color-bianco">
-							I tuoi ordini: {{ totale }}€
-						</p>
-					</ion-text>
-
-					<!-- Bottone finale -->
-					<ion-button
-						(click)="aggiungiAsporto()"
-						[routerLink]="'/ringraziamenti-asporto'"
-						size="default"
-						fill="solid"
-						shape="round"
-						color="verdechiaro"
-						expand="block"
-						class="ion-padding-horizontal"
+				<!-- Colonna destra: Pulsanti -->
+				<ion-col size="12" sizeXl="6">
+					<ion-card
+						class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
+						color="salmone"
 					>
-						PAGA
-					</ion-button>
-				</ion-card>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
+						<ion-text class="ion-text-center">
+							<h2 class="text-color-bianco">PAGAMENTO</h2>
+						</ion-text>
+
+						<ion-text class="ion-text-center">
+							<p class="text-color-bianco">
+								I tuoi ordini: {{ totale }}€
+							</p>
+						</ion-text>
+
+						<!-- Bottone finale -->
+						<ion-button
+							(click)="aggiungiAsporto()"
+							[routerLink]="'/ringraziamenti-asporto'"
+							size="default"
+							fill="solid"
+							shape="round"
+							color="verdechiaro"
+							expand="block"
+							class="ion-padding-horizontal ion-padding-vertical"
+						>
+							PAGA
+						</ion-button>
+					</ion-card>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</div>
 </ion-content>

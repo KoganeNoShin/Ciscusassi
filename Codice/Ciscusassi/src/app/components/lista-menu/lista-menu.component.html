@@ -12,7 +12,7 @@
 		<!--
 			I menu divider sono i bottoni delle categorie
 		-->
-
+		@if(!error){
 		<app-menu-divider
 			(ApriMenuEmit)="AperturaLista('antipasti')"
 			title="ANTIPASTI"
@@ -127,4 +127,5 @@
 			</div>
 		}
 	}
+}
 </div>
