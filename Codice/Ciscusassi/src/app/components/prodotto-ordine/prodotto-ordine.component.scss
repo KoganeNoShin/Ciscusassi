@@ -25,9 +25,9 @@
 img {
 	width: 250px;
 	height: 250px;
-	border-radius: 100%;
-	object-fit: cover;
-	aspect-ratio: 1/1;
+	border-radius: 100%; // L'immagine deve essere circolare
+	object-fit: cover; // L'immagine deve coprire completamente la dimensione
+	aspect-ratio: 1/1; // L'immagine deve essere un quadrato
 }
 
 @media (max-width: 1024px) {
@@ -92,14 +92,16 @@ ion-button {
 		opacity: 1;
 	}
 	50% {
-		transform: scale(1.2);
-		opacity: 0.8;
+		transform: scale(1.2); // Allarghiamo leggermente il cerchietto
+		opacity: 0.8; // Lo rendiamo leggermente meno opaco
 	}
 	100% {
 		transform: scale(1);
 		opacity: 1;
 	}
 }
+
+// In base allo stato di lavorazione del cerchio, cambiamo colore
 
 .non-lavorazione {
 	background-color: var(--ion-color-rosso);
@@ -127,6 +129,8 @@ ion-button {
 	flex-direction: column;
 }
 
+// Colori di sfondo del componente in base al ruolo
+
 .chef {
 	background-color: var(--ion-color-verdechiaro);
 }
@@ -139,33 +143,59 @@ ion-button {
 	background-color: var(--ion-color-senape);
 }
 
+// Checkbox della romana
+
 ion-checkbox {
-	--color: var(--ion-color-bianco); /* Colore del testo */
-	--size: 32px; /* Dimensione del checkbox */
-	font-size: 20px; /* Dimensione del testo */
-	--checkbox-background: var(--ion-color-bianco);
-	--checkbox-background-checked: var(--ion-color-verdechiaro);
+	--color: var(--ion-color-bianco); // Colore del testo
+	--size: 32px; // Dimensione della checkbox
+	font-size: 20px; // Dimensione del testo
+
+	--checkbox-background: var(
+		--ion-color-bianco
+	); // Lo sfondo della checkbox sarà bianco
+
+	--checkbox-background-checked: var(
+		--ion-color-verdechiaro
+	); // E se spuntata diventerà verdechiaro
 }
 
+/** 
+ * Tramite lo pseudo-elemento ::part prendiamo dallo shadowdom il container della checkbox
+ * e rendiamo il suo sfondo verdechiaro in base a se la checkbox è stata selezionata
+ */
 ion-checkbox.selected::part(container) {
 	border: 3px solid var(--ion-color-verdechiaro);
 }
 
+/** 
+ * Rendiamo il container della checkbox circolare
+ */
 ion-checkbox::part(container) {
 	border-radius: 100%;
 }
 
+/** 
+ * Tramite lo pseudo-elemento ::part prendiamo dallo shadowdom la spunta che,
+ * siccome lo sfondo è verde, la dobbiamo fare diventare bianca
+ */
 ion-checkbox::part(mark) {
 	stroke: white;
 	transform: scale(0.7) !important;
+
+	// L'origine della trasformazione (scale) deve essere centrale,
+	// in modo tale che l'icona rimanga ben centrata
 	transform-origin: center;
+
 	display: flex;
 }
 
+/** 
+ * Tramite lo pseudo-elemento ::part prendiamo dallo shadowdom
+ * la label che ridimensioniamo e coloriamo di bianco
+ */
 ion-checkbox::part(label) {
-	color: var(
-		--ion-color-bianco
-	); /* Colore del testo (alternativa per sicurezza) */
+	color: var(--ion-color-bianco);
+
 	font-size: 2rem; /* Ridondanza utile per compatibilità */
 	padding: 5px;
 }

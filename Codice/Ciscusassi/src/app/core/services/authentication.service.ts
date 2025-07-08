@@ -144,11 +144,7 @@ export class AuthenticationService {
 
 	async logout(): Promise<void> {
 		try {
-			const response = await firstValueFrom(this.invalidateToken());
-
-			if (!response.success) {
-				console.error(response.message || 'Errore sconosciuto');
-			}
+			await this.invalidateToken();
 
 			await Promise.all([
 				this.clearIdUtente(),

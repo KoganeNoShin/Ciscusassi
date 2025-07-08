@@ -67,6 +67,7 @@
 								type="date"
 								label="Data di nascita"
 								color="rosso"
+								errorText="Data di nascita non valida"
 								placeholder="Inserisci la tua data di nascita"
 								[max]="dataMaxOggi"
 							></ion-input>
@@ -93,15 +94,16 @@
 				</ion-card>
 			</ion-col>
 			} @else{
+
 			<ion-col size="12" sizeXl="6">
 				<ion-card
 					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center"
 					color="verdechiaro"
 				>
+
 					<ion-text>
 						<h1 class="text-color-bianco">REGISTRATI</h1>
 					</ion-text>
-
 					@if (error) {
 					<p class="errorMsg">{{ errorMsg }}</p>
 					}
@@ -115,6 +117,7 @@
 								formControlName="email"
 								type="email"
 								label="Email"
+								errorText="Il formato dell'email non è valido"
 								color="rosso"
 								placeholder="Inserisci la tua email"
 							></ion-input>
@@ -125,6 +128,7 @@
 								type="password"
 								label="Password"
 								formControlName="password"
+								errorText="La password deve essere lunga almeno 6 caratteri e contenere almeno un numero, una lettera maiuscola e un carattere speciale"
 								color="rosso"
 								placeholder="Inserisci la tua password"
 							>
@@ -163,6 +167,21 @@
 							@if (!loading) { REGISTRATI } @else {
 							<ion-spinner name="bubbles"></ion-spinner>
 							}
+						</ion-button>
+						<ion-button
+							size="default"
+							fill="solid"
+							shape="round"
+							color="rosso"
+							expand="block"
+							type="submit"
+							class="ion-padding-horizontal"
+							(click)="tornaIndietro()"
+						>
+						<ion-icon
+							name="arrow-back"
+							slot="icon-only"
+						></ion-icon>
 						</ion-button>
 					</form>
 				</ion-card>

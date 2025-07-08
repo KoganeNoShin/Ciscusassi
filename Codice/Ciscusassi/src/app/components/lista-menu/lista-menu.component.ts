@@ -7,6 +7,16 @@ import { MenuDividerComponent } from '../../components/menu-divider/menu-divider
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ProdottoMenuComponent } from '../prodotto-menu/prodotto-menu.component';
 
+/**
+ * Questo componente viene utilizando quando l'utente sta sfogliando il menu,
+ * sia durante la visita al menu che durante l'ordinazione vera e propria.
+ *
+ * Permette all'utente di scegliere una categoria da espandere, mostrandone il contenuto.
+ *
+ * @param isOrdinazione - Valore booleano che viene passato ai componenti {@link ProdottoMenuComponent ProdottoMenu},
+ * qualora fosse impostato a `true`, mostrerebbe i controlli per effettuare un ordine (aggiungi e rimuovi ordine)
+ *
+ */
 @Component({
 	selector: 'app-lista-menu',
 	templateUrl: './lista-menu.component.html',
@@ -20,16 +30,27 @@ import { ProdottoMenuComponent } from '../prodotto-menu/prodotto-menu.component'
 	],
 })
 export class ListaMenuComponent implements OnInit {
+	/** Qualora fossimo in ordinazione, in modo tale da mostrare i corretti comandi */
+	@Input() isOrdinazione: boolean = false;
+
+	/** Tutti i piatti che sono stati ricevuti dal backend */
 	piatti: ProdottoRecord[] = [];
+
+	/** Esclusivamente i primi piatti */
 	primi: ProdottoRecord[] = [];
+
+	/** Esclusivamente gli antipasti */
 	antipasti: ProdottoRecord[] = [];
+
+	/** Esclusivamente i dolci */
 	dolci: ProdottoRecord[] = [];
+
+	/** Esclusivamente le bevande */
 	bevande: ProdottoRecord[] = [];
 
 	loading: boolean = true;
 	menuAperto: string | null = null;
 	error: boolean = false;
-	@Input() isOrdinazione: boolean = false;
 
 	constructor(private prodottoService: ProdottoService) {}
 

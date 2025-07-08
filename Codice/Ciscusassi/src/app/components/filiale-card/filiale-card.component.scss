@@ -1,49 +1,34 @@
 ion-button {
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: start;
-	gap: 1em;
-	align-items: start;
-}
+	width: 100%; // Prendiamo il massimo della larghezza disponibile
+	text-transform: none; // Ignoriamo la regola globale dei testi maiuscoli per i bottoni
 
-ion-card {
-	display: flex;
-	width: 100%;
-	flex-direction: row;
-	justify-content: start;
-	background-color: transparent;
-	--background: transparent;
-	box-shadow: none;
-}
+	ion-card {
+		display: flex; // Per poter poi allineare orizzontalmente gli elementi
+		flex-direction: row; // Mettiamo in riga gli elementi della card
+		justify-content: start; // Ci assicuriamo che l'allineamento parta da sinistra
+		width: 100%; // La card deve prendere la totalità dello spazio
+		box-shadow: none; // Disabilitiamo l'ombra dell'ion-card
+		background-color: transparent; // La card non deve avere sfondo
 
-.img-filiale {
-	width: 20%;
-	height: 20%;
-	object-fit: cover;
-	min-width: 100px;
-	aspect-ratio: 1/1;
-}
+		.img-filiale {
+			width: 20%;
+			height: 20%;
+			object-fit: cover; // Per coprire interamente lo spazio dell'immagine
+			min-width: 100px; // Al di sotto di 100px l'immagine non scenderà
+			aspect-ratio: 1/1; // L'immagine deve essere quadrata
 
-.img-filiale::part(image) {
-	border-radius: 25px;
-}
+			// Usiamo lo pseudo-elemento part per modificare l'elemento image dallo shadow-DOM del componente ionic
+			&::part(image) {
+				border-radius: 100%; // Arrotondiamo completamente l'immagine
+			}
+		}
 
-ion-text,
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	width: 100%;
-	text-transform: none;
-}
-
-.flex-row {
-	display: flex;
-	flex-direction: row;
-	justify-content: start;
-	align-items: center;
+		// Per tutte le righe di contenuto (via, orario, info) all'interno della card
+		.flex-row {
+			display: flex;
+			flex-direction: row;
+			justify-content: start;
+			align-items: center;
+		}
+	}
 }

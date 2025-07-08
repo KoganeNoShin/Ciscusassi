@@ -16,6 +16,11 @@ import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { Router } from '@angular/router';
 
+/**
+ * Componente mappa che ci serve per permettere all'utente di vedere dove sono le varie filiali
+ *
+ * @param redirect - Qualora redirect fosse vero, invece di redirizzare alla mappa di google maps, spunterebbe un popup per la prenotazione
+ */
 @Component({
 	selector: 'app-leaflet-map',
 	templateUrl: './leaflet-map.component.html',
@@ -24,10 +29,14 @@ import { Router } from '@angular/router';
 	imports: [IonSpinner],
 })
 export class LeafletMapComponent implements OnInit, OnDestroy {
+	/** Il componente mappa di leaflet */
 	private map!: Map;
 	loading: boolean = true;
+
 	filiali: FilialeRecord[] = [];
 	error: boolean = false;
+
+	/** Qualora dobbiamo rendirizzare o mostrare il popup di prenotazione */
 	@Input() redirect: boolean = false;
 
 	constructor(
@@ -64,15 +73,19 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 	}
 
 	private initMap(): void {
+		// Inizializza la mappa centrata su Palermo con zoom 13
 		this.map = map('map').setView([38.105987, 13.350567], 13);
 
+		// Aggiunge i tile di OpenStreetMap alla mappa
 		tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 19,
 			attribution:
 				'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 		}).addTo(this.map);
 
+		// Aggiunge un marker per ogni filiale
 		this.filiali.forEach((f) => {
+			// Definiamo l'icona personalizzata con immagine della filiale
 			let markerOptions = {
 				title: f.indirizzo,
 				clickable: true,
@@ -81,17 +94,17 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 					className: 'pin-mappa',
 					html: `<div class="marker-img" style="width: 40px; height: 40px; background-size: cover; background-position: center; border-radius: 50%; border: 2px solid black; box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); background-image: url('${f.immagine}')"></div>`,
 					iconSize: [40, 40],
-					iconAnchor: [20, 40], // optional: aligns bottom of the pin
+					iconAnchor: [20, 40],
 				}) as Icon,
 			};
 
-			console.log(f.immagine);
-
 			let mark = marker([f.latitudine, f.longitudine], markerOptions);
 
+			// Tooltip con indirizzo filiale
 			mark.bindTooltip(f.indirizzo);
 
 			if (this.redirect) {
+				// Popup con pulsante "Prenota" se è attivo il redirect
 				mark.bindPopup(`
 					<div style="text-align:center">
 						<strong>${f.indirizzo}</strong><br/>
@@ -101,14 +114,17 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 					</div>
 				`);
 			} else {
+				// Al click, apre la posizione su Google Maps in una nuova scheda
 				mark.addEventListener('click', () => {
 					const googleMapsUrl = `https://www.google.com/maps?q=${f.latitudine},${f.longitudine}`;
 					window.open(googleMapsUrl, '_blank');
 				});
 			}
 
+			// Aggiungiamo il marker alla mappa
 			mark.addTo(this.map);
 
+			// Al popup open, collega l'evento click al pulsante prenota
 			mark.on('popupopen', () => {
 				setTimeout(() => {
 					const btn = document.querySelector(
@@ -123,7 +139,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 			});
 		});
 
-		// Forza il ridimensionamento dopo che il DOM è pronto
+		// Forza il ricalcolo delle dimensioni della mappa per evitare glitch grafici
 		setTimeout(() => {
 			this.map.invalidateSize();
 		}, 100);

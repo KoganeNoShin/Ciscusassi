@@ -1,11 +1,19 @@
+<!--
+	Componente mappa utilizzato per mostrare dove sono le varie filiali
+-->
+
+<!-- Se stiamo caricando, mostra uno spinner -->
 @if (loading) {
 	<div class="loading-wrapper">
 		<ion-spinner name=""></ion-spinner>
 	</div>
 } @else {
+	<!-- Altrimenti, controlla se non c'è stato un errore e visualizza la mappa -->
 	@if (!error) {
 		<div id="map" class="map"></div>
-	} @else {
+	}
+	<!-- Altrimenti visualizza l'errore -->
+	@else {
 		<div class="mapError">
 			<h1>ERRORE</h1>
 			<h3>

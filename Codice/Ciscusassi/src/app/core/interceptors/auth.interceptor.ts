@@ -34,8 +34,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 				!currentUrl.includes('/login')
 			) {
 				console.warn('Non autorizzato, redirect al login...');
-				authService.logout();
 				router.navigate(['/login']);
+				authService.logout(); // Facciamo il logout
 			}
 			return throwError(() => err);
 		})

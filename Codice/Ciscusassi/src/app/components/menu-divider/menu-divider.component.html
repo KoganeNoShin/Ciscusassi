@@ -1,9 +1,24 @@
-<ion-button (click)="ApriMenu()" expand="full" class="sfondo">
+<!--
+	Componente utilizzato durante la fruizione dei menu che
+ 	permette di aprire le sezioni riguardanti le categorie dei piatti.
+-->
+
+<ion-button
+	(click)="ApriMenu()"
+	expand="full"
+	class="sfondo"
+	color="verdechiaro"
+>
+	<!-- Specifichiamo un immagine di background come avevamo fatto per l'hero -->
 	<div
 		class="immagine"
 		[style.background-image]="
 			'url(/assets/menu-dividers/' + backgroundURL + ')'
 		"
 	></div>
-	<h1>{{ title }}</h1>
+
+	<!-- E sopra di essa mettiamo una scritta che funge da titolo -->
+	<ion-text class="ion-text-center">
+		<h1 class="text-color-bianco">{{ title }}</h1>
+	</ion-text>
 </ion-button>

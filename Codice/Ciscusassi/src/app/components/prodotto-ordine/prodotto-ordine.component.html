@@ -1,4 +1,14 @@
+<!--
+	Questo componente viene utilizando quando l'utente sta sfogliando le proprie ordinazioni, 
+	oppure quando lo chef o il cameriere devono visualizzare le comande di un determinato tavolo.
+	
+	Permette agli utenti di visualizzare lo stato di un piatto, e qualora ne avessero i poteri, di cambiare stato.
+-->
+
 <div [ngClass]="ruolo" class="plate">
+	<!--
+		Qualora l'utente sia un cliente, visualizziamo lo stato attuale del piatto.
+	-->
 	@if (this.ruolo == 'cliente') {
 		@if (this.statoPiatto == 'non-in-lavorazione') {
 			<div class="circle non-lavorazione"></div>
@@ -34,6 +44,9 @@
 		}
 	</div>
 
+	<!--
+		Qualora l'utente sia uno chef, allora facciamo apparire i pulsanti di inizio e fine lavorazione
+	-->
 	@if (this.ruolo == 'chef') {
 		<div class="bottoni-chef">
 			@if (this.statoPiatto == 'non-in-lavorazione') {
@@ -54,7 +67,11 @@
 				</ion-text>
 			}
 		</div>
-	} @else if (this.ruolo == 'cameriere') {
+	}
+	<!--
+		Qualora l'utente sia un cameriere, allora facciamo apparire i pulsanti di consegna e cestinazione
+	-->
+	@else if (this.ruolo == 'cameriere') {
 		<div class="bottoni-cameriere">
 			@if (this.statoPiatto == 'in-consegna') {
 				<ion-button
@@ -93,7 +110,12 @@
 				</ion-text>
 			}
 		</div>
-	} @else if (this.ruolo == 'cliente') {
+	}
+	<!--
+		Qualora l'utente sia un cliente, allora facciamo apparire il pulsante di pagamento
+		alla romana tra gli altri commensali
+	-->
+	@else if (this.ruolo == 'cliente') {
 		<ion-checkbox
 			slot="start"
 			[checked]="prodotto.is_romana"

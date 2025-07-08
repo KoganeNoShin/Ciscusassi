@@ -4,6 +4,13 @@ import { IonSpinner, IonText } from '@ionic/angular/standalone';
 import { ApiResponse } from 'src/app/core/interfaces/ApiResponse';
 import { ProdottoRecord } from 'src/app/core/interfaces/Prodotto';
 
+/**
+ * Componente custom utilizzato per mostrare il piatto del giorno.
+ *
+ * All'inizializzazione invoca {@link ProdottoService.GetPiattoDelGiorno}
+ * per ricevere i dati del piatto del giorno corrente e mostrarli.
+ *
+ */
 @Component({
 	selector: 'app-piatto-del-giorno',
 	templateUrl: './piatto-del-giorno.component.html',

@@ -1,15 +1,10 @@
-:host {
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-
 .map {
-	width: 100%;
+	width: 100%; // la mappa deve riempire il suo contenitore completamente
 	height: 100%;
-	background-color: #a6cfd1; // opzionale
+	background-color: #a6cfd1; // Quando la mappa si starà caricando avrà questo colore
 }
 
+// Classe dei marker (punti di interesse sulla mappa)
 .marker-img {
 	width: 40px;
 	height: 40px;
@@ -20,6 +15,7 @@
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 }
 
+// Se sta caricando, vogliamo che lo spinner sia centrato
 .loading-wrapper {
 	height: 100%;
 	width: 100%;
@@ -28,11 +24,13 @@
 	align-items: center;
 }
 
+// Facciamo lo spinner bello grande
 ion-spinner {
 	width: 100px;
 	height: 100px;
 }
 
+// Se c'è stato un errore fa diventare tutto rosso sangue
 .mapError {
 	background-color: red;
 	padding: 30px;

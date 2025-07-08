@@ -1,25 +1,27 @@
-/* Cursore pointer per item del menu */
+// Classe per ogni elemento del menu laterale
 .menu-item {
-	--background: transparent;
-	background-color: transparent !important;
-	color: var(--ion-color-light) !important;
 	transition:
-		background-color 0.15s ease,
+		background-color 0.15s ease-in-out,
 		color 0.15s ease;
-	cursor: pointer;
+	cursor: pointer; // Impostiamo che il cursore debba essere a puntatore per indicare che si possa cliccare
 
+	// Se stiamo sorvolando con il mouse l'item allora cambia colore in arrancione
 	&:hover {
 		background-color: var(--ion-color-arancione) !important;
-		color: var(--ion-color-light) !important;
 	}
 
 	ion-icon,
 	ion-label {
-		color: inherit !important;
-		transition: color 0.15s ease;
+		transition: color 0.15s ease-in-out;
 	}
 }
 
+/*
+	Classe per rendere invisibile lo sfondo degli ion-items e della lista, 
+	siccome vogliamo che si veda lo sfondo del menu (verdechiaro)
+*/
 .bg-color-transparent {
 	background-color: transparent;
+	--background: transparent;
+	background-color: transparent !important;
 }

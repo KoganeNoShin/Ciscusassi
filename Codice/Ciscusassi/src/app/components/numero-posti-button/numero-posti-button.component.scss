@@ -1,46 +1,64 @@
 .cerchio {
-	width: clamp(5rem, 6.5vw, 8rem);
-	height: clamp(5rem, 6.5vw, 8rem);
-	border-radius: 100%;
-	display: flex;
+	width: clamp(
+		5rem,
+		6.5vw,
+		8rem
+	); // Limitiamo la larghezza del cerchio tra 5 ed 8 rem
+	height: clamp(
+		5rem,
+		6.5vw,
+		8rem
+	); // Limitiamo l'altezza del cerchio tra 5 ed 8 rem
+	border-radius: 100%; // Il cerchio deve essere un cerchio 🦭
+	display: flex; // Per allineare il contenuto (testo) al centro
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
+	cursor: pointer; // Cambiamo il cursore in un puntatore per fare capire all'utente che può selezionarlo
 	transition: all 0.2s ease-in-out;
 
 	ion-text p {
-		font-size: clamp(1.5rem, 2vw, 4rem);
-		display: flex;
+		font-size: clamp(
+			1.5rem,
+			2vw,
+			4rem
+		); // Limitiamo la grandezza del testo tra gli 1.5 e 4 rem
+		display: flex; // Allineiamo al centro anche questo testo
 		align-items: center;
 		justify-content: center;
 		text-align: center;
 		vertical-align: text-top;
 		transition: all 0.2s ease-in-out;
 	}
-}
 
-.cerchio.selected {
-	background-color: var(--ion-color-verdechiaro);
-	border-color: var(--ion-color-verdechiaro);
+	// Usiamo la classe inserita con ngClass "selected" per evidenziare il cerchio
+	.selected {
+		background-color: var(--ion-color-verdechiaro);
+		border-color: var(--ion-color-verdechiaro);
 
-	ion-text p {
-		color: var(--ion-color-bianco);
+		ion-text p {
+			color: var(--ion-color-bianco);
+		}
 	}
-}
 
-.cerchio.match-input:not(.selected) {
-	background-color: var(--ion-color-verdechiaro) !important;
-	border-color: var(--ion-color-verdechiaro) !important;
+	// All'hover evidenziamo nello stesso modo il cerchio
+	&:hover {
+		background-color: var(--ion-color-verdechiaro) !important;
 
-	ion-text p {
-		color: var(--ion-color-bianco) !important;
+		ion-text p {
+			color: var(--ion-color-bianco) !important;
+		}
 	}
-}
 
-.cerchio:hover {
-	background-color: var(--ion-color-verdechiaro) !important;
+	/*
+		Se l’input scritto a mano corrisponde al numero dell'input, ma non è stato cliccato,
+		il cerchio viene comunque evidenziato in verde.
+	*/
+	&.match-input:not(.selected) {
+		background-color: var(--ion-color-verdechiaro) !important;
+		border-color: var(--ion-color-verdechiaro) !important;
 
-	ion-text p {
-		color: var(--ion-color-bianco) !important;
+		ion-text p {
+			color: var(--ion-color-bianco) !important;
+		}
 	}
 }

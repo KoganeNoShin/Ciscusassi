@@ -1,5 +1,11 @@
+<!-- 
+	Questa div ci permetterà di sfocare lo sfondo
+-->
 <div id="blur"></div>
 
+<!-- 
+	L'immagine di sfondo la prendiamo dal cartella /assets/backgrounds/
+-->
 <div
 	id="background"
 	[style.background-image]="'url(/assets/backgrounds/' + backgroundURL + ')'"
@@ -7,12 +13,25 @@
 
 <div id="hero">
 	<ion-text class="ion-text-center">
+		<!-- 
+			Passiamo il safeTitle come innerHTML tramite binding 
+		 	per permetterci di avere anche tag html all'interno 
+		-->
 		<h1 class="text-color-bianco" [innerHTML]="safeTitle"></h1>
 	</ion-text>
 
 	<ion-text class="ion-text-center" id="description">
+		<!--
+			Passiamo la safeDescription come innerHTML tramite binding 
+			per permetterci di avere anche tag html all'interno 
+		-->
 		<h3 class="text-color-bianco" [innerHTML]="safeDescription"></h3>
 	</ion-text>
+
+	<!-- 
+		Indichiamo all'utente che può scendere giù
+		tramite l'icona dello chevron
+	-->
 
 	<ion-icon
 		id="chevron"

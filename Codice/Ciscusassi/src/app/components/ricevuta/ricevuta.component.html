@@ -1,7 +1,10 @@
+<!--
+	Questo componente rappresenta la ricevuta che è possibile scaricare da utente una volta pagato il pasto
+-->
 <div id="contenitoreRicevuta">
 	<div class="content-wrapper">
 		<div class="pdf-section header">
-			<img [src]="logo" alt="logo" />
+			<img [src]="'/assets/icon/logo.png'" alt="logo" />
 			<h2>Ricevuta</h2>
 			<small>{{ data }}</small>
 		</div>
@@ -26,6 +29,9 @@
 				</div>
 			}
 
+			<!--
+				Applichiamo gli sconti solamente se il cliente è venuto al ristorante fisicamente
+			-->
 			@if (this.servizio == 'tavolo') {
 				<div class="riga">
 					<span class="text-black"
@@ -33,19 +39,23 @@
 						romana</span
 					>
 					<span class="text-black"></span>
-					<span class="text-black">
-						-{{differenzaTotale}}€
-					</span>
+					<span class="text-black"> -{{ differenzaTotale }}€ </span>
 				</div>
 			}
 		</div>
 
-		@if (this.servizio == 'tavolo'){
-			<div class="pdf-section totale">Totale: € {{ totaleQuery}}</div>
-		} @else if (this.servizio == 'asporto'){
-			<div class="pdf-section totale">Totale: € {{ totale}}</div>
+		<!--
+			Il totale viene calcolato anche in base a se sono stati applicati degli sconti
+		-->
+		@if (this.servizio == 'tavolo') {
+			<div class="pdf-section totale">Totale: € {{ totaleQuery }}</div>
+		} @else if (this.servizio == 'asporto') {
+			<div class="pdf-section totale">Totale: € {{ totale }}</div>
 		}
 
+		<!--
+			&copy; è il simbolo del copyright
+		-->
 		<div class="pdf-section footer">
 			&copy; Ciscusassi 2025 - Tutti i diritti riservati<br />
 			Leonardo Giovanni Caiezza<br />

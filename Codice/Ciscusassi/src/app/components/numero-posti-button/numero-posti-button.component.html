@@ -1,6 +1,11 @@
+<!--
+	Questo componente è essenzialmente un cerchio con un numero all'interno che
+	simboleggia il numero di posti che il cliente intende selezionare per la sua prenotazione
+-->
+
 <div
 	(click)="selectedCircle()"
-	[class.selected]="number === personeSelezionate"
+	[ngClass]="number === personeSelezionate ? '' : ''"
 	[class.match-input]="inputManuale === number"
 	class="cerchio bg-color-bianco"
 >
