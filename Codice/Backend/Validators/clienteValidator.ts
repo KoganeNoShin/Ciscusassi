@@ -57,7 +57,7 @@ function passwordClienteValidator(chain: ValidationChain): ValidationChain {
 function imageClienteValidator(chain: ValidationChain): ValidationChain {
 	return chain
 		.notEmpty().withMessage("L'immagine è obbligatoria")
-		.matches(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/)
+		.matches(/^data:image\/(jpeg|png|webp|svg\+xml);base64,([A-Za-z0-9+/=]+)$/)
 		.withMessage('Formato immagine non valido');
 }
 

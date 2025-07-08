@@ -67,6 +67,7 @@
 								type="date"
 								label="Data di nascita"
 								color="rosso"
+								errorText="Data di nascita non valida"
 								placeholder="Inserisci la tua data di nascita"
 								[max]="dataMaxOggi"
 							></ion-input>
@@ -115,6 +116,7 @@
 								formControlName="email"
 								type="email"
 								label="Email"
+								errorText="Il formato dell'email non è valido"
 								color="rosso"
 								placeholder="Inserisci la tua email"
 							></ion-input>
@@ -125,6 +127,7 @@
 								type="password"
 								label="Password"
 								formControlName="password"
+								errorText="La password deve essere lunga almeno 6 caratteri e contenere almeno un numero, una lettera maiuscola e un carattere speciale"
 								color="rosso"
 								placeholder="Inserisci la tua password"
 							>
@@ -140,6 +143,7 @@
 								type="password"
 								label="Conferma Password"
 								formControlName="confermaPassword"
+								errorText="La password deve essere lunga almeno 6 caratteri e contenere almeno un numero, una lettera maiuscola e un carattere speciale"
 								color="rosso"
 								placeholder="Conferma la tua password"
 							>
