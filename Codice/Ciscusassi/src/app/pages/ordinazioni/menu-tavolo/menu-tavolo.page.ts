@@ -146,7 +146,7 @@ export class MenuTavoloPage implements OnInit {
 				);
 			}
 
-			if (this.numeroOrdine === 0) {
+			if (this.numeroOrdine === null) {
 				// Creo un nuovo ordine
 				try {
 					const ordineResponse = await firstValueFrom(
@@ -168,13 +168,6 @@ export class MenuTavoloPage implements OnInit {
 				}
 			}
 
-			// Preparo i prodotti da inviare
-			if (this.numeroOrdine === null) {
-				return this.mostraToast(
-					'Errore: numero ordine non valido.',
-					'danger'
-				);
-			}
 			const ordProdInputArray: OrdProdInput[] =
 				this.prodottiNelCarrello.map((prodotto) => ({
 					is_romana: false,
