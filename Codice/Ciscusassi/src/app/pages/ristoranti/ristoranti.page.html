@@ -4,42 +4,47 @@
 	integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
 	crossorigin=""
 />
+
 <ion-content [fullscreen]="true">
 	<app-hero
 		title="I NOSTRI RISTORANTI"
 		description="Locali accoglienti, cibo delizioso. <br> Cosa vuoi di più?!"
 		[backgroundURL]="'RistorantiBackground.jpg'"
-	></app-hero>
+	/>
 
-	<div class="map-div">
-		<ion-text class="ion-text-center ion-margin-horizontal">
-			<h2 class="text-color-bianco">TROVACI SULLA MAPPA!</h2>
-		</ion-text>
+	<div class="bg-color-senape wrapper-div">
+		<div class="map-div">
+			<ion-text class="ion-text-center ion-margin-horizontal">
+				<h2 class="text-color-bianco">TROVACI SULLA MAPPA!</h2>
+			</ion-text>
 
-		<ion-text class="ion-text-center">
-			<h3 class="text-color-bianco ion-margin-horizontal">
-				Trova il ristorante più adatto a te!
-			</h3>
-		</ion-text>
+			<ion-text class="ion-text-center">
+				<h3 class="text-color-bianco ion-margin-horizontal">
+					Trova il ristorante più adatto a te!
+				</h3>
+			</ion-text>
 
-		<ion-grid
-			fixed
-			class="ion-align-items-center ion-justify-content-center"
-		>
-			<ion-row class="ion-align-items-center ion-justify-content-center">
-				<ion-col size="6" class="ion-hide-xl-down">
-					<ion-img
-						[src]="'/assets/illustrations/TizioMappa.png'"
-					></ion-img>
-				</ion-col>
-				<ion-col size="12" sizeXl="6">
-					<ion-card class="map-card">
-						<ion-card-content>
-							<app-leaflet-map></app-leaflet-map>
-						</ion-card-content>
-					</ion-card>
-				</ion-col>
-			</ion-row>
-		</ion-grid>
+			<ion-grid
+				fixed
+				class="ion-align-items-center ion-justify-content-center"
+			>
+				<ion-row
+					class="ion-align-items-center ion-justify-content-center"
+				>
+					<ion-col size="6" class="ion-hide-xl-down">
+						<ion-img
+							[src]="'/assets/illustrations/TizioMappa.png'"
+						></ion-img>
+					</ion-col>
+					<ion-col size="12" sizeXl="6">
+						<ion-card class="map-card">
+							<ion-card-content>
+								<app-leaflet-map></app-leaflet-map>
+							</ion-card-content>
+						</ion-card>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</div>
 	</div>
 </ion-content>

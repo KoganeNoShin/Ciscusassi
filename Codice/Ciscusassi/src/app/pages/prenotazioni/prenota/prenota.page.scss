@@ -1,16 +1,18 @@
+ion-grid {
+	margin: 0;
+	height: fit-content;
+}
+
 /* Colonna lista filiali */
 .filiali-list {
 	min-height: 50vh;
 	max-height: 50vh;
 	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .filiali-list::-webkit-scrollbar {
 	display: none;
-}
-
-ion-grid {
-	margin: 0;
 }
 
 .map-card {
@@ -19,10 +21,10 @@ ion-grid {
 	background-color: var(--ion-color-bianco);
 	overflow: hidden;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
-}
 
-.map-card-content {
-	height: 70vh;
+	.map-card-content {
+		height: 70vh;
+	}
 }
 
 /* ----- */
@@ -58,10 +60,6 @@ ion-spinner {
 
 p {
 	font-size: clamp(1rem, 1.3vw, 1.2rem);
-}
-
-ion-grid {
-	height: fit-content;
 }
 
 ion-searchbar {
