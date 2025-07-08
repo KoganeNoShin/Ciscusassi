@@ -13,7 +13,10 @@ import {
 	IonSpinner,
 	IonInputPasswordToggle,
 	IonAvatar,
+	IonIcon,
 } from '@ionic/angular/standalone';
+import { arrowBack } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 import {
 	FormsModule,
@@ -39,6 +42,7 @@ import { ToastController } from '@ionic/angular';
 	styleUrls: ['./signin.page.scss'],
 	standalone: true,
 	imports: [
+		IonIcon,
 		IonSpinner,
 		IonSpinner,
 		IonItem,
@@ -81,7 +85,11 @@ export class SigninPage implements OnInit {
 		private authenticationService: AuthenticationService,
 		private router: Router,
 		private toastController: ToastController
-	) {}
+	) {
+		addIcons({
+			arrowBack,
+		});
+	}
 
 	private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
@@ -234,5 +242,9 @@ export class SigninPage implements OnInit {
 			color,
 		});
 		toast.present();
+	}
+
+	tornaIndietro() {
+		this.pagina = 0;
 	}
 }
