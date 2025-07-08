@@ -129,8 +129,11 @@ export class LoginPage implements OnInit {
 			this.authenticationService.login(credentials).subscribe({
 				next: (response) => this.handleResponse(response),
 				error: (err) => {
+					 if (err.status === 401) {
+      					this.errorMsg = 'Email o password errati';
+					 } else {
 					this.errorMsg =	'Errore durante il login.';
-
+					}
 					console.log(err);
 					this.error = true;
 					this.loading = false;
