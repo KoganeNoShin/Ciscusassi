@@ -39,10 +39,7 @@
 								</ion-text>
 
 								@if (role == 'cliente') { @if (loading) {
-								<ion-spinner
-									name="circular"
-									color="bianco"
-								></ion-spinner>
+								<ion-spinner name="circular" color="bianco" />
 								} @else {
 								<ion-text class="ion-text-center">
 									<h2 class="text-color-arancione">
@@ -91,7 +88,10 @@
 									(click)="logout()"
 								>
 									@if (loadingLogout) {
-									<ion-spinner name="bubbles"></ion-spinner>
+									<ion-spinner
+										name="circular"
+										color="bianco"
+									/>
 									} @else { LOGOUT }
 								</ion-button>
 							</ion-col>

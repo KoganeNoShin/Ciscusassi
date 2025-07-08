@@ -3,21 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonCol,
 	IonImg,
 	IonGrid,
 	IonRow,
 	IonCard,
-	IonCardContent,
-	IonList,
-	IonItem,
 	IonText,
-	IonDatetimeButton,
-	IonModal,
-	IonDatetime,
 	IonButton,
 } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
@@ -30,7 +21,9 @@ import { AsportoInput } from 'src/app/core/interfaces/Asporto';
 import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.service';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
 
-// Decoratore del componente standalone per Angular/Ionic
+/**
+ * Questa pagina serve per pagare l'importo dovuto e reindirizzare alla pagina di ringraziamenti
+ */
 @Component({
 	selector: 'app-pagamento-asporto',
 	templateUrl: './pagamento-asporto.page.html',

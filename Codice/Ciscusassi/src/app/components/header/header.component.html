@@ -14,20 +14,19 @@
 			<ion-button [routerLink]="['/']"> HOME </ion-button>
 			<ion-button [routerLink]="['/menu']"> MENU </ion-button>
 
+			<ion-button [routerLink]="['/ristoranti']"> RISTORANTI </ion-button>
+
 			<!-- I bottoni per ristoranti ed ordina ora, li mostriamo solo se è un potenziale cliente -->
 			@if (role == 'cliente' || role == '') {
-				<ion-button [routerLink]="['/ristoranti']">
-					RISTORANTI
-				</ion-button>
 				<ion-button
 					(click)="svuotaCarrello()"
 					[routerLink]="['/ordina-ora']"
 				>
 					ORDINA ORA
 				</ion-button>
-			}
 
-			<ion-button [routerLink]="['/prenota']"> PRENOTA </ion-button>
+				<ion-button [routerLink]="['/prenota']"> PRENOTA </ion-button>
+			}
 		</ion-buttons>
 
 		<!-- Alla fine dell'header, mostriamo i bottoni relativi al ruolo dell'utente -->

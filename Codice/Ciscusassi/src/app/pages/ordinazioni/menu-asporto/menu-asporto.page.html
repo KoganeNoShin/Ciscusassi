@@ -1,12 +1,19 @@
+<!--
+	Pagina di ordinazione da asporto, permette al cliente di visionare
+	tutti i prodotti ed eventualmente aggiungerli o rimuoverli dal carrello.
+-->
+
 <ion-content [fullscreen]="true">
 	<app-hero
 		title="MENU"
 		description="Benvenuto {{ nomeUtente }}! Pronto ad ordinare? Scendi giù!"
 		[backgroundURL]="'MenuAsportoBackground.jpg'"
-	></app-hero>
+	/>
 
-	<app-piatto-del-giorno></app-piatto-del-giorno>
+	<app-piatto-del-giorno />
 
-	<app-lista-menu [isOrdinazione]="true"></app-lista-menu>
-	<ion-button (click)="checkTotale()">PROCEDI AL PAGAMENTO</ion-button>
+	<app-lista-menu [isOrdinazione]="true" />
+	<ion-button (click)="checkTotale()" color="arancione"
+		>PROCEDI AL PAGAMENTO</ion-button
+	>
 </ion-content>

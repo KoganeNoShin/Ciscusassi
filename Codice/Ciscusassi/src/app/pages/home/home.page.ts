@@ -4,6 +4,9 @@ import { HeroComponent } from 'src/app/components/hero/hero.component';
 
 import { PiattoDelGiornoComponent } from 'src/app/components/piatto-del-giorno/piatto-del-giorno.component';
 
+/**
+ * Pagina principale dove l'utente ha una breve introduzione al sito
+ */
 @Component({
 	selector: 'app-home',
 	templateUrl: 'home.page.html',

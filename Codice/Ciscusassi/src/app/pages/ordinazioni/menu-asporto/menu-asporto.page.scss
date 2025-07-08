@@ -1,9 +1,10 @@
 ion-button {
-  position: fixed;
-  font-size: 1rem;
-  bottom: 9%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
---background: var(--ion-color-arancione);
+	position: fixed; // Il bottone deve stare completamente in basso
+	font-size: 1rem;
+	bottom: 9%;
+	left: 50%; // L'angolo in basso a sinistra del bottone deve essere a metà
+	transform: translateX(
+		-50%
+	); // Trasliamo a sinistra della metà della larghezza del bottone per centrarlo
+	z-index: 10;
 }
