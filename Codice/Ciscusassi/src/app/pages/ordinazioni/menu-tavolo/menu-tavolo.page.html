@@ -1,13 +1,18 @@
+<!--
+	Visualizza il menu con tutti i piatti ed i rispettivi controlli per 
+	poter ordinare, visualizzare gli ordini e procedere al pagamento
+-->
+
 <ion-content [fullscreen]="true">
 	<app-hero
 		title="MENU"
 		description="Benvenuto {{ nomeUtente }}! <br> Sei seduto al tavolo n.{{ numeroTavolo }} <br> <br> Pronto ad ordinare? Scendi giù!"
 		[backgroundURL]="'MenuTavoloBackground.jpg'"
-	></app-hero>
+	/>
 
-	<app-piatto-del-giorno></app-piatto-del-giorno>
+	<app-piatto-del-giorno />
 
-	<app-lista-menu [isOrdinazione]="true"></app-lista-menu>
+	<app-lista-menu [isOrdinazione]="true" />
 
 	<div class="bottoni-bottom">
 		<ion-button

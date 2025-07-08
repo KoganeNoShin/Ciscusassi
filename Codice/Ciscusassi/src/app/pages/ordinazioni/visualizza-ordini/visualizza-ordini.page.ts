@@ -20,6 +20,10 @@ import { OrdineService } from 'src/app/core/services/ordine.service';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { ToastController } from '@ionic/angular';
 
+/**
+ * 	Pagina che mostra tutti i piatti ordinati ed i relativi stati,
+ *  oltre che una leggenda per comprendere meglio gli stati
+ */
 @Component({
 	selector: 'app-visualizza-ordini',
 	templateUrl: './visualizza-ordini.page.html',

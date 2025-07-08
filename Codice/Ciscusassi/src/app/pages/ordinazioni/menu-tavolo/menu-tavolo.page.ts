@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
 	IonContent,
-	IonHeader,
-	IonTitle,
-	IonToolbar,
 	IonButton,
 	ToastController,
 } from '@ionic/angular/standalone';
@@ -23,6 +20,10 @@ import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { firstValueFrom } from 'rxjs';
 import { OrdProdInput } from 'src/app/core/interfaces/OrdProd';
 
+/**
+ * Visualizza il menu con tutti i piatti ed i rispettivi controlli per
+ * poter ordinare, visualizzare gli ordini e procedere al pagamento
+ */
 @Component({
 	selector: 'app-menu-tavolo',
 	templateUrl: './menu-tavolo.page.html',
@@ -40,11 +41,23 @@ import { OrdProdInput } from 'src/app/core/interfaces/OrdProd';
 	],
 })
 export class MenuTavoloPage implements OnInit {
+	/** Nome Utente che serve per accogliere l'utente con il messaggio nel {@link HeroComponent Hero} */
 	nomeUtente: string = '';
+
+	/** Il numero del tavolo assegnato all'utente */
 	numeroTavolo: number | null = null;
+
+	/** Tutti i prodotti che l'utente ha inserito nel proprio carrello,
+	 *  viene svuotato ogni volta che si preme invia ordine */
 	prodottiNelCarrello: ProdottoRecord[] = [];
+
+	/** Costo totale per capire se abbiamo ordinato almeno un piatto */
 	totale: number = 0;
-	numeroOrdine: number = 0; // variabile locale per il numero ordine
+
+	/** Variabile che specifica l'id dell'ordine da parte del cliente */
+	numeroOrdine: number = 0;
+
+	/** Id di riferimento al pagamento, una volta effettuato */
 	haPagato: number | null = null;
 
 	constructor(
@@ -60,6 +73,7 @@ export class MenuTavoloPage implements OnInit {
 		this.ngViewWillEnter();
 	}
 
+	/** All'inizio del life cycle della pagina, otteniamo la prenotazione e settiamo le variabili del componente */
 	async ngViewWillEnter() {
 		this.nomeUtente = this.servizioAutenticazione.getUsername();
 		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
@@ -91,6 +105,7 @@ export class MenuTavoloPage implements OnInit {
 		}
 	}
 
+	/** Funzione che controlla se l'utente ha già pagato, deve pagare, oppure deve selezionare ancora almeno un prodotto  */
 	async checkTotale() {
 		const prenotazione = this.tavoloService.getPrenotazione();
 		if (prenotazione !== null) {
@@ -197,6 +212,8 @@ export class MenuTavoloPage implements OnInit {
 		}
 	}
 
+	/** Funzione che prende tutti i prodotti ordinati dal cliente, controlla se ha almeno un prodotto
+	 *  ordinato ed in caso mostra la pagina di visualizzazione ordini */
 	async visualizzaOrdini() {
 		const prenotazione = this.tavoloService.getPrenotazione();
 		if (prenotazione !== null) {
@@ -251,6 +268,11 @@ export class MenuTavoloPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Funzione che mostra un toast in fondo alla pagina
+	 * @param messaggio il messaggio da visualizzare
+	 * @param colore il colore che deve avere il toast
+	 */
 	private async mostraToast(
 		messaggio: string,
 		colore: 'success' | 'warning' | 'danger'

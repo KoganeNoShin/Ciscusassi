@@ -1,3 +1,7 @@
+<!--
+	Pagina che mostra tutti i piatti ordinati ed i relativi stati, 
+	oltre che una leggenda per comprendere meglio gli stati
+-->
 <ion-content
 	[fullscreen]="true"
 	class="ion-justify-content-center ion-align-items-center"
@@ -36,9 +40,9 @@
 		<ion-spinner
 			name="crescent"
 			style="display: block; margin: 2rem auto"
-		></ion-spinner>
+		/>
 		} @else {
-		<app-lista-ordini [prodotti$]="prodotti$"></app-lista-ordini>
+		<app-lista-ordini [prodotti$]="prodotti$" />
 
 		<div class="bottoni-bottom">
 			<ion-button
