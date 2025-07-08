@@ -8,12 +8,12 @@ ion-card {
 	display: flex;
 	flex-direction: column;
 	height: 80vh;
-	overflow-y: scroll;
+	overflow-y: auto;
 	overflow-x: hidden;
 }
 
 ion-content {
-	overflow: scroll;
+	overflow-y: auto;
 }
 
 .errorMsg {
