@@ -81,7 +81,7 @@ export class SigninPage implements OnInit {
 		private router: Router,
 		private toastController: ToastController
 	) {}
-		private handleResponse(response: ApiResponse<any>): void {
+	private handleResponse(response: ApiResponse<any>): void {
 		console.log(response);
 		if (response.success) {
 			this.presentToast(
@@ -98,17 +98,25 @@ export class SigninPage implements OnInit {
 		this.formRegistrazione = this.fb.group(
 			{
 				nome: ['', [Validators.required, , Validators.minLength(2)]],
-			cognome: ['', [Validators.required, , Validators.minLength(2)]],
-			dataNascita: [
-				'',
-				[
-					Validators.required,
-					Validators.pattern(
-						'^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
-					),
+				cognome: ['', [Validators.required, , Validators.minLength(2)]],
+				dataNascita: [
+					'',
+					[
+						Validators.required,
+						Validators.pattern(
+							'^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
+						),
+					],
 				],
-			],
-				email: ['', [Validators.required,  Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
+				email: [
+					'',
+					[
+						Validators.required,
+						Validators.pattern(
+							'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+						),
+					],
+				],
 				password: [
 					'',
 					[
@@ -130,7 +138,6 @@ export class SigninPage implements OnInit {
 		const mese = String(oggi.getMonth() + 1).padStart(2, '0'); // mesi da 0 a 11
 		const giorno = String(oggi.getDate()).padStart(2, '0');
 		this.dataMaxOggi = `${anno}-${mese}-${giorno}`;
-		this.formRegistrazione.markAllAsTouched();
 	}
 
 	async onSubmit() {
@@ -156,15 +163,15 @@ export class SigninPage implements OnInit {
 					.subscribe({
 						next: (response) => this.handleResponse(response),
 						error: (err) => {
-							 if (err.status === 400) {
-      						this.errorMsg = 'Email già registrata';
+							if (err.status === 400) {
+								this.errorMsg = 'Email già registrata';
 							} else {
-							this.errorMsg = 'Errore durante la registrazione.';
+								this.errorMsg =
+									'Errore durante la registrazione.';
 							}
 							console.log(err);
 							this.error = true;
 							this.loading = false;
-
 						},
 					});
 			} catch (err) {
@@ -177,9 +184,23 @@ export class SigninPage implements OnInit {
 
 	matchPassword(): ValidatorFn {
 		return (group: AbstractControl): ValidationErrors | null => {
-			const password = group.get('password')?.value;
-			const conferma = group.get('confermaPassword')?.value;
-			return password === conferma ? null : { passwordMismatch: true };
+			const passwordControl = group.get('password');
+			const confermaControl = group.get('confermaPassword');
+
+			if (!passwordControl || !confermaControl) return null;
+
+			const password = passwordControl.value;
+			const conferma = confermaControl.value;
+
+			// Se i campi coincidono, rimuovi l'errore da confermaPassword
+			if (password === conferma) {
+				confermaControl.setErrors(null);
+				return null;
+			}
+
+			// Altrimenti imposta l'errore
+			confermaControl.setErrors({ passwordMismatch: true });
+			return { passwordMismatch: true };
 		};
 	}
 
