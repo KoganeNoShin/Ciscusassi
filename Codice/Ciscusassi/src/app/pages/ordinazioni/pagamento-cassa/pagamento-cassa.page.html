@@ -1,3 +1,7 @@
+<!--
+	Questa pagina serve per mostrare all'utente che deve effettuare il pagamento alla cassa
+	mostrando il codice a barre da fare scansionare al cameriere nella cassa (non prevista nell'app)
+-->
 <ion-content [fullscreen]="true" color="bianco">
 	<div class="page-wrapper">
 		<ion-grid
@@ -43,12 +47,13 @@
 						></ion-spinner>
 						}
 
+						<!-- Facciamo una chiamata alle api bwipjs per convertire il nostro testo in un barcode-->
 						<ion-img
 							class="codice-barre bg-color-bianco ion-padding"
 							[src]="'https://bwipjs-api.metafloor.com/?bcid=code128&text=' + codice"
 							(ionImgDidLoad)="isLoading = false"
 							[style.visibility]="isLoading ? 'hidden' : 'visible'"
-						></ion-img>
+						/>
 					</ion-card>
 				</ion-col>
 				<!-- Colonna destra: immagine -->
@@ -56,7 +61,7 @@
 					<ion-img
 						class="illustrazione"
 						src="/assets/illustrations/PagamentoCarta.png"
-					></ion-img>
+					/>
 				</ion-col>
 			</ion-row>
 		</ion-grid>

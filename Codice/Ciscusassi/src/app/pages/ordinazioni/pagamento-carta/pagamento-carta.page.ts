@@ -12,7 +12,6 @@ import {
 	IonRow,
 	IonCol,
 	IonCard,
-	IonCardContent,
 	IonButton,
 	IonImg,
 	IonText,
@@ -21,6 +20,10 @@ import { RicevutaComponent } from 'src/app/components/ricevuta/ricevuta.componen
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import { OrdProdEstended } from 'src/app/core/interfaces/OrdProd';
 
+/**
+ * Questa pagina serve per mostrare all'utente che ha effettuato il pagamento con la carta di credito
+ *  ringraziandolo per aver scelto il sito, inoltre permette di scaricare la ricevuta elettronica.
+ */
 @Component({
 	selector: 'app-pagamento-carta',
 	templateUrl: './pagamento-carta.page.html',
@@ -53,6 +56,7 @@ export class PagamentoCartaPage implements OnInit {
 		this.carrello = this.tavoloService.getOrdini();
 	}
 
+	/** Funzione per generare la ricevuta e salvarla come PDF */
 	async generaRicevuta() {
 		// Crea dinamicamente il componente RicevutaComponent
 		const componentRef = createComponent(RicevutaComponent, {
