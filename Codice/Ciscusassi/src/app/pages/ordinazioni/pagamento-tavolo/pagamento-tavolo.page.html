@@ -3,7 +3,8 @@
 	permettendogli di scegliere tra pagamento con carta di credito, oppure alla cassa.  	
 -->
 <ion-content [fullscreen]="true" color="bianco">
-	<div class="page-wrapper">
+	<div class="page-wrapper ion-padding ion-text-center">
+		@if (!error){
 		<ion-grid
 			fixed
 			class="ion-align-items-center ion-justify-content-center"
@@ -62,5 +63,12 @@
 				</ion-col>
 			</ion-row>
 		</ion-grid>
+	} @else{
+		<ion-text>
+		<h1 style="color: var(--ion-color-rosso)">
+			Errore: per favore riprova più tardi!
+		</h1>
+	</ion-text>
+	}
 	</div>
 </ion-content>

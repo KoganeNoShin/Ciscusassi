@@ -48,6 +48,7 @@ export class PagamentoTavoloPage implements OnInit {
 	totale: number = 0;
 	prodotti: OrdProdEstended[] = [];
 	codice: string = '';
+	error: boolean = false; // Variabile per gestire gli errori
 
 	constructor(
 		private router: Router,
@@ -72,15 +73,16 @@ export class PagamentoTavoloPage implements OnInit {
 					this.totale = response?.totale ?? 0;
 					this.tavoloService.setTotaleQuery(response?.totale ?? 0);
 					console.log('Totale ricevuto e assegnato:', this.totale);
+					this.error = false; // Resetta l'errore se i dati sono stati caricati correttamente
 				},
 				error: (err) => {
 					console.error('Errore durante la chiamata:', err);
-					this.totale = 0;
+					this.error = true; // Imposta l'errore a true per gestire la visualizzazione
 				},
 			});
 		} else {
 			console.warn('Numero ordine non valido.');
-			this.totale = 0;
+			this.error = true; // Imposta l'errore a true per gestire la visualizzazione
 		}
 	}
 
@@ -99,11 +101,11 @@ export class PagamentoTavoloPage implements OnInit {
 		);
 	}
 
-	private async mostraToast(messaggio: string) {
+	private async mostraToast(messaggio: string, color: string) {
 		const toast = await this.toastController.create({
 			message: messaggio,
 			duration: 3000,
-			color: 'warning',
+			color: color,
 			position: 'bottom',
 		});
 		await toast.present();
@@ -113,33 +115,44 @@ export class PagamentoTavoloPage implements OnInit {
 	 * Funzione che reindirizza alla schermata di pagamento alla cassa
 	 */
 	pagaCassa() {
-		const data = this.getFormattedDate();
-		const numeroOrdine = this.tavoloService.getNumeroOrdine();
-		if (numeroOrdine !== null && numeroOrdine !== undefined) {
-			this.pagamentoService
-				.ordinePay(
-					numeroOrdine,
-					this.tavoloService.getTotaleQuery(),
-					data
-				)
-				.subscribe({
-					next: (response) => {
-						console.log('Pagamento a cassa effettuato:', response);
-						this.router.navigate(['/pagamento-cassa']);
-					},
-					error: (err) => {
-						console.error(
-							'Errore durante il pagamento alla cassa:',
-							err
-						);
-						this.mostraToast(
-							'Ordine già pagato o errore nel pagamento.'
-						);
-					},
-				});
+		if (!this.error) {
+			const data = this.getFormattedDate();
+			const numeroOrdine = this.tavoloService.getNumeroOrdine();
+			if (numeroOrdine !== null && numeroOrdine !== undefined) {
+				this.pagamentoService
+					.ordinePay(
+						numeroOrdine,
+						this.tavoloService.getTotaleQuery(),
+						data
+					)
+					.subscribe({
+						next: (response) => {
+							console.log(
+								'Pagamento a cassa effettuato:',
+								response
+							);
+							this.router.navigate(['/pagamento-cassa']);
+						},
+						error: (err) => {
+							if (err.status === 400) {
+								this.mostraToast(
+									'Ordine già pagato.',
+									'warning'
+								);
+							} else {
+								this.mostraToast(
+									'Errore: riprova più tardi.',
+									'danger'
+								);
+							}
+						},
+					});
+			} else {
+				console.error('Numero ordine non valido per il pagamento.');
+				this.mostraToast('Numero ordine non valido.', 'danger');
+			}
 		} else {
-			console.error('Numero ordine non valido per il pagamento.');
-			this.mostraToast('Numero ordine non valido.');
+			this.mostraToast('Errore: per favore riprova più tardi.', 'danger');
 		}
 	}
 
@@ -147,36 +160,45 @@ export class PagamentoTavoloPage implements OnInit {
 	 * Funzione che reindirizza alla schermata di pagamento con carta
 	 */
 	pagaCarta() {
-		const data = this.getFormattedDate();
-		const numeroOrdine = this.tavoloService.getNumeroOrdine();
-		if (numeroOrdine !== null && numeroOrdine !== undefined) {
-			this.pagamentoService
-				.ordinePay(
-					numeroOrdine,
-					this.tavoloService.getTotaleQuery(),
-					data
-				)
-				.subscribe({
-					next: (response) => {
-						console.log(
-							'Pagamento con carta effettuato:',
-							response
-						);
-						this.router.navigate(['/pagamento-carta']);
-					},
-					error: (err) => {
-						console.error(
-							'Errore durante il pagamento con carta:',
-							err
-						);
-						this.mostraToast(
-							'Ordine già pagato o errore nel pagamento.'
-						);
-					},
-				});
+		if (this.error) {
+			this.mostraToast('Errore: per favore riprova più tardi.', 'danger');
+			return;
 		} else {
-			console.error('Numero ordine non valido per il pagamento.');
-			this.mostraToast('Numero ordine non valido.');
+			const data = this.getFormattedDate();
+			const numeroOrdine = this.tavoloService.getNumeroOrdine();
+			if (numeroOrdine !== null && numeroOrdine !== undefined) {
+				this.pagamentoService
+					.ordinePay(
+						numeroOrdine,
+						this.tavoloService.getTotaleQuery(),
+						data
+					)
+					.subscribe({
+						next: (response) => {
+							console.log(
+								'Pagamento con carta effettuato:',
+								response
+							);
+							this.router.navigate(['/pagamento-carta']);
+						},
+						error: (err) => {
+							if (err.status === 400) {
+								this.mostraToast(
+									'Ordine già pagato.',
+									'warning'
+								);
+							} else {
+								this.mostraToast(
+									'Errore: riprova più tardi.',
+									'danger'
+								);
+							}
+						},
+					});
+			} else {
+				console.error('Numero ordine non valido per il pagamento.');
+				this.mostraToast('Numero ordine non valido.', 'danger');
+			}
 		}
 	}
 }

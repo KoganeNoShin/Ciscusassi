@@ -43,6 +43,8 @@ export class VisualizzaOrdiniPage implements OnInit {
 	// Variabile per memorizzare l'interval che aggiorna gli ordini
 	private intervalAggiornamento: any;
 
+	error = false; // Variabile per gestire gli errori
+
 	// Observable di array di prodotti ordinati, inizialmente vuoto
 	prodotti$: Observable<OrdProdEstended[]> = of([]);
 
@@ -67,7 +69,7 @@ export class VisualizzaOrdiniPage implements OnInit {
 				}
 			}
 
-			if (count == 0) {
+			if (count == 0 && this.error == false) {
 				this.prodotti$.subscribe((prodottiArray) => {
 					this.tavoloService.setOrdini(prodottiArray);
 				});
@@ -131,6 +133,7 @@ export class VisualizzaOrdiniPage implements OnInit {
 			);
 
 			if (!response.success || !response.data) {
+				this.error = true;
 				this.prodotti$ = of([]);
 			} else {
 				const prodotti = Array.isArray(response.data)
@@ -139,9 +142,11 @@ export class VisualizzaOrdiniPage implements OnInit {
 						)
 					: [response.data];
 				this.prodotti$ = of(prodotti);
+				this.error = false; // Resetta l'errore se i dati sono stati caricati correttamente
 			}
 		} catch (error) {
 			console.error('Errore nel caricamento prodotti', error);
+			this.error = true; // Imposta l'errore a true per gestire la visualizzazione
 			this.prodotti$ = of([]);
 		} finally {
 			this.isLoading = false;

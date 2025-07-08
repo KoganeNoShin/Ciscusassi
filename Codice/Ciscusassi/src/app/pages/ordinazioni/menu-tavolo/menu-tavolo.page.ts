@@ -55,7 +55,7 @@ export class MenuTavoloPage implements OnInit {
 	totale: number = 0;
 
 	/** Variabile che specifica l'id dell'ordine da parte del cliente */
-	numeroOrdine: number = 0;
+	numeroOrdine: number | null = null;
 
 	/** Id di riferimento al pagamento, una volta effettuato */
 	haPagato: number | null = null;
@@ -77,8 +77,7 @@ export class MenuTavoloPage implements OnInit {
 	async ngViewWillEnter() {
 		this.nomeUtente = this.servizioAutenticazione.getUsername();
 		this.numeroTavolo = this.tavoloService.getNumeroTavolo();
-		this.numeroOrdine = 0;
-		this.tavoloService.setNumeroOrdine(0);
+
 
 		const prenotazione = this.tavoloService.getPrenotazione();
 
@@ -94,13 +93,11 @@ export class MenuTavoloPage implements OnInit {
 					this.numeroOrdine = response.data.id_ordine;
 					this.tavoloService.setNumeroOrdine(response.data.id_ordine);
 				} else {
-					this.numeroOrdine = 0;
-					this.tavoloService.setNumeroOrdine(0);
+
 				}
 			} catch (error) {
 				console.error('Errore nel recupero del numero ordine:', error);
-				this.numeroOrdine = 0;
-				this.tavoloService.setNumeroOrdine(0);
+
 			}
 		}
 	}
@@ -121,8 +118,7 @@ export class MenuTavoloPage implements OnInit {
 				}
 			} catch (error) {
 				console.error('Errore nel recupero del numero ordine:', error);
-				this.numeroOrdine = 0;
-				this.tavoloService.setNumeroOrdine(0);
+
 			}
 		}
 		if (this.haPagato != null) {
@@ -172,20 +168,19 @@ export class MenuTavoloPage implements OnInit {
 				}
 			}
 
-			if (this.numeroOrdine === 0) {
+			// Preparo i prodotti da inviare
+			if (this.numeroOrdine === null) {
 				return this.mostraToast(
-					'Non hai ancora effettuato ordini!',
-					'warning'
+					'Errore: numero ordine non valido.',
+					'danger'
 				);
 			}
-
-			// Preparo i prodotti da inviare
 			const ordProdInputArray: OrdProdInput[] =
 				this.prodottiNelCarrello.map((prodotto) => ({
 					is_romana: false,
 					stato: 'non-in-lavorazione',
 					ref_prodotto: prodotto.id_prodotto,
-					ref_ordine: this.numeroOrdine,
+					ref_ordine: this.numeroOrdine as number,
 				}));
 
 			// Invio prodotti all'ordine
@@ -228,22 +223,34 @@ export class MenuTavoloPage implements OnInit {
 					this.haPagato = response.data.ref_pagamento;
 				}
 			} catch (error) {
-				console.error('Errore nel recupero del numero ordine:', error);
-				this.numeroOrdine = 0;
-				this.tavoloService.setNumeroOrdine(0);
+				if (error && typeof error === 'object' && 'status' in error) {
+					if ((error as any).status === 400) {
+						// Se l'ordine non esiste, resetto il numero ordine
+						return this.mostraToast(
+							'Non hai ancora effettuato ordini!',
+							'warning'
+						);
+					}
+				}
+
+				// Altri errori generici
+				return this.mostraToast(
+					'Errore nel recupero degli ordini.',
+					'danger'
+				);
 			}
-		}
-		if (this.numeroOrdine === 0) {
-			return this.mostraToast(
-				'Non hai ancora effettuato ordini!',
-				'warning'
-			);
 		}
 
 		if (this.haPagato != null) {
 			return this.mostraToast('Hai già pagato!', 'warning');
 		} else {
 			try {
+				if (this.numeroOrdine === null) {
+					return this.mostraToast(
+						'Errore: numero ordine non valido.',
+						'danger'
+					);
+				}
 				const response: any = await firstValueFrom(
 					this.ordineService.getProdottiOrdinatiByNumeroOrdine(
 						this.numeroOrdine
@@ -252,8 +259,8 @@ export class MenuTavoloPage implements OnInit {
 
 				if (!response.success || !response.data) {
 					return this.mostraToast(
-						'Non hai ancora effettuato ordini',
-						'warning'
+						'Errore nel recupero degli ordini.',
+						'danger'
 					);
 				}
 
