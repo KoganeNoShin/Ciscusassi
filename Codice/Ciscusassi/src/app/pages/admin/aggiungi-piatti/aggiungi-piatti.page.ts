@@ -103,6 +103,16 @@ export class AggiungiPiattiPage implements OnInit {
 			});
 			await toast.present();
 			return;
+		} else if (this.costo<0){
+			const toast = await this.toastCtrl.create({
+				message:
+					'Il costo non può essere negativo',
+				duration: 2500,
+				color: 'danger',
+				position: 'bottom',
+			});
+			await toast.present();
+			return;
 		}
 
 		// Prepara l'oggetto ProdottoInput da inviare al servizio
@@ -137,8 +147,7 @@ export class AggiungiPiattiPage implements OnInit {
 				console.error('❌ Errore HTTP:', err);
 				const toast = await this.toastCtrl.create({
 					message:
-						'❌ Errore durante la creazione del piatto. Dettagli: ' +
-						(err?.message || 'Errore sconosciuto'),
+						'❌ Errore durante la creazione del piatto.',
 					duration: 3000,
 					color: 'danger',
 					position: 'bottom',
