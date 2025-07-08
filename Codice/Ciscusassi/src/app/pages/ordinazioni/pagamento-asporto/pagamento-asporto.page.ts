@@ -11,7 +11,7 @@ import {
 	IonText,
 	IonButton,
 } from '@ionic/angular/standalone';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 // Import dei servizi e interfacce personalizzate
 import { CarrelloService } from 'src/app/core/services/carrello.service';
@@ -20,6 +20,7 @@ import { AsportoService } from 'src/app/core/services/asporto.service';
 import { AsportoInput } from 'src/app/core/interfaces/Asporto';
 import { FilialeAsportoService } from 'src/app/core/services/filiale-asporto.service';
 import { FilialeRecord } from 'src/app/core/interfaces/Filiale';
+import { ToastController } from '@ionic/angular';
 
 /**
  * Questa pagina serve per pagare l'importo dovuto e reindirizzare alla pagina di ringraziamenti
@@ -76,7 +77,9 @@ export class PagamentoAsportoPage implements OnInit {
 	constructor(
 		private servizioCarrello: CarrelloService,
 		private servizioAsporto: AsportoService,
-		private filialeAsportoService: FilialeAsportoService
+		private filialeAsportoService: FilialeAsportoService,
+		private router: Router,
+		private toastContreller: ToastController
 	) {}
 
 	// Hook eseguito all'inizializzazione del componente
@@ -148,10 +151,25 @@ export class PagamentoAsportoPage implements OnInit {
 		this.servizioAsporto.addProdotto(this.nuovoAsporto).subscribe({
 			next: () => {
 				console.log('Ordine aggiunto con successo');
+				this.router.navigate(['/ringraziamenti-asporto']);
 			},
 			error: (err) => {
 				console.error('Errore aggiungendo ordine:', err);
+				this.presentToast("Errore: impossibile pagare, riprova più tardi!", 'danger');
 			},
 		});
+	}
+	async presentToast(
+		message: string,
+		color: 'success' | 'danger' | 'warning'
+	) {
+		// Mostra un toast di notifica con messaggio e colore specificati
+		const toast = await this.toastContreller.create({
+			message,
+			duration: 2500,
+			position: 'bottom',
+			color,
+		});
+		toast.present();
 	}
 }
