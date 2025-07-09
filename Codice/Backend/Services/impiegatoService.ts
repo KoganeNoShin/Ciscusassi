@@ -1,4 +1,5 @@
 import { MailTemplateData, MailOptions } from '../Interfaces/Email';
+import Cliente from '../Models/cliente';
 import Impiegato, {
 	ImpiegatoData,
 	ImpiegatoInput,
@@ -29,6 +30,17 @@ class ImpiegatoService {
 		ref_filiale: number
 	): Promise<number> {
 		try {
+			//Check email
+			const existingCliente = await Cliente.getByEmail(email);
+			const existingImpiegato = await Impiegato.getByEmail(email);
+			if (existingCliente || existingImpiegato) {
+				console.error(
+					'❌ [ClienteService Error] register: email già registrata:',
+					email
+				);
+				throw new Error('Email già registrata');
+			}
+
 			// Genera una password sicura
 			const NotHashedPassword = AuthService.generateRandomPassword();
 			const password = await AuthService.hashPassword(NotHashedPassword);

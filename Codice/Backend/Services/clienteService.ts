@@ -1,6 +1,7 @@
 import EmailService from './emailService';
 import Cliente, { ClienteData } from '../Models/cliente';
 import AuthService from './authService';
+import Impiegato from '../Models/impiegato';
 
 class ClienteService {
 	/**
@@ -13,8 +14,9 @@ class ClienteService {
 	 * @throws Errore se l'email è già registrata.
 	 */
 	static async register(input: ClienteData): Promise<number> {
-		const existing = await Cliente.getByEmail(input.email);
-		if (existing) {
+		const existingCliente = await Cliente.getByEmail(input.email);
+		const existingImpiegato = await Impiegato.getByEmail(input.email);
+		if (existingCliente || existingImpiegato) {
 			console.error(
 				'❌ [ClienteService Error] register: email già registrata:',
 				input.email
@@ -105,8 +107,9 @@ class ClienteService {
 		newEmail: string
 	): Promise<Boolean> {
 		try {
-			const existing = await Cliente.getByEmail(newEmail);
-			if (existing) {
+			const existingCliente = await Cliente.getByEmail(newEmail);
+			const existingImpiegato = await Impiegato.getByEmail(newEmail);
+			if (existingCliente || existingImpiegato) {
 				console.error(
 					'❌ [ClienteService Error] aggiornaEmail: email già registrata:',
 					newEmail
