@@ -23,7 +23,7 @@ import {
 	IonItem,
 	IonSpinner,
 } from '@ionic/angular/standalone';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
 import { firstValueFrom } from 'rxjs';
 
@@ -66,7 +66,8 @@ export class OrdinaAlTavoloPage implements OnInit {
 		private prenotazioneService: PrenotazioneService, // Servizio per la verifica OTP
 		private toastController: ToastController, // Mostra notifiche all'utente
 		private router: Router, // Gestione navigazione
-		private tavoloService: TavoloService // Gestione dati tavolo corrente
+		private tavoloService: TavoloService, // Gestione dati tavolo corrente
+		private route: ActivatedRoute
 	) {}
 
 	ngOnInit() {
@@ -85,16 +86,25 @@ export class OrdinaAlTavoloPage implements OnInit {
 		this.ngViewWillEnter(); // Reset al caricamento
 	}
 
-	pipo() {
-		console.log(this.otp);
-	}
-
 	// Metodo chiamato ogni volta che si entra nella pagina (reset stato)
 	ngViewWillEnter() {
 		this.tavoloService.svuotaTavolo(); // Reset dati tavolo
 		this.numeroTorretta = null;
 		this.otp = '';
 		this.formOTP.reset();
+
+		if (
+			this.route.snapshot.queryParamMap.get('n_torretta') != null &&
+			this.route.snapshot.queryParamMap.get('n_torretta') != undefined
+		) {
+			this.numeroTorretta = parseInt(
+				this.route.snapshot.queryParamMap.get('n_torretta')!
+			);
+		}
+
+		if (this.numeroTorretta) {
+			this.formOTP.patchValue({ numeroTorretta: this.numeroTorretta });
+		}
 	}
 
 	// Mostra un messaggio all'utente con Ionic Toast

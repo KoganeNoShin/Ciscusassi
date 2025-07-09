@@ -19,6 +19,9 @@ import { jwtDecode } from 'jwt-decode';
 	providedIn: 'root',
 })
 export class AuthenticationService {
+	private readyPromise: Promise<void>;
+	private resolveReady!: () => void;
+
 	private apiURL = environment.apiURL;
 
 	private idUtenteSubject = new BehaviorSubject<number>(-1);
@@ -42,8 +45,11 @@ export class AuthenticationService {
 	constructor(
 		private http: HttpClient,
 		private storage: Storage
-	) {}
-
+	) {
+		this.readyPromise = new Promise((resolve) => {
+			this.resolveReady = resolve;
+		});
+	}
 	// ----- Funzioni ------
 
 	login(credentials: Credentials): Observable<ApiResponse<LoginRecord>> {
@@ -130,6 +136,8 @@ export class AuthenticationService {
 	}
 
 	async init(): Promise<void> {
+		await this.storage.create();
+
 		await Promise.all([
 			this.loadIdUtente(),
 			this.loadToken(),
@@ -138,6 +146,13 @@ export class AuthenticationService {
 			this.loadAvatar(),
 			this.loadFiliale(),
 		]);
+
+		this.resolveReady();
+	}
+
+	/** Blocco esplicito: usato dal Guard per aspettare che tutto sia pronto */
+	async ready(): Promise<void> {
+		return this.readyPromise;
 	}
 
 	async logout(): Promise<void> {

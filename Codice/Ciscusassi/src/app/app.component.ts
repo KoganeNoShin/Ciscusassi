@@ -95,7 +95,6 @@ export class AppComponent {
 
 	// Inizializza lo storage e il servizio di autenticazione
 	async initStorage() {
-		await this.storage.create(); // Prepara lo storage (richiesto da Ionic Storage)
 		await this.authService.init(); // Inizializza la sessione di autenticazione (es. token persistente)
 	}
 }
