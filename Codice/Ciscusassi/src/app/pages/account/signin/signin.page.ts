@@ -101,13 +101,9 @@ export class SigninPage implements OnInit {
 				cognome: ['', [Validators.required, , Validators.minLength(2)]],
 				dataNascita: [
 					'',
-					[
-						Validators.required,
-						Validators.pattern(
-							'^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'
-						),
-					],
+					[Validators.required, this.validDateOfBirthValidator()],
 				],
+
 				email: [
 					'',
 					[
@@ -249,5 +245,26 @@ export class SigninPage implements OnInit {
 			color,
 		});
 		toast.present();
+	}
+
+	validDateOfBirthValidator(): ValidatorFn {
+		return (control: AbstractControl): ValidationErrors | null => {
+			const value = control.value;
+			if (!value) return null;
+
+			const inputDate = new Date(value);
+			const today = new Date();
+			const minDate = new Date('1900-01-01');
+
+			if (inputDate < minDate) {
+				return { tooOld: true }; // prima del 1900
+			}
+
+			if (inputDate > today) {
+				return { futureDate: true }; // dopo oggi
+			}
+
+			return null;
+		};
 	}
 }
