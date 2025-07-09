@@ -4,6 +4,13 @@
 -->
 <ion-content [fullscreen]="true" color="bianco">
 	<div class="page-wrapper ion-padding ion-text-center">
+
+		@if (loading){
+			<div class="caricamento">
+			<ion-spinner name="circular"></ion-spinner>
+			</div>
+		}
+		@if (!loading){
 		@if (!error){
 		<ion-grid
 			fixed
@@ -70,5 +77,6 @@
 		</h1>
 	</ion-text>
 	}
+}
 	</div>
 </ion-content>

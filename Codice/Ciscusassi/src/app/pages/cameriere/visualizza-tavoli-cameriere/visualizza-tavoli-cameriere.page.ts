@@ -19,6 +19,7 @@ import {
 	IonItem,
 	IonInput,
 	IonIcon,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 
 import { AlertController } from '@ionic/angular/standalone';
@@ -45,6 +46,7 @@ import { add } from 'ionicons/icons';
 	standalone: true,
 
 	imports: [
+		IonSpinner,
 		IonInput,
 
 		IonItem,
@@ -109,6 +111,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	private intervalApertura: any;
 	error: boolean = false;
+	loading: boolean = false;
 
 	constructor(
 		private toastController: ToastController,
@@ -240,6 +243,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 			return;
 		}
 
+		this.loading = true;
 		try {
 			const resp = await lastValueFrom(
 				this.prenotazioneService.getPrenotazioniDelGiornoFiliale()
@@ -304,6 +308,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 			this.tavoliFiltrati = [];
 		}
+		this.loading = false;
 	}
 
 	// 	Formattta una data ISO in una stringa HH:mm per visualizzare l'orario della prenotazione.
@@ -511,7 +516,10 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 				);
 
 				if (e?.status === 400) {
-					await this.presentToast('Errore: numero carta non trovato', 'danger');
+					await this.presentToast(
+						'Errore: numero carta non trovato',
+						'danger'
+					);
 				}
 
 				return;

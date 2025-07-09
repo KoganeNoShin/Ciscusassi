@@ -8,6 +8,7 @@ import {
 	IonChip,
 	ToastController,
 	IonText,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
@@ -21,6 +22,7 @@ import { Router } from '@angular/router';
 	styleUrls: ['./visualizza-tavoli-chef.page.scss'],
 	standalone: true,
 	imports: [
+		IonSpinner,
 		IonContent,
 		IonGrid,
 		IonRow,
@@ -53,6 +55,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 	private intervalApertura: any;
 
 	error: boolean = false;
+	loading: boolean = false;
 
 	constructor(
 		private toastController: ToastController,
@@ -78,7 +81,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		this.ionViewWillLeave();
 	}
 
-	ionViewWillLeave(){
+	ionViewWillLeave() {
 		if (this.intervalTavoli) {
 			clearInterval(this.intervalTavoli);
 		}
@@ -124,6 +127,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 	}
 
 	async loadTavoli() {
+		this.loading = true;
 		try {
 			const filiale = this.authService.getFiliale();
 			const response = await lastValueFrom(
@@ -184,6 +188,7 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 			this.tavoliFiltrati = [];
 			this.error = true;
 		}
+		this.loading = false;
 	}
 
 	formattaOrario(dataOra: string): string {

@@ -14,6 +14,7 @@ import {
 	IonButton,
 	IonText,
 	ToastController,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 
 import { TavoloService } from 'src/app/core/services/tavolo.service';
@@ -31,6 +32,7 @@ import { PagamentoService } from 'src/app/core/services/pagamento.service';
 	styleUrls: ['./pagamento-tavolo.page.scss'],
 	standalone: true,
 	imports: [
+		IonSpinner,
 		RouterModule,
 		IonText,
 		IonButton,
@@ -49,6 +51,7 @@ export class PagamentoTavoloPage implements OnInit {
 	prodotti: OrdProdEstended[] = [];
 	codice: string = '';
 	error: boolean = false; // Variabile per gestire gli errori
+	loading: boolean = true;
 
 	constructor(
 		private router: Router,
@@ -73,16 +76,19 @@ export class PagamentoTavoloPage implements OnInit {
 					this.totale = response?.totale ?? 0;
 					this.tavoloService.setTotaleQuery(response?.totale ?? 0);
 					console.log('Totale ricevuto e assegnato:', this.totale);
-					this.error = false; // Resetta l'errore se i dati sono stati caricati correttamente
+					this.error = false;
+					this.loading = false;
 				},
 				error: (err) => {
 					console.error('Errore durante la chiamata:', err);
-					this.error = true; // Imposta l'errore a true per gestire la visualizzazione
+					this.error = true;
+					this.loading = false;
 				},
 			});
 		} else {
 			console.warn('Numero ordine non valido.');
-			this.error = true; // Imposta l'errore a true per gestire la visualizzazione
+			this.error = true;
+			this.loading = false;
 		}
 	}
 

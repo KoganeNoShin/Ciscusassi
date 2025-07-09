@@ -47,6 +47,11 @@
 			</ion-chip>
 		</div>
 
+		@if (loading){
+			<div class="caricamento">
+			<ion-spinner name="circular"></ion-spinner>
+			</div>
+		}
 		@if(tavoliFiltrati.length === 0){
 		<ion-text class="ion-text-center">
 			<h4 class="text-color-gray text-color-nero">
