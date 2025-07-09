@@ -102,11 +102,46 @@
 	opacity: 40%;
 }
 
-.campoForm {
-	border-radius: 12px;
-	overflow: hidden;
-	--background: var(--ion-color-bianconeve);
-	--border-radius: 12px;
+// Classe del wrapper dei campi del form
+.form-fields {
+	gap: 1.5em; // Spaziamo i componenti
+
+	height: fit-content; // Deve essere grande solo quanto basta
+	display: flex; // Mettiamo flex per jestire la giustificazione e l'allineamento
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	// Classe del singolo campo
+	.campo-form {
+		max-width: 600px; // Limitiamo larghezza sia massima
+		min-width: 350px; // che minima
+		width: 60%; // Prendiamo solo l'80% della grandezza disponibile
+		border-radius: 12px; // Arrotondiamo i campi
+		--border-radius: 12px;
+		overflow: hidden; // non mostriamo l'overflow
+		--background: var(--ion-color-bianconeve);
+		color: black;
+		--color: black;
+	}
+
+	// Se il campo è stato selezionato (e quindi c'è l'errore)
+	.touched::part(native) {
+		padding-bottom: 5px; // Allora mettiamo un po' di padding per fare leggere meglio l'errore
+	}
+
+	ion-input,
+	ion-textarea,
+	ion-select {
+		--background: var(--ion-color-bianconeve);
+		--color: black;
+		border-radius: 10px;
+		width: 100%;
+	}
+
+	ion-button {
+		width: 70%;
+	}
 }
 
 /* =======================
@@ -136,14 +171,6 @@ ion-modal::part(content) {
 	width: 90vw;
 	max-width: 400px;
 	box-shadow: 2px 10px 20px rgba(0, 0, 0, 0.15);
-}
-
-.popup-container h2 {
-	font-size: 20px;
-	margin-bottom: 16px;
-	font-family: 'Georgia', serif;
-	font-style: italic;
-	color: #222;
 }
 
 .popup-container .scelte {
@@ -186,29 +213,8 @@ ion-modal::part(content) {
 	background-color: #ddd;
 }
 
-/* Input fields (numero + nome) */
-.popup-container input[type='number'],
-.popup-container input[type='text'] {
-	width: 100%;
-	padding: 10px;
-	font-size: 16px;
-	margin-bottom: 16px;
-	border-radius: 6px;
-	border: 1px solid #ccc;
-	background-color: #fff;
-	color: #000;
-	font-family: 'Georgia', serif;
-	font-style: italic;
-}
-
-/* Pulsanti */
-.popup-container .popup-footer ion-button {
-	margin-bottom: 8px;
-}
-
 .caricamento {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+	display: flex;
+	justify-content: center;
+	width: 100%;
 }
-

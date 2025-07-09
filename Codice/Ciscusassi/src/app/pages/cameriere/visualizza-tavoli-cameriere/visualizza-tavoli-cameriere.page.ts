@@ -2,7 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
-import { FormsModule } from '@angular/forms';
+import {
+	FormsModule,
+	ReactiveFormsModule,
+	FormGroup,
+	FormBuilder,
+	Validators,
+} from '@angular/forms';
 
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 
@@ -48,30 +54,20 @@ import { add } from 'ionicons/icons';
 	imports: [
 		IonSpinner,
 		IonInput,
-
 		IonItem,
-
 		IonText,
-
 		IonContent,
-
 		IonGrid,
-
 		IonRow,
-
 		IonCol,
-
 		IonButton,
-
 		IonModal,
-
 		IonChip,
-
 		CommonModule,
-
 		FormsModule,
-
 		IonIcon,
+		FormsModule,
+		ReactiveFormsModule,
 	],
 })
 export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
@@ -113,16 +109,15 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	error: boolean = false;
 	loading: boolean = false;
 
+	formPrenotaLoco: FormGroup = new FormGroup({});
+
 	constructor(
 		private toastController: ToastController,
-
 		private prenotazioneService: PrenotazioneService,
-
 		private router: Router,
-
 		private tavoloService: TavoloService,
-
-		private AlertController: AlertController
+		private AlertController: AlertController,
+		private fb: FormBuilder
 	) {
 		addIcons({ add });
 	}
@@ -145,6 +140,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 			30000
 		);
+
+		this.formPrenotaLoco = this.fb.group({
+			numPersone: ['', [Validators.required, Validators.min(1)]],
+			codCarta: ['', [Validators.required, Validators.min(1)]],
+		});
+		this.formPrenotaLoco.reset();
 	}
 
 	// Pulisce gli intervalli temporali per evitare memory leak quando il componente viene distrutto.
