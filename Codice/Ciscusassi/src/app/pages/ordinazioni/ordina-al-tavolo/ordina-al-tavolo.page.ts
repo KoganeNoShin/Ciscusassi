@@ -1,7 +1,12 @@
-// Import principali da Angular e Ionic
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+	FormsModule,
+	ReactiveFormsModule,
+	FormGroup,
+	FormBuilder,
+	Validators,
+} from '@angular/forms';
 import { TavoloService } from 'src/app/core/services/tavolo.service';
 import {
 	IonButton,
@@ -16,6 +21,7 @@ import {
 	IonInputOtp,
 	ToastController,
 	IonItem,
+	IonSpinner,
 } from '@ionic/angular/standalone';
 import { RouterModule, Router } from '@angular/router';
 import { PrenotazioneService } from 'src/app/core/services/prenotazione.service';
@@ -27,6 +33,7 @@ import { firstValueFrom } from 'rxjs';
 	styleUrls: ['./ordina-al-tavolo.page.scss'],
 	standalone: true,
 	imports: [
+		IonSpinner,
 		IonItem,
 		IonInput,
 		IonContent,
@@ -41,14 +48,21 @@ import { firstValueFrom } from 'rxjs';
 		IonButton,
 		RouterModule,
 		IonInputOtp,
+		CommonModule,
+		FormsModule,
+		ReactiveFormsModule,
 	],
 })
 export class OrdinaAlTavoloPage implements OnInit {
 	// Campi legati al form
 	otp: string = '';
 	numeroTorretta: number | null = null;
+	formOTP: FormGroup = new FormGroup({});
+
+	isLoading: boolean = false;
 
 	constructor(
+		private fb: FormBuilder,
 		private prenotazioneService: PrenotazioneService, // Servizio per la verifica OTP
 		private toastController: ToastController, // Mostra notifiche all'utente
 		private router: Router, // Gestione navigazione
@@ -56,7 +70,23 @@ export class OrdinaAlTavoloPage implements OnInit {
 	) {}
 
 	ngOnInit() {
+		this.formOTP = this.fb.group({
+			idTorretta: ['', [Validators.required, Validators.min(0)]],
+			otp: [
+				'',
+				[
+					Validators.required,
+					Validators.minLength(6),
+					Validators.maxLength(6),
+					Validators.pattern(/^[a-zA-Z0-9]*$/), // Nessun simbolo, solo lettere/numeri
+				],
+			],
+		});
 		this.ngViewWillEnter(); // Reset al caricamento
+	}
+
+	pipo() {
+		console.log(this.otp);
 	}
 
 	// Metodo chiamato ogni volta che si entra nella pagina (reset stato)
@@ -64,6 +94,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 		this.tavoloService.svuotaTavolo(); // Reset dati tavolo
 		this.numeroTorretta = null;
 		this.otp = '';
+		this.formOTP.reset();
 	}
 
 	// Mostra un messaggio all'utente con Ionic Toast
@@ -78,8 +109,9 @@ export class OrdinaAlTavoloPage implements OnInit {
 	}
 
 	// Metodo eseguito quando si clicca sul pulsante "PROCEDI"
-	async onProceedClick() {
+	async onSubmit() {
 		const refTorretta = this.numeroTorretta;
+		this.isLoading = true;
 
 		// ✅ Validazione base dei campi obbligatori
 		if (
@@ -92,6 +124,8 @@ export class OrdinaAlTavoloPage implements OnInit {
 				'Compila tutti i campi prima di procedere',
 				'warning'
 			);
+			this.isLoading = false;
+
 			return;
 		}
 
@@ -102,6 +136,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 				'Formato OTP non valido. Inserisci un codice alfanumerico di 6 caratteri.',
 				'warning'
 			);
+			this.isLoading = false;
 			return;
 		}
 
@@ -150,6 +185,8 @@ export class OrdinaAlTavoloPage implements OnInit {
 				'Nessuna fascia oraria valida trovata per l’orario attuale.',
 				'warning'
 			);
+			this.isLoading = false;
+
 			return;
 		}
 
@@ -173,6 +210,7 @@ export class OrdinaAlTavoloPage implements OnInit {
 				// ❌ OTP errato o scaduto
 				const msg = otpRes.message || 'OTP non valido. Riprova.';
 				this.presentToast(msg, 'danger');
+				this.isLoading = false;
 			}
 		} catch (error) {
 			// ❌ Errore durante la chiamata al backend
@@ -181,9 +219,11 @@ export class OrdinaAlTavoloPage implements OnInit {
 				'danger'
 			);
 			console.error(error);
+			this.isLoading = false;
 		}
 
 		// Debug: log dell'orario di prenotazione usato
 		console.log(dataOraPrenotazione);
+		this.isLoading = false;
 	}
 }
