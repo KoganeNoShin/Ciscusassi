@@ -13,8 +13,6 @@ import { Credentials } from '../interfaces/Credentials';
 
 import { Storage } from '@ionic/storage-angular';
 
-import { firstValueFrom } from 'rxjs';
-
 import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
