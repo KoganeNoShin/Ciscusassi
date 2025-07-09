@@ -132,10 +132,10 @@ export class OrdinaAsportoPage implements OnInit {
 			return;
 		}
 
-		// Chiamata a TomTom Search API
+		// Chiamata a TomTom Search API a Palermo, raggio di 160 km dal centro 
 		const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(
 			indirizzo
-		)}.json?key=${this.chiaveTomTom}&limit=2&countrySet=IT`;
+		)}.json?key=${this.chiaveTomTom}&limit=2&countrySet=IT&lat=38.1157&lon=13.3615&radius=160000`;
 
 		this.http.get<any>(url).subscribe((risposta) => {
 			const risultati = risposta.results || [];
