@@ -72,7 +72,7 @@ class PrenotazioneService {
                 throw new Error(`L'orario selezionato (${orarioPrenotato}) non è valido. Orari disponibili: ${orariValidi.join(', ')}`);
             }
 
-			if(dataPrenotazione < adesso){
+			if(dataPrenotazione <= adesso){
                 throw new Error('La data e ora della prenotazione non può essere nel passato');
             }
 

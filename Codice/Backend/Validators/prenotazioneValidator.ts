@@ -111,10 +111,10 @@ export const prenotazioneInputLocoValidator = [
 			 */
 			.custom(async (numeroCarta: number, { req }) => {
 				const prenotazioni = await Prenotazione.getByCliente(numeroCarta);
-				const adesso = new Date();
+				const dataPrenotazione = new Date(req.body.data_ora_prenotazione);
 
 				const prenotazioniFuturo = prenotazioni.filter(
-					(p) => new Date(p.data_ora_prenotazione) >= adesso
+					(p) => new Date(p.data_ora_prenotazione) >= dataPrenotazione
 				);
 
 				if (prenotazioniFuturo.length > 0) {
