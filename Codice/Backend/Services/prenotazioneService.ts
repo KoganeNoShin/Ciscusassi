@@ -346,8 +346,7 @@ class PrenotazioneService {
 			const dataOraPrenotazione = PrenotazioneService.getFasciaOrariaCorrente();
 			if (!dataOraPrenotazione) return null;
 
-			const otp = await Prenotazione.getOTPByIdTorrettaAndData(id, dataOraPrenotazione);
-			return otp;
+			return await Prenotazione.getOTPByIdTorrettaAndData(id, dataOraPrenotazione);
 		} catch (error) {
 			console.error("❌ [PrenotazioneService] Errore durante il recupero dell'OTP:", error);
 			throw error;
