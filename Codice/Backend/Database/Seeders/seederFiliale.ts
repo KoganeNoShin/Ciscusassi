@@ -59,7 +59,7 @@ export async function generateFiliale(): Promise<string> {
 		];
 		let hashedPassword = await AuthService.hashPassword(password);
 		for (let i = 0; i < numeroFiliali; i++) {
-			const num_tavoli = faker.number.int({ min: 10, max: 30 });
+			const num_tavoli = 9;
 			let id_filiale;
 			try {
 				id_filiale = await filiale.create({
