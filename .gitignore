@@ -8,3 +8,5 @@ Codice/Ciscusassi/src/environments/environment.ts
 .env
 Codice/Backend/database.sqlite-journal
 /.idea
+.vscode/settings.json
+.vscode/arduino.json

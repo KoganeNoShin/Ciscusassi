@@ -3,5 +3,23 @@
 	"editor.formatOnSave": true,
 	"prettier.tabWidth": 4,
 	"prettier.useTabs": true,
-	"compile-hero.disable-compile-files-on-did-save-code": true
+	"compile-hero.disable-compile-files-on-did-save-code": true,
+	"files.associations": {
+		"array": "cpp",
+		"chrono": "cpp",
+		"deque": "cpp",
+		"format": "cpp",
+		"forward_list": "cpp",
+		"initializer_list": "cpp",
+		"list": "cpp",
+		"ranges": "cpp",
+		"regex": "cpp",
+		"span": "cpp",
+		"vector": "cpp",
+		"xhash": "cpp",
+		"xstring": "cpp",
+		"xtree": "cpp",
+		"xutility": "cpp",
+		"ostream": "cpp"
+	}
 }

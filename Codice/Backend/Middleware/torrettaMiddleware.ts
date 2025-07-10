@@ -12,19 +12,35 @@ import { Request, Response, NextFunction } from 'express';
  */
 
 // Validazione della variabile d’ambiente all’avvio
+const TORRETTA_HEADER = process.env.TORRETTA_HEADER;
 const TORRETTA_SECRET = process.env.TORRETTA_SECRET;
-if (!TORRETTA_SECRET) {
-	throw new Error('❌ Variabile d\'ambiente TORRETTA_SECRET mancante. Definiscila nel file .env');
+
+if (!TORRETTA_HEADER) {
+	throw new Error(
+		"❌ Variabile d'ambiente TORRETTA_HEADER mancante. Definiscila nel file .env"
+	);
 }
 
-const torrettaAuthMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-	const authHeader = req.header('x-torretta-auth');
+if (!TORRETTA_SECRET) {
+	throw new Error(
+		"❌ Variabile d'ambiente TORRETTA_SECRET mancante. Definiscila nel file .env"
+	);
+}
+
+const torrettaAuthMiddleware = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+): void => {
+	const authHeader = req.header(TORRETTA_HEADER);
 
 	if (!authHeader || authHeader !== TORRETTA_SECRET) {
-		console.warn('🔒 [TORRETTA AUTH] Accesso negato: header non valido o mancante');
+		console.warn(
+			'🔒 [TORRETTA AUTH] Accesso negato: header non valido o mancante'
+		);
 		res.status(403).json({
 			success: false,
-			message: 'Accesso negato: torretta non autorizzata'
+			message: 'Accesso negato: torretta non autorizzata',
 		});
 		return;
 	}
