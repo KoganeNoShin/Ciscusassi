@@ -73,7 +73,7 @@ export class VisualizzaOrdiniPage implements OnInit {
 				this.prodotti$.subscribe((prodottiArray) => {
 					this.tavoloService.setOrdini(prodottiArray);
 				});
-				this.router.navigate(['/pagamento-tavolo']); // Naviga alla pagina di pagamento tavolo
+  				this.router.navigate(['/pagamento-tavolo'], { replaceUrl: true });// Naviga alla pagina di pagamento tavolo
 			} else {
 				this.toastController
 					.create({

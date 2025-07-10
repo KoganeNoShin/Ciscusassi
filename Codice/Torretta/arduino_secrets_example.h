@@ -1,8 +1,8 @@
-#define SECRET_SSID ""
-#define SECRET_USERNAME "" // Es: mario.rossi03
-#define SECRET_PASSWORD ""
-#define SECRET_IS_EAP true
-#define SECRET_ID_TAVOLO ""
-#define SECRET_HEADER_NAME ""
-#define SECRET_HEADER_VALUE ""
-#define SECRET_OTP ""
+#define SECRET_SSID "" // Il nome della rete alla quale connettersi
+#define SECRET_USERNAME "" // In caso di EAP inserire l'username
+#define SECRET_PASSWORD "" // La password della rete
+#define SECRET_IS_EAP true // Se la rete è EAP (Extensible Authentication Protocol)
+#define SECRET_ID_TAVOLO "" // L'ID del tavolo alla quale è associata la torretta
+#define SECRET_HEADER_NAME "" // Il nome dell'header di autenticazione 
+#define SECRET_HEADER_VALUE "" // Il valore dell'header di autenticazione
+#define SECRET_OTP "" // La rotta espsota dal backend per ricevere l'OTP

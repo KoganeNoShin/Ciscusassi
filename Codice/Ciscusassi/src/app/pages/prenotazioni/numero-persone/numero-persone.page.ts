@@ -200,7 +200,7 @@ export class NumeroPersonePage implements OnInit {
 			// Salva il numero e naviga alla prossima schermata
 			this.prenotazioneService.setNumeroPosti(numeroPersone);
 			console.log('Hai scelto il numero di persone:', numeroPersone);
-			this.router.navigate(['/scelta-giorno']);
+			this.router.navigateByUrl('/scelta-giorno', { replaceUrl: true });
 		}
 	}
 }

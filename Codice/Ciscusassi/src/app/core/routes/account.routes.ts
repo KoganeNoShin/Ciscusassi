@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '../guards/auth.guard';
 
 export const accountRoutes: Routes = [
 	{
@@ -34,7 +35,7 @@ export const accountRoutes: Routes = [
 		loadComponent: () =>
 			import('../../pages/account/dati-account/dati-account.page').then(
 				(m) => m.DatiAccountPage
-			),
+			), canActivate: [authGuard(['amministratore', 'cameriere', 'chef', 'cliente'])]
 	},
 	{
 		path: 'cambia-password',

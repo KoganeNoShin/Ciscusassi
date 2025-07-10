@@ -78,38 +78,41 @@
 						</ion-label>
 					</ion-item>
 				</ion-menu-toggle>
-				<ion-menu-toggle>
-					<ion-item
-						[routerLink]="['/ordina-ora']"
-						class="menu-item bg-color-transparent"
-					>
-						<ion-icon
-							aria-hidden="true"
-							name="restaurant"
-							slot="start"
-							class="text-color-bianco"
-						/>
-						<ion-label class="text-color-bianco"
-							>ORDINA ORA</ion-label
+
+				@if (role == 'cliente' || role == '') {
+					<ion-menu-toggle>
+						<ion-item
+							[routerLink]="['/ordina-ora']"
+							class="menu-item bg-color-transparent"
 						>
-					</ion-item>
-				</ion-menu-toggle>
-				<ion-menu-toggle>
-					<ion-item
-						[routerLink]="['/prenota']"
-						class="menu-item bg-color-transparent"
-					>
-						<ion-icon
-							aria-hidden="true"
-							name="calendar"
-							slot="start"
-							class="text-color-bianco"
-						/>
-						<ion-label class="text-color-bianco"
-							>PRENOTA
-						</ion-label>
-					</ion-item>
-				</ion-menu-toggle>
+							<ion-icon
+								aria-hidden="true"
+								name="restaurant"
+								slot="start"
+								class="text-color-bianco"
+							/>
+							<ion-label class="text-color-bianco"
+								>ORDINA ORA</ion-label
+							>
+						</ion-item>
+					</ion-menu-toggle>
+					<ion-menu-toggle>
+						<ion-item
+							[routerLink]="['/prenota']"
+							class="menu-item bg-color-transparent"
+						>
+							<ion-icon
+								aria-hidden="true"
+								name="calendar"
+								slot="start"
+								class="text-color-bianco"
+							/>
+							<ion-label class="text-color-bianco"
+								>PRENOTA
+							</ion-label>
+						</ion-item>
+					</ion-menu-toggle>
+				}
 			</ion-list>
 		</ion-content>
 	</ion-menu>

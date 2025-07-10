@@ -166,7 +166,7 @@ export class PrenotaPage implements OnInit {
 	// Salva l'ID della filiale scelta e reindirizza alla selezione del numero di persone
 	salvaFiliale(id_filiale: number): void {
 		this.prenotazioneService.setFilialeId(id_filiale);
-		this.router.navigate(['/numero-persone']);
+		this.router.navigateByUrl('/numero-persone');
 	}
 
 	// Mostra un alert per confermare la cancellazione della prenotazione

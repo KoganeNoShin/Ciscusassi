@@ -12,28 +12,56 @@ ion-card {
 	gap: 1rem;
 }
 
-.campoForm {
-	border-radius: 12px;
-	overflow: hidden;
-	--background: white;
-	--border-radius: 12px;
-}
+// Classe del wrapper dei campi del form
+.form-fields {
+	min-width: 500px; // Almeno 500 px di larghezza
+	gap: 1.5em; // Spaziamo i componenti
 
-ion-item.campoForm {
-	width: 100%;
-	max-width: 500px; // opzionale, per non farlo diventare troppo largo su desktop
-	margin: 0 auto;
-}
+	height: fit-content; // Deve essere grande solo quanto basta
+	display: flex; // Mettiamo flex per jestire la giustificazione e l'allineamento
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 
-ion-item.campoForm::part(native) {
-	margin-right: 0;
-	--inner-padding-end: 0;
+	// Classe del singolo campo
+	.campo-form {
+		max-width: 600px; // Limitiamo larghezza sia massima
+		min-width: 400px; // che minima
+		width: 90%; // Prendiamo solo l'80% della grandezza disponibile
+		border-radius: 12px; // Arrotondiamo i campi
+		--border-radius: 12px;
+		overflow: hidden; // non mostriamo l'overflow
+		--background: white;
+		color: black;
+		--color: black;
+	}
+
+	// Se il campo è stato selezionato (e quindi c'è l'errore)
+	.touched::part(native) {
+		padding-bottom: 5px; // Allora mettiamo un po' di padding per fare leggere meglio l'errore
+	}
 }
 
 ion-button {
 	width: 80%;
 }
 
+ion-item.campo-form::part(native) {
+	--inner-padding-end: 0;
+}
+
 ion-input-otp {
 	width: 100%;
+}
+
+ion-input-otp.invalid-otp::part(native) {
+	--border-color: var(--ion-color-danger);
+	--highlight-color-focused: var(--ion-color-danger);
+	box-shadow: 0 0 0 1px var(--ion-color-danger);
+}
+
+ion-input-otp.valid-otp::part(native) {
+	--border-color: var(--ion-color-success);
+	--highlight-color-focused: var(--ion-color-success);
+	box-shadow: 0 0 0 1px var(--ion-color-success);
 }

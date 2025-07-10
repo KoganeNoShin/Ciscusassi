@@ -159,9 +159,11 @@ export class SigninPage implements OnInit {
 					.subscribe({
 						next: (response) => this.handleResponse(response),
 						error: (err) => {
-							if (err.status === 400) {
-								this.errorMsg = 'Email già registrata';
-							} else {
+							if (err.status === 400 && err.path == "data_nascita") {
+								this.errorMsg = 'Devi essere maggiorenne!';
+							} else if (err.status === 400){
+								this.errorMsg = 'Email già registrata!';
+							}else {
 								this.errorMsg =
 									'Errore durante la registrazione.';
 							}
@@ -264,7 +266,34 @@ export class SigninPage implements OnInit {
 				return { futureDate: true }; // dopo oggi
 			}
 
+			// Calcola la data di oggi meno 18 anni
+			const eighteenYearsAgo = new Date(
+				today.getFullYear() - 18,
+				today.getMonth(),
+				today.getDate()
+			);
+
+			if (inputDate > eighteenYearsAgo) {
+				return { underage: true }; // non è maggiorenne
+			}
+
 			return null;
 		};
+	}
+	get dataNascitaErrorText(): string {
+		const control = this.formRegistrazione.get('dataNascita');
+		if (control?.touched && control.errors) {
+			if (control.errors['tooOld']) {
+				return 'Data troppo vecchia: inserisci una data successiva al 01/01/1900.';
+			}
+			if (control.errors['futureDate']) {
+				return 'La data non può essere nel futuro.';
+			}
+			if (control.errors['underage']) {
+				return 'Devi essere maggiorenne.';
+			}
+			return 'Data di nascita non valida.'; // fallback
+		}
+		return '';
 	}
 }

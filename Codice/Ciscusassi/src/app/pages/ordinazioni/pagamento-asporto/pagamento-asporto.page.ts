@@ -151,7 +151,7 @@ export class PagamentoAsportoPage implements OnInit {
 		this.servizioAsporto.addProdotto(this.nuovoAsporto).subscribe({
 			next: () => {
 				console.log('Ordine aggiunto con successo');
-				this.router.navigate(['/ringraziamenti-asporto']);
+				this.router.navigateByUrl('/ringraziamenti-asporto', { replaceUrl: true });
 			},
 			error: (err) => {
 				console.error('Errore aggiungendo ordine:', err);

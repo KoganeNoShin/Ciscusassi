@@ -257,7 +257,8 @@ export class MenuTavoloPage implements OnInit {
 					);
 				}
 
-				this.router.navigate(['/visualizza-ordini']);
+  				this.router.navigate(['/visualizza-ordini'], { replaceUrl: true });
+
 			} catch (error) {
 				console.error(error);
 				return this.mostraToast(

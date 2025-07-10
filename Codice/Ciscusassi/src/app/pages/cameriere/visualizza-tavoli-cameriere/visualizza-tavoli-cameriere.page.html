@@ -1,6 +1,6 @@
 <ion-content
 	[fullscreen]="true"
-	class="ion-justify-content-center ion-align-items-center "
+	class="ion-justify-content-center ion-align-items-center"
 	color="bianco"
 >
 	<div class="page-wrapper">
@@ -82,11 +82,10 @@
 		</div>
 
 		@if (loading){
-			<div class="caricamento">
+		<div class="caricamento">
 			<ion-spinner name="circular"></ion-spinner>
-			</div>
-		}
-		@if(tavoliFiltrati.length === 0){
+		</div>
+		} @if(tavoliFiltrati.length === 0){
 
 		<ion-text class="ion-text-center">
 			<h4 class="text-color-gray text-color-nero">
@@ -149,10 +148,17 @@
 			[isOpen]="showModaleInserimentoPrenotazione"
 			(didDismiss)="chiudiModaleInserimentoPrenotazione()"
 			[backdropDismiss]="false"
+			class="modal"
 		>
 			<ng-template>
 				<div class="popup-container">
-					<h2>QUANTE PERSONE SI DEVONO SEDERE?</h2>
+					<ion-text class="ion-text-center">
+						<h5 class="text-color-nero">
+							<b> QUANTE PERSONE SI DEVONO SEDERE? </b>
+						</h5>
+					</ion-text>
+
+					<br />
 
 					<!-- Scelte rapide -->
 
@@ -173,38 +179,55 @@
 
 					<!-- Input manuale -->
 
-					<div class="popup-footer">
-						<ion-item class="campoForm ion-padding-horizontal">
+					<form
+						[formGroup]="formPrenotaLoco"
+						(ngSubmit)="confermaModaleInserimentoPrenotazione()"
+						class="popup-footer form-fields"
+					>
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formPrenotaLoco.get('numPersone')?.touched"
+						>
 							<ion-input
+								formControlName="numPersone"
 								type="number"
-								label="N persone"
-								color="rosso"
+								label="Numero persone"
+								color="arancione"
 								placeholder="Inserisci il numero di persone..."
-								labelPlacement="stacked"
+								labelPlacement="floating"
+								color="arancione"
+								errorText="Il numero di persone prenotate deve essere > 0"
 								[(ngModel)]="inputManuale"
 								(input)="onInputChange()"
 								min="1"
-							></ion-input>
+							/>
 						</ion-item>
 
 						<!-- Input refCliente -->
 
-						<ion-item class="campoForm ion-padding-horizontal">
+						<ion-item
+							lines="none"
+							class="campo-form ion-padding-horizontal"
+							[class.touched]="formPrenotaLoco.get('codCarta')?.touched"
+						>
 							<ion-input
 								type="number"
+								formControlName="codCarta"
 								label="Codice carta"
-								labelPlacement="stacked"
-								color="rosso"
+								labelPlacement="floating"
+								color="arancione"
 								placeholder="Inserisci il codice della carta..."
+								errorText="Il codice della carta del cliente deve essere > 0"
 								[(ngModel)]="refClienteInput"
 								min="0"
-							></ion-input>
+							/>
 						</ion-item>
 
 						<ion-button
 							color="verdechiaro"
 							expand="block"
-							(click)="confermaModaleInserimentoPrenotazione()"
+							type="submit"
 							[disabled]="((!personeSelezionate || personeSelezionate < 1) || (!refClienteInput || refClienteInput < 1)) && ((!inputManuale || inputManuale < 1) || (!refClienteInput || refClienteInput < 1))  "
 						>
 							CONFERMA
@@ -217,7 +240,7 @@
 						>
 							ESCI
 						</ion-button>
-					</div>
+					</form>
 				</div>
 			</ng-template>
 		</ion-modal>

@@ -6,7 +6,8 @@
 export const environment = {
 	production: false,
 	tomtomApiKey: 'LA_TUA_API_KEY_TOMTOM',
-	apiURL: 'URL_DELL_API',
+	apiURL: 'http://localhost:4200',
+	CORS_ORIGIN: 'http://localhost:8100',
 	JWT_SECRET_KEY: 'PASSWORD DEL TOKEN',
 };
 
