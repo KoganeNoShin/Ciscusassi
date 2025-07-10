@@ -97,6 +97,13 @@ export class OrdinaAsportoPage implements OnInit {
 		});
 	}
 
+	/**
+	 * Avvia la ricerca degli indirizzi tramite geocoding.
+	 *
+	 * Se il testo inserito dall'utente (`testoRicerca`) contiene almeno 4 caratteri,
+	 * viene attivata la ricerca inviando il testo al soggetto `soggettoRicerca`.
+	 * Altrimenti, la lista degli indirizzi trovati (`indirizziTrovati`) viene svuotata.
+	 */
 	avviaRicerca() {
 		// Avvia geocoding solo se l'input ha almeno 4 caratteri
 		if (this.testoRicerca.length > 3) {
@@ -106,6 +113,16 @@ export class OrdinaAsportoPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Elabora la risposta ricevuta contenente l'elenco delle filiali.
+	 *
+	 * Se la risposta è valida, salva l'elenco delle filiali e, se sono disponibili
+	 * delle coordinate selezionate, cerca la filiale più vicina. In caso di errore,
+	 * imposta lo stato di errore e registra il messaggio di errore nella console.
+	 * Alla fine dell'elaborazione, aggiorna lo stato di caricamento.
+	 *
+	 * @param risposta Oggetto contenente il risultato della richiesta delle filiali.
+	 */
 	private async processaRispostaFiliali(risposta: any) {
 		// Salva filiali e trova quella più vicina se coordinate disponibili
 		if (risposta.success && risposta.data) {
@@ -123,6 +140,15 @@ export class OrdinaAsportoPage implements OnInit {
 		this.caricamentoInCorso = false;
 	}
 
+	/**
+	 * Esegue il geocoding di un indirizzo utilizzando la TomTom Search API.
+	 *
+	 * - Se l'indirizzo è già stato cercato in precedenza (cache), restituisce i risultati memorizzati.
+	 * - Altrimenti, effettua una richiesta HTTP alla TomTom Search API per ottenere i risultati di geocoding.
+	 * - I risultati trovati vengono salvati sia nella proprietà `indirizziTrovati` che nella cache locale.
+	 *
+	 * @param indirizzo L'indirizzo da geocodificare.
+	 */
 	private eseguiGeocoding(indirizzo: string) {
 		// Controlla se la ricerca è già stata fatta (cache)
 		const chiaveRicerca = indirizzo.trim().toLowerCase();
@@ -144,6 +170,15 @@ export class OrdinaAsportoPage implements OnInit {
 		});
 	}
 
+	/**
+	 * Calcola il percorso tra una destinazione e un'origine utilizzando la Routing API di TomTom.
+	 *
+	 * @param destinazione - Oggetto contenente la latitudine e longitudine della destinazione.
+	 * @param origine - Oggetto contenente la latitudine e longitudine dell'origine.
+	 * @param traffico - (Opzionale) Se true, considera le condizioni di traffico nel calcolo del percorso. Default: false.
+	 * @returns Una Promise che restituisce un oggetto con la distanza (in metri) e il tempo di percorrenza (in secondi).
+	 * @throws Errore se i dati del percorso non sono disponibili.
+	 */
 	private ottieniDatiPercorso(
 		destinazione: { lat: number; lon: number },
 		origine: { lat: number; lon: number },
@@ -170,7 +205,18 @@ export class OrdinaAsportoPage implements OnInit {
 			});
 	}
 
-	// Trova la filiale con il tempo di percorrenza minore
+	/**
+	 * Trova la filiale più vicina al punto di partenza specificato, calcolando sia la distanza che il tempo di viaggio.
+	 *
+	 * @param puntoPartenza - Oggetto contenente le coordinate di partenza (latitudine e longitudine).
+	 *
+	 * @remarks
+	 * - Se l'elenco delle filiali (`elencoFiliali`) è vuoto o non definito, i dati relativi alla filiale più vicina vengono azzerati.
+	 * - Per ogni filiale, viene calcolato il percorso dal punto di partenza utilizzando il metodo `ottieniDatiPercorso`.
+	 * - Tra tutte le filiali con percorso valido, viene selezionata quella con il tempo di viaggio minimo.
+	 * - I dati della filiale più vicina, la distanza in metri e il tempo di viaggio (in secondi e minuti) vengono salvati nelle rispettive proprietà della classe.
+	 * - In caso di errore nel calcolo del percorso per una filiale, l'errore viene loggato e la filiale viene ignorata.
+	 */
 	async trovaFilialePiuVicina(puntoPartenza: { lat: number; lon: number }) {
 		if (!this.elencoFiliali || this.elencoFiliali.length === 0) {
 			this.filialePiuVicino = null;
@@ -240,7 +286,17 @@ export class OrdinaAsportoPage implements OnInit {
 		this.tempoViaggioMinuti = Math.round(tempoMinimo / 60);
 	}
 
-	// Quando l'utente seleziona un indirizzo dai suggerimenti
+	/**
+	 * Seleziona un indirizzo tra quelli trovati e aggiorna le proprietà correlate.
+	 *
+	 * @param indirizzo Oggetto contenente le informazioni dell'indirizzo selezionato, inclusi address e position.
+	 *
+	 * Imposta:
+	 * - `indirizzoSelezionato` con l'indirizzo formattato (freeformAddress o streetName).
+	 * - `coordinateSelezionate` con latitudine e longitudine dell'indirizzo.
+	 * - `testoRicerca` con l'indirizzo selezionato.
+	 * - Svuota la lista `indirizziTrovati`.
+	 */
 	selezionaIndirizzo(indirizzo: any) {
 		this.indirizzoSelezionato =
 			indirizzo.address.freeformAddress ||
@@ -254,7 +310,28 @@ export class OrdinaAsportoPage implements OnInit {
 		this.indirizziTrovati = [];
 	}
 
-	// Imposta la filiale e gestisce la logica di navigazione in base al tempo di consegna
+	/**
+	 * Gestisce la selezione della filiale più vicina e verifica se è idonea per l’asporto.
+	 *
+	 * Questa funzione viene chiamata quando l’utente seleziona un indirizzo.
+	 * Se viene trovata una filiale vicina, salva le informazioni sulla filiale nel servizio
+	 * `servizioFilialeAsporto`, controlla la distanza in minuti, e decide se reindirizzare
+	 * l’utente alla pagina del menu d’asporto oppure mostrare un messaggio di avviso.
+	 *
+	 * @async
+	 * @returns {Promise<void>} - Non restituisce alcun valore, ma può produrre side-effect
+	 * come navigazione o visualizzazione di toast.
+	 *
+	 * @remarks
+	 * - Se la filiale più vicina (`this.filialePiuVicino`) è presente, viene salvata
+	 *   nel servizio con il tempo di viaggio stimato e l'indirizzo selezionato.
+	 * - Se il tempo di viaggio è inferiore a 30 minuti, l’utente viene reindirizzato
+	 *   alla pagina `/menu-asporto`.
+	 * - Se il tempo di viaggio è superiore o uguale a 30 minuti, viene mostrato un
+	 *   messaggio di avviso tramite un toast.
+	 * - Se non è stata trovata o selezionata alcuna filiale, viene registrato un
+	 *   messaggio nel log di console.
+	 */
 	async svuotaCampo() {
 		if (this.filialePiuVicino) {
 			console.log(
@@ -279,7 +356,9 @@ export class OrdinaAsportoPage implements OnInit {
 				this.tempoViaggioMinuti !== null
 			) {
 				if (this.tempoViaggioMinuti < 30) {
-					this.router.navigateByUrl('/menu-asporto', { replaceUrl: true });
+					this.router.navigateByUrl('/menu-asporto', {
+						replaceUrl: true,
+					});
 				} else {
 					const toast = await this.toastController.create({
 						message:
@@ -296,7 +375,25 @@ export class OrdinaAsportoPage implements OnInit {
 		}
 	}
 
-	// Metodo principale chiamato quando l’utente preme "Procedi"
+	/**
+	 * Procede con il flusso di selezione della filiale per l'asporto.
+	 *
+	 * Questa funzione viene invocata dopo che l'utente ha selezionato un indirizzo e intende continuare.
+	 * Verifica la presenza di errori nella richiesta, gestisce il caricamento, cerca la filiale più vicina
+	 * rispetto alle coordinate selezionate, svuota il carrello, pulisce gli input e avvia il flusso
+	 * di navigazione o mostra un messaggio d’errore sulla distanza.
+	 *
+	 * @async
+	 * @returns {Promise<void>} - Non restituisce alcun valore, ma modifica lo stato dell’app e può navigare o mostrare toast.
+	 *
+	 * @remarks
+	 * - Se `erroreNellaRichiesta` è `true`, viene mostrato un messaggio di errore e il flusso viene interrotto.
+	 * - Se sono presenti `coordinateSelezionate`, viene cercata la filiale più vicina tramite `trovaFilialePiuVicina`,
+	 *   e il carrello viene svuotato.
+	 * - Vengono poi resettati i campi di input (`testoRicerca`, `indirizziTrovati`, `coordinateSelezionate`).
+	 * - Infine, viene invocata `svuotaCampo()` per gestire la logica di navigazione o eventuale messaggio d’avviso
+	 *   in base alla distanza della filiale.
+	 */
 	async procedi() {
 		if (this.erroreNellaRichiesta) {
 			const toast = await this.toastController.create({

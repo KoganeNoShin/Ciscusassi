@@ -62,9 +62,18 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 
 	ngViewWillEnter() {
 		this.loadOrdini();
-		this.intervalAggiornamento = setInterval(() => this.loadOrdini(), 30000);
+		this.intervalAggiornamento = setInterval(
+			() => this.loadOrdini(),
+			30000
+		);
 	}
 
+	/**
+	 * Carica gli ordini relativi al tavolo corrente.
+	 * Recupera il tavolo dal servizio dedicato, verifica la presenza della prenotazione,
+	 * quindi chiama il servizio ordini per ottenere i prodotti ordinati associati a quella prenotazione.
+	 * Aggiorna lo stato di caricamento e gestisce eventuali errori.
+	 */
 	loadOrdini() {
 		this.isLoading = true;
 
@@ -114,6 +123,12 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Segna come completata la lavorazione di tutti i prodotti attualmente in stato 'in-lavorazione'.
+	 * Per ciascun prodotto in lavorazione, invia una richiesta al backend per aggiornare lo stato a 'in-consegna'.
+	 * Al completamento dell'aggiornamento di ciascun prodotto, ricarica la lista degli ordini per mantenere i dati aggiornati.
+	 * Gestisce eventuali errori di aggiornamento loggandoli sulla console.
+	 */
 	fineLavorazioneTotale() {
 		const prodottiList = this.prodottiSubject.getValue();
 
@@ -134,6 +149,12 @@ export class VisualizzaOrdiniChefPage implements OnInit, OnDestroy {
 			});
 	}
 
+	/**
+	 * Avvia la lavorazione di tutti i prodotti attualmente in stato 'non-in-lavorazione'.
+	 * Per ciascun prodotto in questo stato, invia una richiesta al backend per aggiornare lo stato a 'in-lavorazione'.
+	 * Dopo ogni aggiornamento di stato, ricarica la lista degli ordini per mantenere i dati sincronizzati.
+	 * In caso di errore durante l'aggiornamento, l'errore viene stampato in console.
+	 */
 	iniziaLavorazioneTotale() {
 		const prodottiList = this.prodottiSubject.getValue();
 

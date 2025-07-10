@@ -67,7 +67,11 @@ export class AggiungiFilialiPage implements OnInit {
 		private router: NavController
 	) {}
 
-	// Metodo eseguito all'inizializzazione del componente
+	/**
+	 * Metodo chiamato all'inizializzazione del componente.
+	 * Recupera i dati della filiale passati tramite stato di navigazione (se presenti)
+	 * e li assegna ai relativi campi del form.
+	 */
 	ngOnInit() {
 		// Recupera eventuali dati di filiale passati tramite stato di navigazione
 		const navigation = window.history.state;
@@ -80,7 +84,14 @@ export class AggiungiFilialiPage implements OnInit {
 		}
 	}
 
-	// Gestisce la selezione di un file immagine e lo converte in base64
+	/**
+	 * Gestisce la selezione di un file immagine da input file.
+	 * Verifica che il file selezionato sia un'immagine valida.
+	 * Converte il file immagine in una stringa Base64 e la assegna a `immagineBase64`.
+	 * In caso di file non valido mostra un toast di avviso.
+	 *
+	 * @param event Evento di input file contenente il file selezionato.
+	 */
 	onFileSelected(event: any): void {
 		const file = event.target.files[0];
 		if (file && file.type.startsWith('image/')) {
@@ -94,7 +105,13 @@ export class AggiungiFilialiPage implements OnInit {
 		}
 	}
 
-	// Gestisce l'input sull'indirizzo per mostrare suggerimenti (autocomplete)
+	/**
+	 * Gestisce l'input sul campo indirizzo con debounce.
+	 * Se l'indirizzo è lungo almeno 3 caratteri, esegue una chiamata
+	 * all'API di TomTom per ottenere suggerimenti di indirizzi.
+	 * Popola l'array `suggestions` con le possibili vie trovate.
+	 * In caso di errore API, svuota i suggerimenti e logga l'errore.
+	 */
 	onIndirizzoInput(): void {
 		clearTimeout(this.timeout);
 		this.timeout = setTimeout(() => {
@@ -121,13 +138,26 @@ export class AggiungiFilialiPage implements OnInit {
 		}, 300); // debounce di 300ms per limitare le chiamate API
 	}
 
-	// Seleziona un suggerimento e aggiorna il campo indirizzo, svuotando i suggerimenti
+	/**
+	 * Imposta l'indirizzo selezionato dall'utente tra i suggerimenti
+	 * e svuota la lista dei suggerimenti.
+	 *
+	 * @param s - La stringa dell'indirizzo selezionato
+	 */
 	selectSuggestion(s: string): void {
 		this.indirizzo = s;
 		this.suggestions = [];
 	}
 
-	// Crea una nuova filiale, validando i dati e ottenendo coordinate tramite geocoding
+	/**
+	 * Crea una nuova filiale verificando i campi obbligatori,
+	 * ottenendo le coordinate geografiche tramite geocodifica
+	 * e inviando i dati al servizio backend.
+	 * In caso di successo resetta il form e naviga alla pagina di gestione filiali.
+	 * Mostra toast di conferma o errore in base all'esito delle operazioni.
+	 *
+	 * @returns Promise<void>
+	 */
 	async creaFiliale(): Promise<void> {
 		// Controlla che tutti i campi obbligatori siano compilati
 		if (
@@ -190,7 +220,14 @@ export class AggiungiFilialiPage implements OnInit {
 		}
 	}
 
-	// Funzione per ottenere le coordinate geografiche tramite TomTom API
+	/**
+	 * Effettua la geocodifica di un indirizzo tramite API TomTom,
+	 * restituendo le coordinate geografiche (latitudine e longitudine).
+	 * Se non si trovano risultati o in caso di errore, ritorna null.
+	 *
+	 * @param address - Indirizzo da geocodificare
+	 * @returns Promise con oggetto contenente latitudine e longitudine oppure null
+	 */
 	async geocodificaIndirizzo(
 		address: string
 	): Promise<{ lat: number; lon: number } | null> {
@@ -212,7 +249,12 @@ export class AggiungiFilialiPage implements OnInit {
 		}
 	}
 
-	// Mostra un toast con messaggio e colore specifico
+	/**
+	 * Mostra un toast con un messaggio e colore specificato.
+	 *
+	 * @param message - Testo da visualizzare nel toast
+	 * @param color - Colore del toast, può essere 'success', 'danger' o 'warning'
+	 */
 	async presentToast(
 		message: string,
 		color: 'success' | 'danger' | 'warning'
@@ -226,7 +268,11 @@ export class AggiungiFilialiPage implements OnInit {
 		toast.present();
 	}
 
-	// Resetta tutti i campi del form e svuota i suggerimenti
+	/**
+	 * Resetta i campi del form azzerando i valori di indirizzo, comune,
+	 * numero di tavoli, immagine in base64 e le eventuali suggerimenti
+	 * di completamento automatico.
+	 */
 	resetForm(): void {
 		this.indirizzo = '';
 		this.comune = '';

@@ -76,6 +76,19 @@ export class ModificaPiattiPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Modifica un piatto esistente inviando i dati aggiornati al backend.
+	 *
+	 * @remarks
+	 * - Verifica che l'ID del prodotto (`p.id_prodotto`) sia presente prima di procedere.
+	 * - Prepara un oggetto `ProdottoInput` con i dati aggiornati presi da `this.p`.
+	 * - Effettua la chiamata al servizio `updateProdotto` con l'ID e l'input.
+	 * - In caso di successo, mostra un toast di conferma e torna indietro nella navigazione.
+	 * - In caso di errore, mostra un toast di errore con il messaggio ricevuto o uno generico.
+	 * - Gestisce anche eventuali errori di comunicazione con il server mostrando un toast.
+	 *
+	 * @returns {Promise<void>}
+	 */
 	async modificaPiatto() {
 		// Verifica che l'id del prodotto sia presente
 		if (!this.p.id_prodotto) {
@@ -130,6 +143,18 @@ export class ModificaPiattiPage implements OnInit {
 			});
 	}
 
+	/**
+	 * Gestisce la selezione di un file immagine da input HTML,
+	 * ne verifica il tipo e ne converte il contenuto in formato Base64.
+	 *
+	 * @param event - Evento di selezione file proveniente dall'input file.
+	 *
+	 * @remarks
+	 * - Verifica che il file selezionato sia di tipo immagine.
+	 * - Utilizza FileReader per leggere il contenuto come DataURL (Base64).
+	 * - Assegna il risultato Base64 alla proprietà `immagine` dell'oggetto `p`.
+	 * - Se il file non è un'immagine valida, mostra un alert all'utente.
+	 */
 	onFileSelected(event: any): void {
 		// Gestisce la selezione del file immagine e converte in base64
 		const file = event.target.files[0];

@@ -38,6 +38,18 @@ export class AmministrazionePage implements OnInit {
 
 	constructor(private authService: AuthenticationService) {}
 
+	/**
+	 * Inizializza il componente sottoscrivendosi allo stream `username$` del servizio di autenticazione.
+	 *
+	 * Recupera il nome utente corrente e lo assegna alla proprietà `username` ogni volta che cambia.
+	 *
+	 * @returns {void}
+	 *
+	 * @remarks
+	 * - Questo metodo viene eseguito automaticamente all’inizializzazione del componente.
+	 * - Utilizza `username$`, uno stream `Observable<string>` che emette il nome utente autenticato.
+	 * - La sottoscrizione consente di mantenere sincronizzata la proprietà `username` con i dati del servizio.
+	 */
 	ngOnInit() {
 		this.authService.username$.subscribe((username) => {
 			this.username = username;

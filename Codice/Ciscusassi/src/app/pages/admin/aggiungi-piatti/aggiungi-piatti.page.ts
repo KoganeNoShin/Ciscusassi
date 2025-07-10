@@ -73,7 +73,17 @@ export class AggiungiPiattiPage implements OnInit {
 
 	ngOnInit(): void {}
 
-	// Gestisce la selezione del file immagine e ne salva il contenuto in base64
+	/**
+	 * Gestisce la selezione di un file da input e ne converte il contenuto in formato Base64.
+	 *
+	 * @param {any} event - Evento generato dalla selezione del file, contenente il file scelto.
+	 *
+	 * @returns {void}
+	 *
+	 * @remarks
+	 * - Converte il primo file selezionato in stringa Base64 e lo assegna a `immagineBase64`.
+	 * - Utilizza un oggetto FileReader per la conversione asincrona.
+	 */
 	onFileSelected(event: any): void {
 		const file = event.target.files[0];
 		if (file) {
@@ -85,7 +95,19 @@ export class AggiungiPiattiPage implements OnInit {
 		}
 	}
 
-	// Crea un nuovo piatto dopo aver validato i campi
+	/**
+	 * Crea un nuovo piatto dopo aver validato i campi obbligatori.
+	 *
+	 * @returns {Promise<void>} Una Promise che si risolve al completamento dell'operazione.
+	 *
+	 * @remarks
+	 * - Verifica che i campi obbligatori (nome, categoria, costo, immagine) siano compilati correttamente.
+	 * - Mostra messaggi toast di avviso in caso di campi mancanti o costo negativo.
+	 * - Costruisce un oggetto `ProdottoInput` da inviare al servizio per la creazione del piatto.
+	 * - Effettua la chiamata al servizio `prodottoService.addProdotto` e gestisce la risposta.
+	 * - In caso di successo, mostra un toast di conferma, resetta il form e torna indietro nella navigazione.
+	 * - In caso di errore, mostra un toast di errore e logga l'errore sulla console.
+	 */
 	async creaPiatto(): Promise<void> {
 		// Verifica che i campi obbligatori siano compilati
 		if (
@@ -103,10 +125,9 @@ export class AggiungiPiattiPage implements OnInit {
 			});
 			await toast.present();
 			return;
-		} else if (this.costo<0){
+		} else if (this.costo < 0) {
 			const toast = await this.toastCtrl.create({
-				message:
-					'Il costo non può essere negativo',
+				message: 'Il costo non può essere negativo',
 				duration: 2500,
 				color: 'danger',
 				position: 'bottom',
@@ -146,8 +167,7 @@ export class AggiungiPiattiPage implements OnInit {
 			error: async (err) => {
 				console.error('❌ Errore HTTP:', err);
 				const toast = await this.toastCtrl.create({
-					message:
-						'❌ Errore durante la creazione del piatto.',
+					message: '❌ Errore durante la creazione del piatto.',
 					duration: 3000,
 					color: 'danger',
 					position: 'bottom',
@@ -157,7 +177,16 @@ export class AggiungiPiattiPage implements OnInit {
 		});
 	}
 
-	// Resetta i campi del form ai valori iniziali
+	/**
+	 * Resetta i campi del form di creazione/modifica del piatto ai valori predefiniti.
+	 *
+	 * @returns {void}
+	 *
+	 * @remarks
+	 * - Imposta a stringa vuota i campi `nome`, `descrizione`, `categoria` e `immagineBase64`.
+	 * - Imposta a `null` il campo `costo`.
+	 * - Imposta a `false` il flag `isPiattoGiorno`.
+	 */
 	resetForm(): void {
 		this.nome = '';
 		this.descrizione = '';

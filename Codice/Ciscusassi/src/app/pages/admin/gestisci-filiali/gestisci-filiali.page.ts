@@ -60,6 +60,15 @@ export class GestisciFilialiPage implements OnInit {
 		addIcons({ add });
 	}
 
+	/**
+	 * Metodo Angular chiamato all'inizializzazione del componente.
+	 *
+	 * @remarks
+	 * - Recupera tutte le filiali tramite il servizio `filialeService`.
+	 * - Gestisce la risposta con il metodo `handleResponse`.
+	 * - In caso di errore, registra l'errore in console,
+	 *   disabilita lo stato di caricamento e imposta il flag di errore.
+	 */
 	ngOnInit() {
 		// Recupera tutte le filiali da backend
 		this.filialeService.GetSedi().subscribe({
@@ -72,7 +81,17 @@ export class GestisciFilialiPage implements OnInit {
 		});
 	}
 
-	// Gestisce la risposta dal server al caricamento filiali
+	/**
+	 * Gestisce la risposta ricevuta dal backend per il caricamento delle filiali.
+	 *
+	 * @param response - La risposta ricevuta, di tipo `ApiResponse` contenente un array di `FilialeRecord`.
+	 *
+	 * @remarks
+	 * - Se la risposta è positiva e contiene dati, aggiorna la lista delle filiali
+	 *   e applica i filtri correnti.
+	 * - In caso contrario, registra un errore sulla console e imposta il flag di errore.
+	 * - Imposta lo stato di caricamento a false al termine dell'elaborazione.
+	 */
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
 		if (response.success && response.data) {
 			this.filiali = response.data;
@@ -84,7 +103,14 @@ export class GestisciFilialiPage implements OnInit {
 		this.loading = false;
 	}
 
-	// Applica filtri di ricerca alle filiali
+	/**
+	 * Applica il filtro di ricerca sulle filiali in base al termine inserito.
+	 *
+	 * @remarks
+	 * - Filtra l'array `filiali` per includere solo quelle il cui indirizzo
+	 *   contiene il termine di ricerca (case insensitive).
+	 * - Il risultato filtrato viene salvato in `filialiFiltered`.
+	 */
 	applyFilters() {
 		const term = this.searchTerm.trim().toLowerCase();
 		this.filialiFiltered = this.filiali.filter((f) =>
@@ -92,14 +118,32 @@ export class GestisciFilialiPage implements OnInit {
 		);
 	}
 
-	// Resetta filtri per mostrare tutte le filiali
+	/**
+	 * Resetta il filtro categoria e ricerca, mostrando tutte le filiali.
+	 *
+	 * @remarks
+	 * - Imposta la categoria selezionata a 'Tutte'.
+	 * - Pulisce il termine di ricerca.
+	 * - Copia tutte le filiali nell'array filtrato `filialiFiltered`.
+	 */
 	filterTutti() {
 		this.selectedCategoria = 'Tutte';
 		this.searchTerm = '';
 		this.filialiFiltered = [...this.filiali];
 	}
 
-	// Mostra alert di conferma eliminazione filiale
+	/**
+	 * Mostra un alert di conferma per cancellare una filiale.
+	 *
+	 * @param filiale - La filiale da eliminare, utilizzata per mostrare l'indirizzo nell'alert.
+	 *
+	 * @remarks
+	 * - Imposta la filiale selezionata per la cancellazione.
+	 * - Mostra un alert con due opzioni:
+	 *   - "Annulla": richiama il metodo `cancellaEliminaFiliale`.
+	 *   - "Conferma": richiama il metodo `confermaEliminaFiliale`.
+	 * - Personalizza lo stile dei pulsanti e dell'alert.
+	 */
 	async showAlertDeleteFiliale(filiale: FilialeRecord) {
 		this.selectedFiliale = filiale;
 		this.isAlertOpen = true;
@@ -138,7 +182,20 @@ export class GestisciFilialiPage implements OnInit {
 		await alert.present();
 	}
 
-	// Conferma eliminazione filiale chiamando il servizio
+	/**
+	 * Conferma e gestisce la cancellazione della filiale selezionata.
+	 *
+	 * @remarks
+	 * - Verifica che una filiale sia selezionata.
+	 * - Chiama il servizio per eliminare la filiale tramite il suo ID.
+	 * - In caso di successo:
+	 *   - Rimuove la filiale eliminata dalla lista locale.
+	 *   - Applica i filtri aggiornati alla lista.
+	 *   - Mostra un toast di conferma successo.
+	 * - In caso di errore o risposta negativa:
+	 *   - Mostra un toast di errore.
+	 * - Reset dello stato di alert e filiale selezionata.
+	 */
 	async confermaEliminaFiliale() {
 		if (this.selectedFiliale) {
 			const id = this.selectedFiliale.id_filiale;
@@ -174,18 +231,32 @@ export class GestisciFilialiPage implements OnInit {
 		this.selectedFiliale = null;
 	}
 
-	// Annulla l'azione di eliminazione e chiude alert
+	/**
+	 * Annulla l'eliminazione della filiale.
+	 *
+	 * @remarks
+	 * Chiude la finestra di conferma e resetta la filiale selezionata.
+	 */
 	cancellaEliminaFiliale() {
 		this.isAlertOpen = false;
 		this.selectedFiliale = null;
 	}
 
-	// Naviga alla pagina di modifica passando la filiale selezionata
+	/**
+	 * Naviga alla pagina di modifica filiale passando la filiale selezionata.
+	 *
+	 * @param filiale - L'oggetto FilialeRecord da modificare.
+	 */
 	modificaFiliale(filiale: FilialeRecord) {
 		this.router.navigate(['/modifica-filiali'], { state: { filiale } });
 	}
 
-	// Mostra un toast con messaggio e colore specificato
+	/**
+	 * Mostra un toast con un messaggio e un colore specificato.
+	 *
+	 * @param message - Il messaggio da visualizzare nel toast.
+	 * @param color - Il colore del toast, può essere 'success' o 'danger'.
+	 */
 	async presentToast(message: string, color: 'success' | 'danger') {
 		const toast = await this.toastController.create({
 			message,

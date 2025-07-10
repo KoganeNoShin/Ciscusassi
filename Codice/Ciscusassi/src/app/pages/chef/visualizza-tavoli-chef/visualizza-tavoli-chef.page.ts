@@ -65,6 +65,14 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		private router: Router
 	) {}
 
+	/**
+	 * Metodo chiamato all'inizializzazione del componente.
+	 *
+	 * Se il locale è aperto, carica la lista dei tavoli e imposta un intervallo
+	 * per aggiornarla ogni 30 secondi.
+	 * Inoltre, verifica gli orari di apertura e imposta un intervallo per
+	 * controllarli ogni 30 secondi.
+	 */
 	ngOnInit(): void {
 		if (this.localeAperto) {
 			this.loadTavoli();
@@ -81,6 +89,13 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		this.ionViewWillLeave();
 	}
 
+	/**
+	 * Metodo chiamato quando la vista sta per essere abbandonata.
+	 *
+	 * Pulisce gli eventuali intervalli impostati per il caricamento dei tavoli
+	 * e il controllo degli orari di apertura, per evitare perdite di memoria
+	 * e chiamate non necessarie dopo l'uscita dalla pagina.
+	 */
 	ionViewWillLeave() {
 		if (this.intervalTavoli) {
 			clearInterval(this.intervalTavoli);
@@ -91,6 +106,20 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Controlla se il locale è aperto in base all'orario corrente.
+	 *
+	 * Usa una funzione interna isInRange per determinare se l'ora attuale
+	 * rientra in uno degli intervalli di apertura previsti.
+	 *
+	 * La proprietà localeAperto viene aggiornata di conseguenza.
+	 *
+	 * Se il locale è appena passato da chiuso ad aperto, carica i tavoli
+	 * e avvia un intervallo per ricaricarli ogni 30 secondi.
+	 *
+	 * NOTA: Al momento è impostato un intervallo di apertura fittizio (00:00-23:59
+	 * e 19:20-00:00). È previsto inserire la chiusura del martedì.
+	 */
 	checkOrariApertura() {
 		const now = new Date();
 		const isInRange = (
@@ -126,6 +155,22 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Carica le prenotazioni del giorno per la filiale corrente e aggiorna la lista dei tavoli.
+	 *
+	 * Per ogni prenotazione recupera lo stato attuale tramite chiamata al servizio prenotazioni.
+	 * Costruisce un array di tavoli con i dettagli:
+	 *  - numero torretta
+	 *  - id prenotazione
+	 *  - orario formattato
+	 *  - numero persone
+	 *  - stato della prenotazione (di default "in-lavorazione" in caso di errore)
+	 *
+	 * Applica successivamente un filtro sui tavoli caricati.
+	 * Gestisce gli stati di caricamento e errori.
+	 *
+	 * In caso di errore o assenza di prenotazioni, svuota le liste tavoli e segnala l'errore.
+	 */
 	async loadTavoli() {
 		this.loading = true;
 		try {
@@ -191,6 +236,12 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		this.loading = false;
 	}
 
+	/**
+	 * Formattta una stringa data/ora in formato "HH:mm".
+	 *
+	 * @param dataOra - Stringa rappresentante una data e ora (ISO o simile).
+	 * @returns Una stringa formattata con ore e minuti, ciascuno a due cifre.
+	 */
 	formattaOrario(dataOra: string): string {
 		const data = new Date(dataOra);
 		const ora = data.getHours().toString().padStart(2, '0');
@@ -198,6 +249,12 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		return `${ora}:${minuti}`;
 	}
 
+	/**
+	 * Mostra un toast con un messaggio personalizzato.
+	 *
+	 * @param messaggio - Testo da visualizzare nel toast.
+	 * @param colore - Colore del toast, può essere 'success' o 'danger'. Default è 'success'.
+	 */
 	async presentToast(
 		messaggio: string,
 		colore: 'success' | 'danger' = 'success'
@@ -211,11 +268,21 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		toast.present();
 	}
 
+	/**
+	 * Imposta il filtro selezionato in base allo stato e applica il filtro alla lista dei tavoli.
+	 *
+	 * @param stato - Lo stato da utilizzare come filtro per i tavoli.
+	 */
 	filtraTavoliPerStato(stato: string) {
 		this.selectedFilter = stato;
 		this.applicaFiltro();
 	}
 
+	/**
+	 * Applica il filtro selezionato alla lista dei tavoli.
+	 * Se il filtro è 'tutti', mostra solo i tavoli con stato 'in-lavorazione' o 'non-in-lavorazione'.
+	 * Altrimenti, filtra i tavoli mostrando solo quelli con lo stato corrispondente al filtro selezionato.
+	 */
 	applicaFiltro() {
 		if (this.selectedFilter === 'tutti') {
 			this.tavoliFiltrati = this.tavoli.filter(
@@ -230,6 +297,12 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Gestisce il click su un tavolo.
+	 * Imposta il tavolo selezionato nel servizio dedicato e naviga alla pagina di visualizzazione degli ordini per chef.
+	 *
+	 * @param tavolo - L'oggetto tavolo selezionato dall'utente.
+	 */
 	handleClick(tavolo: any) {
 		this.tavoloService.setTavolo(tavolo);
 		this.router.navigate(['/visualizza-ordini-chef']);
