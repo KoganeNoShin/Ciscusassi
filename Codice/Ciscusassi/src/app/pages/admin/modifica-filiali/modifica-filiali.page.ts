@@ -75,6 +75,15 @@ export class ModificaFilialiPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Gestisce l'evento di selezione di un file immagine da parte dell'utente.
+	 * 
+	 * Se il file selezionato è un'immagine, viene letto e convertito in una stringa base64,
+	 * che viene poi assegnata alla proprietà `immagine` dell'oggetto `filiale` per l'anteprima o il salvataggio.
+	 * Se il file selezionato non è un'immagine valida, viene mostrato un messaggio di avviso tramite toast.
+	 *
+	 * @param event L'evento di selezione file generato dall'input di tipo file.
+	 */
 	onFileSelected(event: any): void {
 		console.log('File selezionato:', event.target.files[0]); // Log per verificare se l'evento viene attivato
 		// Gestione selezione file immagine e conversione in base64 per anteprima/salvataggio
@@ -90,6 +99,18 @@ export class ModificaFilialiPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Cerca suggerimenti di indirizzi utilizzando l'API di TomTom in base all'indirizzo e al comune inseriti nella filiale.
+	 *
+	 * Costruisce una query combinando l'indirizzo e il comune della filiale, effettua una chiamata HTTP all'API TomTom
+	 * e aggiorna la lista dei suggerimenti (`suggerimenti`) e la visibilità della lista (`showSuggerimenti`) in base ai risultati ottenuti.
+	 * Se la query è troppo corta o la richiesta fallisce, la lista dei suggerimenti viene svuotata e nascosta.
+	 *
+	 * @remarks
+	 * - Utilizza la chiave API di TomTom definita nell'environment.
+	 * - Limita i risultati a 2 e filtra per l'Italia.
+	 * - I suggerimenti includono nome visualizzato, indirizzo, latitudine e longitudine.
+	 */
 	cercaIndirizzo() {
 		const query = `${this.filiale.indirizzo}, ${this.filiale.comune}`;
 
@@ -124,6 +145,17 @@ export class ModificaFilialiPage implements OnInit {
 		);
 	}
 
+	/**
+	 * Aggiorna i campi dell'oggetto `filiale` in base al suggerimento selezionato dall'utente.
+	 *
+	 * @param suggerimento Oggetto contenente le informazioni dell'indirizzo selezionato, 
+	 *        tipicamente ottenuto da un servizio di suggerimenti (autocomplete).
+	 *
+	 * - Imposta l'indirizzo completo (`indirizzo`) con il valore di `display_name` del suggerimento.
+	 * - Aggiorna il campo `comune` con il valore di `city`, `town` o `village` (in quest'ordine di priorità) se presenti.
+	 * - Imposta le coordinate geografiche (`latitudine` e `longitudine`) convertendo i valori da stringa a numero.
+	 * - Nasconde la lista dei suggerimenti e la svuota.
+	 */
 	selezionaIndirizzo(suggerimento: any) {
 		// Al click su suggerimento, aggiorna i campi indirizzo, comune e coordinate
 		this.filiale.indirizzo = suggerimento.display_name;
@@ -141,6 +173,19 @@ export class ModificaFilialiPage implements OnInit {
 		this.suggerimenti = [];
 	}
 
+	/**
+	 * Aggiorna i dati di una filiale dopo aver validato i campi obbligatori e ottenuto le coordinate geografiche tramite geocoding.
+	 *
+	 * @remarks
+	 * - Valida che tutti i campi obbligatori della filiale siano compilati.
+	 * - Utilizza il servizio di geocodifica per ottenere latitudine e longitudine dall'indirizzo fornito.
+	 * - Prepara l'oggetto di aggiornamento e invia la richiesta tramite il servizio `filialeService`.
+	 * - Gestisce il feedback all'utente tramite toast e navigazione.
+	 * - Gestisce eventuali errori di validazione, geocodifica o rete/server.
+	 *
+	 * @async
+	 * @returns {Promise<void>} Nessun valore di ritorno.
+	 */
 	async modificaFiliale() {
 		// Validazione campi obbligatori prima dell’invio
 		if (
@@ -210,6 +255,13 @@ export class ModificaFilialiPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Esegue la geocodifica di un indirizzo utilizzando l'API TomTom e restituisce le coordinate geografiche corrispondenti.
+	 *
+	 * @param address L'indirizzo da geocodificare.
+	 * @returns Un oggetto contenente latitudine (`lat`) e longitudine (`lon`) se la geocodifica ha successo, altrimenti `null`.
+	 * @throws Restituisce `null` in caso di errore durante la richiesta HTTP o se non vengono trovati risultati.
+	 */
 	async geocodificaIndirizzo(
 		address: string
 	): Promise<{ lat: number; lon: number } | null> {
@@ -231,6 +283,13 @@ export class ModificaFilialiPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Mostra un toast di notifica con il messaggio e il colore specificati.
+	 *
+	 * @param message - Il messaggio da visualizzare nel toast.
+	 * @param color - Il colore del toast ('success', 'danger' o 'warning').
+	 * @returns Una Promise che si risolve quando il toast è stato presentato.
+	 */
 	async presentToast(
 		message: string,
 		color: 'success' | 'danger' | 'warning'

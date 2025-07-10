@@ -84,6 +84,18 @@ export class VisualizzaUtiliPage implements OnInit {
 	}
 
 	// Rileva il browser e aggiunge una classe specifica
+	/**
+	 * Rileva il browser attualmente in uso analizzando lo user agent.
+	 * 
+	 * Se il browser è Chrome, aggiunge la classe 'chrome' al body del documento,
+	 * stampa 'Chrome' nella console e imposta la proprietà `isChrome` a true.
+	 * Altrimenti, aggiunge la classe 'firefox' al body, stampa 'Firefox' nella console
+	 * e imposta la proprietà `isFirefox` a true.
+	 *
+	 * @remarks
+	 * Questo metodo presuppone che le proprietà `isChrome` e `isFirefox` siano
+	 * definite nella classe.
+	 */
 	detectBrowser() {
 		if (navigator.userAgent.includes('Chrome')) {
 			document.body.classList.add('chrome');
@@ -97,6 +109,11 @@ export class VisualizzaUtiliPage implements OnInit {
 	}
 
 	// Quando cambia l'anno selezionato, ricarica i dati
+	/**
+	 * Gestisce il cambiamento dell'anno selezionato.
+	 * Se è stato selezionato un anno valido (non nullo), carica i dati relativi a quell'anno
+	 * invocando il metodo `loadDataForYear`.
+	 */
 	onYearChange() {
 		if (this.selectedYear !== null) {
 			this.loadDataForYear(this.selectedYear);
@@ -104,6 +121,20 @@ export class VisualizzaUtiliPage implements OnInit {
 	}
 
 	// Carica e struttura i dati dei pagamenti per l'anno scelto
+	/**
+	 * Carica e aggrega i dati degli utili mensili per tutte le filiali relative all'anno specificato.
+	 *
+	 * Questa funzione esegue le seguenti operazioni:
+	 * 1. Recupera l'elenco delle filiali tramite il servizio `filialeService`.
+	 * 2. Crea una mappa tra l'ID della filiale e il suo indirizzo completo per una migliore leggibilità.
+	 * 3. Recupera gli utili mensili per l'anno selezionato tramite il servizio `pagamentoService`.
+	 * 4. Raggruppa gli importi mensili per ciascuna filiale, inizializzando un array di 12 elementi (uno per ogni mese).
+	 * 5. Popola la struttura dati con gli importi corretti per mese e filiale.
+	 * 6. Trasforma i dati raggruppati in un array compatto, adatto alla visualizzazione in tabella.
+	 * 7. Gestisce eventuali errori durante il recupero dei dati, aggiornando lo stato di caricamento e di errore.
+	 *
+	 * @param year L'anno per cui caricare i dati degli utili mensili.
+	 */
 	loadDataForYear(year: number) {
 		this.filialeService.GetSedi().subscribe({
 			next: (filialiResponse) => {
@@ -188,16 +219,34 @@ export class VisualizzaUtiliPage implements OnInit {
 	}
 
 	// Calcola il totale di una riga (somma dei valori mensili)
+	/**
+	 * Calcola la somma totale degli elementi presenti nell'array `values` di una riga.
+	 *
+	 * @param row - Oggetto che contiene un array di numeri nella proprietà `values`.
+	 * @returns La somma di tutti i numeri presenti nell'array `values` della riga.
+	 */
 	getRowTotal(row: { values: number[] }): number {
 		return row.values.reduce((acc, val) => acc + val, 0);
 	}
 
 	// Calcola il totale di una colonna (somma degli stessi mesi su tutte le filiali)
+	/**
+	 * Calcola il totale di una colonna specificata dall'indice all'interno della tabella.
+	 *
+	 * @param index - L'indice della colonna di cui calcolare il totale.
+	 * @returns La somma di tutti i valori presenti nella colonna specificata.
+	 */
 	getColumnTotal(index: number): number {
 		return this.rows.reduce((acc, row) => acc + row.values[index], 0);
 	}
 
 	// Calcola il totale generale sommando tutti i valori di tutte le righe e colonne
+	/**
+	 * Calcola e restituisce il totale complessivo sommando tutti i valori presenti
+	 * nelle proprietà `values` di ciascuna riga dell'array `rows`.
+	 *
+	 * @returns Il totale complessivo come numero.
+	 */
 	getGrandTotal(): number {
 		return this.rows
 			.flatMap((row) => row.values)
@@ -205,6 +254,22 @@ export class VisualizzaUtiliPage implements OnInit {
 	}
 
 	// Funzione che permettte di creare un excel a partire dai dati di un anno specifico
+	/**
+	 * Esporta i dati delle filiali in un file Excel formattato.
+	 *
+	 * La funzione costruisce una tabella con intestazioni, dati mensili per ciascuna filiale,
+	 * calcola i totali per riga e per colonna tramite formule Excel, applica stili personalizzati
+	 * (colori, grassetto, allineamento, formato valuta) e adatta la larghezza delle colonne
+	 * in base al contenuto. Infine, genera e salva il file Excel con nome basato sull'anno selezionato.
+	 *
+	 * @remarks
+	 * Utilizza la libreria XLSX per la generazione e la formattazione del file Excel.
+	 * Le formule vengono inserite direttamente nelle celle per il calcolo automatico dei totali.
+	 *
+	 * @see XLSX.utils.aoa_to_sheet
+	 * @see XLSX.utils.book_new
+	 * @see XLSX.writeFile
+	 */
 	exportExcel() {
 		/* ----- Definiamo e memorizziamo i dati ----- */
 

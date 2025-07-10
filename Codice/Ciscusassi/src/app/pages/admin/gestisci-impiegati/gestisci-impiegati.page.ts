@@ -90,6 +90,14 @@ export class GestisciImpiegatiPage implements OnInit {
 		});
 	}
 
+	/**
+	 * Recupera la lista degli impiegati associati a una specifica filiale tramite una chiamata API.
+	 *
+	 * @param filialeId - L'identificativo numerico della filiale di cui ottenere gli impiegati.
+	 * @remarks
+	 * In caso di successo, la risposta viene gestita dal metodo `handleResponse`.
+	 * In caso di errore, viene loggato l'errore su console, viene impostato `loading` a `false` e `error` a `true`.
+	 */
 	private fetchImpiegati(filialeId: number) {
 		// Chiamata API per ottenere i impiegati di una filiale
 		this.impiegatoService.GetImpiegati(filialeId).subscribe({
@@ -103,6 +111,15 @@ export class GestisciImpiegatiPage implements OnInit {
 		});
 	}
 
+	/**
+	 * Gestisce la risposta dell'API per il recupero degli impiegati.
+	 *
+	 * @param response La risposta dell'API contenente un array di record di impiegati.
+	 * 
+	 * Se la risposta ha successo e contiene dati, aggiorna la lista degli impiegati e inizializza la lista filtrata.
+	 * In caso di errore, imposta lo stato di errore e mostra un messaggio di errore nella console.
+	 * Alla fine, imposta lo stato di caricamento a falso.
+	 */
 	private handleResponse(response: ApiResponse<ImpiegatoRecord[]>): void {
 		// Gestione risposta API
 		if (response.success) {
@@ -122,6 +139,14 @@ export class GestisciImpiegatiPage implements OnInit {
 	}
 
 	// Funzione che applica il filtro in base alla ruoloSelezionato
+	/**
+	 * Filtra la lista degli impiegati in base al ruolo selezionato.
+	 *
+	 * @param ruolo - Il ruolo per cui filtrare gli impiegati. Se il valore è "Tutti", vengono mostrati tutti gli impiegati.
+	 * 
+	 * Imposta la proprietà `ruoloSelezionato` con il ruolo fornito e aggiorna la lista `impiegatiFiltrati`
+	 * mostrando solo gli impiegati che corrispondono al ruolo selezionato. Se il ruolo è "Tutti", vengono mostrati tutti gli impiegati.
+	 */
 	filterByRuolo(ruolo: string) {
 		// Imposta la ruoloSelezionato selezionata
 		this.ruoloSelezionato = ruolo;
@@ -138,6 +163,15 @@ export class GestisciImpiegatiPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Applica i filtri agli impiegati in base al ruolo selezionato e al termine di ricerca testuale.
+	 *
+	 * Filtra l'elenco degli impiegati considerando:
+	 * - Il ruolo selezionato (`ruoloSelezionato`), che può essere uno specifico ruolo oppure 'tutti'.
+	 * - Il termine di ricerca (`searchTerm`), confrontato con il nome completo e l'email dell'impiegato.
+	 *
+	 * Aggiorna la proprietà `impiegatiFiltrati` con i risultati che soddisfano entrambi i criteri.
+	 */
 	applyFilters() {
 		// Applica filtri combinati (ruoloSelezionato + ricerca testo)
 		const ruoloSelezionato = this.ruoloSelezionato.toLowerCase();
@@ -159,6 +193,16 @@ export class GestisciImpiegatiPage implements OnInit {
 		});
 	}
 
+	/**
+	 * Mostra un alert di conferma per l'eliminazione (licenziamento) di un impiegato selezionato.
+	 * 
+	 * L'alert visualizza il nome e il cognome dell'impiegato e offre due opzioni:
+	 * - "Annulla": annulla l'operazione di eliminazione e richiama il metodo `annullaEliminaImpiegato`.
+	 * - "Conferma": conferma l'eliminazione e richiama il metodo `confermaEliminaImpiegato`.
+	 * 
+	 * @param impieagato L'oggetto `ImpiegatoRecord` relativo all'impiegato da eliminare.
+	 * @returns Una Promise che si risolve quando l'alert è stato presentato.
+	 */
 	async showAlertDeleteImpiegato(impieagato: ImpiegatoRecord) {
 		// Mostra alert conferma eliminazione per l' impieagato selezionato
 		this.selectedImpiegato = impieagato;
@@ -198,6 +242,17 @@ export class GestisciImpiegatiPage implements OnInit {
 		await alert.present();
 	}
 
+	/**
+	 * Conferma l'eliminazione di un impiegato selezionato.
+	 *
+	 * Se un impiegato è selezionato, invia una richiesta al servizio per eliminarlo dal server.
+	 * In caso di successo, mostra una notifica di conferma, rimuove l'impiegato dalla lista locale
+	 * e aggiorna la lista filtrata. In caso di errore, mostra una notifica di errore e logga il problema.
+	 * Alla fine, chiude l'alert di conferma e resetta l'impiegato selezionato.
+	 *
+	 * @remarks
+	 * Utilizza una rimozione ottimistica dalla lista locale per migliorare la reattività dell'interfaccia utente.
+	 */
 	confermaEliminaImpiegato() {
 		// Azione conferma eliminazione impieagato
 		if (this.selectedImpiegato) {
@@ -231,12 +286,24 @@ export class GestisciImpiegatiPage implements OnInit {
 		this.selectedImpiegato = null; // Reset impieagato selezionato
 	}
 
+	/**
+	 * Annulla l'operazione di eliminazione di un impiegato.
+	 * Chiude l'alert di conferma eliminazione e deseleziona l'impiegato selezionato.
+	 */
 	annullaEliminaImpiegato() {
 		// Azione annulla eliminazione (chiusura alert)
 		this.isAlertOpen = false;
 		this.selectedImpiegato = null;
 	}
 
+	/**
+	 * Mostra un messaggio toast all’utente con un colore e un'icona personalizzati.
+	 *
+	 * @param message - Il messaggio da visualizzare nel toast.
+	 * @param color - Il colore del toast, può essere 'success' o 'danger'.
+	 * 
+	 * @returns Una Promise che si risolve quando il toast è stato presentato.
+	 */
 	private async showToastMessage(
 		message: string,
 		color: 'success' | 'danger'
@@ -252,6 +319,17 @@ export class GestisciImpiegatiPage implements OnInit {
 		});
 		await toast.present();
 	}
+
+	/**
+	 * Naviga alla pagina di aggiunta di un nuovo impiegato.
+	 * 
+	 * Utilizza il router per spostarsi verso la rotta '/aggiungi-impiegati',
+	 * passando lo stato contenente l'identificativo della filiale corrente (`filialeId`).
+	 * 
+	 * @remarks
+	 * Questo metodo viene tipicamente invocato quando l'utente desidera aggiungere un nuovo impiegato
+	 * alla filiale selezionata.
+	 */
 	vaiAdAggiungiImpiegati() {
 		this.router.navigate(['/aggiungi-impiegati'], {
 			state: { filialeId: this.id_filiale },
