@@ -51,7 +51,7 @@ Il progetto è stato sviluppato da:
 	<tr>
 		<td>
 			<a href="https://www.instagram.com/leonardocaiezza03/">Instagram 📸</a><br>
-			<a href="https://www.linkedin.com/in/leonardo-caiezza-719912364">LinkedIn 👔</a><br>
+			<a href="https://www.linkedin.com/in/leonardo-giovanni-caiezza/">LinkedIn 👔</a><br>
 			<a href="mailto:leonardocaiezza20@gmail.com">Email 📨</a>
 		</td>
 		<td>
