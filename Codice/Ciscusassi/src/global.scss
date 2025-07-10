@@ -166,3 +166,8 @@ button.alert-button.alert-button-confirm:hover {
 ion-checkbox::part(label) {
 	font-family: 'Caveat', sans-serif;
 }
+
+.custom-alert .alert-button-confirm,
+.alert-button-cancel {
+	margin: 10px !important;
+}
