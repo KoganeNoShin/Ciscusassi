@@ -122,6 +122,8 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 	 */
 	checkOrariApertura() {
 		const now = new Date();
+		const giornoSettimana = now.getDay(); // 0=Dom, 1=Lun, 2=Mar, ..., 6=Sab
+
 		const isInRange = (
 			startH: number,
 			startM: number,
@@ -144,10 +146,14 @@ export class VisualizzaTavoliChefPage implements OnInit, OnDestroy {
 
 		const eraApertoPrima = this.localeAperto;
 
-		this.localeAperto = isInRange(0, 0, 23, 59) || isInRange(19, 20, 0, 0); //DA MODIFICARE
+		if (giornoSettimana === 2) {
+			this.localeAperto = false;
+		} else {
+			// Qui definisci gli orari di apertura del locale
 
-		//INSERIRE MARTEDI CHIUSI
-
+			this.localeAperto =
+				isInRange(11, 50, 16, 30) || isInRange(19, 20, 0, 0);
+		}
 		// Se il locale è appena passato da chiuso ad aperto
 		if (!eraApertoPrima && this.localeAperto) {
 			this.loadTavoli();

@@ -4,12 +4,7 @@
 	color="bianco"
 >
 	<div class="page-wrapper">
-		@if (!this.error) {
-		<ion-text class="ion-text-center ion-padding-top">
-			<h2 class="text-color-nero">Visualizza tavoli</h2>
-		</ion-text>
-
-		@if(!localeAperto){
+		@if (!this.error) { @if(!localeAperto){
 
 		<ion-text class="ion-text-center">
 			<h2 class="locale-chiuso text-color-rosso">
@@ -18,7 +13,9 @@
 		</ion-text>
 
 		} @else {
-
+		<ion-text class="ion-text-center ion-padding-top">
+			<h2 class="text-color-nero">Visualizza tavoli</h2>
+		</ion-text>
 		<!-- Legenda -->
 
 		<div class="filter-row ion-padding ion-margin">

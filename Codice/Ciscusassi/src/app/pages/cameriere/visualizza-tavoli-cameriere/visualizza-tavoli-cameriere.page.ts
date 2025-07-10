@@ -172,9 +172,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 	 * Controlla se il locale è attualmente aperto in base al giorno della settimana e agli orari di apertura definiti.
 	 *
 	 * - Il locale è chiuso il martedì (giorno 2 della settimana).
-	 * - Negli altri giorni, verifica se l'orario corrente rientra in uno degli intervalli di apertura specificati:
-	 *   - Sempre aperto (00:00-23:59)
-	 *   - Oppure dalle 19:20 fino a mezzanotte (00:00 del giorno successivo)
+	 * - Negli altri giorni, verifica se l'orario corrente rientra in uno degli intervalli di apertura specificati.
 	 *
 	 * Se il locale passa da chiuso ad aperto, carica i tavoli e imposta un intervallo per ricaricarli ogni 30 secondi.
 	 *
@@ -220,14 +218,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		// Locale chiuso il martedì (giorno 2)
 
 		if (giornoSettimana === 2) {
-			this.localeAperto = true; //DA CAMBIARE IN FALSE
+			this.localeAperto = false;
 		} else {
 			// Qui definisci gli orari di apertura del locale
 
-			// Esempio: aperto sempre (00:00-23:59) oppure aperto solo dalle 19:20 a mezzanotte
-
 			this.localeAperto =
-				isInRange(0, 0, 23, 59) || isInRange(19, 20, 0, 0);
+				isInRange(11, 50, 16, 30) || isInRange(19, 20, 0, 0);
 		}
 
 		// Se il locale è appena passato da chiuso ad aperto

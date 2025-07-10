@@ -4,19 +4,16 @@
 	color="bianco"
 >
 	<div class="page-wrapper">
-		@if(!error){
-		<ion-text class="ion-text-center ion-padding-top">
-			<h2 class="text-color-nero">Visualizza tavoli</h2>
-		</ion-text>
-
-		@if(!localeAperto){
+		@if(!error){ @if(!localeAperto){
 		<ion-text class="ion-text-center">
 			<h2 class="locale-chiuso text-color-rosso">
 				AL MOMENTO CISCUSASSI È CHIUSO
 			</h2>
 		</ion-text>
 		} @else {
-
+		<ion-text class="ion-text-center ion-padding-top">
+			<h2 class="text-color-nero">Visualizza tavoli</h2>
+		</ion-text>
 		<div class="filter-row ion-padding ion-margin">
 			<!-- Filtri -->
 			<ion-chip
