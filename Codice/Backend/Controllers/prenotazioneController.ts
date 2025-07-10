@@ -154,7 +154,7 @@ class PrenotazioneController {
         try {
             const otp = await PrenotazioneService.getOTPByIdTorrettaAndData(Number(req.params.id_torretta));
 
-            res.json({ success: true, data: otp });       
+            res.json({ success: true, otp });       
         } catch (err) {
             console.error(err);
             res.status(500).json({
