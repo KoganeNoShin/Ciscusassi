@@ -14,7 +14,8 @@ ion-card {
 
 // Classe del wrapper dei campi del form
 .form-fields {
-	min-width: 500px; // Almeno 500 px di larghezza
+	width: 100%;
+	min-width: 400px; // Almeno 500 px di larghezza
 	gap: 1.5em; // Spaziamo i componenti
 
 	height: fit-content; // Deve essere grande solo quanto basta
@@ -26,8 +27,8 @@ ion-card {
 	// Classe del singolo campo
 	.campo-form {
 		max-width: 600px; // Limitiamo larghezza sia massima
-		min-width: 400px; // che minima
-		width: 90%; // Prendiamo solo l'80% della grandezza disponibile
+		min-width: 300px; // che minima
+		width: 80%; // Prendiamo solo l'80% della grandezza disponibile
 		border-radius: 12px; // Arrotondiamo i campi
 		--border-radius: 12px;
 		overflow: hidden; // non mostriamo l'overflow
@@ -40,10 +41,19 @@ ion-card {
 	.touched::part(native) {
 		padding-bottom: 5px; // Allora mettiamo un po' di padding per fare leggere meglio l'errore
 	}
-}
 
-ion-button {
-	width: 80%;
+	ion-input,
+	ion-textarea,
+	ion-select {
+		--background: var(--ion-color-bianco);
+		--color: black;
+		border-radius: 10px;
+		width: 100%;
+	}
+
+	ion-button {
+		width: 80%;
+	}
 }
 
 ion-item.campo-form::part(native) {
@@ -64,4 +74,10 @@ ion-input-otp.valid-otp::part(native) {
 	--border-color: var(--ion-color-success);
 	--highlight-color-focused: var(--ion-color-success);
 	box-shadow: 0 0 0 1px var(--ion-color-success);
+}
+
+@media (max-width: 1200px) {
+	ion-input-otp {
+		width: 80%;
+	}
 }

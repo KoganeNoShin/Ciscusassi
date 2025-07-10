@@ -7,77 +7,77 @@
 	class="ion-justify-content-center ion-align-items-center"
 	color="senape"
 >
-<div class="page-wrapper ion-padding">
-	@if (!error){
-	<div class="page-wrapper">
-		<div class="status-container">
-			<div class="status">
-				<div class="circle non-lavorazione"></div>
-				<ion-text class="ion-text-center">
-					<p class="text-color-bianco">NON IN LAVORAZIONE</p>
-				</ion-text>
-			</div>
-			<div class="status">
-				<div class="circle in-lavorazione"></div>
+	<div class="page-wrapper ion-padding">
+		@if (!error){
+		<div class="page-wrapper">
+			<div class="status-container">
+				<div class="status">
+					<div class="circle non-lavorazione"></div>
+					<ion-text class="ion-text-center">
+						<p class="text-color-bianco">NON IN LAVORAZIONE</p>
+					</ion-text>
+				</div>
+				<div class="status">
+					<div class="circle in-lavorazione"></div>
 
-				<ion-text class="ion-text-center">
-					<p class="text-color-bianco">IN LAVORAZIONE</p>
-				</ion-text>
+					<ion-text class="ion-text-center">
+						<p class="text-color-bianco">IN LAVORAZIONE</p>
+					</ion-text>
+				</div>
+				<div class="status">
+					<div class="circle in-consegna"></div>
+					<ion-text class="ion-text-center">
+						<p class="text-color-bianco">IN CONSEGNA</p>
+					</ion-text>
+				</div>
+				<div class="status">
+					<div class="circle consegnato"></div>
+					<ion-text class="ion-text-center">
+						<p class="text-color-bianco">CONSEGNATO</p>
+					</ion-text>
+				</div>
 			</div>
-			<div class="status">
-				<div class="circle in-consegna"></div>
-				<ion-text class="ion-text-center">
-					<p class="text-color-bianco">IN CONSEGNA</p>
-				</ion-text>
+
+			@if(isLoading){
+			<ion-spinner
+				name="crescent"
+				style="display: block; margin: 2rem auto"
+			/>
+			} @else {
+			<app-lista-ordini [prodotti$]="prodotti$" />
+
+			<div class="bottoni-bottom">
+				<ion-button
+					[routerLink]="['/menu-tavolo']"
+					color="verdechiaro"
+					size="default"
+					fill="solid"
+					shape="round"
+					expand="block"
+					type="submit"
+					class="ion-padding-vertical"
+					>CONTINUA A ORDINARE</ion-button
+				>
+				<ion-button
+					(click)="terminaServizio()"
+					size="default"
+					fill="solid"
+					shape="round"
+					expand="block"
+					type="submit"
+					class="ion-padding-vertical"
+					color="rosso"
+					>TERMINA SERVIZIO</ion-button
+				>
 			</div>
-			<div class="status">
-				<div class="circle consegnato"></div>
-				<ion-text class="ion-text-center">
-					<p class="text-color-bianco">CONSEGNATO</p>
-				</ion-text>
-			</div>
+			}
 		</div>
-
-		@if(isLoading){
-		<ion-spinner
-			name="crescent"
-			style="display: block; margin: 2rem auto"
-		/>
 		} @else {
-		<app-lista-ordini [prodotti$]="prodotti$" />
-
-		<div class="bottoni-bottom">
-			<ion-button
-				[routerLink]="['/menu-tavolo']"
-				color="verdechiaro"
-				size="default"
-				fill="solid"
-				shape="round"
-				expand="block"
-				type="submit"
-				class="ion-padding-vertical"
-				>CONTINUA A ORDINARE</ion-button
-			>
-			<ion-button
-				(click)="terminaServizio()"
-				size="default"
-				fill="solid"
-				shape="round"
-				expand="block"
-				type="submit"
-				class="ion-padding-vertical"
-				color="rosso"
-				>TERMINA SERVIZIO</ion-button
-			>
-		</div>
+		<ion-text class="ion-text-center">
+			<h1 class="text-color-bianco">
+				Errore: per favore riprova più tardi!
+			</h1>
+		</ion-text>
 		}
-	</div>
-	} @else {
-	<ion-text>
-		<h1 style="color: var(--ion-color-bianco)">
-			Errore: per favore riprova più tardi!
-		</h1>
-	</ion-text>
-	}
 	</div>
 </ion-content>

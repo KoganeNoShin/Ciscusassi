@@ -1,5 +1,5 @@
 .page-wrapper {
-	margin-top: 50px;
+	margin-top: 30px;
 	display: flex;
 	flex-direction: column;
 	justify-content: start;
@@ -13,7 +13,6 @@
 	width: 100vw;
 	justify-content: space-around;
 	align-items: center;
-	padding-top: 3%;
 	background-color: var(--ion-color-senape);
 	font-size: larger;
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
@@ -65,5 +64,19 @@
 
 	ion-button {
 		z-index: 100;
+	}
+}
+
+@media (max-width: 576px) {
+	.status {
+		ion-text > p {
+			font-size: clamp(0.6rem, 0.8vh, 1.5rem);
+		}
+	}
+
+	.bottoni-bottom {
+		ion-button {
+			font-size: clamp(0.6rem, 0.8vh, 1.5rem);
+		}
 	}
 }

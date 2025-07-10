@@ -1,7 +1,7 @@
 <ion-content [fullscreen]="true" color="light">
 	<ion-grid fixed>
 		<ion-row class="ion-align-items-center ion-justify-content-center">
-			<ion-col size="10" sizeXl="6">
+			<ion-col size="9" sizeSm="10" sizeXl="6">
 				<ion-card
 					class="ion-padding-vertical ion-text-center ion-align-items-center ion-justify-content-center ion-padding-horizontal ion-padding-top ion-padding-bottom"
 					color="verdechiaro"
@@ -77,7 +77,7 @@
 							type="submit"
 							[ngClass]="{'errore': otp.trim().length > 0 && otp.trim().length !== 6}"
 							[disabled]="!numeroTorretta || numeroTorretta < 1 || otp.trim().length !== 6"
-							class="ion-padding-vertical"
+							class="ion-padding-vertical ion-padding-horizontal"
 							size="default"
 							fill="solid"
 							shape="round"

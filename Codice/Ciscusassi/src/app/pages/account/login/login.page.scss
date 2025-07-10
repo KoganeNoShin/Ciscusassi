@@ -23,7 +23,8 @@ ion-content {
 
 // Classe del wrapper dei campi del form
 .form-fields {
-	min-width: 500px; // Almeno 500 px di larghezza
+	width: 100%;
+	min-width: 400px; // Almeno 500 px di larghezza
 	gap: 1.5em; // Spaziamo i componenti
 
 	height: fit-content; // Deve essere grande solo quanto basta
@@ -35,7 +36,7 @@ ion-content {
 	// Classe del singolo campo
 	.campo-form {
 		max-width: 600px; // Limitiamo larghezza sia massima
-		min-width: 400px; // che minima
+		min-width: 300px; // che minima
 		width: 80%; // Prendiamo solo l'80% della grandezza disponibile
 		border-radius: 12px; // Arrotondiamo i campi
 		--border-radius: 12px;
@@ -61,5 +62,11 @@ ion-content {
 
 	ion-button {
 		width: 80%;
+	}
+}
+
+@media (max-width: 576px) {
+	.title {
+		padding-top: 100px;
 	}
 }

@@ -1,6 +1,8 @@
 a,
 p {
-	font-size: clamp(0.5rem, 1vw, 0.8rem);
+	font-size: clamp(0.75rem, 1vw, 0.8rem);
+	height: 100%;
+	display: block;
 }
 
 a:hover {
@@ -9,4 +11,11 @@ a:hover {
 
 a:active {
 	filter: brightness(60%);
+}
+
+@media (max-width: 576px) {
+	a,
+	p {
+		font-size: clamp(0.35rem, 1vw, 0.8rem);
+	}
 }

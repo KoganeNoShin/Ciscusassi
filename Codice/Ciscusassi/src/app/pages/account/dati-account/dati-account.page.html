@@ -12,7 +12,7 @@
 			</ion-col>
 
 			<!-- Contenuto -->
-			<ion-col size="12" sizeXl="6">
+			<ion-col size="10" sizeXl="6">
 				<ion-card
 					class="ion-padding ion-text-center ion-align-items-center ion-justify-content-center bg-color-verdechiaro card-container"
 				>
@@ -25,7 +25,9 @@
 					}
 
 					<ion-card class="card-profilo bg-color-bianco">
-						<ion-card-content class="card-flex">
+						<ion-card-content
+							class="card-flex ion-padding-horizontal"
+						>
 							<div>
 								<ion-avatar class="avatar-centro">
 									<img [src]="avatar" alt="Avatar" />
@@ -58,33 +60,35 @@
 					>
 						<ion-row class="ion-justify-content-center" responsive>
 							<ion-col
-								size="6"
-								sizeMd="12"
+								size="12"
 								class="ion-justify-content-center ion-align-items-center"
 							>
 								<ion-button
 									color="arancione"
 									shape="round"
+									class="ion-padding-vertical"
 									[routerLink]="['/cambia-password']"
 								>
 									CAMBIA PASSWORD
 								</ion-button>
 							</ion-col>
 
-							<ion-col size="6" sizeMd="12">
+							<ion-col size="12">
 								<ion-button
 									color="arancione"
 									shape="round"
+									class="ion-padding-vertical"
 									[routerLink]="['/cambia-email']"
 								>
 									CAMBIA EMAIL
 								</ion-button>
 							</ion-col>
 
-							<ion-col size="6" sizeMd="12">
+							<ion-col size="12">
 								<ion-button
 									color="rosso"
 									shape="round"
+									class="ion-padding-vertical"
 									(click)="logout()"
 								>
 									@if (loadingLogout) {
