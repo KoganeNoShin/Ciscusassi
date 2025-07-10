@@ -168,6 +168,20 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	 	Se il locale passa da chiuso ad aperto, carica i tavoli e avvia l'aggiornamento periodico. */
 
+	/**
+	 * Controlla se il locale è attualmente aperto in base al giorno della settimana e agli orari di apertura definiti.
+	 *
+	 * - Il locale è chiuso il martedì (giorno 2 della settimana).
+	 * - Negli altri giorni, verifica se l'orario corrente rientra in uno degli intervalli di apertura specificati:
+	 *   - Sempre aperto (00:00-23:59)
+	 *   - Oppure dalle 19:20 fino a mezzanotte (00:00 del giorno successivo)
+	 *
+	 * Se il locale passa da chiuso ad aperto, carica i tavoli e imposta un intervallo per ricaricarli ogni 30 secondi.
+	 *
+	 * @remarks
+	 * La proprietà `localeAperto` viene aggiornata in base allo stato corrente.
+	 * La funzione interna `isInRange` gestisce anche il caso in cui l'orario di chiusura sia a mezzanotte.
+	 */
 	checkOrariApertura() {
 		const now = new Date();
 
@@ -233,6 +247,18 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	 	Applica il filtro attivo sui tavoli caricati. */
 
+	/**
+	 * Carica la lista dei tavoli per il cameriere in base alle prenotazioni del giorno corrente.
+	 *
+	 * - Se il locale è chiuso (`localeAperto` è `false`), svuota le liste dei tavoli e termina.
+	 * - Altrimenti, imposta lo stato di caricamento e recupera le prenotazioni del giorno tramite il servizio `prenotazioneService`.
+	 * - Per ogni prenotazione, recupera lo stato attuale della prenotazione e costruisce un oggetto tavolo con i dettagli rilevanti.
+	 * - In caso di errore nel recupero dello stato della prenotazione, imposta lo stato su `'attesa'`.
+	 * - Aggiorna le liste `tavoli` e applica eventuali filtri.
+	 * - Gestisce eventuali errori globali impostando lo stato di errore e svuotando le liste.
+	 *
+	 * @returns {Promise<void>} Una Promise che si risolve al termine del caricamento dei tavoli.
+	 */
 	async loadTavoli() {
 		if (!this.localeAperto) {
 			// Non carichiamo tavoli se il locale è chiuso
@@ -314,6 +340,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	// 	Formattta una data ISO in una stringa HH:mm per visualizzare l'orario della prenotazione.
 
+	/**
+	 * Formatta una stringa di data e ora in una rappresentazione oraria "HH:mm".
+	 *
+	 * @param dataOra - La stringa che rappresenta la data e l'ora da formattare.
+	 * @returns Una stringa contenente solo l'orario nel formato "HH:mm".
+	 */
 	formattaOrario(dataOra: string): string {
 		const d = new Date(dataOra);
 
@@ -330,6 +362,18 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	 	Altrimenti mostra un messaggio di avviso. */
 
+	/**
+	 * Mostra il modale per l'aggiunta di una nuova prenotazione.
+	 *
+	 * Se il locale non è aperto, viene mostrato un messaggio di avviso tramite toast
+	 * e l'operazione viene interrotta. In caso contrario, viene visualizzato il modale
+	 * per l'inserimento della prenotazione e successivamente viene chiamato il metodo
+	 * per chiudere il modale di inserimento prenotazione.
+	 *
+	 * @remarks
+	 * Questo metodo gestisce sia la visualizzazione del modale che la logica di controllo
+	 * sullo stato di apertura del locale.
+	 */
 	visualizzaModaleAggiungiPrenotazione() {
 		if (!this.localeAperto) {
 			this.presentToast(
@@ -348,6 +392,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	// 	Seleziona un numero predefinito di persone per la prenotazione.
 
+	/**
+	 * Seleziona il numero di persone per il tavolo.
+	 *
+	 * @param n - Il numero di persone selezionato dall'utente.
+	 * Imposta sia la variabile `personeSelezionate` che `inputManuale` al valore fornito.
+	 */
 	selezionaPersone(n: number) {
 		this.personeSelezionate = n;
 
@@ -356,6 +406,13 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	// 	Aggiorna la selezione del numero di persone in base all'input manuale, solo se valido.
 
+	/**
+	 * Gestisce il cambiamento dell'input manuale relativo al numero di persone.
+	 *
+	 * Se il valore inserito manualmente (`inputManuale`) non è nullo e si trova tra i valori possibili (`personePossibili`),
+	 * allora aggiorna il numero di persone selezionate (`personeSelezionate`) con il valore inserito.
+	 * Altrimenti, imposta `personeSelezionate` a null.
+	 */
 	onInputChange() {
 		if (
 			this.inputManuale !== null &&
@@ -373,6 +430,15 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 	 	Verifica prenotazioni future esistenti per il cliente. */
 
+	/**
+	 * Mostra un alert di conferma all'utente quando la fascia oraria selezionata non è disponibile.
+	 *
+	 * L'alert presenta due opzioni:
+	 * - "Annulla": l'utente annulla l'operazione e la Promise viene risolta con `false`.
+	 * - "Conferma": l'utente accetta di prenotare per la prossima fascia disponibile e la Promise viene risolta con `true`.
+	 *
+	 * @returns {Promise<boolean>} Una Promise che si risolve con `true` se l'utente conferma, `false` se annulla.
+	 */
 	async mostraConfermaFasciaOraria(): Promise<boolean> {
 		return new Promise(async (resolve) => {
 			const alert = await this.AlertController.create({
@@ -419,6 +485,21 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		});
 	}
 
+	/**
+	 * Conferma l'inserimento di una nuova prenotazione tramite modale.
+	 *
+	 * Questa funzione gestisce la validazione dei dati inseriti dall'utente per la prenotazione,
+	 * tra cui il numero di persone e il numero della carta cliente. Esegue i seguenti controlli:
+	 * - Verifica che il numero di persone sia valido e non superiore a 20.
+	 * - Verifica che il numero della carta cliente sia presente e positivo.
+	 * - Controlla se il cliente ha già una prenotazione futura.
+	 * - Gestisce eventuali errori di rete o di validazione, mostrando messaggi di toast appropriati.
+	 * - Se tutti i controlli sono superati, invia la richiesta di prenotazione tramite il servizio dedicato.
+	 * - Aggiorna la lista dei tavoli disponibili dopo la prenotazione.
+	 *
+	 * @async
+	 * @returns {Promise<void>} Nessun valore di ritorno.
+	 */
 	async confermaModaleInserimentoPrenotazione() {
 		const persone = this.personeSelezionate ?? this.inputManuale;
 
@@ -610,6 +691,19 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		this.loadTavoli();
 	}
 
+	/**
+	 * Restituisce una stringa formattata localmente che rappresenta l'inizio della fascia oraria corrente o della prossima fascia,
+	 * in base all'orario attuale e al parametro `forceNextFascia`.
+	 *
+	 * Le fasce orarie sono predefinite e rappresentano intervalli di tempo durante la giornata.
+	 * Se l'orario attuale ricade all'interno di una fascia e sono passati al massimo 10 minuti dall'inizio,
+	 * viene restituito l'inizio di quella fascia. Se ci si trova a meno di 10 minuti dall'inizio di una fascia futura,
+	 * viene restituito l'inizio di quella fascia.
+	 * Se `forceNextFascia` è true, viene restituito l'inizio della prossima fascia oraria disponibile.
+	 *
+	 * @param forceNextFascia - Se true, forza la restituzione dell'inizio della prossima fascia oraria.
+	 * @returns Una stringa nel formato "YYYY-MM-DD HH:mm" che rappresenta l'inizio della fascia selezionata, oppure una stringa vuota se nessuna fascia è valida.
+	 */
 	getLocalIsoString(forceNextFascia: boolean = false): string {
 		const fasce = [
 			{ inizio: '12:00', fine: '13:30' },
@@ -694,6 +788,12 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		return '';
 	}
 
+	/**
+	 * Converte un oggetto Date in una stringa formattata secondo il formato locale "YYYY-MM-DD HH:mm".
+	 *
+	 * @param date - L'oggetto Date da convertire.
+	 * @returns Una stringa che rappresenta la data e l'ora nel formato "YYYY-MM-DD HH:mm".
+	 */
 	toLocalISOString(date: Date): string {
 		const year = date.getFullYear();
 
@@ -708,12 +808,25 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		return `${year}-${month}-${day} ${hours}:${minutes}`;
 	}
 
+	/**
+	 * Annulla e chiude la modale di inserimento prenotazione.
+	 *
+	 * Imposta la variabile `showModaleInserimentoPrenotazione` a `false` per nascondere la modale
+	 * e richiama il metodo `chiudiModaleInserimentoPrenotazione()` per eseguire eventuali operazioni aggiuntive di chiusura.
+	 */
 	annullaModaleInserimentoPrenotazione() {
 		this.showModaleInserimentoPrenotazione = false;
 
 		this.chiudiModaleInserimentoPrenotazione();
 	}
 
+	/**
+	 * Chiude la modale di inserimento prenotazione e resetta i campi correlati.
+	 *
+	 * Imposta la variabile `showModaleConfermaArrivo` a `false` per nascondere la modale,
+	 * e azzera le variabili `personeSelezionate`, `inputManuale` e `refClienteInput`
+	 * per pulire i dati inseriti precedentemente.
+	 */
 	chiudiModaleInserimentoPrenotazione() {
 		this.showModaleConfermaArrivo = false;
 
@@ -724,6 +837,16 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		this.refClienteInput = null;
 	}
 
+	/**
+	 * Gestisce il click su un tavolo nella lista dei tavoli.
+	 *
+	 * @param tavolo L'oggetto rappresentante il tavolo selezionato.
+	 *
+	 * Se lo stato del tavolo è 'attesa-arrivo', imposta il tavolo come tavolo da confermare
+	 * e mostra il modale di conferma arrivo.
+	 * Se lo stato del tavolo è diverso da 'senza-ordini', imposta il tavolo selezionato
+	 * nel servizio e naviga alla pagina di visualizzazione ordini del cameriere.
+	 */
 	handleClick(tavolo: any) {
 		if (tavolo.stato === 'attesa-arrivo') {
 			this.tavoloDaConfermare = tavolo;
@@ -738,6 +861,18 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Conferma l'arrivo di un cliente associato al tavolo selezionato.
+	 *
+	 * Questa funzione verifica se è presente un tavolo da confermare. Se presente,
+	 * invia una richiesta di conferma prenotazione tramite il servizio `prenotazioneService`.
+	 * Mostra un messaggio di successo o errore tramite un toast a seconda dell'esito dell'operazione.
+	 * Alla fine, chiude la modale di conferma arrivo, azzera il tavolo selezionato
+	 * e ricarica la lista dei tavoli. In caso di errore durante la richiesta,
+	 * viene mostrato un messaggio di errore.
+	 *
+	 * @returns {Promise<void>} Una Promise che si risolve quando tutte le operazioni sono completate.
+	 */
 	async confermaArrivo() {
 		if (!this.tavoloDaConfermare) return;
 
@@ -772,12 +907,25 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Chiude la modale di conferma arrivo.
+	 *
+	 * Imposta la variabile `showModaleConfermaArrivo` a `false` per nascondere la modale
+	 * e resetta la variabile `tavoloDaConfermare` a `null`.
+	 */
 	chiudiModaleConfermaArrivo() {
 		this.showModaleConfermaArrivo = false;
 
 		this.tavoloDaConfermare = null;
 	}
 
+	/**
+	 * Mostra un toast con un messaggio specificato e un colore opzionale.
+	 *
+	 * @param messaggio - Il messaggio da visualizzare nel toast.
+	 * @param color - Il colore del toast ('success', 'danger' o 'warning'). Il valore predefinito è 'success'.
+	 * @returns Una Promise che si risolve quando il toast è stato presentato.
+	 */
 	async presentToast(
 		messaggio: string,
 
@@ -796,12 +944,24 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 		await toast.present();
 	}
 
+	/**
+	 * Imposta il filtro selezionato per lo stato dei tavoli.
+	 * Se lo stato passato è undefined o vuoto, il filtro viene resettato (null).
+	 * Successivamente applica il filtro aggiornato alla lista dei tavoli chiamando `applicaFiltroTavoli`.
+	 *
+	 * @param stato - Lo stato da filtrare, opzionale. Se non specificato, il filtro viene resettato.
+	 */
 	filtraTavoliPerStato(stato?: string) {
 		this.selectedFilter = stato || null;
 
 		this.applicaFiltroTavoli();
 	}
 
+	/**
+	 * Applica il filtro alla lista dei tavoli basandosi sul valore di `selectedFilter`.
+	 * Se `selectedFilter` è valorizzato, filtra i tavoli mantenendo solo quelli con stato corrispondente.
+	 * Altrimenti, mostra tutti i tavoli senza alcun filtro.
+	 */
 	applicaFiltroTavoli() {
 		this.tavoliFiltrati = this.selectedFilter
 			? this.tavoli.filter((t) => t.stato === this.selectedFilter)

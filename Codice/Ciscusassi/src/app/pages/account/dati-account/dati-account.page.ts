@@ -85,6 +85,23 @@ export class DatiAccountPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Gestisce la risposta ricevuta da una chiamata API che restituisce un numero (ad esempio punti).
+	 *
+	 * La funzione analizza la risposta (`ApiResponse<number>`): se ha successo, aggiorna il valore di `points`
+	 * con i dati ricevuti; altrimenti imposta lo stato di errore e memorizza il messaggio di errore.
+	 * In entrambi i casi, disattiva lo stato di caricamento.
+	 *
+	 * @param {ApiResponse<number>} response - La risposta dell’API contenente un valore numerico o un messaggio d’errore.
+	 *
+	 * @returns {void}
+	 *
+	 * @remarks
+	 * - Se `response.success` è `true`, assegna `response.data` alla proprietà `points`.
+	 * - Se `response.success` è `false`, registra l’errore nella console, imposta `error` a `true`
+	 *   e assegna il messaggio d’errore alla proprietà `errorMsg`.
+	 * - In ogni caso, `loading` viene impostato a `false` per indicare il termine del processo.
+	 */
 	private handleResponse(response: ApiResponse<number>): void {
 		console.log(response);
 
@@ -99,6 +116,22 @@ export class DatiAccountPage implements OnInit {
 		this.loading = false;
 	}
 
+	/**
+	 * Esegue il processo di logout dell’utente.
+	 *
+	 * Imposta lo stato di caricamento, invoca il servizio di autenticazione per effettuare il logout
+	 * e reindirizza l’utente alla pagina di login. In caso di errore, registra il problema,
+	 * imposta lo stato di errore e mostra un messaggio appropriato.
+	 *
+	 * @async
+	 * @returns {Promise<void>} - Non restituisce alcun valore, ma modifica lo stato dell'applicazione.
+	 *
+	 * @remarks
+	 * - Imposta `loadingLogout` a `true` all’inizio del processo.
+	 * - In caso di successo, reimposta `loadingLogout` a `false` e naviga alla pagina `/login`.
+	 * - In caso di errore, stampa l’errore nella console, imposta `error` a `true`,
+	 *   assegna un messaggio di errore a `errorMsg` e disattiva `loadingLogout`.
+	 */
 	async logout() {
 		this.loadingLogout = true;
 		try {

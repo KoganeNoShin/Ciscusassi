@@ -42,7 +42,9 @@ import {
 		FormsModule,
 	],
 })
+
 export class SceltaGiornoPage implements OnInit {
+	
 	filiale: FilialeRecord | null = null;
 	dataSelezionata: string = '';
 	idFiliale: number = 0;
@@ -90,6 +92,12 @@ export class SceltaGiornoPage implements OnInit {
 		console.log('Numero persone caricato:', this.persone);
 	}
 
+	/**
+	 * Carica la lista delle filiali tramite il servizio `filialeService`.
+	 * Imposta lo stato di caricamento e gestisce eventuali errori.
+	 * Alla ricezione della risposta, delega la gestione a `handleResponse`.
+	 * In caso di errore nella chiamata, imposta `hasError` a true e disabilita lo stato di caricamento.
+	 */
 	private loadFiliale() {
 		this.loading = true;
 		this.hasError = false;
@@ -107,6 +115,17 @@ export class SceltaGiornoPage implements OnInit {
 			});
 	}
 
+	/**
+	 * Gestisce la risposta dell'API per il recupero delle filiali.
+	 *
+	 * Imposta lo stato di caricamento a falso e verifica se la risposta è andata a buon fine
+	 * e contiene un array di filiali. Se trova la filiale corrispondente all'id specificato,
+	 * la assegna alla proprietà `filiale`, azzera eventuali errori e richiama il metodo `alCambioData`.
+	 * In caso contrario, segnala un errore e imposta `hasError` a true.
+	 * Se la risposta non è valida, logga l'errore e imposta `hasError` a true.
+	 *
+	 * @param response La risposta dell'API contenente un array di record di filiale.
+	 */
 	private handleResponse(response: ApiResponse<FilialeRecord[]>): void {
 		this.loading = false;
 
@@ -133,6 +152,14 @@ export class SceltaGiornoPage implements OnInit {
 		}
 	}
 
+	/**
+	 * Verifica se una data fornita come stringa soddisfa le seguenti condizioni:
+	 * - Non è un martedì.
+	 * - È compresa tra oggi (incluso) e le prossime due settimane (incluso).
+	 *
+	 * @param dateString - La data da verificare, in formato stringa compatibile con il costruttore di `Date`.
+	 * @returns `true` se la data non è un martedì e rientra nell'intervallo specificato, altrimenti `false`.
+	 */
 	noMartediEMaxDueSettimane = (dateString: string): boolean => {
 		const d = new Date(dateString);
 		const oggi = new Date();
@@ -150,6 +177,12 @@ export class SceltaGiornoPage implements OnInit {
 		);
 	};
 
+	/**
+	 * Converte una data fornita come stringa o numero in una stringa nel formato 'YYYY-MM-DD'.
+	 *
+	 * @param dateInput - La data da formattare, accettata come stringa o numero.
+	 * @returns La data formattata come stringa 'YYYY-MM-DD'. Restituisce una stringa vuota se la data non è valida.
+	 */
 	formatDateToYYYYMMDD(dateInput: string | number): string {
 		const date = new Date(dateInput);
 		if (isNaN(date.getTime())) {
@@ -163,6 +196,20 @@ export class SceltaGiornoPage implements OnInit {
 		)}`;
 	}
 
+	/**
+	 * Gestisce il cambio della data selezionata per la prenotazione.
+	 *
+	 * - Verifica che una data sia stata selezionata e la formatta nel formato 'YYYY-MM-DD'.
+	 * - Controlla la presenza degli identificativi necessari per la filiale e la data.
+	 * - Imposta tutte le fasce orarie come non disponibili inizialmente.
+	 * - Richiede al servizio `prenotazioneService` i tavoli già in uso per la data selezionata.
+	 * - Per ciascuna fascia oraria (12:00, 13:30, 19:30, 21:00), verifica la disponibilità dei tavoli:
+	 *   - Se il numero di tavoli disponibili è sufficiente rispetto a quelli richiesti, la fascia viene abilitata.
+	 * - Gestisce eventuali errori nella richiesta HTTP.
+	 *
+	 * @remarks
+	 * Questo metodo viene tipicamente chiamato quando l'utente seleziona una nuova data nel processo di prenotazione.
+	 */
 	alCambioData() {
 		console.log('Data selezionata (raw):', this.dataSelezionata);
 
@@ -245,12 +292,22 @@ export class SceltaGiornoPage implements OnInit {
 			});
 	}
 
-	// Funzione per verificare se la fascia oraria è passata (solo per oggi)
+	/**
+	 * Determina se una fascia oraria specificata è già passata rispetto all'orario attuale.
+	 *
+	 * La funzione verifica innanzitutto se è stata selezionata una data (`dataSelezionata`).
+	 * Se la data selezionata non corrisponde alla data odierna, restituisce `false`.
+	 * Se la data selezionata è oggi, confronta l'orario corrente con l'orario della fascia (`oraFascia`)
+	 * fornita in formato "HH:mm". Restituisce `true` se l'orario attuale è successivo a quello della fascia.
+	 *
+	 * @param oraFascia - Orario della fascia in formato "HH:mm".
+	 * @returns `true` se la fascia oraria è già passata, `false` altrimenti.
+	 */
 	isFasciaPassata(oraFascia: string): boolean {
 		if (!this.dataSelezionata) return false;
 
 		const oggi = this.formatDateToYYYYMMDD(Date.now());
-		if (this.dataSelezionata !== oggi) return false; // controllo solo se è oggi
+		if (this.dataSelezionata !== oggi) return false;
 
 		const now = new Date();
 
@@ -262,6 +319,15 @@ export class SceltaGiornoPage implements OnInit {
 	}
 
 	// Ritorna una Promise con le prenotazioni del cliente
+	/**
+	 * Carica le prenotazioni future del cliente corrente.
+	 *
+	 * Questo metodo recupera tutte le prenotazioni associate al cliente tramite il servizio `prenotazioneService`.
+	 * Filtra le prenotazioni restituendo solo quelle la cui data e ora di prenotazione sono uguali o successive
+	 * al momento attuale. In caso di errore o se non sono presenti prenotazioni, restituisce un array vuoto.
+	 *
+	 * @returns {Promise<PrenotazioneWithFiliale[]>} Una Promise che si risolve con un array di prenotazioni future del cliente.
+	 */
 	private caricaPrenotazioniCliente(): Promise<PrenotazioneWithFiliale[]> {
 
 		return new Promise((resolve, reject) => {
@@ -298,6 +364,18 @@ export class SceltaGiornoPage implements OnInit {
 		});
 	}
 
+	/**
+	 * Conferma una prenotazione per l'orario selezionato.
+	 *
+	 * Questa funzione aggiorna i dettagli della prenotazione con il numero di persone,
+	 * la data e ora selezionata e la filiale di riferimento. Prima di procedere con la prenotazione,
+	 * verifica se esistono già prenotazioni attive per il cliente; in tal caso, mostra un messaggio di errore
+	 * e blocca la nuova prenotazione. Se non ci sono prenotazioni attive, invia la richiesta di prenotazione
+	 * tramite il servizio dedicato e gestisce la risposta mostrando un messaggio di successo o errore tramite toast.
+	 *
+	 * @param ora - L'orario selezionato per la prenotazione (formato stringa).
+	 * @returns Promise<void>
+	 */
 	async confermaPrenotazione(ora: string) {
 		this.prenotazione.numero_persone = this.persone || 0;
 		this.prenotazione.data_ora_prenotazione = `${this.dataSelezionata} ${ora}`;
@@ -370,6 +448,15 @@ export class SceltaGiornoPage implements OnInit {
 			});
 	}
 
+	/**
+	 * Converte una stringa data/ora in un oggetto `Date`.
+	 *
+	 * La stringa deve essere nel formato `'YYYY-MM-DD HH:mm:ss'` oppure `'YYYY-MM-DD HH:mm'`.
+	 * Se la stringa non è valida o non è presente, restituisce `null`.
+	 *
+	 * @param dateTimeStr - La stringa rappresentante la data e l'ora.
+	 * @returns Un oggetto `Date` se la conversione ha successo, altrimenti `null`.
+	 */
 	private parseDateTime(dateTimeStr: string): Date | null {
 		if (!dateTimeStr) return null;
 

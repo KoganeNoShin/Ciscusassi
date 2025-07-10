@@ -69,6 +69,18 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 		);
 	}
 
+	/**
+	 * Carica gli ordini associati al tavolo corrente.
+	 *
+	 * Questo metodo imposta lo stato di caricamento, recupera il tavolo corrente tramite il servizio `tavoloService`
+	 * e, se esiste una prenotazione associata, richiama il servizio `ordineService` per ottenere i prodotti ordinati
+	 * relativi alla prenotazione. I prodotti estratti vengono inviati tramite `prodottiSubject`.
+	 * Gestisce eventuali errori durante il caricamento e aggiorna gli stati di caricamento ed errore di conseguenza.
+	 *
+	 * @remarks
+	 * - Se il tavolo o la prenotazione non sono disponibili, viene inviato un array vuoto a `prodottiSubject`.
+	 * - I dettagli delle risposte e degli errori vengono loggati tramite `console`.
+	 */
 	loadOrdini() {
 		this.isLoading = true;
 
@@ -118,6 +130,12 @@ export class VisualizzaOrdiniCamerierePage implements OnInit, OnDestroy {
 		}
 	}
 
+	/**
+	 * Cambia lo stato di tutti i prodotti con stato 'in-consegna' a 'consegnato'.
+	 * Per ogni prodotto trovato, invia una richiesta tramite `ordineService.cambiaStato`
+	 * e, al completamento di ciascuna richiesta, ricarica i dati degli ordini dal backend.
+	 * In caso di errore durante il cambio di stato, viene loggato un messaggio di errore.
+	 */
 	consegnaTutto() {
 		const prodottiList = this.prodottiSubject.getValue();
 

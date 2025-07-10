@@ -85,6 +85,13 @@ export class AggiungiImpiegatiPage implements OnInit {
 	}
 
 	// Mostra un toast con messaggio e colore personalizzati
+	/**
+	 * Mostra un toast con un messaggio specificato e un colore opzionale.
+	 *
+	 * @param message - Il messaggio da visualizzare nel toast.
+	 * @param color - (Opzionale) Il colore del toast. Il valore predefinito è 'success'.
+	 * @returns Una Promise che si risolve quando il toast è stato presentato.
+	 */
 	async presentToast(message: string, color: string = 'success') {
 		const toast = await this.toastController.create({
 			message,
@@ -96,6 +103,14 @@ export class AggiungiImpiegatiPage implements OnInit {
 	}
 
 	// Gestisce la selezione di un'immagine e la converte in base64
+	/**
+	 * Gestisce la selezione di un'immagine da parte dell'utente.
+	 *
+	 * @param event L'evento generato dalla selezione di un file tramite input di tipo file.
+	 * @remarks
+	 * Se un file viene selezionato, il metodo utilizza un `FileReader` per leggerlo come Data URL
+	 * e assegna il risultato alla proprietà `foto` della classe.
+	 */
 	onImageSelected(event: any) {
 		const file = event.target.files[0];
 		if (file) {
@@ -108,12 +123,29 @@ export class AggiungiImpiegatiPage implements OnInit {
 	}
 
 	// Validazione semplice per l'indirizzo email
+	/**
+	 * Verifica se una stringa fornita è un indirizzo email valido.
+	 *
+	 * @param email - La stringa da validare come indirizzo email.
+	 * @returns `true` se la stringa è un indirizzo email valido, altrimenti `false`.
+	 */
 	private isValidEmail(email: string): boolean {
 		const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		return re.test(email.toLowerCase());
 	}
 
 	// Carica le filiali da backend e le assegna alla proprietà 'filiali'
+	/**
+	 * Carica l'elenco delle filiali tramite il servizio `filialeService`.
+	 * 
+	 * Effettua una richiesta asincrona per ottenere le sedi disponibili.
+	 * Se la risposta contiene dati, li assegna alla proprietà `filiali`.
+	 * In caso di errore durante il caricamento, mostra un messaggio di errore tramite `presentToast`.
+	 *
+	 * @remarks
+	 * Questo metodo viene tipicamente chiamato all'inizializzazione della pagina
+	 * per popolare la lista delle filiali selezionabili.
+	 */
 	caricaFiliali() {
 		this.filialeService.GetSedi().subscribe({
 			next: (res) => {
@@ -132,6 +164,21 @@ export class AggiungiImpiegatiPage implements OnInit {
 	}
 
 	// Metodo chiamato al submit del form per aggiungere un nuovo dipendente
+	/**
+	 * Aggiunge un nuovo dipendente dopo aver effettuato una serie di validazioni sui dati inseriti.
+	 *
+	 * - Verifica che l'email sia valida.
+	 * - Controlla che sia stata selezionata una filiale.
+	 * - Controlla che sia stata inserita una data di nascita valida e non futura.
+	 * - Verifica che il dipendente sia maggiorenne (almeno 18 anni).
+	 * - Crea un oggetto `ImpiegatoInput` con i dati forniti e lo invia al servizio per l'aggiunta.
+	 * - Gestisce le risposte del servizio mostrando notifiche di successo o errore tramite toast.
+	 *
+	 * @remarks
+	 * Mostra messaggi di errore specifici tramite toast in caso di dati mancanti, non validi o errori di backend.
+	 *
+	 * @returns {void}
+	 */
 	aggiungiImpiegato() {
 		if (!this.isValidEmail(this.email)) {
 			this.presentToast('Inserisci un indirizzo email valido.', 'danger');
@@ -220,6 +267,14 @@ export class AggiungiImpiegatiPage implements OnInit {
 	}
 
 	// Reset dei campi del form
+	/**
+	 * @function
+	 * Reimposta tutti i campi del modulo di aggiunta impiegato ai valori iniziali.
+	 * 
+	 * Questa funzione azzera i valori delle proprietà relative ai dati dell'impiegato,
+	 * come nome, cognome, data di nascita, ruolo, email, foto, password e riferimento filiale.
+	 * Utile per svuotare il modulo dopo l'inserimento o per annullare le modifiche effettuate.
+	 */
 	resetForm() {
 		this.nome = '';
 		this.cognome = '';

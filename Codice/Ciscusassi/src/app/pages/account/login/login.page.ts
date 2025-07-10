@@ -72,6 +72,26 @@ export class LoginPage implements OnInit {
 		private navigation: NavController
 	) {}
 
+	/**
+	 * Gestisce la risposta della richiesta di login e imposta i dati utente se il login ha successo.
+	 *
+	 * Analizza l’oggetto `ApiResponse<LoginRecord>` ricevuto dopo una richiesta di autenticazione.
+	 * Se la risposta è positiva, decodifica il token, estrae i dati utente e li salva nel servizio di autenticazione.
+	 * In caso di errore durante il salvataggio o se la risposta non è valida, imposta lo stato di errore.
+	 *
+	 * @param {ApiResponse<LoginRecord>} response - La risposta dell’API contenente i dati del login oppure un messaggio d’errore.
+	 *
+	 * @returns {void}
+	 *
+	 * @remarks
+	 * - Se `response.success` e `response.data` sono presenti:
+	 *   - Decodifica il token JWT per ottenere i dati utente.
+	 *   - Salva ID utente, token, ruolo, username, avatar e ID filiale nei rispettivi metodi del servizio di autenticazione.
+	 *   - Naviga alla pagina principale (`/home`) dopo il completamento.
+	 * - In caso di errore nel salvataggio, mostra un messaggio d’errore e imposta lo stato di errore.
+	 * - Se la risposta non ha successo, imposta un messaggio d’errore generico e attiva lo stato di errore.
+	 * - In ogni caso, `loading` viene impostato a `false` al termine.
+	 */
 	private handleResponse(response: ApiResponse<LoginRecord>): void {
 		console.log(response);
 
@@ -130,6 +150,26 @@ export class LoginPage implements OnInit {
 		this.formLogin.reset();
 	}
 
+	/**
+	 * Gestisce l’invio del modulo di login.
+	 *
+	 * Verifica la validità del modulo, estrae le credenziali inserite e invia una richiesta di login
+	 * al servizio di autenticazione. In caso di successo, passa la risposta al metodo `handleResponse`.
+	 * In caso di errore, gestisce lo stato e visualizza un messaggio di errore appropriato.
+	 *
+	 * @returns {void}
+	 *
+	 * @remarks
+	 * - Imposta `loading` a `true` all’inizio dell’operazione.
+	 * - Se il modulo è valido:
+	 *   - Recupera le credenziali dall’oggetto `formLogin`.
+	 *   - Esegue la chiamata `login()` e sottoscrive la risposta.
+	 * - In caso di successo (`next`), passa il risultato a `handleResponse`.
+	 * - In caso di errore (`error`):
+	 *   - Se lo status è `401`, mostra un messaggio di errore per credenziali non valide.
+	 *   - Altrimenti, mostra un messaggio generico di errore.
+	 *   - Imposta `error` a `true` e disattiva lo stato `loading`.
+	 */
 	onSubmit() {
 		this.loading = true;
 
