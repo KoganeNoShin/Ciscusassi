@@ -104,6 +104,7 @@
 
 // Classe del wrapper dei campi del form
 .form-fields {
+	width: 100%;
 	gap: 1.5em; // Spaziamo i componenti
 
 	height: fit-content; // Deve essere grande solo quanto basta
@@ -115,12 +116,12 @@
 	// Classe del singolo campo
 	.campo-form {
 		max-width: 600px; // Limitiamo larghezza sia massima
-		min-width: 350px; // che minima
-		width: 60%; // Prendiamo solo l'80% della grandezza disponibile
+		min-width: 300px; // che minima
+		width: 80%; // Prendiamo solo l'80% della grandezza disponibile
 		border-radius: 12px; // Arrotondiamo i campi
 		--border-radius: 12px;
 		overflow: hidden; // non mostriamo l'overflow
-		--background: var(--ion-color-bianconeve);
+		--background: white;
 		color: black;
 		--color: black;
 	}
@@ -133,14 +134,14 @@
 	ion-input,
 	ion-textarea,
 	ion-select {
-		--background: var(--ion-color-bianconeve);
+		--background: var(--ion-color-bianco);
 		--color: black;
 		border-radius: 10px;
 		width: 100%;
 	}
 
 	ion-button {
-		width: 70%;
+		width: 80%;
 	}
 }
 

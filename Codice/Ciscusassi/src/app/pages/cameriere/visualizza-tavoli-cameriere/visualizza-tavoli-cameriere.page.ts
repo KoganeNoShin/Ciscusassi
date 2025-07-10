@@ -456,9 +456,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 						cssClass: [
 							'alert-button-cancel',
-
 							'bg-color-rosso',
-
 							'text-color-bianco',
 						],
 					},
@@ -470,9 +468,7 @@ export class VisualizzaTavoliCamerierePage implements OnInit, OnDestroy {
 
 						cssClass: [
 							'alert-button-confirm',
-
 							'bg-color-verdechiaro',
-
 							'text-color-bianco',
 						],
 					},

@@ -5,10 +5,9 @@
 // src/environments/environment.ts
 export const environment = {
 	production: false,
-	tomtomApiKey: 'LA_TUA_API_KEY_TOMTOM',
-	apiURL: 'http://localhost:4200',
-	CORS_ORIGIN: 'http://localhost:8100',
-	JWT_SECRET_KEY: 'PASSWORD DEL TOKEN',
+	tomtomApiKey: 'LA_TUA_API_KEY_TOMTOM', // API_KEY di TOMTOM per le mappe
+	apiURL: 'http://localhost:3000', // L'endpoint base del server express
+	JWT_SECRET_KEY: 'PASSWORD DEL TOKEN', // La password JWT che deve essere uguale nel backend
 };
 
 /*
