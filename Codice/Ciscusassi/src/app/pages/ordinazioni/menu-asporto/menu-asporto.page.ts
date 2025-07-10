@@ -66,7 +66,7 @@ export class MenuAsportoPage implements OnInit {
 			});
 			await toast.present();
 		} else {
-			this.router.navigateByUrl('/pagamento-asporto');
+			this.router.navigateByUrl('/pagamento-asporto', { replaceUrl: true });
 		}
 	}
 

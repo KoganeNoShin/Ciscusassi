@@ -21,6 +21,7 @@ import {
 	IonButton,
 	IonGrid,
 	IonText,
+	NavController,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -63,7 +64,8 @@ export class SceltaGiornoPage implements OnInit {
 		private prenotazioneService: PrenotazioneService,
 		private filialeService: FilialeService,
 		private toastController: ToastController,
-		private router: Router
+		private router: Router,
+		private navController: NavController
 	) {}
 
 	ngOnInit() {
@@ -335,7 +337,7 @@ export class SceltaGiornoPage implements OnInit {
 							color: 'success',
 						});
 						await toast.present();
-						this.router.navigateByUrl('/prenota');
+						this.router.navigateByUrl('/prenota', { replaceUrl: true });
 					} else {
 						const toast = await this.toastController.create({
 							message: 'Errore nella prenotazione',

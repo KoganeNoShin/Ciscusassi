@@ -12,6 +12,7 @@ import {
 	IonCardContent,
 	IonSpinner,
 	IonAvatar,
+	NavController,
 } from '@ionic/angular/standalone';
 
 import { RouterModule } from '@angular/router';
@@ -55,7 +56,8 @@ export class DatiAccountPage implements OnInit {
 
 	constructor(
 		private authService: AuthenticationService,
-		private router: Router
+		private router: Router,
+		private navigator: NavController
 	) {}
 
 	ngOnInit() {

@@ -137,7 +137,7 @@ export class PagamentoTavoloPage implements OnInit {
 								'Pagamento a cassa effettuato:',
 								response
 							);
-							this.router.navigate(['/pagamento-cassa']);
+							this.router.navigate(['/pagamento-cassa'], { replaceUrl: true });
 						},
 						error: (err) => {
 							if (err.status === 400) {
@@ -185,7 +185,7 @@ export class PagamentoTavoloPage implements OnInit {
 								'Pagamento con carta effettuato:',
 								response
 							);
-							this.router.navigate(['/pagamento-carta']);
+							this.router.navigate(['/pagamento-carta'], { replaceUrl: true });
 						},
 						error: (err) => {
 							if (err.status === 400) {

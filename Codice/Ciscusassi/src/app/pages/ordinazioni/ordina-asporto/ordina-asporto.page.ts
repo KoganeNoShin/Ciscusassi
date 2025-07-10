@@ -279,7 +279,7 @@ export class OrdinaAsportoPage implements OnInit {
 				this.tempoViaggioMinuti !== null
 			) {
 				if (this.tempoViaggioMinuti < 30) {
-					this.router.navigate(['/menu-asporto']);
+					this.router.navigateByUrl('/menu-asporto', { replaceUrl: true });
 				} else {
 					const toast = await this.toastController.create({
 						message:
