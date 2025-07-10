@@ -297,7 +297,7 @@ class PrenotazioneService {
 
 	/**
    * Ritorna la fascia oraria attuale se si è all'interno di una fascia valida.
-   * @returns Stringa ISO della fascia oraria corrente o null se fuori fascia
+   * @returns Stringa della fascia oraria corrente o null se fuori fascia
    */
 	private static getFasciaOrariaCorrente(): string | null {
 		const orariValidi = ['12:00', '13:30', '19:30', '21:00'];
@@ -321,7 +321,7 @@ class PrenotazioneService {
 				const hh = inizio.getHours().toString().padStart(2, '0');
 				const min = inizio.getMinutes().toString().padStart(2, '0');
 
-				return `${yyyy}-${mm}-${dd}T${hh}:${min}:00`;
+				return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
 			}
 		}
 
