@@ -7,6 +7,7 @@ import OrdProd from '../../Models/ord_prod';
 import Prodotto from '../../Models/prodotto';
 import Pagamento from '../../Models/pagamento';
 import { faker } from '@faker-js/faker';
+import PrenotazioneService from '../../Services/prenotazioneService';
 
 const ORARI_VALIDI = ['12:00', '13:30', '19:30', '21:00'];
 
@@ -16,60 +17,49 @@ export async function generatePrenotazioni(count: number): Promise<string> {
 		const clienti: ClienteRecord[] = await Cliente.getAll();
 		if (!clienti.length) throw new Error('Nessun cliente trovato');
 
-		const distribuzionePrenotazioni = {
-			passato: Math.max(0, count - 20),
-			oggi: Math.min(10, count),
-			futuro: Math.min(10, count - 10),
-		};
-
 		for (const filiale of filiali) {
-			for (const tipo of Object.keys(distribuzionePrenotazioni) as (keyof typeof distribuzionePrenotazioni)[]) {
-				for (let i = 0; i < distribuzionePrenotazioni[tipo]; i++) {
-					const dataPren = getDataPrenotazione(tipo);
-					const dataPrenFormattata = formatDateTime(dataPren);
-					const torretteLibere = await Torretta.getTorretteLibere(filiale.id_filiale, dataPrenFormattata);
+			for (let i = 0; i < count; i++) {
+				const dataPren = getDataPrenotazione('passato');
+				const dataPrenFormattata = formatDateTime(dataPren);
+				const torretteLibere = await Torretta.getTorretteLibere(filiale.id_filiale, dataPrenFormattata);
 
-					if (!torretteLibere.length) {
-						console.warn(`⚠️ Nessuna torretta libera per ${filiale.indirizzo} alle ${dataPrenFormattata}`);
-						continue;
-					}
-
-					const numero_persone = faker.number.int({ min: 1, max: 8 });
-					const clientePrenotazione = faker.helpers.arrayElement(clienti);
-					const torrettaSelezionata = faker.helpers.arrayElement(torretteLibere);
-
-					const id_prenotazione = await Prenotazione.create({
-						numero_persone,
-						data_ora_prenotazione: dataPrenFormattata,
-						ref_cliente: clientePrenotazione.numero_carta,
-						ref_torretta: torrettaSelezionata.id_torretta,
-					});
-
-					console.log(`✅ Prenotazione ${tipo} creata con ID ${id_prenotazione}`);
-
-					if (tipo === 'passato') {
-						await generateOrdini(clientePrenotazione, id_prenotazione, dataPren, numero_persone, clienti);
-					} else {
-						console.log(`🕒 Nessun ordine per prenotazione ${tipo} ID ${id_prenotazione}`);
-					}
+				if (!torretteLibere.length) {
+					console.warn(`⚠️ Nessuna torretta libera per ${filiale.indirizzo} alle ${dataPrenFormattata}`);
+					continue;
 				}
+
+				const numero_persone = faker.number.int({ min: 1, max: 8 });
+				const clientePrenotazione = faker.helpers.arrayElement(clienti);
+				const torrettaSelezionata = faker.helpers.arrayElement(torretteLibere);
+
+				const id_prenotazione = await Prenotazione.create({
+					numero_persone,
+					data_ora_prenotazione: dataPrenFormattata,
+					ref_cliente: clientePrenotazione.numero_carta,
+					ref_torretta: torrettaSelezionata.id_torretta,
+				});
+				await PrenotazioneService.confermaPrenotazione(id_prenotazione);
+
+				console.log(`✅ Prenotazione PASSATA creata con ID ${id_prenotazione}`);
+
+				await generateOrdini(clientePrenotazione, id_prenotazione, dataPren, numero_persone, clienti);
 			}
 		}
 
-		return 'Prenotazioni generate con successo';
+		return 'Prenotazioni passate generate con successo';
 	} catch (err) {
 		console.error(`❌ Errore nella generazione prenotazioni:`, err);
 		throw err;
 	}
 }
 
-function getDataPrenotazione(tipo: 'passato' | 'oggi' | 'futuro'): Date {
+function getDataPrenotazione(tipo: 'passato'): Date {
 	const data = new Date();
 	const [hh, mm] = faker.helpers.arrayElement(ORARI_VALIDI).split(':').map(Number);
 	data.setHours(hh, mm, 0, 0);
 
-	if (tipo === 'futuro') data.setDate(data.getDate() + faker.number.int({ min: 1, max: 5 }));
-	else if (tipo === 'passato') data.setDate(data.getDate() - faker.number.int({ min: 30, max: 730 }));
+	// Solo prenotazioni passate tra 30 giorni e 2 anni fa
+	data.setDate(data.getDate() - faker.number.int({ min: 30, max: 730 }));
 
 	return data;
 }

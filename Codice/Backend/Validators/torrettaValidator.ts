@@ -11,7 +11,7 @@ import { param, ValidationChain } from 'express-validator'
  */
 export function idTorrettaValidator(chain: ValidationChain): ValidationChain {
   return chain
-    .notEmpty().withMessage('ID Torretta obbligatorio')
-    .toInt()
-    .isInt({ gt: 0 }).withMessage('ID Torretta non valido');
+    .notEmpty().withMessage('ID Torretta obbligatorio')    
+    .isInt({ gt: 0 }).withMessage('ID Torretta non valido')
+    .toInt();
 }

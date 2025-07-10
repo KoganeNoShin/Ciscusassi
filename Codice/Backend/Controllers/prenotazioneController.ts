@@ -152,7 +152,7 @@ class PrenotazioneController {
 	 */
     static async getOTPByIdTorrettaAndData(req: Request, res: Response): Promise<void> {
         try {
-            const otp = await PrenotazioneService.getOTPByIdTorrettaAndData(parseInt(req.params.id_prenotazione));
+            const otp = await PrenotazioneService.getOTPByIdTorrettaAndData(Number(req.params.id_torretta));
 
             res.json({ success: true, data: otp });       
         } catch (err) {

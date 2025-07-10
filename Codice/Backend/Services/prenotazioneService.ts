@@ -329,7 +329,7 @@ class PrenotazioneService {
 				const hh = inizio.getHours().toString().padStart(2, '0');
 				const min = inizio.getMinutes().toString().padStart(2, '0');
 
-				return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+				return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
 			}
 		}
 
