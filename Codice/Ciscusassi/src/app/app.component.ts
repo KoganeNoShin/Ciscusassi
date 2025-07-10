@@ -69,6 +69,8 @@ import {
 	],
 })
 export class AppComponent {
+	role: string = '';
+
 	constructor(
 		private storage: Storage, // Gestione dello storage locale (sessioni, preferenze, ecc.)
 		private authService: AuthenticationService, // Servizio di autenticazione per gestire login/logout, ruoli, ecc.
@@ -91,6 +93,11 @@ export class AppComponent {
 
 		// Registra le icone utilizzate nel menu
 		addIcons({ home, newspaper, location, restaurant, calendar });
+
+		// Aggiorniamo dinamicamente il ruolo
+		this.authService.role$.subscribe((role) => {
+			this.role = role;
+		});
 	}
 
 	// Inizializza lo storage e il servizio di autenticazione
