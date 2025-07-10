@@ -11,7 +11,7 @@ export interface PrenotazioneInput {
 	/** Data e ora della prenotazione (formato ISO o datetime SQL) */
 	data_ora_prenotazione: string;
 	/** ID del cliente se autenticato, null se guest */
-	ref_cliente: number | null;
+	ref_cliente: number;
 	/** ID della torretta associata */
 	ref_torretta: number;
 }

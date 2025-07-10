@@ -117,6 +117,10 @@ class PrenotazioneService {
 				);
 			}
 
+			if (data.ref_cliente === null) {
+				throw new Error('ref_cliente non può essere null');
+			}
+
 			const input: PrenotazioneInput = {
 				numero_persone: data.numero_persone,
 				data_ora_prenotazione: data.data_ora_prenotazione,
@@ -192,6 +196,10 @@ class PrenotazioneService {
 				throw new Error(
 					'Nessuna torretta disponibile per questa data/ora'
 				);
+			}
+
+			if (data.ref_cliente === null) {
+				throw new Error('ref_cliente non può essere null');
 			}
 
 			const input: PrenotazioneInput = {

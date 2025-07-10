@@ -26,21 +26,22 @@ export async function generatePrenotazioni(count: number): Promise<string> {
 			for (const tipo of Object.keys(distribuzionePrenotazioni) as (keyof typeof distribuzionePrenotazioni)[]) {
 				for (let i = 0; i < distribuzionePrenotazioni[tipo]; i++) {
 					const dataPren = getDataPrenotazione(tipo);
-					const torretteLibere = await Torretta.getTorretteLibere(filiale.id_filiale, dataPren.toISOString());
+					const dataPrenFormattata = formatDateTime(dataPren);
+					const torretteLibere = await Torretta.getTorretteLibere(filiale.id_filiale, dataPrenFormattata);
 
 					if (!torretteLibere.length) {
-						console.warn(`⚠️ Nessuna torretta libera per ${filiale.indirizzo} alle ${dataPren}`);
+						console.warn(`⚠️ Nessuna torretta libera per ${filiale.indirizzo} alle ${dataPrenFormattata}`);
 						continue;
 					}
 
 					const numero_persone = faker.number.int({ min: 1, max: 8 });
-					const clientePrenotazione = faker.number.int({ min: 0, max: 2 }) > 0 ? faker.helpers.arrayElement(clienti) : null;
+					const clientePrenotazione = faker.helpers.arrayElement(clienti);
 					const torrettaSelezionata = faker.helpers.arrayElement(torretteLibere);
 
 					const id_prenotazione = await Prenotazione.create({
 						numero_persone,
-						data_ora_prenotazione: dataPren.toISOString(),
-						ref_cliente: clientePrenotazione ? clientePrenotazione.numero_carta : null,
+						data_ora_prenotazione: dataPrenFormattata,
+						ref_cliente: clientePrenotazione.numero_carta,
 						ref_torretta: torrettaSelezionata.id_torretta,
 					});
 
@@ -64,14 +65,22 @@ export async function generatePrenotazioni(count: number): Promise<string> {
 
 function getDataPrenotazione(tipo: 'passato' | 'oggi' | 'futuro'): Date {
 	const data = new Date();
-	const orario = faker.helpers.arrayElement(ORARI_VALIDI).split(':').map(Number);
-
-	data.setHours(orario[0], orario[1], 0, 0);
+	const [hh, mm] = faker.helpers.arrayElement(ORARI_VALIDI).split(':').map(Number);
+	data.setHours(hh, mm, 0, 0);
 
 	if (tipo === 'futuro') data.setDate(data.getDate() + faker.number.int({ min: 1, max: 5 }));
 	else if (tipo === 'passato') data.setDate(data.getDate() - faker.number.int({ min: 30, max: 730 }));
 
 	return data;
+}
+
+function formatDateTime(date: Date): string {
+	const yyyy = date.getFullYear();
+	const mm = String(date.getMonth() + 1).padStart(2, '0');
+	const dd = String(date.getDate()).padStart(2, '0');
+	const hh = String(date.getHours()).padStart(2, '0');
+	const min = String(date.getMinutes()).padStart(2, '0');
+	return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
 }
 
 async function generateOrdini(
@@ -94,18 +103,26 @@ async function generateOrdini(
 			ref_cliente: cliente.numero_carta,
 		});
 
-		const ordProdInput = Array.from({ length: faker.number.int({ min: 3, max: 8 }) }, () => ({
-			ref_ordine: id_ordine,
-			ref_prodotto: faker.helpers.arrayElement(prodotti).id_prodotto,
-			is_romana: false,
-			stato: 'consegnato',
-		}));
+		const ordProdInput = Array.from({ length: faker.number.int({ min: 3, max: 8 }) }, () => {
+			const prodotto = faker.helpers.arrayElement(prodotti);
+			return {
+				ref_ordine: id_ordine,
+				ref_prodotto: prodotto.id_prodotto,
+				is_romana: false,
+				stato: 'consegnato',
+			};
+		});
 
 		await Promise.all(ordProdInput.map(op => OrdProd.create(op)));
-		const importoTotale = ordProdInput.reduce((sum, op) => sum + prodotti.find(p => p.id_prodotto === op.ref_prodotto)!.costo, 0);
+
+		const importoTotale = ordProdInput.reduce((sum, op) => {
+			const prodotto = prodotti.find(p => p.id_prodotto === op.ref_prodotto)!;
+			return sum + prodotto.costo;
+		}, 0);
+
 		const id_pagamento = await Pagamento.create({
 			importo: importoTotale,
-			data_ora_pagamento: dataPrenotazione.toISOString(),
+			data_ora_pagamento: formatDateTime(dataPrenotazione),
 		});
 
 		await Ordine.addPagamento(id_pagamento, id_ordine);
